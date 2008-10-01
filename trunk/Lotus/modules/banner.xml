@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Advertisements>
+  <Ad>
+    <ImageUrl>../resources/1/flower.jpg</ImageUrl>
+    <NavigateUrl>http://www.insitecreation.com</NavigateUrl>
+    <AlternateText>Alternate Text for Ad#1</AlternateText>
+    <Keyword>B</Keyword>
+    <Impressions>50</Impressions>
+    <Caption>Caption for Ad#1</Caption>
+  </Ad>
+
+  <Ad>
+    <ImageUrl>../resources/1/flower.jpg</ImageUrl>
+    <NavigateUrl>http://www.insitecreation.com</NavigateUrl>
+    <AlternateText>Alternate Text for Ad#2</AlternateText>
+    <Keyword>B</Keyword>
+    <Impressions>50</Impressions>
+    <Caption>Caption for Ad#2</Caption>
+  </Ad>
+</Advertisements>

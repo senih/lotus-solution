@@ -1,0 +1,38 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<root>
+  <menu_tree>
+    <root_id>1</root_id>
+    <scroll>true</scroll>
+    <width>266</width>
+    <height>175</height>
+    <hide_root>false</hide_root>
+    <expand_all>false</expand_all>
+  </menu_tree>
+  <menu_dropmenu>
+    <hide_root>false</hide_root>
+  </menu_dropmenu>
+  <menu_dropdown>
+    <hide_root>false</hide_root>
+    <orient>H</orient>
+    <effect>fade</effect>
+  </menu_dropdown>
+  <menu_top>
+    <separator><![CDATA[&nbsp;|&nbsp;]]></separator>
+  </menu_top>
+  <menu_bottom>
+    <separator><![CDATA[&nbsp;|&nbsp;]]></separator>
+  </menu_bottom>
+  <menu_tabs>
+    <hide_root>false</hide_root>
+  </menu_tabs>
+  <menu_links>
+    <hide_root>false</hide_root>
+    <separator><![CDATA[&nbsp;&nbsp;&nbsp;&nbsp;]]></separator>
+  </menu_links>
+  <menu_samelevelpages>
+    <title><![CDATA[Quick Links]]></title>
+  </menu_samelevelpages>
+  <menu_vertical>
+    <hide_root>false</hide_root>
+  </menu_vertical>
+</root>

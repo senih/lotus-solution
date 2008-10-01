@@ -1,0 +1,351 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="btnCancel.text" xml:space="preserve">
+    <value>   Anuller   </value>
+  </data>
+  <data name="btnNewListingTemplate.text" xml:space="preserve">
+    <value>   Gem   </value>
+  </data>
+  <data name="btnRegisterTemplate.text" xml:space="preserve">
+    <value>   Gem   </value>
+  </data>
+  <data name="btnSaveListingTemplate.text" xml:space="preserve">
+    <value>   Gem   </value>
+  </data>
+  <data name="chkListingUseCategories.text" xml:space="preserve">
+    <value>Brug kategorier til at organisere listningen</value>
+  </data>
+  <data name="colDelete.DeleteText" xml:space="preserve">
+    <value>Slet</value>
+  </data>
+  <data name="colEdit.SelectText" xml:space="preserve">
+    <value>Ret</value>
+  </data>
+  <data name="colFolder.HeaderText" xml:space="preserve">
+    <value>Mappe</value>
+  </data>
+  <data name="colListingTemplateName.HeaderText" xml:space="preserve">
+    <value>Liste skabeloner</value>
+  </data>
+  <data name="colTemplateName.HeaderText" xml:space="preserve">
+    <value>Side skabeloner</value>
+  </data>
+  <data name="DeleteConfirm" xml:space="preserve">
+    <value>Er du sikker på du ønsker at slette denne skabelon?</value>
+  </data>
+  <data name="lblCopyFromTemplate.text" xml:space="preserve">
+    <value>Copy from template</value>
+  </data>
+  <data name="lblEditListingTemplate.text" xml:space="preserve">
+    <value>Ret liste skabelon</value>
+  </data>
+  <data name="lblFolderName.text" xml:space="preserve">
+    <value>Folder</value>
+  </data>
+  <data name="lblInsert.text" xml:space="preserve">
+    <value>Indsæt:</value>
+  </data>
+  <data name="lblLayout.text" xml:space="preserve">
+    <value>Layout</value>
+  </data>
+  <data name="lblListingScript.text" xml:space="preserve">
+    <value>Script</value>
+  </data>
+  <data name="lblListingTemplate.text" xml:space="preserve">
+    <value>Item</value>
+  </data>
+  <data name="lblListingTemplateName.text" xml:space="preserve">
+    <value>Navn</value>
+  </data>
+  <data name="lblListingType.text" xml:space="preserve">
+    <value>Listnings type</value>
+  </data>
+  <data name="lblNewListingTemplate.text" xml:space="preserve">
+    <value>Tilføj ny</value>
+  </data>
+  <data name="lblNewTemplate.text" xml:space="preserve">
+    <value>Tilføj ny</value>
+  </data>
+  <data name="lblRecordsPerPage.text" xml:space="preserve">
+    <value>Optegnelser pr side</value>
+  </data>
+  <data name="lblStatus.text" xml:space="preserve">
+    <value>Sletning mislykkes. Skabelonen er i brug.</value>
+  </data>
+  <data name="lblTemplateName.text" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="Login1.FailureText" xml:space="preserve">
+    <value>Login mislykkes. Prøv venligst igen.</value>
+  </data>
+  <data name="Login1.LoginButtonText" xml:space="preserve">
+    <value>Login</value>
+  </data>
+  <data name="Login1.PasswordLabelText" xml:space="preserve">
+    <value>Password:</value>
+  </data>
+  <data name="Login1.PasswordRecoveryText" xml:space="preserve">
+    <value>Jeg har glemt mit password</value>
+  </data>
+  <data name="Login1.RememberMeText" xml:space="preserve">
+    <value>Husk mig.</value>
+  </data>
+  <data name="Login1.UserNameLabelText" xml:space="preserve">
+    <value>Brugernavn:</value>
+  </data>
+  <data name="optAddToCartURL.text" xml:space="preserve">
+    <value>Add To Cart URL</value>
+  </data>
+  <data name="optAuthor.text" xml:space="preserve">
+    <value>Author</value>
+  </data>
+  <data name="optCategoryInfo.text" xml:space="preserve">
+    <value>Category Info</value>
+  </data>
+  <data name="optComments.text" xml:space="preserve">
+    <value>Kommentar</value>
+  </data>
+  <data name="optDateFirstPublished.text" xml:space="preserve">
+    <value>Dato først udgivet</value>
+  </data>
+  <data name="optDateLastUpdated.text" xml:space="preserve">
+    <value>Dato senest opdateret</value>
+  </data>
+  <data name="optDisplayDate.text" xml:space="preserve">
+    <value>Vis dato</value>
+  </data>
+  <data name="optDownloadSize.text" xml:space="preserve">
+    <value>Download Size</value>
+  </data>
+  <data name="optDownloadsToday.text" xml:space="preserve">
+    <value>Downloads idag</value>
+  </data>
+  <data name="optFileDownload.text" xml:space="preserve">
+    <value>Fil download</value>
+  </data>
+  <data name="optFileDownloadIcon.text" xml:space="preserve">
+    <value>Fil download icon</value>
+  </data>
+  <data name="optFileDownloadSize.text" xml:space="preserve">
+    <value>Fil download størrelse</value>
+  </data>
+  <data name="optFileDownloadURL.text" xml:space="preserve">
+    <value>Fil download URL</value>
+  </data>
+  <data name="optFileViewListingMoreURL.text" xml:space="preserve">
+    <value>File View Listing URL (Larger)</value>
+  </data>
+  <data name="optFileViewListingURL.text" xml:space="preserve">
+    <value>File View Listing URL</value>
+  </data>
+  <data name="optFileViewURL.text" xml:space="preserve">
+    <value>File View URL</value>
+  </data>
+  <data name="optHideAddToCart.text" xml:space="preserve">
+    <value>Skjul og tilføj til indkøbsvogn</value>
+  </data>
+  <data name="optHideFileDownload.text" xml:space="preserve">
+    <value>Skjul fil download</value>
+  </data>
+  <data name="optHideFileView.text" xml:space="preserve">
+    <value>Hide File View</value>
+  </data>
+  <data name="optHideFileViewListing.text" xml:space="preserve">
+    <value>Hide File View Listing</value>
+  </data>
+  <data name="optHidePricingInfo.text" xml:space="preserve">
+    <value>Skjul pris info</value>
+  </data>
+  <data name="optHideRating.text" xml:space="preserve">
+    <value>Skjul Rating</value>
+  </data>
+  <data name="optHitsToday.text" xml:space="preserve">
+    <value>Hits idag</value>
+  </data>
+  <data name="optLastUpdatedDate.text" xml:space="preserve">
+    <value>Last Updated Date</value>
+  </data>
+  <data name="optLinkTarget.text" xml:space="preserve">
+    <value>Link target</value>
+  </data>
+  <data name="optPersonFirstCreating.text" xml:space="preserve">
+    <value>Person først oprettelse</value>
+  </data>
+  <data name="optPersonLastUpdating.text" xml:space="preserve">
+    <value>Person seneste opdatering</value>
+  </data>
+  <data name="optPrice.text" xml:space="preserve">
+    <value>Price</value>
+  </data>
+  <data name="optPricingInfo.text" xml:space="preserve">
+    <value>Pris info</value>
+  </data>
+  <data name="optPublishDate.text" xml:space="preserve">
+    <value>Publish Date</value>
+  </data>
+  <data name="optRating.text" xml:space="preserve">
+    <value>Rating</value>
+  </data>
+  <data name="optSummary.text" xml:space="preserve">
+    <value>Oversigt</value>
+  </data>
+  <data name="optTab.text" xml:space="preserve">
+    <value>TAB</value>
+  </data>
+  <data name="optTitle.text" xml:space="preserve">
+    <value>Titel</value>
+  </data>
+  <data name="optTotalDownloads.text" xml:space="preserve">
+    <value>Total Downloads</value>
+  </data>
+  <data name="optTotalHits.text" xml:space="preserve">
+    <value>Total Hits</value>
+  </data>
+  <data name="optURL.text" xml:space="preserve">
+    <value>URL</value>
+  </data>
+  <data name="rdoDefaultOrder.text" xml:space="preserve">
+    <value>Standard sorteret ved:</value>
+  </data>
+  <data name="rdoHideListingOnSiteMap.text" xml:space="preserve">
+    <value>Udeluk listning fra sitemap</value>
+  </data>
+  <data name="rdoListingTypeGeneral.text" xml:space="preserve">
+    <value>Generel listning (Articles, Knowledge Base, Photo Gallery, etc.)</value>
+  </data>
+  <data name="rdoListingTypeNews.text" xml:space="preserve">
+    <value>Kalender-baseret listning (News, Journal, BLOG, etc.)</value>
+  </data>
+  <data name="rdoManualOrder.text" xml:space="preserve">
+    <value>Manuel sortering</value>
+  </data>
+  <data name="rdoShowListingOnSiteMap.text" xml:space="preserve">
+    <value>Inkluder listning i sitemap</value>
+  </data>
+  <data name="lblListingTemplateFooter.text" xml:space="preserve">
+    <value>Footer</value>
+  </data>
+  <data name="lblListingTemplateHeader.text" xml:space="preserve">
+    <value>Header</value>
+  </data>
+  <data name="optHide.text" xml:space="preserve">
+    <value>Hide</value>
+  </data>
+</root>

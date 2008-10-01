@@ -1,0 +1,214 @@
+﻿<%@ Master Language="VB" Inherits="BaseMaster" %>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" >
+<head runat="server">
+    <title></title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <link href="default.css" rel="stylesheet" />
+    <style type="text/css">
+    <!--     
+    body 
+        {
+        text-align:center;
+        background:#c0c0c0;
+        }
+    #container 
+        {
+        width:945px;
+        margin:0 auto;
+        background:url('templates/community_001/images/bg_layout.gif') #ffffff;
+        }
+    #header
+        {
+        background:#c0c0c0;
+        }
+    #content 
+        {
+        width:622px;
+        float:right;
+        text-align:left;
+        min-height:100%;
+        font-family:Arial;
+        font-size:9pt;
+        padding-left:17px;padding-right:6px;padding-top:20px;
+        }
+    #content h1, #content h2, #content p 
+        {
+        padding-right: 20px;
+        }
+    #leftcontent 
+        {
+        width: 300px;
+        float: left;        
+        text-align:right;
+        }
+    #leftfooter
+        {
+        color:White
+        }
+    #leftfooter td 
+        {
+        color:White
+        }
+    #footer 
+        {
+        clear:both;
+        background:#c0c0c0;
+        }
+    -->
+    </style>
+    <script language="javascript" type="text/javascript">
+    //<![CDATA[
+    img = new Image()
+    img.src="/templates/community_001/images/menubg_hover.gif"
+    //]]>
+    </script>
+</head>
+<body>
+<frm:Form id="Form1" runat="server">
+<div id="container">
+
+    <div id="header">
+        <div style="text-align:right;padding-bottom:10px;background:url(templates/community_001/images/logo_img.jpg) no-repeat -10px 0px;">
+            <a href="default.aspx" title="">
+            <img src="templates/community_001/images/logo.gif" alt="" style="margin-bottom:5px;margin-top:15px;border:none;" />
+            <!--<img src="templates/community_001/images/globaladvtravel_logo.gif" alt="" style="margin-bottom:5px;margin-top:15px;border:none;" />-->
+            </a>
+            <br />
+            <asp:ContentPlaceHolder ID="placeholderCartInfo" runat="server">
+            </asp:ContentPlaceHolder>&nbsp;
+            <asp:ContentPlaceHolder ID="placeholderTopMenu" runat="server">
+            </asp:ContentPlaceHolder>
+        </div>   
+        <div>
+       
+        <div style="width:9px;height:30px;float:left;text-align:right;background:url('templates/community_001/images/menu_left.gif');">
+        </div>
+        <div style="width:922px;float:left;text-align:left;min-height:100%; overflow:hidden;background:url('templates/community_001/images/menubg.gif');height:30px;padding-left:5px;text-align:left">
+            <asp:ContentPlaceHolder ID="placeholderMainMenu_DropDown" runat="server">
+            </asp:ContentPlaceHolder>
+        </div>
+        <div style="width:9px;height:30px;float:right;text-align:right;min-height:100%; background:url('templates/community_001/images/menu_right.gif');">
+        </div>
+        
+        <br /><br />
+        </div> 
+    </div>   
+    
+    <div style="background:url(templates/community_001/images/area_gray_top.gif) no-repeat;height:16px">&nbsp;
+    </div>
+    
+    <div id="content">        
+                     
+            <asp:ContentPlaceHolder ID="placeholderBreadcrumb" runat="server">
+            </asp:ContentPlaceHolder>  
+
+            <asp:contentplaceholder ID="placeholderPageTools" runat="server">
+            </asp:contentplaceholder>    
+            <asp:contentplaceholder ID="placeholderSiteRss" runat="server">
+            </asp:contentplaceholder>   
+            
+            <asp:contentplaceholder ID="placeholderTitle" runat="server">
+            </asp:contentplaceholder> 
+
+            <asp:ContentPlaceHolder ID="placeholderPublishingInfo" runat="server">
+            </asp:ContentPlaceHolder> 
+    	        
+            <asp:ContentPlaceHolder ID="placeholderPageInfo" runat="server">
+            </asp:ContentPlaceHolder>
+        
+            <asp:ContentPlaceHolder ID="placeholderBodyTop" runat="server">
+            </asp:ContentPlaceHolder>
+            
+            <asp:ContentPlaceHolder ID="placeholderBody" runat="server">
+            </asp:ContentPlaceHolder>
+            
+            <asp:ContentPlaceHolder ID="placeholderFileView" runat="server">
+            </asp:ContentPlaceHolder>
+            
+            <asp:ContentPlaceHolder ID="placeholderFileDownload" runat="server">
+            </asp:ContentPlaceHolder>
+            
+            <asp:ContentPlaceHolder ID="placeholderListing" runat="server">
+            </asp:ContentPlaceHolder>
+            
+            <asp:ContentPlaceHolder ID="placeholderCategoryInfo" runat="server">
+            </asp:ContentPlaceHolder>            
+
+            <asp:contentplaceholder ID="placeholderStatPageViews" runat="server">
+            </asp:contentplaceholder>
+                        
+            <asp:ContentPlaceHolder ID="placeholderContentRating" runat="server">
+            </asp:ContentPlaceHolder>
+            
+            <asp:ContentPlaceHolder ID="placeholderComments" runat="server">
+            </asp:ContentPlaceHolder>
+             
+            <asp:ContentPlaceHolder ID="placeholderAuthoring" runat="server">
+            </asp:ContentPlaceHolder>            
+            
+            <br />
+            <asp:ContentPlaceHolder ID="placeholderBodyBottom" runat="server">
+            </asp:ContentPlaceHolder>
+    </div>
+    
+    <div id="leftcontent">
+        <div style="padding:0px;background:url(templates/community_001/images/area_gray.jpg);line-height:15px;">
+        
+            <asp:ContentPlaceHolder ID="placeholderCountrySelect" runat="server" Visible="false">
+            </asp:ContentPlaceHolder>
+            
+            <div style="padding-right:20px">
+            <asp:ContentPlaceHolder ID="placeholderRegister" runat="server"></asp:ContentPlaceHolder> 
+            <asp:ContentPlaceHolder ID="placeholderWelcome" runat="server"></asp:ContentPlaceHolder> 
+            <asp:ContentPlaceHolder ID="placeholderAdminWorkspaceLink" runat="server"></asp:ContentPlaceHolder> 
+            <asp:ContentPlaceHolder ID="placeholderLogout" runat="server"></asp:ContentPlaceHolder>
+            </div><br />
+            
+            <asp:ContentPlaceHolder ID="placeholderPagesWithin" runat="server"></asp:ContentPlaceHolder> 
+            <asp:ContentPlaceHolder ID="placeholderSameLevelPages" runat="server"></asp:ContentPlaceHolder>            
+            
+            <asp:ContentPlaceHolder ID="placeholderLeftTop" runat="server"></asp:ContentPlaceHolder>
+            
+            <asp:ContentPlaceHolder ID="placeholderOrderNow" runat="server"></asp:ContentPlaceHolder> 
+            
+            <asp:ContentPlaceHolder ID="placeholderLeft" runat="server"></asp:ContentPlaceHolder>   
+                
+            <asp:ContentPlaceHolder ID="placeholderArchives" runat="server"></asp:ContentPlaceHolder> 
+            <asp:ContentPlaceHolder ID="placeholderCategoryList" runat="server"></asp:ContentPlaceHolder>
+            <asp:ContentPlaceHolder ID="placeholderSubscribe" runat="server"></asp:ContentPlaceHolder> 
+                       
+            <asp:ContentPlaceHolder ID="placeholderLeftBottom" runat="server"></asp:ContentPlaceHolder> 
+            
+            <asp:ContentPlaceHolder ID="placeholderLoginForm" runat="server"></asp:ContentPlaceHolder>   
+            
+            <div style="padding-left:40px;text-align:left">
+            <asp:ContentPlaceHolder ID="placeholderSearch" runat="server"></asp:ContentPlaceHolder>           
+            </div>
+        </div>
+        <div id="leftfooter" style="min-height:150px;padding:20px;padding-top:40px;background:url(templates/community_001/images/area_blue.jpg) #2176c1 no-repeat;">
+            
+            <asp:ContentPlaceHolder ID="placeholderRightTop" runat="server"></asp:ContentPlaceHolder>
+            <asp:ContentPlaceHolder ID="placeholderRight" runat="server"></asp:ContentPlaceHolder>
+            <asp:ContentPlaceHolder ID="placeholderRightBottom" runat="server"></asp:ContentPlaceHolder> 
+	        <asp:ContentPlaceHolder ID="placeholderPrint" Visible="false" runat="server"></asp:ContentPlaceHolder>	
+	        
+        </div>
+    </div>
+   
+    <div id="footer" style="font-family:Arial;font-size:8pt;padding-top:40px;background:url(templates/community_001/images/area_blue_bottom.gif) #c0c0c0 no-repeat;height:17px;">       
+        <asp:ContentPlaceHolder ID="placeholderBottomMenu" runat="server">
+	    </asp:ContentPlaceHolder><br /><br />
+        <!--<b>This is a sample website for <a target="_blank" title="" href="http://www.insitecreation.com/insitecreation.aspx">InsiteCreation</a>. Global Adventure Travel is a fictional company and does not sell real products or services.</b>
+        <br /><br />-->
+        © 2008 YourCompanyName. All rights reserved.<br /><br />
+    </div>
+    
+</div>
+
+<asp:ContentPlaceHolder ID="placeholderScript" runat="server"></asp:ContentPlaceHolder>
+
+</frm:Form>
+    
+</body>
+</html>

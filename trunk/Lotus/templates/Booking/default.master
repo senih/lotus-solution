@@ -1,0 +1,122 @@
+﻿<%@ Master Language="VB" Inherits="BaseMaster" %>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" >
+<head runat="server">
+    <title></title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <link href="default.css" type="text/css" rel="stylesheet" />
+    
+    <!--[if lte IE 6]>
+    <style type="text/css">
+        .back_top
+        {
+            margin-top:-11px;
+        }
+        .back_bottom
+        {
+            margin-top:-11px;
+        }
+    </style>
+    <![endif]-->
+
+</head>
+<body>
+
+<frm:Form id="Form1" runat="server">
+	<div id="header">
+    	<div id="header_container">
+    	    <div id="admin_menu">
+    	        <asp:ContentPlaceHolder ID="placeholderRegister" runat="server"></asp:ContentPlaceHolder>
+    	        <asp:ContentPlaceHolder ID="placeholderWelcome" runat="server"></asp:ContentPlaceHolder>
+    	        <asp:ContentPlaceHolder ID="placeholderAdminWorkspaceLink" runat="server"></asp:ContentPlaceHolder>
+    	        <asp:ContentPlaceHolder ID="placeholderLoginLogout" runat="server"></asp:ContentPlaceHolder>
+    	        <div id="title">Executive car service</div>
+    	    </div>
+    	</div>
+    </div>
+    <div id="picture">
+    	<div id="picture_container">
+    		<div id="menu">
+    		    <asp:ContentPlaceHolder ID="placeholderMainMenu_Links" runat="server"></asp:ContentPlaceHolder>
+    		</div>
+    		<div>
+    		    <div id="pic_left">
+    		        <asp:ContentPlaceHolder ID="placeholderLeft" runat="server"></asp:ContentPlaceHolder>
+    		    </div>
+    		    <div id="pic_right">
+    		        <asp:ContentPlaceHolder ID="placeholderSearch" runat="server" Visible="false"></asp:ContentPlaceHolder>
+    		        <asp:ContentPlaceHolder ID="placeholderTitle" runat="server"></asp:ContentPlaceHolder>
+    		    </div>
+    		    <div class="clear"></div>
+    		</div>
+    	</div>
+    </div>
+    <div id="middle">
+    	<div id="middle_container">
+	    	<div id="content">
+	    	    <asp:ContentPlaceHolder ID="placeholderPageInfo" runat="server"></asp:ContentPlaceHolder>
+	    	    <asp:ContentPlaceHolder ID="placeholderBodyTop" runat="server"></asp:ContentPlaceHolder>
+	    	    <asp:ContentPlaceHolder ID="placeholderBody" runat="server"></asp:ContentPlaceHolder>
+	    	    <asp:ContentPlaceHolder ID="placeholderBodyBottom" runat="server"></asp:ContentPlaceHolder>		
+	    	    <asp:ContentPlaceHolder ID="placeholderAuthoring" runat="server"></asp:ContentPlaceHolder>
+	    	</div>
+	    	<div id="menu_right">
+	    	    <asp:ContentPlaceHolder ID="placeholderRightTop" runat="server"></asp:ContentPlaceHolder>
+	    	    <div class="box">
+            	<div class="box_header">
+                	<div class="box_header_left">
+                    	<div class="box_header_right">
+                    	    <div class="back_top"></div>
+                    	</div>
+                    </div>
+                </div>
+                <div class="box_middle">
+                	<div class="box_middle_left">
+                    	<div class="box_middle_right">
+                    	    <asp:ContentPlaceHolder ID="placeholderPagesWithin" runat="server"></asp:ContentPlaceHolder>
+                    	    <asp:ContentPlaceHolder ID="placeholderSameLevelPages" runat="server"></asp:ContentPlaceHolder>
+                        </div>
+                    </div>
+                </div>
+                <div class="box_footer">
+                	<div class="box_footer_left">
+                    	<div class="box_footer_right">
+                    	    <div class="back_bottom"></div>
+                    	</div>
+                    </div>
+                </div>            
+            </div>	    	    
+	    	    <asp:ContentPlaceHolder ID="placeholderRight" runat="server"></asp:ContentPlaceHolder>
+	    	    <asp:ContentPlaceHolder ID="placeholderRightBottom" runat="server"></asp:ContentPlaceHolder>
+	    	</div>
+	    	<div class="clear"></div>
+    	</div>
+    </div>
+    <div id="footer">
+        <a href="#">Македонски</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+        <a href="#">Shqip</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+        <a href="legal.aspx">Legal Notice</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+        © 2008 Lotus Transport
+    </div>
+
+			
+	<div>
+	    <asp:ContentPlaceHolder ID="placeholderFileView" runat="server"></asp:ContentPlaceHolder>
+	    <asp:ContentPlaceHolder ID="placeholderFileDownload" runat="server"></asp:ContentPlaceHolder>
+		<asp:ContentPlaceHolder ID="placeholderPublishingInfo" runat="server"></asp:ContentPlaceHolder>
+		<asp:ContentPlaceHolder ID="placeholderListing" runat="server"></asp:ContentPlaceHolder>
+		<asp:ContentPlaceHolder ID="placeholderCountrySelect" runat="server" Visible="false"></asp:ContentPlaceHolder>
+		<asp:ContentPlaceHolder ID="placeholderLeftTop" runat="server"></asp:ContentPlaceHolder>
+		<asp:ContentPlaceHolder ID="placeholderOrderNow" runat="server"></asp:ContentPlaceHolder>				
+		<asp:ContentPlaceHolder ID="placeholderArchives" runat="server"></asp:ContentPlaceHolder>
+		<asp:ContentPlaceHolder ID="placeholderCategoryList" runat="server"></asp:ContentPlaceHolder>
+		<asp:ContentPlaceHolder ID="placeholderSubscribe" runat="server"></asp:ContentPlaceHolder>
+		<asp:ContentPlaceHolder ID="placeholderLeftBottom" runat="server"></asp:ContentPlaceHolder>		
+		<asp:ContentPlaceHolder ID="placeholderBottomMenu" runat="server" Visible="false"></asp:ContentPlaceHolder>
+		<asp:ContentPlaceHolder ID="placeholderTopMenu" runat="server" Visible="false"></asp:ContentPlaceHolder>
+		<asp:ContentPlaceHolder ID="placeholderScript" runat="server"></asp:ContentPlaceHolder>							
+	</div>	
+	
+</frm:Form>
+</body>
+</html>

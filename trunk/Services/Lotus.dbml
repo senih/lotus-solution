@@ -1,0 +1,64 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Database Name="LotusDB" Class="LotusDataContext" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
+  <Connection Mode="AppSettings" ConnectionString="Data Source=.\SQLEXPRESS;Initial Catalog=LotusDB;Integrated Security=True" SettingsObjectName="Services.Properties.Settings" SettingsPropertyName="LotusDBConnectionString1" Provider="System.Data.SqlClient" />
+  <Table Name="dbo.form_data" Member="form_datas">
+    <Type Name="form_data">
+      <Column Name="form_data_id" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="page_id" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="form_field_definition_id" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="value1" Type="System.String" DbType="NVarChar(255)" CanBeNull="true" />
+      <Column Name="value2" Type="System.String" DbType="NText" CanBeNull="true" UpdateCheck="Never" />
+      <Column Name="value3" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="value4" Type="System.Decimal" DbType="Money" CanBeNull="true" />
+      <Column Name="value5" Type="System.Decimal" DbType="Decimal(18,2)" CanBeNull="true" />
+      <Column Name="value6" Type="System.DateTime" DbType="SmallDateTime" CanBeNull="true" />
+      <Column Name="submitted_date" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.form_data_impressions" Member="form_data_impressions">
+    <Type Name="form_data_impression">
+      <Column Name="form_data_id" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="page_id" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="impressions" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="impression_date" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.form_field_values" Member="form_field_values">
+    <Type Name="form_field_value">
+      <Column Name="form_field_value_id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="form_field_definition_id" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="display_value" Type="System.String" DbType="NVarChar(255) NOT NULL" CanBeNull="false" />
+      <Column Name="is_default" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.form_settings" Member="form_settings">
+    <Type Name="form_setting">
+      <Column Name="page_id" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="header" Type="System.String" DbType="NText" CanBeNull="true" UpdateCheck="Never" />
+      <Column Name="footer" Type="System.String" DbType="NText" CanBeNull="true" UpdateCheck="Never" />
+      <Column Name="thank_you_message" Type="System.String" DbType="NText" CanBeNull="true" UpdateCheck="Never" />
+      <Column Name="return_to_form" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="email" Type="System.String" DbType="NText" CanBeNull="true" UpdateCheck="Never" />
+    </Type>
+  </Table>
+  <Table Name="dbo.form_field_definitions" Member="form_field_definitions">
+    <Type Name="form_field_definition">
+      <Column Name="form_field_definition_id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="form_field_name" Type="System.String" DbType="NVarChar(255) NOT NULL" CanBeNull="false" />
+      <Column Name="sorting" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="input_type" Type="System.String" DbType="NVarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="width" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="height" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="default_value" Type="System.String" DbType="NVarChar(255)" CanBeNull="true" />
+      <Column Name="page_id" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="is_required" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="div_id" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.containers" Member="containers">
+    <Type Name="container">
+      <Column Name="id" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="name" Type="System.String" DbType="NVarChar(50) NOT NULL" CanBeNull="false" />
+    </Type>
+  </Table>
+</Database>

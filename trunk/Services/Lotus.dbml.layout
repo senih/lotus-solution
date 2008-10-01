@@ -1,0 +1,42 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ordesignerObjectsDiagram dslVersion="1.0.0.0" absoluteBounds="0, 0, 11, 8.5" name="Lotus">
+  <DataContextMoniker Name="/LotusDataContext" />
+  <nestedChildShapes>
+    <classShape Id="a971e93a-5364-4bff-a2e2-2f41be97fb7a" absoluteBounds="0.625, 0.5, 2, 2.4109318033854166">
+      <DataClassMoniker Name="/LotusDataContext/form_data" />
+      <nestedChildShapes>
+        <elementListCompartment Id="3e9304bb-29ce-4278-ae0e-f92346faa3d2" absoluteBounds="0.64, 0.96, 1.9700000000000002, 1.8509318033854165" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="3d049172-a9a9-46cd-93b5-3cd53cc0e8ca" absoluteBounds="3.625, 0.5, 2, 1.4248478190104166">
+      <DataClassMoniker Name="/LotusDataContext/form_data_impression" />
+      <nestedChildShapes>
+        <elementListCompartment Id="82606b97-e35f-4e0b-8e99-828e98f998ee" absoluteBounds="3.64, 0.96, 1.9700000000000002, 0.86484781901041674" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="9bdf03b9-794d-4f55-a53c-dd02346f5198" absoluteBounds="6.625, 0.5, 2, 1.4248478190104166">
+      <DataClassMoniker Name="/LotusDataContext/form_field_value" />
+      <nestedChildShapes>
+        <elementListCompartment Id="4eae775e-6ed8-413d-bb99-88464727ed70" absoluteBounds="6.64, 0.96, 1.9700000000000002, 0.86484781901041674" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="9886e470-d25a-4840-8242-70ea5bc62aac" absoluteBounds="0.5, 3.625, 2, 1.7535424804687505">
+      <DataClassMoniker Name="/LotusDataContext/form_setting" />
+      <nestedChildShapes>
+        <elementListCompartment Id="61a04ea2-16c3-434c-851b-7ccd056491a7" absoluteBounds="0.515, 4.085, 1.9700000000000002, 1.19354248046875" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="4e544fd1-da19-42bf-8ed8-7d28a94e8b92" absoluteBounds="4.125, 3.375, 2, 2.4109318033854166">
+      <DataClassMoniker Name="/LotusDataContext/form_field_definition" />
+      <nestedChildShapes>
+        <elementListCompartment Id="343ea4d5-d8a3-49c0-b0fc-44872c16457f" absoluteBounds="4.14, 3.835, 1.9700000000000002, 1.8509318033854165" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="9046899f-ecc1-43d3-be72-e80882b4018b" absoluteBounds="7.25, 3.25, 2, 1.0961531575520833">
+      <DataClassMoniker Name="/LotusDataContext/container" />
+      <nestedChildShapes>
+        <elementListCompartment Id="2aa19c68-041d-43ab-aa72-689bafdf8be5" absoluteBounds="7.265, 3.71, 1.9700000000000002, 0.53615315755208326" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+  </nestedChildShapes>
+</ordesignerObjectsDiagram>
