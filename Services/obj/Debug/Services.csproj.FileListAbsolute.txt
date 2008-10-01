@@ -1,0 +1,10 @@
+D:\Webs\Services\bin\Debug\Services.dll
+D:\Webs\Services\bin\Debug\Services.pdb
+D:\Webs\Services\obj\Debug\ResolveAssemblyReference.cache
+D:\Webs\Services\obj\Debug\Services.dll
+D:\Webs\Services\obj\Debug\Services.pdb
+D:\Webs\Lotus Solution\Services\bin\Debug\Services.dll
+D:\Webs\Lotus Solution\Services\bin\Debug\Services.pdb
+D:\Webs\Lotus Solution\Services\obj\Debug\ResolveAssemblyReference.cache
+D:\Webs\Lotus Solution\Services\obj\Debug\Services.dll
+D:\Webs\Lotus Solution\Services\obj\Debug\Services.pdb

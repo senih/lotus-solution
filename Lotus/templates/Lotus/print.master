@@ -1,0 +1,46 @@
+<%@ Master Language="VB" Inherits="BaseMaster" %>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" >
+<head runat="server">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link href="default.css" rel="stylesheet" />
+</head>
+<body style="margin:15px;background:#FFFFFF">
+    <frm:Form id="Form1" runat="server">    
+    <div style="width:622px;">
+    <asp:contentplaceholder ID="placeholderTitle" runat="server"></asp:contentplaceholder>
+    <asp:ContentPlaceHolder ID="placeholderPublishingInfo" runat="server"></asp:ContentPlaceHolder>   
+    <asp:ContentPlaceHolder ID="placeholderBody" runat="server"></asp:ContentPlaceHolder>
+    <asp:ContentPlaceHolder ID="placeholderFileView" runat="server"></asp:ContentPlaceHolder>
+    <asp:ContentPlaceHolder ID="placeholderFileDownload" runat="server"></asp:ContentPlaceHolder>
+    <asp:ContentPlaceHolder ID="placeholderListing" runat="server"></asp:ContentPlaceHolder>    
+    <asp:ContentPlaceHolder ID="placeholderCategoryInfo" runat="server"></asp:ContentPlaceHolder>  
+    <asp:ContentPlaceHolder ID="placeholderScript" runat="server"></asp:ContentPlaceHolder>
+    </div>
+    <!-- These placeholders are not used in this template, just set visible="false" -->
+    <asp:ContentPlaceHolder ID="placeholderTopMenu" runat="server" visible="false"></asp:ContentPlaceHolder>
+	<asp:ContentPlaceHolder ID="placeholderBottomMenu" runat="server" visible="false"></asp:ContentPlaceHolder>    
+    <asp:ContentPlaceHolder ID="placeholderSearch" runat="server" visible="false"></asp:ContentPlaceHolder>
+    <asp:ContentPlaceHolder ID="placeholderLogin" runat="server" visible="false"></asp:ContentPlaceHolder>
+	<asp:ContentPlaceHolder ID="placeholderMainMenu_DropMenu" runat="server" visible="false"></asp:ContentPlaceHolder>
+    <asp:ContentPlaceHolder ID="placeholderMainMenu_Links" runat="server" visible="false"></asp:ContentPlaceHolder>
+	<asp:ContentPlaceHolder ID="placeholderBreadcrumb" runat="server" visible="false"></asp:ContentPlaceHolder>	 
+    <asp:ContentPlaceHolder ID="placeholderLeftTop" runat="server" visible="false"></asp:ContentPlaceHolder>	        
+    <asp:ContentPlaceHolder ID="placeholderLeft" runat="server" visible="false"></asp:ContentPlaceHolder>            
+    <asp:ContentPlaceHolder ID="placeholderLeftBottom" runat="server" visible="false"></asp:ContentPlaceHolder>	    
+    <asp:ContentPlaceHolder ID="placeholderBodyTop" runat="server" visible="false"></asp:ContentPlaceHolder>
+    <asp:ContentPlaceHolder ID="placeholderBodyBottom" runat="server" visible="false"></asp:ContentPlaceHolder>
+    <asp:ContentPlaceHolder ID="placeholderRightTop" runat="server" visible="false"></asp:ContentPlaceHolder>
+    <asp:ContentPlaceHolder ID="placeholderRight" runat="server" visible="false"></asp:ContentPlaceHolder>
+    <asp:ContentPlaceHolder ID="placeholderRightBottom" runat="server" visible="false"></asp:ContentPlaceHolder>
+    <asp:ContentPlaceHolder ID="placeholderPageInfo" runat="server" visible="false"></asp:ContentPlaceHolder>
+    <asp:ContentPlaceHolder ID="placeholderAuthoring" runat="server" visible="false"></asp:ContentPlaceHolder>
+    <asp:ContentPlaceHolder ID="placeholderSearchResult" runat="server" visible="false"></asp:ContentPlaceHolder>
+    <asp:ContentPlaceHolder ID="placeholderContentRating" runat="server" visible="false"></asp:ContentPlaceHolder>
+    <asp:ContentPlaceHolder ID="placeholderComments" runat="server" visible="false"></asp:ContentPlaceHolder>
+	<asp:ContentPlaceHolder ID="placeholderPrint" runat="server" visible="false"></asp:ContentPlaceHolder>	
+    <asp:ContentPlaceHolder ID="placeholderPagesWithin" runat="server" visible="false"></asp:ContentPlaceHolder>   
+    <asp:ContentPlaceHolder ID="placeholderSameLevelPages" runat="server" visible="false"></asp:ContentPlaceHolder>
+</frm:Form>
+</body>
+</html>
