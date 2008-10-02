@@ -23,7 +23,7 @@
     <separator><![CDATA[&nbsp;|&nbsp;]]></separator>
   </menu_bottom>
   <menu_tabs>
-    <hide_root>false</hide_root>
+    <hide_root>true</hide_root>
   </menu_tabs>
   <menu_links>
     <hide_root>false</hide_root>

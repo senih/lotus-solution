@@ -211,13 +211,13 @@
                 
                 If Not nParentParentID = 0 And Not Me.ParentID = 0 And nPrId = Me.ParentID Then
 
-                    sHTMLSameLevelPages += "<div class=""boxItemQuickLinks"">"
+                    'sHTMLSameLevelPages += "<div class=""boxItemQuickLinks"">"
                     If nPgId = Me.PageID Then
-                        sHTMLSameLevelPages += sTtl
+                        sHTMLSameLevelPages += "<div class=""boxItemQuickLinksSelected"">" & sTtl & "</div>"
                     Else
-                        sHTMLSameLevelPages += "<a " & sTarget & " href=""" & sFile & """>" & sTtl & "</a>"
+                        sHTMLSameLevelPages += "<div class=""boxItemQuickLinks""><a " & sTarget & " href=""" & sFile & """>" & sTtl & "</a></div>"
                     End If
-                    sHTMLSameLevelPages += "</div>"
+                    'sHTMLSameLevelPages += "</div>"
                     nNumOfSameLevel = nNumOfSameLevel + 1
                     
                 End If
@@ -232,13 +232,13 @@
         oContent = Nothing
         
         If sHTMLPagesWithin <> "" Then
-            sPagesWithin = "<div class=""boxLinksWithin"">" & sHTMLPagesWithin & "</div>"
+            sPagesWithin = "<div class=""boxLinksWithin_top""></div><div class=""boxLinksWithin"">" & sHTMLPagesWithin & "</div><div class=""boxLinksWithin_bottom""></div>"
         End If
 
         If nNumOfSameLevel > 1 Then
-            sSameLevelPages = "<div class=""boxQuickLinks"">" & _
+            sSameLevelPages = "<div class=""boxQuickLinks_top""></div><div class=""boxQuickLinks"">" & _
                 sHTMLSameLevelPages & _
-                "</div>"
+                "</div><div class=""boxQuickLinks_bottom""></div>"
         Else
             sSameLevelPages = ""
         End If

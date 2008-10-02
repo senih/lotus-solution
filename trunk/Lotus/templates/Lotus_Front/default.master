@@ -7,7 +7,7 @@
     <link href="default.css" type="text/css" rel="stylesheet" />
 </head>
 <body>
-<frm:Form id="Form1" runat="server">
+<form:Form id="Form1" runat="server">
 			
 	<div id="header">
     	<div id="header_container">
@@ -100,7 +100,7 @@
 		<asp:ContentPlaceHolder ID="placeholderScript" runat="server"></asp:ContentPlaceHolder>							
 	</div>	
 
-</frm:Form>
+</form:Form>
     
 </body>
 </html>
