@@ -1137,7 +1137,7 @@ Partial Class _Default
         If Not IsNothing(placeholderWelcome) Then
             If Not placeholderWelcome.Visible = False Then
                 If bUserLoggedIn Then
-                    placeholderWelcome.Controls.Add(New LiteralControl("" & GetLocalResourceObject("Welcome") & " <b>" & sUserName & "</b>&nbsp;"))
+                    placeholderWelcome.Controls.Add(New LiteralControl("" & GetLocalResourceObject("Welcome") & " <b>" & sUserName & "</b>&nbsp;&nbsp;|"))
                 End If
             End If
         End If
