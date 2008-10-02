@@ -42,6 +42,9 @@ namespace Services
     partial void Insertform_setting(form_setting instance);
     partial void Updateform_setting(form_setting instance);
     partial void Deleteform_setting(form_setting instance);
+    partial void Insertcontainer(container instance);
+    partial void Updatecontainer(container instance);
+    partial void Deletecontainer(container instance);
     partial void Insertform_field_definition(form_field_definition instance);
     partial void Updateform_field_definition(form_field_definition instance);
     partial void Deleteform_field_definition(form_field_definition instance);
@@ -109,19 +112,19 @@ namespace Services
 			}
 		}
 		
-		public System.Data.Linq.Table<form_field_definition> form_field_definitions
-		{
-			get
-			{
-				return this.GetTable<form_field_definition>();
-			}
-		}
-		
 		public System.Data.Linq.Table<container> containers
 		{
 			get
 			{
 				return this.GetTable<container>();
+			}
+		}
+		
+		public System.Data.Linq.Table<form_field_definition> form_field_definitions
+		{
+			get
+			{
+				return this.GetTable<form_field_definition>();
 			}
 		}
 	}
@@ -854,6 +857,140 @@ namespace Services
 		}
 	}
 	
+	[Table(Name="dbo.containers")]
+	public partial class container : INotifyPropertyChanging, INotifyPropertyChanged
+	{
+		
+		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+		
+		private int _id;
+		
+		private string _name;
+		
+		private int _page_id;
+		
+		private int _sorting;
+		
+    #region Extensibility Method Definitions
+    partial void OnLoaded();
+    partial void OnValidate(System.Data.Linq.ChangeAction action);
+    partial void OnCreated();
+    partial void OnidChanging(int value);
+    partial void OnidChanged();
+    partial void OnnameChanging(string value);
+    partial void OnnameChanged();
+    partial void Onpage_idChanging(int value);
+    partial void Onpage_idChanged();
+    partial void OnsortingChanging(int value);
+    partial void OnsortingChanged();
+    #endregion
+		
+		public container()
+		{
+			OnCreated();
+		}
+		
+		[Column(Storage="_id", AutoSync=AutoSync.OnInsert, DbType="Int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
+		public int id
+		{
+			get
+			{
+				return this._id;
+			}
+			set
+			{
+				if ((this._id != value))
+				{
+					this.OnidChanging(value);
+					this.SendPropertyChanging();
+					this._id = value;
+					this.SendPropertyChanged("id");
+					this.OnidChanged();
+				}
+			}
+		}
+		
+		[Column(Storage="_name", DbType="NVarChar(50) NOT NULL", CanBeNull=false)]
+		public string name
+		{
+			get
+			{
+				return this._name;
+			}
+			set
+			{
+				if ((this._name != value))
+				{
+					this.OnnameChanging(value);
+					this.SendPropertyChanging();
+					this._name = value;
+					this.SendPropertyChanged("name");
+					this.OnnameChanged();
+				}
+			}
+		}
+		
+		[Column(Storage="_page_id", DbType="Int NOT NULL")]
+		public int page_id
+		{
+			get
+			{
+				return this._page_id;
+			}
+			set
+			{
+				if ((this._page_id != value))
+				{
+					this.Onpage_idChanging(value);
+					this.SendPropertyChanging();
+					this._page_id = value;
+					this.SendPropertyChanged("page_id");
+					this.Onpage_idChanged();
+				}
+			}
+		}
+		
+		[Column(Storage="_sorting", DbType="Int NOT NULL")]
+		public int sorting
+		{
+			get
+			{
+				return this._sorting;
+			}
+			set
+			{
+				if ((this._sorting != value))
+				{
+					this.OnsortingChanging(value);
+					this.SendPropertyChanging();
+					this._sorting = value;
+					this.SendPropertyChanged("sorting");
+					this.OnsortingChanged();
+				}
+			}
+		}
+		
+		public event PropertyChangingEventHandler PropertyChanging;
+		
+		public event PropertyChangedEventHandler PropertyChanged;
+		
+		protected virtual void SendPropertyChanging()
+		{
+			if ((this.PropertyChanging != null))
+			{
+				this.PropertyChanging(this, emptyChangingEventArgs);
+			}
+		}
+		
+		protected virtual void SendPropertyChanged(String propertyName)
+		{
+			if ((this.PropertyChanged != null))
+			{
+				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+			}
+		}
+	}
+	
 	[Table(Name="dbo.form_field_definitions")]
 	public partial class form_field_definition : INotifyPropertyChanging, INotifyPropertyChanged
 	{
@@ -878,7 +1015,7 @@ namespace Services
 		
 		private bool _is_required;
 		
-		private string _div_id;
+		private int _div_id;
 		
     #region Extensibility Method Definitions
     partial void OnLoaded();
@@ -902,7 +1039,7 @@ namespace Services
     partial void Onpage_idChanged();
     partial void Onis_requiredChanging(bool value);
     partial void Onis_requiredChanged();
-    partial void Ondiv_idChanging(string value);
+    partial void Ondiv_idChanging(int value);
     partial void Ondiv_idChanged();
     #endregion
 		
@@ -1091,8 +1228,8 @@ namespace Services
 			}
 		}
 		
-		[Column(Storage="_div_id", DbType="NVarChar(50)")]
-		public string div_id
+		[Column(Storage="_div_id", DbType="Int NOT NULL")]
+		public int div_id
 		{
 			get
 			{
@@ -1128,51 +1265,6 @@ namespace Services
 			if ((this.PropertyChanged != null))
 			{
 				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-			}
-		}
-	}
-	
-	[Table(Name="dbo.containers")]
-	public partial class container
-	{
-		
-		private int _id;
-		
-		private string _name;
-		
-		public container()
-		{
-		}
-		
-		[Column(Storage="_id", DbType="Int NOT NULL")]
-		public int id
-		{
-			get
-			{
-				return this._id;
-			}
-			set
-			{
-				if ((this._id != value))
-				{
-					this._id = value;
-				}
-			}
-		}
-		
-		[Column(Storage="_name", DbType="NVarChar(50) NOT NULL", CanBeNull=false)]
-		public string name
-		{
-			get
-			{
-				return this._name;
-			}
-			set
-			{
-				if ((this._name != value))
-				{
-					this._name = value;
-				}
 			}
 		}
 	}

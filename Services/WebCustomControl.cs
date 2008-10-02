@@ -32,7 +32,7 @@ namespace Services
 			Label nameLbl = new Label();
 			nameLbl.Text = name;
 			PlaceHolder ctrlHolder = new PlaceHolder();
-			ctrlHolder.Controls.Add(new LiteralControl("<td>"));
+			ctrlHolder.Controls.Add(new LiteralControl("<td align=\"right\">"));
 			ctrlHolder.Controls.Add(nameLbl);
 			ctrlHolder.Controls.Add(new LiteralControl("</td>"));
 			ctrlHolder.Controls.Add(new LiteralControl("<td>"));

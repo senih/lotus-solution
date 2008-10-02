@@ -41,6 +41,14 @@
       <Column Name="email" Type="System.String" DbType="NText" CanBeNull="true" UpdateCheck="Never" />
     </Type>
   </Table>
+  <Table Name="dbo.containers" Member="containers">
+    <Type Name="container">
+      <Column Name="id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="name" Type="System.String" DbType="NVarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="page_id" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="sorting" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+    </Type>
+  </Table>
   <Table Name="dbo.form_field_definitions" Member="form_field_definitions">
     <Type Name="form_field_definition">
       <Column Name="form_field_definition_id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
@@ -52,13 +60,7 @@
       <Column Name="default_value" Type="System.String" DbType="NVarChar(255)" CanBeNull="true" />
       <Column Name="page_id" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
       <Column Name="is_required" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
-      <Column Name="div_id" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
-    </Type>
-  </Table>
-  <Table Name="dbo.containers" Member="containers">
-    <Type Name="container">
-      <Column Name="id" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Column Name="name" Type="System.String" DbType="NVarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="div_id" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
     </Type>
   </Table>
 </Database>
