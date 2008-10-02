@@ -54,7 +54,7 @@
                             <td align="right">
                                 Control Name
                             </td>
-                            <td>&nbsp;&nbsp;:&nbsp;&nbsp;</td>
+                            <td>&nbsp;:&nbsp;</td>
                             <td>
                                 <asp:TextBox ID="ControlNameTextBox" runat="server" Width="200px"></asp:TextBox>
                             </td>
@@ -73,7 +73,7 @@
                             <td align="right">
                                 Control type
                             </td>
-                            <td>&nbsp;&nbsp;:&nbsp;&nbsp;</td>
+                            <td>&nbsp;:&nbsp;</td>
                             <td>
                                 <asp:DropDownList ID="ControlTypeDropDownList" runat="server" Width="205px" 
                                     AutoPostBack="True" 
@@ -113,7 +113,7 @@
                             <td align="right">
                                 Sorting
                             </td>
-                            <td>&nbsp;&nbsp;:&nbsp;&nbsp;</td>
+                            <td>&nbsp;:&nbsp;</td>
                             <td>
                                 <asp:TextBox ID="SortingTextBox" runat="server" Width="200px"></asp:TextBox>
                             </td>
@@ -132,7 +132,7 @@
                             <td align="right">
                                 Default value</td>
                             <td>
-                                &nbsp;&nbsp;:&nbsp;&nbsp;
+                                &nbsp;:&nbsp;
                             </td>
                             <td>
                                 <asp:TextBox ID="DefaultValueTextBox" runat="server" Width="200px"></asp:TextBox>
@@ -151,7 +151,7 @@
                             <td align="right">
                                 Is required
                             </td>
-                            <td>&nbsp;&nbsp;:&nbsp;&nbsp;</td>
+                            <td>&nbsp;:&nbsp;</td>
                             <td>
                                 <asp:CheckBox ID="RequiredCheckBox" runat="server" />
                             </td>
@@ -211,7 +211,7 @@
                                 <td>
                                     Value:
                                 </td>
-                                <td>&nbsp;&nbsp;:&nbsp;&nbsp;</td>
+                                <td>&nbsp;:&nbsp;</td>
                                 <td>
                                     <asp:TextBox ID="ValueTextBox" runat="server"></asp:TextBox>
                                 </td>
@@ -224,7 +224,7 @@
                                 <td>
                                     Is default:
                                 </td>
-                                <td>&nbsp;&nbsp;:&nbsp;&nbsp;</td>
+                                <td>&nbsp;:&nbsp;</td>
                                 <td>
                                     <asp:CheckBox ID="DefaultValueCheckBox" runat="server" />
                                 </td>
@@ -261,7 +261,7 @@
                             <td align="right">
                                 Conteiner name
                             </td>
-                            <td>&nbsp;&nbsp;:&nbsp;&nbsp;</td>
+                            <td>&nbsp;:&nbsp;</td>
                             <td>
                                 <asp:TextBox ID="ContainerNameTextBox" runat="server"></asp:TextBox>
                                 <asp:RequiredFieldValidator ID="RequiredFieldValidator4" runat="server" ControlToValidate="ContainerNameTextBox"
@@ -272,7 +272,7 @@
                             <td align="right">
                                 Sorting
                             </td>
-                            <td>&nbsp;&nbsp;:&nbsp;&nbsp;</td>
+                            <td>&nbsp;:&nbsp;</td>
                             <td>
                                 <asp:TextBox ID="ContainerSortingTextBox" runat="server"></asp:TextBox>
                                 <asp:RequiredFieldValidator ID="RequiredFieldValidator5" runat="server" ErrorMessage="*" 
