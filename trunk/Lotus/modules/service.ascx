@@ -1,14 +1,5 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" CodeFile="service.ascx.cs" Inherits="modules_service" %>
 
-<style type="text/css">
-    .style1
-    {
-        width: 100%;
-        border-style: solid;
-        border-width: 3px;
-    }
-</style>
-
 <asp:Panel ID="AnonymousPanel" runat="server" Visible="false">
     <asp:Label ID="WelcomeLabel" runat="server" Text="Please login to book a ride"></asp:Label><br /><br />
     <asp:Login ID="BookingLogin" runat="server" PasswordRecoveryText="Password Recovery" 
@@ -46,15 +37,21 @@
                             <asp:BoundField DataField="default_value" HeaderText="Default value" />
                             <asp:BoundField DataField="page_id" HeaderText="Page ID" />
                             <asp:BoundField DataField="is_required" HeaderText="Required" />
+                            <asp:BoundField DataField="div_id" HeaderText="Container" />
                             <asp:CommandField ShowSelectButton="true" ButtonType="Link" />
                         </Columns>
                     </asp:GridView>
                     <br />
                     <hr style="width:730px" />
+                    <asp:LinqDataSource ID="LinqDataSource1" runat="server" 
+                        ContextTypeName="Services.LotusDataContext" EnableDelete="True" 
+                        EnableInsert="True" EnableUpdate="True" OrderBy="sorting" 
+                        TableName="containers">
+                    </asp:LinqDataSource>
                     <br />
                     <table ID="ControlOptions" runat="server">
                         <tr>
-                            <td>
+                            <td align="right">
                                 Control Name
                             </td>
                             <td>&nbsp;&nbsp;:&nbsp;&nbsp;</td>
@@ -69,9 +66,11 @@
                             </td>
                             <td>
                             </td>
+                            <td>
+                            </td>
                         </tr>
                         <tr>
-                            <td >
+                            <td align="right">
                                 Control type
                             </td>
                             <td>&nbsp;&nbsp;:&nbsp;&nbsp;</td>
@@ -92,23 +91,26 @@
                                 </asp:DropDownList>
                             </td>
                             <td>
-                                &nbsp;</td>
+                                <asp:LinkButton ID="AddValuesLinkButton" runat="server" 
+                                    CausesValidation="False" onclick="AddValuesLinkButton_Click" Visible="False">Edit values</asp:LinkButton>
+                            </td>
                             <td>
                                 <asp:Panel ID="WidthPanel" runat="server" Visible="False">
                                     Width: 
                                     <asp:TextBox ID="WidthTextBox" runat="server" Width="50px"></asp:TextBox>
                                 </asp:Panel>
-                                <asp:LinkButton ID="AddValuesLinkButton" runat="server" 
-                                    CausesValidation="False" onclick="AddValuesLinkButton_Click" 
-                                    Visible="False">Edit values</asp:LinkButton>
                             </td>
                             <td>
-                                <asp:DropDownList ID="ContainerDropDownList" runat="server">
+                                &nbsp;</td>
+                            <td>
+                                Container:
+                                <asp:DropDownList ID="ContainerDropDownList" runat="server" DataSourceID="LinqDataSource1" 
+                                DataTextField="name" DataValueField="id">
                                 </asp:DropDownList>
                             </td>
                         </tr>
                         <tr>
-                            <td>
+                            <td align="right">
                                 Sorting
                             </td>
                             <td>&nbsp;&nbsp;:&nbsp;&nbsp;</td>
@@ -123,9 +125,11 @@
                             </td>
                             <td>
                             </td>
+                            <td>
+                            </td>
                         </tr>
                         <tr>
-                            <td>
+                            <td align="right">
                                 Default value</td>
                             <td>
                                 &nbsp;&nbsp;:&nbsp;&nbsp;
@@ -140,9 +144,11 @@
                             </td>
                             <td>
                             </td>
+                            <td>
+                            </td>
                         </tr>
                         <tr>
-                            <td>
+                            <td align="right">
                                 Is required
                             </td>
                             <td>&nbsp;&nbsp;:&nbsp;&nbsp;</td>
@@ -154,6 +160,8 @@
                             </td>
                             <td>
                             </td>
+                            <td>
+                            </td>
                         </tr>
                         <tr>
                             <td>
@@ -162,6 +170,8 @@
                                 &nbsp;</td>
                             <td>
                                 &nbsp;</td>
+                            <td>
+                            </td>
                             <td>
                             </td>
                             <td>
@@ -173,22 +183,25 @@
                             <td>
                                 <asp:Button ID="AddControlButton" runat="server" 
                                     onclick="AddControlButton_Click" Text="Add Control" />
-                                <asp:Button ID="UpdateControlButton" runat="server" 
-                                    onclick="UpdateControlButton_Click" Text="Update Control" Visible="False" />
                             </td>
                             <td>
-                                &nbsp;</td>
+                            </td>
                             <td>
-                                <asp:Button ID="DeleteControlButton" runat="server" 
+                                <asp:Button ID="UpdateControlButton" runat="server" 
+                                    onclick="UpdateControlButton_Click" Text="Update Control" Visible="False" />
+
+                            </td>
+                            <td>
+                                <asp:Button ID="DeleteControlButton" runat="server"
                                     onclick="DeleteControlButton_Click" Text="Delete Control" Visible="False" />
+                            </td>
+                            <td>
                             </td>
                             <td>
                             </td>
                             <td>
                                 <asp:Button ID="CancelUpdateButton" runat="server" 
                                     onclick="CancelUpdateButton_Click" Text="Cancel" Visible="False" />
-                            </td>
-                            <td>
                             </td>
                         </tr>
                     </table>
@@ -229,7 +242,52 @@
                     </asp:Panel>
                 </asp:Panel>
                 <asp:Panel ID="SettingsPanel" runat="server" Visible="false">
-                    settings
+                    <asp:GridView ID="ContainersGridView" runat="server" SkinID="gridControls" 
+                        AutoGenerateColumns="False" DataSourceID="LinqDataSource1" 
+                        DataKeyNames="id">
+                        <Columns>
+                            <asp:BoundField DataField="id" HeaderText="ID" ReadOnly="true" />
+                            <asp:BoundField DataField="name" HeaderText="Name" />
+                            <asp:BoundField DataField="sorting" HeaderText="Sorting" />
+                            <asp:BoundField DataField="page_id" HeaderText="Page ID" ReadOnly="true" />
+                            <asp:CommandField ShowDeleteButton="True" ShowEditButton="True" />
+                        </Columns>
+                    </asp:GridView>
+                    <br />
+                    <hr style="width:730px"/>
+                    <br />
+                    <table>
+                        <tr>
+                            <td align="right">
+                                Conteiner name
+                            </td>
+                            <td>&nbsp;&nbsp;:&nbsp;&nbsp;</td>
+                            <td>
+                                <asp:TextBox ID="ContainerNameTextBox" runat="server"></asp:TextBox>
+                                <asp:RequiredFieldValidator ID="RequiredFieldValidator4" runat="server" ControlToValidate="ContainerNameTextBox"
+                                 ErrorMessage="*" ValidationGroup="AddContainerButton"></asp:RequiredFieldValidator>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td align="right">
+                                Sorting
+                            </td>
+                            <td>&nbsp;&nbsp;:&nbsp;&nbsp;</td>
+                            <td>
+                                <asp:TextBox ID="ContainerSortingTextBox" runat="server"></asp:TextBox>
+                                <asp:RequiredFieldValidator ID="RequiredFieldValidator5" runat="server" ErrorMessage="*" 
+                                ControlToValidate="ContainerSortingTextBox" 
+                                    ValidationGroup="AddContainerButton"></asp:RequiredFieldValidator>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td>
+                                <asp:Button ID="AddContainerButton" runat="server" Text="Add Container" OnClick="AddContainerButton_Click" />
+                            </td>
+                        </tr>
+                    </table>
                 </asp:Panel>
             </asp:Panel>
         </div>

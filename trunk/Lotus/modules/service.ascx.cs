@@ -14,6 +14,7 @@ public partial class modules_service : BaseUserControl
 	protected void Page_Init(object sender, EventArgs e)
 	{
 		RenderFormControls();
+		//RenderFormControlsTest();
 	}
 	
 	/// <summary>
@@ -96,6 +97,7 @@ public partial class modules_service : BaseUserControl
 		fieldDefinition.is_required = RequiredCheckBox.Checked;
 		fieldDefinition.input_type = ControlTypeDropDownList.SelectedValue;
 		fieldDefinition.page_id = PageID;
+		fieldDefinition.div_id = int.Parse(ContainerDropDownList.SelectedValue.ToString());
 		if (DefaultValueTextBox.Text != string.Empty)
 			fieldDefinition.default_value = DefaultValueTextBox.Text;
 		if (WidthTextBox.Text != string.Empty)
@@ -138,6 +140,7 @@ public partial class modules_service : BaseUserControl
 		else
 			DefaultValueTextBox.Text = string.Empty;
 		RequiredCheckBox.Checked = bool.Parse(FormControlsGridView.SelectedRow.Cells[8].Text);
+		ContainerDropDownList.SelectedValue = FormControlsGridView.SelectedRow.Cells[9].Text;
 		AddControlButton.Visible = false;
 		UpdateControlButton.Visible = true;
 		DeleteControlButton.Visible = true;
@@ -253,15 +256,53 @@ public partial class modules_service : BaseUserControl
 
 	protected void RenderFormControls()
 	{
-		List<form_field_definition> listOfFormControls = Data.GetControls(PageID);
-		ControlsPlaceHolder.Controls.Add(new LiteralControl("<table>"));
-		foreach (form_field_definition field in listOfFormControls)
+		List<container> listOfContainers = Data.GetContainers(PageID);
+		foreach (container div in listOfContainers)
 		{
-			ControlsPlaceHolder.Controls.Add(new LiteralControl("<tr>"));
-			ControlsPlaceHolder.Controls.Add(WebCustomControl.GetControl(field));
-			ControlsPlaceHolder.Controls.Add(new LiteralControl("</tr>"));
+			HtmlGenericControl divContainer = new HtmlGenericControl("div");
+			divContainer.Attributes.Add("class", div.name);
+			List<form_field_definition> listOfFormControls = Data.GetControlsInContainer(div.id);
+			divContainer.Controls.Add(new LiteralControl("<table>"));
+			foreach (form_field_definition field in listOfFormControls)
+			{
+				divContainer.Controls.Add(new LiteralControl("<tr>"));
+				divContainer.Controls.Add(WebCustomControl.GetControl(field));
+				divContainer.Controls.Add(new LiteralControl("</tr>"));
+			}
+			divContainer.Controls.Add(new LiteralControl("</table>"));
+			ControlsPlaceHolder.Controls.Add(divContainer);
 		}
-		ControlsPlaceHolder.Controls.Add(new LiteralControl("</table>"));
 	}
 
+	protected void RenderFormControlsTest()
+	{
+		List<container> listOfContainers = Data.GetContainers(PageID);
+		foreach (container div in listOfContainers)
+		{			
+			ControlsPlaceHolder.Controls.Add(new LiteralControl("<div class=" + div.name));
+			List<form_field_definition> listOfFormControls = Data.GetControlsInContainer(div.id);
+			ControlsPlaceHolder.Controls.Add(new LiteralControl("<table>"));
+			foreach (form_field_definition field in listOfFormControls)
+			{
+				ControlsPlaceHolder.Controls.Add(new LiteralControl("<tr>"));
+				ControlsPlaceHolder.Controls.Add(WebCustomControl.GetControl(field));
+				ControlsPlaceHolder.Controls.Add(new LiteralControl("</tr>"));
+			}
+			ControlsPlaceHolder.Controls.Add(new LiteralControl("</table>"));
+			ControlsPlaceHolder.Controls.Add(new LiteralControl("</div>"));
+		}
+	}
+
+	protected void AddContainerButton_Click(object sender, EventArgs e)
+	{
+		LotusDataContext db = new LotusDataContext(Data.ConnectionManager());
+		container newContainer = new container();
+		newContainer.name = ContainerNameTextBox.Text.Replace(" ", "") + "_" + PageID.ToString();
+		newContainer.page_id = PageID;
+		int sortNumber = 0;
+		int.TryParse(ContainerSortingTextBox.Text, out sortNumber);
+		newContainer.sorting = sortNumber;
+		db.containers.InsertOnSubmit(newContainer);
+		db.SubmitChanges();
+	}
 }

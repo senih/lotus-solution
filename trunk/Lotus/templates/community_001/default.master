@@ -65,7 +65,7 @@
     </script>
 </head>
 <body>
-<frm:Form id="Form1" runat="server">
+<form:Form id="Form1" runat="server">
 <div id="container">
 
     <div id="header">
@@ -208,7 +208,7 @@
 
 <asp:ContentPlaceHolder ID="placeholderScript" runat="server"></asp:ContentPlaceHolder>
 
-</frm:Form>
+</form:Form>
     
 </body>
 </html>
