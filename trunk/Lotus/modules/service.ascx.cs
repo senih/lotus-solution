@@ -187,7 +187,7 @@ public partial class modules_service : BaseUserControl
 	protected void UpdateControlButton_Click(object sender, EventArgs e)
 	{
 		int sortNumber, width;
-		int ControlID = int.Parse(FormControlsGridView.SelectedPersistedDataKey.Value.ToString());
+		int ControlID = int.Parse(FormControlsGridView.SelectedDataKey.Value.ToString());
 		LotusDataContext db = new LotusDataContext(Data.ConnectionManager());
 		form_field_definition fieldUpdate = db.form_field_definitions.Where(f => f.form_field_definition_id == ControlID).Single<form_field_definition>();
 		fieldUpdate.form_field_name = ControlNameTextBox.Text;		

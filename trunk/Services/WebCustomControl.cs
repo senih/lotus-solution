@@ -7,6 +7,7 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Web.UI.HtmlControls;
+using EclipseWebSolutions;
 
 namespace Services
 {
@@ -14,10 +15,10 @@ namespace Services
 	{
 		public static Control GetControl(form_field_definition control)
 		{
-			LotusDataContext db = new LotusDataContext(Data.ConnectionManager());
-			List<form_field_value> listOfValues;
-			Control newControl = new Control();
 			int ctrlId = control.form_field_definition_id;
+			LotusDataContext db = new LotusDataContext(Data.ConnectionManager());
+			List<form_field_value> listOfValues = db.form_field_values.Where(v => v.form_field_definition_id == ctrlId).ToList<form_field_value>();
+			Control newControl = new Control();			
 			string name = control.form_field_name;
 			string id = name.Replace(" ", "");
 			string type = control.input_type;
@@ -105,7 +106,6 @@ namespace Services
 				case "ddList":
 				DropDownList ddList = new DropDownList();
 				ddList.ID = id;
-				listOfValues = db.form_field_values.Where(v => v.form_field_definition_id == ctrlId).ToList<form_field_value>();
 				foreach (form_field_value value in listOfValues)
 				{
 					ListItem item = new ListItem(value.display_value, value.display_value);
@@ -119,23 +119,75 @@ namespace Services
 				break;
 
 				case "chkBox":
-				;
+				CheckBox box = new CheckBox();
+				box.ID = id;
+				ctrlHolder.Controls.Add(new LiteralControl("<td>"));
+				ctrlHolder.Controls.Add(box);
+				ctrlHolder.Controls.Add(new LiteralControl("</td>"));
 				break;
 
 				case "chkBoxList":
-				;
+				CheckBoxList boxList = new CheckBoxList();
+				boxList.ID = id;
+				foreach (form_field_value value in listOfValues)
+				{
+					ListItem item = new ListItem(value.display_value, value.display_value);
+					boxList.Items.Add(item);
+					if (value.is_default.Value)
+						boxList.SelectedValue = item.Value;
+				}
+				ctrlHolder.Controls.Add(new LiteralControl("<td>"));
+				ctrlHolder.Controls.Add(boxList);
+				ctrlHolder.Controls.Add(new LiteralControl("</td>"));				
 				break;
 
 				case "radioBtnList":
-				;
+				RadioButtonList radioList = new RadioButtonList();
+				radioList.ID = id;
+				foreach (form_field_value value in listOfValues)
+				{
+					ListItem item = new ListItem(value.display_value, value.display_value);
+					radioList.Items.Add(item);
+					if (value.is_default.Value)
+						radioList.SelectedValue = item.Value;
+				}
+				ctrlHolder.Controls.Add(new LiteralControl("<td>"));
+				ctrlHolder.Controls.Add(radioList);
+				ctrlHolder.Controls.Add(new LiteralControl("</td>"));	
 				break;
 
 				case "datePicker":
-				;
+				EclipseWebSolutions.DatePicker.DatePicker datePicker = new EclipseWebSolutions.DatePicker.DatePicker();
+				datePicker.ID = id;
+				datePicker.CalendarPosition = EclipseWebSolutions.DatePicker.DatePicker.CalendarDisplay.DisplayRight;
+				ctrlHolder.Controls.Add(new LiteralControl("<td>"));
+				ctrlHolder.Controls.Add(datePicker);
+				ctrlHolder.Controls.Add(new LiteralControl("</td>"));
 				break;
 
 				case "timePicker":
-				;
+				DropDownList hour = new DropDownList();
+				DropDownList minutes = new DropDownList();
+				Panel timePicker = new Panel();
+				for (int i = 0; i <= 60; i++)
+				{
+					minutes.Items.Add(i.ToString());
+					if (i / 10 != 0)
+						hour.Items.Add(i.ToString());
+				}
+				timePicker.Controls.Add(new LiteralControl("<table><tr>"));
+				timePicker.Controls.Add(new LiteralControl("<td>"));
+				timePicker.Controls.Add(hour);
+				timePicker.Controls.Add(new LiteralControl("</td>"));
+				timePicker.Controls.Add(new LiteralControl("<td>"));
+				timePicker.Controls.Add(new LiteralControl(":"));
+				timePicker.Controls.Add(new LiteralControl("</td>"));
+				timePicker.Controls.Add(new LiteralControl("<td>"));
+				timePicker.Controls.Add(minutes);
+				timePicker.Controls.Add(new LiteralControl("</td>"));
+				ctrlHolder.Controls.Add(new LiteralControl("<td>"));
+				ctrlHolder.Controls.Add(timePicker);
+				ctrlHolder.Controls.Add(new LiteralControl("</td>"));
 				break;
 
 				case "addressCtrl":
