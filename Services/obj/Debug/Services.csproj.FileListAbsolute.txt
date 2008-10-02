@@ -18,3 +18,5 @@ D:\Webs\lotus-solution\Services\bin\Debug\Services.pdb
 D:\Webs\lotus-solution\Services\obj\Debug\ResolveAssemblyReference.cache
 D:\Webs\lotus-solution\Services\obj\Debug\Services.dll
 D:\Webs\lotus-solution\Services\obj\Debug\Services.pdb
+D:\Webs\lotus-solution\Services\bin\Debug\EclipseWebSolutions.DatePicker.dll
+D:\Webs\lotus-solution\Services\bin\Debug\EclipseWebSolutions.DatePicker.pdb

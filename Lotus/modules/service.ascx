@@ -79,7 +79,7 @@
                                     AutoPostBack="True" 
                                     onselectedindexchanged="ControlTypeDropDownList_SelectedIndexChanged">
                                     <asp:ListItem Value="label">Label</asp:ListItem>
-                                    <asp:ListItem Value="txtBox">Text Box</asp:ListItem>
+                                    <asp:ListItem Value="txtBox">Text box</asp:ListItem>
                                     <asp:ListItem Value="txtArea">Text area</asp:ListItem>
                                     <asp:ListItem Value="ddList">Drop down list</asp:ListItem>
                                     <asp:ListItem Value="chkBox">Check box</asp:ListItem>
@@ -87,7 +87,9 @@
                                     <asp:ListItem Value="radioBtnList">Radio button list</asp:ListItem>
                                     <asp:ListItem Value="datePicker">Date picker</asp:ListItem>
                                     <asp:ListItem Value="timePicker">Time picker</asp:ListItem>
-                                    <asp:ListItem Value="addressCtrl">Address</asp:ListItem>                                    
+                                    <asp:ListItem Value="addressCtrl">Address</asp:ListItem>
+                                    <asp:ListItem Value="header">Header</asp:ListItem>
+                                    <asp:ListItem Value="lblNoName">Label (without name)</asp:ListItem>
                                 </asp:DropDownList>
                             </td>
                             <td>
