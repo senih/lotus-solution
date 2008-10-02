@@ -14,7 +14,10 @@ namespace Services
 	{
 		public static Control GetControl(form_field_definition control)
 		{
+			LotusDataContext db = new LotusDataContext(Data.ConnectionManager());
+			List<form_field_value> listOfValues;
 			Control newControl = new Control();
+			int ctrlId = control.form_field_definition_id;
 			string name = control.form_field_name;
 			string id = name.Replace(" ", "");
 			string type = control.input_type;
@@ -36,7 +39,7 @@ namespace Services
 			ctrlHolder.Controls.Add(nameLbl);
 			ctrlHolder.Controls.Add(new LiteralControl("</td>"));
 			ctrlHolder.Controls.Add(new LiteralControl("<td>"));
-			ctrlHolder.Controls.Add(new LiteralControl("&nbsp;&nbsp;:&nbsp;&nbsp;"));
+			ctrlHolder.Controls.Add(new LiteralControl("&nbsp;:&nbsp;"));
 			ctrlHolder.Controls.Add(new LiteralControl("</td>"));
 			RequiredFieldValidator validator = new RequiredFieldValidator();
 
@@ -100,7 +103,19 @@ namespace Services
 				break;
 
 				case "ddList":
-				;
+				DropDownList ddList = new DropDownList();
+				ddList.ID = id;
+				listOfValues = db.form_field_values.Where(v => v.form_field_definition_id == ctrlId).ToList<form_field_value>();
+				foreach (form_field_value value in listOfValues)
+				{
+					ListItem item = new ListItem(value.display_value, value.display_value);
+					ddList.Items.Add(item);
+					if (value.is_default.Value)
+						ddList.SelectedValue = item.Value;
+				}
+				ctrlHolder.Controls.Add(new LiteralControl("<td>"));
+				ctrlHolder.Controls.Add(ddList);
+				ctrlHolder.Controls.Add(new LiteralControl("</td>"));
 				break;
 
 				case "chkBox":
@@ -124,6 +139,14 @@ namespace Services
 				break;
 
 				case "addressCtrl":
+				;
+				break;
+
+				case "header":
+				;
+				break;
+
+				case "lblNoName":
 				;
 				break;
 			}
