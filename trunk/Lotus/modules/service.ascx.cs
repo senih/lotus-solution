@@ -7,6 +7,8 @@ using System.Web.UI.WebControls;
 using System.Web.UI.HtmlControls;
 using Services;
 using System.Data.SqlTypes;
+using System.Net.Mail;
+using System.Web.Security;
 
 public partial class modules_service : BaseUserControl
 {
@@ -204,6 +206,7 @@ public partial class modules_service : BaseUserControl
 			fieldUpdate.width = width;
 		fieldUpdate.default_value = DefaultValueTextBox.Text;
 		fieldUpdate.is_required = RequiredCheckBox.Checked;
+		fieldUpdate.div_id = int.Parse(ContainerDropDownList.SelectedValue);
 		db.SubmitChanges();
 		Response.Redirect(Request.RawUrl);
 	}
@@ -326,10 +329,16 @@ public partial class modules_service : BaseUserControl
 		ContainersGridView.DataBind();
 	}
 
+	/// <summary>
+	/// Handles the Click event of the SubmitButton control.
+	/// </summary>
+	/// <param name="sender">The source of the event.</param>
+	/// <param name="e">The <see cref="System.EventArgs"/> instance containing the event data.</param>
 	protected void SubmitButton_Click(object sender, EventArgs e)
 	{
 		LotusDataContext db = new LotusDataContext(Data.ConnectionManager());
 		int dataId = (from d in db.form_datas select d.form_data_id).Max() + 1;
+		string user = Page.User.Identity.Name;
 		List<form_field_definition> listControls = Data.GetControls(PageID);
 		string sValue = null;
 		bool? bValue = null;
@@ -371,7 +380,24 @@ public partial class modules_service : BaseUserControl
 				sValue = ((DropDownList)this.FindControl("hours")).SelectedValue + ":" + ((DropDownList)this.FindControl("minutes"));
 				break;
 			}
-			Data.InsertData(dataId, control.form_field_definition_id, PageID, control.input_type, sValue, bValue, dValue);
+			Data.InsertData(dataId, control.form_field_definition_id, PageID, control.input_type, sValue, bValue, dValue, user);
 		}
+		LogedinPanel.Visible = true;
+		SubmitPanel.Visible = false;
+		ThankYouPanel.Visible = true;
+		SendMail();
+	}
+
+	/// <summary>
+	/// Sends the mail.
+	/// </summary>
+	protected void SendMail()
+	{
+		MembershipUser user = Membership.GetUser(Page.User.Identity.Name);
+		string body = "Your booking is registered. Soon operator will contact you. Thank you for using our services";
+		MailMessage msg = new MailMessage("contact@lotustransport.com", user.Email, "Confirmation", body);
+		SmtpClient client = new SmtpClient();
+		client.Send(msg);
+		msg.Dispose();
 	}
 }

@@ -56,6 +56,7 @@ namespace Services
 			return db.form_field_definitions.Where(c => c.div_id == containerId).OrderBy(c => c.sorting).ToList<form_field_definition>();
 		}
 
+
 		/// <summary>
 		/// Inserts the data.
 		/// </summary>
@@ -66,7 +67,8 @@ namespace Services
 		/// <param name="sValue">The s value.</param>
 		/// <param name="bValue">The b value.</param>
 		/// <param name="dValue">The d value.</param>
-		public static void InsertData(int dataId, int fieldId, int pageId, string inputType, string sValue, bool? bValue, DateTime? dValue)
+		/// <param name="user">The user.</param>
+		public static void InsertData(int dataId, int fieldId, int pageId, string inputType, string sValue, bool? bValue, DateTime? dValue, string user)
 		{
 			LotusDataContext db = new LotusDataContext(ConnectionManager());
 			form_data data = new form_data();
@@ -75,6 +77,7 @@ namespace Services
 			data.page_id = pageId;
 			data.submitted_date = DateTime.Now;
 			data.status = 0;
+			data.user = user;
 
 			switch (inputType)
 			{
@@ -100,15 +103,6 @@ namespace Services
 			}
 			db.form_datas.InsertOnSubmit(data);
 			db.SubmitChanges();
-		}
-
-		public static DataTable GetResults()
-		{
-			DataTable table = new DataTable();
-			LotusDataContext db = new LotusDataContext(ConnectionManager());
-
-
-			return table;
 		}
 	}
 }

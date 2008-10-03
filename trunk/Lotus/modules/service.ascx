@@ -316,7 +316,23 @@
 </asp:Panel>
 
 <asp:Panel ID="LogedinPanel" runat="server" Visible="false">
-    <asp:PlaceHolder ID="ControlsPlaceHolder" runat="server"></asp:PlaceHolder>
-    <asp:Button ID="SubmitButton" runat="server" Text="Submit" 
-        onclick="SubmitButton_Click" />
+    <asp:Panel ID="ThankYouPanel" runat="server" Visible="false">
+            <asp:Label ID="ThankYouLabel" runat="server" Text="Thank you for using our services. 
+            We recived your booking and soon our operartor will contact you."></asp:Label>
+    </asp:Panel>
+    <asp:Panel ID="SubmitPanel" runat="server">
+        <table>
+        <tr>
+        <td>
+            <asp:PlaceHolder ID="ControlsPlaceHolder" runat="server"></asp:PlaceHolder>
+        </td>
+        </tr>
+        <tr>
+        <td align="right">
+            <asp:Button ID="SubmitButton" runat="server" Text="Submit" 
+                onclick="SubmitButton_Click" />
+        </td>
+        </tr>
+        </table>
+    </asp:Panel>
 </asp:Panel>
