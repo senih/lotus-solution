@@ -1,20 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Database Name="LotusDB" Class="LotusDataContext" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
   <Connection Mode="AppSettings" ConnectionString="Data Source=.\SQLEXPRESS;Initial Catalog=LotusDB;Integrated Security=True" SettingsObjectName="Services.Properties.Settings" SettingsPropertyName="LotusDBConnectionString1" Provider="System.Data.SqlClient" />
-  <Table Name="dbo.form_data" Member="form_datas">
-    <Type Name="form_data">
-      <Column Name="form_data_id" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
-      <Column Name="page_id" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
-      <Column Name="form_field_definition_id" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
-      <Column Name="value1" Type="System.String" DbType="NVarChar(255)" CanBeNull="true" />
-      <Column Name="value2" Type="System.String" DbType="NText" CanBeNull="true" UpdateCheck="Never" />
-      <Column Name="value3" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
-      <Column Name="value4" Type="System.Decimal" DbType="Money" CanBeNull="true" />
-      <Column Name="value5" Type="System.Decimal" DbType="Decimal(18,2)" CanBeNull="true" />
-      <Column Name="value6" Type="System.DateTime" DbType="SmallDateTime" CanBeNull="true" />
-      <Column Name="submitted_date" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
-    </Type>
-  </Table>
   <Table Name="dbo.form_data_impressions" Member="form_data_impressions">
     <Type Name="form_data_impression">
       <Column Name="form_data_id" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
@@ -61,6 +47,21 @@
       <Column Name="page_id" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
       <Column Name="is_required" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
       <Column Name="div_id" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+    </Type>
+  </Table>
+  <Table Name="dbo.form_data" Member="form_datas">
+    <Type Name="form_data">
+      <Column Name="form_data_id" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="page_id" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="form_field_definition_id" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="value1" Type="System.String" DbType="NVarChar(255)" CanBeNull="true" />
+      <Column Name="value2" Type="System.String" DbType="NText" CanBeNull="true" UpdateCheck="Never" />
+      <Column Name="value3" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="value4" Type="System.Decimal" DbType="Money" CanBeNull="true" />
+      <Column Name="value5" Type="System.Decimal" DbType="Decimal(18,2)" CanBeNull="true" />
+      <Column Name="value6" Type="System.DateTime" DbType="SmallDateTime" CanBeNull="true" />
+      <Column Name="submitted_date" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="status" Type="System.Int32" DbType="Int" CanBeNull="true" />
     </Type>
   </Table>
 </Database>
