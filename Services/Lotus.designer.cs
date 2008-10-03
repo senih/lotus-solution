@@ -48,6 +48,9 @@ namespace Services
     partial void Insertform_data(form_data instance);
     partial void Updateform_data(form_data instance);
     partial void Deleteform_data(form_data instance);
+    partial void Insertpage(page instance);
+    partial void Updatepage(page instance);
+    partial void Deletepage(page instance);
     #endregion
 		
 		public LotusDataContext() : 
@@ -125,6 +128,14 @@ namespace Services
 			get
 			{
 				return this.GetTable<form_data>();
+			}
+		}
+		
+		public System.Data.Linq.Table<page> pages
+		{
+			get
+			{
+				return this.GetTable<page>();
 			}
 		}
 	}
@@ -1019,6 +1030,8 @@ namespace Services
 		
 		private System.Nullable<int> _status;
 		
+		private string _user;
+		
     #region Extensibility Method Definitions
     partial void OnLoaded();
     partial void OnValidate(System.Data.Linq.ChangeAction action);
@@ -1045,6 +1058,8 @@ namespace Services
     partial void Onsubmitted_dateChanged();
     partial void OnstatusChanging(System.Nullable<int> value);
     partial void OnstatusChanged();
+    partial void OnuserChanging(string value);
+    partial void OnuserChanged();
     #endregion
 		
 		public form_data()
@@ -1268,6 +1283,1816 @@ namespace Services
 					this._status = value;
 					this.SendPropertyChanged("status");
 					this.OnstatusChanged();
+				}
+			}
+		}
+		
+		[Column(Name="[user]", Storage="_user", DbType="NVarChar(50)")]
+		public string user
+		{
+			get
+			{
+				return this._user;
+			}
+			set
+			{
+				if ((this._user != value))
+				{
+					this.OnuserChanging(value);
+					this.SendPropertyChanging();
+					this._user = value;
+					this.SendPropertyChanged("user");
+					this.OnuserChanged();
+				}
+			}
+		}
+		
+		public event PropertyChangingEventHandler PropertyChanging;
+		
+		public event PropertyChangedEventHandler PropertyChanged;
+		
+		protected virtual void SendPropertyChanging()
+		{
+			if ((this.PropertyChanging != null))
+			{
+				this.PropertyChanging(this, emptyChangingEventArgs);
+			}
+		}
+		
+		protected virtual void SendPropertyChanged(String propertyName)
+		{
+			if ((this.PropertyChanged != null))
+			{
+				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+			}
+		}
+	}
+	
+	[Table(Name="dbo.pages")]
+	public partial class page : INotifyPropertyChanging, INotifyPropertyChanged
+	{
+		
+		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+		
+		private int _page_id;
+		
+		private int _version;
+		
+		private System.Nullable<int> _parent_id;
+		
+		private System.Nullable<int> _sorting;
+		
+		private System.Nullable<int> _channel_id;
+		
+		private bool _use_default_template;
+		
+		private System.Nullable<int> _template_id;
+		
+		private System.Nullable<int> _page_type;
+		
+		private string _file_name;
+		
+		private string _title;
+		
+		private string _summary;
+		
+		private string _picture;
+		
+		private System.Nullable<decimal> _price;
+		
+		private string _link_text;
+		
+		private string _link_placement;
+		
+		private string _content_left;
+		
+		private string _content_body;
+		
+		private string _content_right;
+		
+		private string _file_attachment;
+		
+		private System.Nullable<float> _file_size;
+		
+		private string _owner;
+		
+		private System.Nullable<System.DateTime> _created_date;
+		
+		private System.Nullable<System.DateTime> _last_updated_date;
+		
+		private string _last_updated_by;
+		
+		private System.Nullable<System.DateTime> _published_start_date;
+		
+		private System.Nullable<System.DateTime> _published_end_date;
+		
+		private string _meta_keywords;
+		
+		private string _meta_description;
+		
+		private string _status;
+		
+		private bool _is_hidden;
+		
+		private bool _is_system;
+		
+		private string _page_module;
+		
+		private bool _use_discussion;
+		
+		private bool _use_rating;
+		
+		private bool _allow_links_crawled;
+		
+		private bool _allow_page_indexed;
+		
+		private System.Nullable<bool> _is_marked_for_archival;
+		
+		private string _editor_review_by;
+		
+		private string _publisher_review_by;
+		
+		private string _notes;
+		
+		private System.Nullable<System.DateTime> _display_date;
+		
+		private string _properties;
+		
+		private string _properties2;
+		
+		private bool _https;
+		
+		private System.Nullable<int> _root_id;
+		
+		private System.Nullable<bool> _event_all_day;
+		
+		private System.Nullable<System.DateTime> _event_start_date;
+		
+		private System.Nullable<System.DateTime> _event_end_date;
+		
+		private System.Nullable<decimal> _sale_price;
+		
+		private System.Nullable<decimal> _weight;
+		
+		private string _sku;
+		
+		private System.Nullable<int> _units_in_stock;
+		
+		private System.Nullable<decimal> _discount_percentage;
+		
+		private System.Nullable<bool> _use_comments;
+		
+		private System.Nullable<bool> _is_listing;
+		
+		private System.Nullable<int> _listing_type;
+		
+		private System.Nullable<int> _listing_property;
+		
+		private string _listing_datetime_format;
+		
+		private System.Nullable<int> _listing_columns;
+		
+		private System.Nullable<int> _listing_page_size;
+		
+		private string _link;
+		
+		private string _link_target;
+		
+		private System.Nullable<bool> _is_link;
+		
+		private System.Nullable<int> _listing_template_id;
+		
+		private System.Nullable<bool> _listing_use_categories;
+		
+		private string _elements;
+		
+		private string _listing_elements;
+		
+		private System.Nullable<System.DateTime> _first_published_date;
+		
+		private string _listing_default_order;
+		
+		private string _file_view;
+		
+		private string _file_view_listing;
+		
+		private System.Nullable<bool> _tangible;
+		
+		private string _meta_title;
+		
+    #region Extensibility Method Definitions
+    partial void OnLoaded();
+    partial void OnValidate(System.Data.Linq.ChangeAction action);
+    partial void OnCreated();
+    partial void Onpage_idChanging(int value);
+    partial void Onpage_idChanged();
+    partial void OnversionChanging(int value);
+    partial void OnversionChanged();
+    partial void Onparent_idChanging(System.Nullable<int> value);
+    partial void Onparent_idChanged();
+    partial void OnsortingChanging(System.Nullable<int> value);
+    partial void OnsortingChanged();
+    partial void Onchannel_idChanging(System.Nullable<int> value);
+    partial void Onchannel_idChanged();
+    partial void Onuse_default_templateChanging(bool value);
+    partial void Onuse_default_templateChanged();
+    partial void Ontemplate_idChanging(System.Nullable<int> value);
+    partial void Ontemplate_idChanged();
+    partial void Onpage_typeChanging(System.Nullable<int> value);
+    partial void Onpage_typeChanged();
+    partial void Onfile_nameChanging(string value);
+    partial void Onfile_nameChanged();
+    partial void OntitleChanging(string value);
+    partial void OntitleChanged();
+    partial void OnsummaryChanging(string value);
+    partial void OnsummaryChanged();
+    partial void OnpictureChanging(string value);
+    partial void OnpictureChanged();
+    partial void OnpriceChanging(System.Nullable<decimal> value);
+    partial void OnpriceChanged();
+    partial void Onlink_textChanging(string value);
+    partial void Onlink_textChanged();
+    partial void Onlink_placementChanging(string value);
+    partial void Onlink_placementChanged();
+    partial void Oncontent_leftChanging(string value);
+    partial void Oncontent_leftChanged();
+    partial void Oncontent_bodyChanging(string value);
+    partial void Oncontent_bodyChanged();
+    partial void Oncontent_rightChanging(string value);
+    partial void Oncontent_rightChanged();
+    partial void Onfile_attachmentChanging(string value);
+    partial void Onfile_attachmentChanged();
+    partial void Onfile_sizeChanging(System.Nullable<float> value);
+    partial void Onfile_sizeChanged();
+    partial void OnownerChanging(string value);
+    partial void OnownerChanged();
+    partial void Oncreated_dateChanging(System.Nullable<System.DateTime> value);
+    partial void Oncreated_dateChanged();
+    partial void Onlast_updated_dateChanging(System.Nullable<System.DateTime> value);
+    partial void Onlast_updated_dateChanged();
+    partial void Onlast_updated_byChanging(string value);
+    partial void Onlast_updated_byChanged();
+    partial void Onpublished_start_dateChanging(System.Nullable<System.DateTime> value);
+    partial void Onpublished_start_dateChanged();
+    partial void Onpublished_end_dateChanging(System.Nullable<System.DateTime> value);
+    partial void Onpublished_end_dateChanged();
+    partial void Onmeta_keywordsChanging(string value);
+    partial void Onmeta_keywordsChanged();
+    partial void Onmeta_descriptionChanging(string value);
+    partial void Onmeta_descriptionChanged();
+    partial void OnstatusChanging(string value);
+    partial void OnstatusChanged();
+    partial void Onis_hiddenChanging(bool value);
+    partial void Onis_hiddenChanged();
+    partial void Onis_systemChanging(bool value);
+    partial void Onis_systemChanged();
+    partial void Onpage_moduleChanging(string value);
+    partial void Onpage_moduleChanged();
+    partial void Onuse_discussionChanging(bool value);
+    partial void Onuse_discussionChanged();
+    partial void Onuse_ratingChanging(bool value);
+    partial void Onuse_ratingChanged();
+    partial void Onallow_links_crawledChanging(bool value);
+    partial void Onallow_links_crawledChanged();
+    partial void Onallow_page_indexedChanging(bool value);
+    partial void Onallow_page_indexedChanged();
+    partial void Onis_marked_for_archivalChanging(System.Nullable<bool> value);
+    partial void Onis_marked_for_archivalChanged();
+    partial void Oneditor_review_byChanging(string value);
+    partial void Oneditor_review_byChanged();
+    partial void Onpublisher_review_byChanging(string value);
+    partial void Onpublisher_review_byChanged();
+    partial void OnnotesChanging(string value);
+    partial void OnnotesChanged();
+    partial void Ondisplay_dateChanging(System.Nullable<System.DateTime> value);
+    partial void Ondisplay_dateChanged();
+    partial void OnpropertiesChanging(string value);
+    partial void OnpropertiesChanged();
+    partial void Onproperties2Changing(string value);
+    partial void Onproperties2Changed();
+    partial void OnhttpsChanging(bool value);
+    partial void OnhttpsChanged();
+    partial void Onroot_idChanging(System.Nullable<int> value);
+    partial void Onroot_idChanged();
+    partial void Onevent_all_dayChanging(System.Nullable<bool> value);
+    partial void Onevent_all_dayChanged();
+    partial void Onevent_start_dateChanging(System.Nullable<System.DateTime> value);
+    partial void Onevent_start_dateChanged();
+    partial void Onevent_end_dateChanging(System.Nullable<System.DateTime> value);
+    partial void Onevent_end_dateChanged();
+    partial void Onsale_priceChanging(System.Nullable<decimal> value);
+    partial void Onsale_priceChanged();
+    partial void OnweightChanging(System.Nullable<decimal> value);
+    partial void OnweightChanged();
+    partial void OnskuChanging(string value);
+    partial void OnskuChanged();
+    partial void Onunits_in_stockChanging(System.Nullable<int> value);
+    partial void Onunits_in_stockChanged();
+    partial void Ondiscount_percentageChanging(System.Nullable<decimal> value);
+    partial void Ondiscount_percentageChanged();
+    partial void Onuse_commentsChanging(System.Nullable<bool> value);
+    partial void Onuse_commentsChanged();
+    partial void Onis_listingChanging(System.Nullable<bool> value);
+    partial void Onis_listingChanged();
+    partial void Onlisting_typeChanging(System.Nullable<int> value);
+    partial void Onlisting_typeChanged();
+    partial void Onlisting_propertyChanging(System.Nullable<int> value);
+    partial void Onlisting_propertyChanged();
+    partial void Onlisting_datetime_formatChanging(string value);
+    partial void Onlisting_datetime_formatChanged();
+    partial void Onlisting_columnsChanging(System.Nullable<int> value);
+    partial void Onlisting_columnsChanged();
+    partial void Onlisting_page_sizeChanging(System.Nullable<int> value);
+    partial void Onlisting_page_sizeChanged();
+    partial void OnlinkChanging(string value);
+    partial void OnlinkChanged();
+    partial void Onlink_targetChanging(string value);
+    partial void Onlink_targetChanged();
+    partial void Onis_linkChanging(System.Nullable<bool> value);
+    partial void Onis_linkChanged();
+    partial void Onlisting_template_idChanging(System.Nullable<int> value);
+    partial void Onlisting_template_idChanged();
+    partial void Onlisting_use_categoriesChanging(System.Nullable<bool> value);
+    partial void Onlisting_use_categoriesChanged();
+    partial void OnelementsChanging(string value);
+    partial void OnelementsChanged();
+    partial void Onlisting_elementsChanging(string value);
+    partial void Onlisting_elementsChanged();
+    partial void Onfirst_published_dateChanging(System.Nullable<System.DateTime> value);
+    partial void Onfirst_published_dateChanged();
+    partial void Onlisting_default_orderChanging(string value);
+    partial void Onlisting_default_orderChanged();
+    partial void Onfile_viewChanging(string value);
+    partial void Onfile_viewChanged();
+    partial void Onfile_view_listingChanging(string value);
+    partial void Onfile_view_listingChanged();
+    partial void OntangibleChanging(System.Nullable<bool> value);
+    partial void OntangibleChanged();
+    partial void Onmeta_titleChanging(string value);
+    partial void Onmeta_titleChanged();
+    #endregion
+		
+		public page()
+		{
+			OnCreated();
+		}
+		
+		[Column(Storage="_page_id", DbType="Int NOT NULL", IsPrimaryKey=true)]
+		public int page_id
+		{
+			get
+			{
+				return this._page_id;
+			}
+			set
+			{
+				if ((this._page_id != value))
+				{
+					this.Onpage_idChanging(value);
+					this.SendPropertyChanging();
+					this._page_id = value;
+					this.SendPropertyChanged("page_id");
+					this.Onpage_idChanged();
+				}
+			}
+		}
+		
+		[Column(Storage="_version", DbType="Int NOT NULL", IsPrimaryKey=true)]
+		public int version
+		{
+			get
+			{
+				return this._version;
+			}
+			set
+			{
+				if ((this._version != value))
+				{
+					this.OnversionChanging(value);
+					this.SendPropertyChanging();
+					this._version = value;
+					this.SendPropertyChanged("version");
+					this.OnversionChanged();
+				}
+			}
+		}
+		
+		[Column(Storage="_parent_id", DbType="Int")]
+		public System.Nullable<int> parent_id
+		{
+			get
+			{
+				return this._parent_id;
+			}
+			set
+			{
+				if ((this._parent_id != value))
+				{
+					this.Onparent_idChanging(value);
+					this.SendPropertyChanging();
+					this._parent_id = value;
+					this.SendPropertyChanged("parent_id");
+					this.Onparent_idChanged();
+				}
+			}
+		}
+		
+		[Column(Storage="_sorting", DbType="Int")]
+		public System.Nullable<int> sorting
+		{
+			get
+			{
+				return this._sorting;
+			}
+			set
+			{
+				if ((this._sorting != value))
+				{
+					this.OnsortingChanging(value);
+					this.SendPropertyChanging();
+					this._sorting = value;
+					this.SendPropertyChanged("sorting");
+					this.OnsortingChanged();
+				}
+			}
+		}
+		
+		[Column(Storage="_channel_id", DbType="Int")]
+		public System.Nullable<int> channel_id
+		{
+			get
+			{
+				return this._channel_id;
+			}
+			set
+			{
+				if ((this._channel_id != value))
+				{
+					this.Onchannel_idChanging(value);
+					this.SendPropertyChanging();
+					this._channel_id = value;
+					this.SendPropertyChanged("channel_id");
+					this.Onchannel_idChanged();
+				}
+			}
+		}
+		
+		[Column(Storage="_use_default_template", DbType="Bit NOT NULL")]
+		public bool use_default_template
+		{
+			get
+			{
+				return this._use_default_template;
+			}
+			set
+			{
+				if ((this._use_default_template != value))
+				{
+					this.Onuse_default_templateChanging(value);
+					this.SendPropertyChanging();
+					this._use_default_template = value;
+					this.SendPropertyChanged("use_default_template");
+					this.Onuse_default_templateChanged();
+				}
+			}
+		}
+		
+		[Column(Storage="_template_id", DbType="Int")]
+		public System.Nullable<int> template_id
+		{
+			get
+			{
+				return this._template_id;
+			}
+			set
+			{
+				if ((this._template_id != value))
+				{
+					this.Ontemplate_idChanging(value);
+					this.SendPropertyChanging();
+					this._template_id = value;
+					this.SendPropertyChanged("template_id");
+					this.Ontemplate_idChanged();
+				}
+			}
+		}
+		
+		[Column(Storage="_page_type", DbType="Int")]
+		public System.Nullable<int> page_type
+		{
+			get
+			{
+				return this._page_type;
+			}
+			set
+			{
+				if ((this._page_type != value))
+				{
+					this.Onpage_typeChanging(value);
+					this.SendPropertyChanging();
+					this._page_type = value;
+					this.SendPropertyChanged("page_type");
+					this.Onpage_typeChanged();
+				}
+			}
+		}
+		
+		[Column(Storage="_file_name", DbType="NVarChar(128)")]
+		public string file_name
+		{
+			get
+			{
+				return this._file_name;
+			}
+			set
+			{
+				if ((this._file_name != value))
+				{
+					this.Onfile_nameChanging(value);
+					this.SendPropertyChanging();
+					this._file_name = value;
+					this.SendPropertyChanged("file_name");
+					this.Onfile_nameChanged();
+				}
+			}
+		}
+		
+		[Column(Storage="_title", DbType="NVarChar(255)")]
+		public string title
+		{
+			get
+			{
+				return this._title;
+			}
+			set
+			{
+				if ((this._title != value))
+				{
+					this.OntitleChanging(value);
+					this.SendPropertyChanging();
+					this._title = value;
+					this.SendPropertyChanged("title");
+					this.OntitleChanged();
+				}
+			}
+		}
+		
+		[Column(Storage="_summary", DbType="NText", UpdateCheck=UpdateCheck.Never)]
+		public string summary
+		{
+			get
+			{
+				return this._summary;
+			}
+			set
+			{
+				if ((this._summary != value))
+				{
+					this.OnsummaryChanging(value);
+					this.SendPropertyChanging();
+					this._summary = value;
+					this.SendPropertyChanged("summary");
+					this.OnsummaryChanged();
+				}
+			}
+		}
+		
+		[Column(Storage="_picture", DbType="NVarChar(50)")]
+		public string picture
+		{
+			get
+			{
+				return this._picture;
+			}
+			set
+			{
+				if ((this._picture != value))
+				{
+					this.OnpictureChanging(value);
+					this.SendPropertyChanging();
+					this._picture = value;
+					this.SendPropertyChanged("picture");
+					this.OnpictureChanged();
+				}
+			}
+		}
+		
+		[Column(Storage="_price", DbType="Money")]
+		public System.Nullable<decimal> price
+		{
+			get
+			{
+				return this._price;
+			}
+			set
+			{
+				if ((this._price != value))
+				{
+					this.OnpriceChanging(value);
+					this.SendPropertyChanging();
+					this._price = value;
+					this.SendPropertyChanged("price");
+					this.OnpriceChanged();
+				}
+			}
+		}
+		
+		[Column(Storage="_link_text", DbType="NVarChar(50)")]
+		public string link_text
+		{
+			get
+			{
+				return this._link_text;
+			}
+			set
+			{
+				if ((this._link_text != value))
+				{
+					this.Onlink_textChanging(value);
+					this.SendPropertyChanging();
+					this._link_text = value;
+					this.SendPropertyChanged("link_text");
+					this.Onlink_textChanged();
+				}
+			}
+		}
+		
+		[Column(Storage="_link_placement", DbType="NVarChar(50)")]
+		public string link_placement
+		{
+			get
+			{
+				return this._link_placement;
+			}
+			set
+			{
+				if ((this._link_placement != value))
+				{
+					this.Onlink_placementChanging(value);
+					this.SendPropertyChanging();
+					this._link_placement = value;
+					this.SendPropertyChanged("link_placement");
+					this.Onlink_placementChanged();
+				}
+			}
+		}
+		
+		[Column(Storage="_content_left", DbType="NText", UpdateCheck=UpdateCheck.Never)]
+		public string content_left
+		{
+			get
+			{
+				return this._content_left;
+			}
+			set
+			{
+				if ((this._content_left != value))
+				{
+					this.Oncontent_leftChanging(value);
+					this.SendPropertyChanging();
+					this._content_left = value;
+					this.SendPropertyChanged("content_left");
+					this.Oncontent_leftChanged();
+				}
+			}
+		}
+		
+		[Column(Storage="_content_body", DbType="NText", UpdateCheck=UpdateCheck.Never)]
+		public string content_body
+		{
+			get
+			{
+				return this._content_body;
+			}
+			set
+			{
+				if ((this._content_body != value))
+				{
+					this.Oncontent_bodyChanging(value);
+					this.SendPropertyChanging();
+					this._content_body = value;
+					this.SendPropertyChanged("content_body");
+					this.Oncontent_bodyChanged();
+				}
+			}
+		}
+		
+		[Column(Storage="_content_right", DbType="NText", UpdateCheck=UpdateCheck.Never)]
+		public string content_right
+		{
+			get
+			{
+				return this._content_right;
+			}
+			set
+			{
+				if ((this._content_right != value))
+				{
+					this.Oncontent_rightChanging(value);
+					this.SendPropertyChanging();
+					this._content_right = value;
+					this.SendPropertyChanged("content_right");
+					this.Oncontent_rightChanged();
+				}
+			}
+		}
+		
+		[Column(Storage="_file_attachment", DbType="NVarChar(255)")]
+		public string file_attachment
+		{
+			get
+			{
+				return this._file_attachment;
+			}
+			set
+			{
+				if ((this._file_attachment != value))
+				{
+					this.Onfile_attachmentChanging(value);
+					this.SendPropertyChanging();
+					this._file_attachment = value;
+					this.SendPropertyChanged("file_attachment");
+					this.Onfile_attachmentChanged();
+				}
+			}
+		}
+		
+		[Column(Storage="_file_size", DbType="Real")]
+		public System.Nullable<float> file_size
+		{
+			get
+			{
+				return this._file_size;
+			}
+			set
+			{
+				if ((this._file_size != value))
+				{
+					this.Onfile_sizeChanging(value);
+					this.SendPropertyChanging();
+					this._file_size = value;
+					this.SendPropertyChanged("file_size");
+					this.Onfile_sizeChanged();
+				}
+			}
+		}
+		
+		[Column(Storage="_owner", DbType="NVarChar(50)")]
+		public string owner
+		{
+			get
+			{
+				return this._owner;
+			}
+			set
+			{
+				if ((this._owner != value))
+				{
+					this.OnownerChanging(value);
+					this.SendPropertyChanging();
+					this._owner = value;
+					this.SendPropertyChanged("owner");
+					this.OnownerChanged();
+				}
+			}
+		}
+		
+		[Column(Storage="_created_date", DbType="DateTime")]
+		public System.Nullable<System.DateTime> created_date
+		{
+			get
+			{
+				return this._created_date;
+			}
+			set
+			{
+				if ((this._created_date != value))
+				{
+					this.Oncreated_dateChanging(value);
+					this.SendPropertyChanging();
+					this._created_date = value;
+					this.SendPropertyChanged("created_date");
+					this.Oncreated_dateChanged();
+				}
+			}
+		}
+		
+		[Column(Storage="_last_updated_date", DbType="DateTime")]
+		public System.Nullable<System.DateTime> last_updated_date
+		{
+			get
+			{
+				return this._last_updated_date;
+			}
+			set
+			{
+				if ((this._last_updated_date != value))
+				{
+					this.Onlast_updated_dateChanging(value);
+					this.SendPropertyChanging();
+					this._last_updated_date = value;
+					this.SendPropertyChanged("last_updated_date");
+					this.Onlast_updated_dateChanged();
+				}
+			}
+		}
+		
+		[Column(Storage="_last_updated_by", DbType="NVarChar(50)")]
+		public string last_updated_by
+		{
+			get
+			{
+				return this._last_updated_by;
+			}
+			set
+			{
+				if ((this._last_updated_by != value))
+				{
+					this.Onlast_updated_byChanging(value);
+					this.SendPropertyChanging();
+					this._last_updated_by = value;
+					this.SendPropertyChanged("last_updated_by");
+					this.Onlast_updated_byChanged();
+				}
+			}
+		}
+		
+		[Column(Storage="_published_start_date", DbType="SmallDateTime")]
+		public System.Nullable<System.DateTime> published_start_date
+		{
+			get
+			{
+				return this._published_start_date;
+			}
+			set
+			{
+				if ((this._published_start_date != value))
+				{
+					this.Onpublished_start_dateChanging(value);
+					this.SendPropertyChanging();
+					this._published_start_date = value;
+					this.SendPropertyChanged("published_start_date");
+					this.Onpublished_start_dateChanged();
+				}
+			}
+		}
+		
+		[Column(Storage="_published_end_date", DbType="SmallDateTime")]
+		public System.Nullable<System.DateTime> published_end_date
+		{
+			get
+			{
+				return this._published_end_date;
+			}
+			set
+			{
+				if ((this._published_end_date != value))
+				{
+					this.Onpublished_end_dateChanging(value);
+					this.SendPropertyChanging();
+					this._published_end_date = value;
+					this.SendPropertyChanged("published_end_date");
+					this.Onpublished_end_dateChanged();
+				}
+			}
+		}
+		
+		[Column(Storage="_meta_keywords", DbType="NText", UpdateCheck=UpdateCheck.Never)]
+		public string meta_keywords
+		{
+			get
+			{
+				return this._meta_keywords;
+			}
+			set
+			{
+				if ((this._meta_keywords != value))
+				{
+					this.Onmeta_keywordsChanging(value);
+					this.SendPropertyChanging();
+					this._meta_keywords = value;
+					this.SendPropertyChanged("meta_keywords");
+					this.Onmeta_keywordsChanged();
+				}
+			}
+		}
+		
+		[Column(Storage="_meta_description", DbType="NText", UpdateCheck=UpdateCheck.Never)]
+		public string meta_description
+		{
+			get
+			{
+				return this._meta_description;
+			}
+			set
+			{
+				if ((this._meta_description != value))
+				{
+					this.Onmeta_descriptionChanging(value);
+					this.SendPropertyChanging();
+					this._meta_description = value;
+					this.SendPropertyChanged("meta_description");
+					this.Onmeta_descriptionChanged();
+				}
+			}
+		}
+		
+		[Column(Storage="_status", DbType="NVarChar(50)")]
+		public string status
+		{
+			get
+			{
+				return this._status;
+			}
+			set
+			{
+				if ((this._status != value))
+				{
+					this.OnstatusChanging(value);
+					this.SendPropertyChanging();
+					this._status = value;
+					this.SendPropertyChanged("status");
+					this.OnstatusChanged();
+				}
+			}
+		}
+		
+		[Column(Storage="_is_hidden", DbType="Bit NOT NULL")]
+		public bool is_hidden
+		{
+			get
+			{
+				return this._is_hidden;
+			}
+			set
+			{
+				if ((this._is_hidden != value))
+				{
+					this.Onis_hiddenChanging(value);
+					this.SendPropertyChanging();
+					this._is_hidden = value;
+					this.SendPropertyChanged("is_hidden");
+					this.Onis_hiddenChanged();
+				}
+			}
+		}
+		
+		[Column(Storage="_is_system", DbType="Bit NOT NULL")]
+		public bool is_system
+		{
+			get
+			{
+				return this._is_system;
+			}
+			set
+			{
+				if ((this._is_system != value))
+				{
+					this.Onis_systemChanging(value);
+					this.SendPropertyChanging();
+					this._is_system = value;
+					this.SendPropertyChanged("is_system");
+					this.Onis_systemChanged();
+				}
+			}
+		}
+		
+		[Column(Storage="_page_module", DbType="NVarChar(255)")]
+		public string page_module
+		{
+			get
+			{
+				return this._page_module;
+			}
+			set
+			{
+				if ((this._page_module != value))
+				{
+					this.Onpage_moduleChanging(value);
+					this.SendPropertyChanging();
+					this._page_module = value;
+					this.SendPropertyChanged("page_module");
+					this.Onpage_moduleChanged();
+				}
+			}
+		}
+		
+		[Column(Storage="_use_discussion", DbType="Bit NOT NULL")]
+		public bool use_discussion
+		{
+			get
+			{
+				return this._use_discussion;
+			}
+			set
+			{
+				if ((this._use_discussion != value))
+				{
+					this.Onuse_discussionChanging(value);
+					this.SendPropertyChanging();
+					this._use_discussion = value;
+					this.SendPropertyChanged("use_discussion");
+					this.Onuse_discussionChanged();
+				}
+			}
+		}
+		
+		[Column(Storage="_use_rating", DbType="Bit NOT NULL")]
+		public bool use_rating
+		{
+			get
+			{
+				return this._use_rating;
+			}
+			set
+			{
+				if ((this._use_rating != value))
+				{
+					this.Onuse_ratingChanging(value);
+					this.SendPropertyChanging();
+					this._use_rating = value;
+					this.SendPropertyChanged("use_rating");
+					this.Onuse_ratingChanged();
+				}
+			}
+		}
+		
+		[Column(Storage="_allow_links_crawled", DbType="Bit NOT NULL")]
+		public bool allow_links_crawled
+		{
+			get
+			{
+				return this._allow_links_crawled;
+			}
+			set
+			{
+				if ((this._allow_links_crawled != value))
+				{
+					this.Onallow_links_crawledChanging(value);
+					this.SendPropertyChanging();
+					this._allow_links_crawled = value;
+					this.SendPropertyChanged("allow_links_crawled");
+					this.Onallow_links_crawledChanged();
+				}
+			}
+		}
+		
+		[Column(Storage="_allow_page_indexed", DbType="Bit NOT NULL")]
+		public bool allow_page_indexed
+		{
+			get
+			{
+				return this._allow_page_indexed;
+			}
+			set
+			{
+				if ((this._allow_page_indexed != value))
+				{
+					this.Onallow_page_indexedChanging(value);
+					this.SendPropertyChanging();
+					this._allow_page_indexed = value;
+					this.SendPropertyChanged("allow_page_indexed");
+					this.Onallow_page_indexedChanged();
+				}
+			}
+		}
+		
+		[Column(Storage="_is_marked_for_archival", DbType="Bit")]
+		public System.Nullable<bool> is_marked_for_archival
+		{
+			get
+			{
+				return this._is_marked_for_archival;
+			}
+			set
+			{
+				if ((this._is_marked_for_archival != value))
+				{
+					this.Onis_marked_for_archivalChanging(value);
+					this.SendPropertyChanging();
+					this._is_marked_for_archival = value;
+					this.SendPropertyChanged("is_marked_for_archival");
+					this.Onis_marked_for_archivalChanged();
+				}
+			}
+		}
+		
+		[Column(Storage="_editor_review_by", DbType="NVarChar(50)")]
+		public string editor_review_by
+		{
+			get
+			{
+				return this._editor_review_by;
+			}
+			set
+			{
+				if ((this._editor_review_by != value))
+				{
+					this.Oneditor_review_byChanging(value);
+					this.SendPropertyChanging();
+					this._editor_review_by = value;
+					this.SendPropertyChanged("editor_review_by");
+					this.Oneditor_review_byChanged();
+				}
+			}
+		}
+		
+		[Column(Storage="_publisher_review_by", DbType="NVarChar(50)")]
+		public string publisher_review_by
+		{
+			get
+			{
+				return this._publisher_review_by;
+			}
+			set
+			{
+				if ((this._publisher_review_by != value))
+				{
+					this.Onpublisher_review_byChanging(value);
+					this.SendPropertyChanging();
+					this._publisher_review_by = value;
+					this.SendPropertyChanged("publisher_review_by");
+					this.Onpublisher_review_byChanged();
+				}
+			}
+		}
+		
+		[Column(Storage="_notes", DbType="NText", UpdateCheck=UpdateCheck.Never)]
+		public string notes
+		{
+			get
+			{
+				return this._notes;
+			}
+			set
+			{
+				if ((this._notes != value))
+				{
+					this.OnnotesChanging(value);
+					this.SendPropertyChanging();
+					this._notes = value;
+					this.SendPropertyChanged("notes");
+					this.OnnotesChanged();
+				}
+			}
+		}
+		
+		[Column(Storage="_display_date", DbType="DateTime")]
+		public System.Nullable<System.DateTime> display_date
+		{
+			get
+			{
+				return this._display_date;
+			}
+			set
+			{
+				if ((this._display_date != value))
+				{
+					this.Ondisplay_dateChanging(value);
+					this.SendPropertyChanging();
+					this._display_date = value;
+					this.SendPropertyChanged("display_date");
+					this.Ondisplay_dateChanged();
+				}
+			}
+		}
+		
+		[Column(Storage="_properties", DbType="NVarChar(255)")]
+		public string properties
+		{
+			get
+			{
+				return this._properties;
+			}
+			set
+			{
+				if ((this._properties != value))
+				{
+					this.OnpropertiesChanging(value);
+					this.SendPropertyChanging();
+					this._properties = value;
+					this.SendPropertyChanged("properties");
+					this.OnpropertiesChanged();
+				}
+			}
+		}
+		
+		[Column(Storage="_properties2", DbType="NText", UpdateCheck=UpdateCheck.Never)]
+		public string properties2
+		{
+			get
+			{
+				return this._properties2;
+			}
+			set
+			{
+				if ((this._properties2 != value))
+				{
+					this.Onproperties2Changing(value);
+					this.SendPropertyChanging();
+					this._properties2 = value;
+					this.SendPropertyChanged("properties2");
+					this.Onproperties2Changed();
+				}
+			}
+		}
+		
+		[Column(Storage="_https", DbType="Bit NOT NULL")]
+		public bool https
+		{
+			get
+			{
+				return this._https;
+			}
+			set
+			{
+				if ((this._https != value))
+				{
+					this.OnhttpsChanging(value);
+					this.SendPropertyChanging();
+					this._https = value;
+					this.SendPropertyChanged("https");
+					this.OnhttpsChanged();
+				}
+			}
+		}
+		
+		[Column(Storage="_root_id", DbType="Int")]
+		public System.Nullable<int> root_id
+		{
+			get
+			{
+				return this._root_id;
+			}
+			set
+			{
+				if ((this._root_id != value))
+				{
+					this.Onroot_idChanging(value);
+					this.SendPropertyChanging();
+					this._root_id = value;
+					this.SendPropertyChanged("root_id");
+					this.Onroot_idChanged();
+				}
+			}
+		}
+		
+		[Column(Storage="_event_all_day", DbType="Bit")]
+		public System.Nullable<bool> event_all_day
+		{
+			get
+			{
+				return this._event_all_day;
+			}
+			set
+			{
+				if ((this._event_all_day != value))
+				{
+					this.Onevent_all_dayChanging(value);
+					this.SendPropertyChanging();
+					this._event_all_day = value;
+					this.SendPropertyChanged("event_all_day");
+					this.Onevent_all_dayChanged();
+				}
+			}
+		}
+		
+		[Column(Storage="_event_start_date", DbType="DateTime")]
+		public System.Nullable<System.DateTime> event_start_date
+		{
+			get
+			{
+				return this._event_start_date;
+			}
+			set
+			{
+				if ((this._event_start_date != value))
+				{
+					this.Onevent_start_dateChanging(value);
+					this.SendPropertyChanging();
+					this._event_start_date = value;
+					this.SendPropertyChanged("event_start_date");
+					this.Onevent_start_dateChanged();
+				}
+			}
+		}
+		
+		[Column(Storage="_event_end_date", DbType="DateTime")]
+		public System.Nullable<System.DateTime> event_end_date
+		{
+			get
+			{
+				return this._event_end_date;
+			}
+			set
+			{
+				if ((this._event_end_date != value))
+				{
+					this.Onevent_end_dateChanging(value);
+					this.SendPropertyChanging();
+					this._event_end_date = value;
+					this.SendPropertyChanged("event_end_date");
+					this.Onevent_end_dateChanged();
+				}
+			}
+		}
+		
+		[Column(Storage="_sale_price", DbType="Money")]
+		public System.Nullable<decimal> sale_price
+		{
+			get
+			{
+				return this._sale_price;
+			}
+			set
+			{
+				if ((this._sale_price != value))
+				{
+					this.Onsale_priceChanging(value);
+					this.SendPropertyChanging();
+					this._sale_price = value;
+					this.SendPropertyChanged("sale_price");
+					this.Onsale_priceChanged();
+				}
+			}
+		}
+		
+		[Column(Storage="_weight", DbType="Decimal(18,0)")]
+		public System.Nullable<decimal> weight
+		{
+			get
+			{
+				return this._weight;
+			}
+			set
+			{
+				if ((this._weight != value))
+				{
+					this.OnweightChanging(value);
+					this.SendPropertyChanging();
+					this._weight = value;
+					this.SendPropertyChanged("weight");
+					this.OnweightChanged();
+				}
+			}
+		}
+		
+		[Column(Storage="_sku", DbType="NVarChar(50)")]
+		public string sku
+		{
+			get
+			{
+				return this._sku;
+			}
+			set
+			{
+				if ((this._sku != value))
+				{
+					this.OnskuChanging(value);
+					this.SendPropertyChanging();
+					this._sku = value;
+					this.SendPropertyChanged("sku");
+					this.OnskuChanged();
+				}
+			}
+		}
+		
+		[Column(Storage="_units_in_stock", DbType="Int")]
+		public System.Nullable<int> units_in_stock
+		{
+			get
+			{
+				return this._units_in_stock;
+			}
+			set
+			{
+				if ((this._units_in_stock != value))
+				{
+					this.Onunits_in_stockChanging(value);
+					this.SendPropertyChanging();
+					this._units_in_stock = value;
+					this.SendPropertyChanged("units_in_stock");
+					this.Onunits_in_stockChanged();
+				}
+			}
+		}
+		
+		[Column(Storage="_discount_percentage", DbType="Money")]
+		public System.Nullable<decimal> discount_percentage
+		{
+			get
+			{
+				return this._discount_percentage;
+			}
+			set
+			{
+				if ((this._discount_percentage != value))
+				{
+					this.Ondiscount_percentageChanging(value);
+					this.SendPropertyChanging();
+					this._discount_percentage = value;
+					this.SendPropertyChanged("discount_percentage");
+					this.Ondiscount_percentageChanged();
+				}
+			}
+		}
+		
+		[Column(Storage="_use_comments", DbType="Bit")]
+		public System.Nullable<bool> use_comments
+		{
+			get
+			{
+				return this._use_comments;
+			}
+			set
+			{
+				if ((this._use_comments != value))
+				{
+					this.Onuse_commentsChanging(value);
+					this.SendPropertyChanging();
+					this._use_comments = value;
+					this.SendPropertyChanged("use_comments");
+					this.Onuse_commentsChanged();
+				}
+			}
+		}
+		
+		[Column(Storage="_is_listing", DbType="Bit")]
+		public System.Nullable<bool> is_listing
+		{
+			get
+			{
+				return this._is_listing;
+			}
+			set
+			{
+				if ((this._is_listing != value))
+				{
+					this.Onis_listingChanging(value);
+					this.SendPropertyChanging();
+					this._is_listing = value;
+					this.SendPropertyChanged("is_listing");
+					this.Onis_listingChanged();
+				}
+			}
+		}
+		
+		[Column(Storage="_listing_type", DbType="Int")]
+		public System.Nullable<int> listing_type
+		{
+			get
+			{
+				return this._listing_type;
+			}
+			set
+			{
+				if ((this._listing_type != value))
+				{
+					this.Onlisting_typeChanging(value);
+					this.SendPropertyChanging();
+					this._listing_type = value;
+					this.SendPropertyChanged("listing_type");
+					this.Onlisting_typeChanged();
+				}
+			}
+		}
+		
+		[Column(Storage="_listing_property", DbType="Int")]
+		public System.Nullable<int> listing_property
+		{
+			get
+			{
+				return this._listing_property;
+			}
+			set
+			{
+				if ((this._listing_property != value))
+				{
+					this.Onlisting_propertyChanging(value);
+					this.SendPropertyChanging();
+					this._listing_property = value;
+					this.SendPropertyChanged("listing_property");
+					this.Onlisting_propertyChanged();
+				}
+			}
+		}
+		
+		[Column(Storage="_listing_datetime_format", DbType="NVarChar(50)")]
+		public string listing_datetime_format
+		{
+			get
+			{
+				return this._listing_datetime_format;
+			}
+			set
+			{
+				if ((this._listing_datetime_format != value))
+				{
+					this.Onlisting_datetime_formatChanging(value);
+					this.SendPropertyChanging();
+					this._listing_datetime_format = value;
+					this.SendPropertyChanged("listing_datetime_format");
+					this.Onlisting_datetime_formatChanged();
+				}
+			}
+		}
+		
+		[Column(Storage="_listing_columns", DbType="Int")]
+		public System.Nullable<int> listing_columns
+		{
+			get
+			{
+				return this._listing_columns;
+			}
+			set
+			{
+				if ((this._listing_columns != value))
+				{
+					this.Onlisting_columnsChanging(value);
+					this.SendPropertyChanging();
+					this._listing_columns = value;
+					this.SendPropertyChanged("listing_columns");
+					this.Onlisting_columnsChanged();
+				}
+			}
+		}
+		
+		[Column(Storage="_listing_page_size", DbType="Int")]
+		public System.Nullable<int> listing_page_size
+		{
+			get
+			{
+				return this._listing_page_size;
+			}
+			set
+			{
+				if ((this._listing_page_size != value))
+				{
+					this.Onlisting_page_sizeChanging(value);
+					this.SendPropertyChanging();
+					this._listing_page_size = value;
+					this.SendPropertyChanged("listing_page_size");
+					this.Onlisting_page_sizeChanged();
+				}
+			}
+		}
+		
+		[Column(Storage="_link", DbType="NText", UpdateCheck=UpdateCheck.Never)]
+		public string link
+		{
+			get
+			{
+				return this._link;
+			}
+			set
+			{
+				if ((this._link != value))
+				{
+					this.OnlinkChanging(value);
+					this.SendPropertyChanging();
+					this._link = value;
+					this.SendPropertyChanged("link");
+					this.OnlinkChanged();
+				}
+			}
+		}
+		
+		[Column(Storage="_link_target", DbType="NVarChar(50)")]
+		public string link_target
+		{
+			get
+			{
+				return this._link_target;
+			}
+			set
+			{
+				if ((this._link_target != value))
+				{
+					this.Onlink_targetChanging(value);
+					this.SendPropertyChanging();
+					this._link_target = value;
+					this.SendPropertyChanged("link_target");
+					this.Onlink_targetChanged();
+				}
+			}
+		}
+		
+		[Column(Storage="_is_link", DbType="Bit")]
+		public System.Nullable<bool> is_link
+		{
+			get
+			{
+				return this._is_link;
+			}
+			set
+			{
+				if ((this._is_link != value))
+				{
+					this.Onis_linkChanging(value);
+					this.SendPropertyChanging();
+					this._is_link = value;
+					this.SendPropertyChanged("is_link");
+					this.Onis_linkChanged();
+				}
+			}
+		}
+		
+		[Column(Storage="_listing_template_id", DbType="Int")]
+		public System.Nullable<int> listing_template_id
+		{
+			get
+			{
+				return this._listing_template_id;
+			}
+			set
+			{
+				if ((this._listing_template_id != value))
+				{
+					this.Onlisting_template_idChanging(value);
+					this.SendPropertyChanging();
+					this._listing_template_id = value;
+					this.SendPropertyChanged("listing_template_id");
+					this.Onlisting_template_idChanged();
+				}
+			}
+		}
+		
+		[Column(Storage="_listing_use_categories", DbType="Bit")]
+		public System.Nullable<bool> listing_use_categories
+		{
+			get
+			{
+				return this._listing_use_categories;
+			}
+			set
+			{
+				if ((this._listing_use_categories != value))
+				{
+					this.Onlisting_use_categoriesChanging(value);
+					this.SendPropertyChanging();
+					this._listing_use_categories = value;
+					this.SendPropertyChanged("listing_use_categories");
+					this.Onlisting_use_categoriesChanged();
+				}
+			}
+		}
+		
+		[Column(Storage="_elements", DbType="NText", UpdateCheck=UpdateCheck.Never)]
+		public string elements
+		{
+			get
+			{
+				return this._elements;
+			}
+			set
+			{
+				if ((this._elements != value))
+				{
+					this.OnelementsChanging(value);
+					this.SendPropertyChanging();
+					this._elements = value;
+					this.SendPropertyChanged("elements");
+					this.OnelementsChanged();
+				}
+			}
+		}
+		
+		[Column(Storage="_listing_elements", DbType="NText", UpdateCheck=UpdateCheck.Never)]
+		public string listing_elements
+		{
+			get
+			{
+				return this._listing_elements;
+			}
+			set
+			{
+				if ((this._listing_elements != value))
+				{
+					this.Onlisting_elementsChanging(value);
+					this.SendPropertyChanging();
+					this._listing_elements = value;
+					this.SendPropertyChanged("listing_elements");
+					this.Onlisting_elementsChanged();
+				}
+			}
+		}
+		
+		[Column(Storage="_first_published_date", DbType="DateTime")]
+		public System.Nullable<System.DateTime> first_published_date
+		{
+			get
+			{
+				return this._first_published_date;
+			}
+			set
+			{
+				if ((this._first_published_date != value))
+				{
+					this.Onfirst_published_dateChanging(value);
+					this.SendPropertyChanging();
+					this._first_published_date = value;
+					this.SendPropertyChanged("first_published_date");
+					this.Onfirst_published_dateChanged();
+				}
+			}
+		}
+		
+		[Column(Storage="_listing_default_order", DbType="NVarChar(255)")]
+		public string listing_default_order
+		{
+			get
+			{
+				return this._listing_default_order;
+			}
+			set
+			{
+				if ((this._listing_default_order != value))
+				{
+					this.Onlisting_default_orderChanging(value);
+					this.SendPropertyChanging();
+					this._listing_default_order = value;
+					this.SendPropertyChanged("listing_default_order");
+					this.Onlisting_default_orderChanged();
+				}
+			}
+		}
+		
+		[Column(Storage="_file_view", DbType="NVarChar(255)")]
+		public string file_view
+		{
+			get
+			{
+				return this._file_view;
+			}
+			set
+			{
+				if ((this._file_view != value))
+				{
+					this.Onfile_viewChanging(value);
+					this.SendPropertyChanging();
+					this._file_view = value;
+					this.SendPropertyChanged("file_view");
+					this.Onfile_viewChanged();
+				}
+			}
+		}
+		
+		[Column(Storage="_file_view_listing", DbType="NVarChar(255)")]
+		public string file_view_listing
+		{
+			get
+			{
+				return this._file_view_listing;
+			}
+			set
+			{
+				if ((this._file_view_listing != value))
+				{
+					this.Onfile_view_listingChanging(value);
+					this.SendPropertyChanging();
+					this._file_view_listing = value;
+					this.SendPropertyChanged("file_view_listing");
+					this.Onfile_view_listingChanged();
+				}
+			}
+		}
+		
+		[Column(Storage="_tangible", DbType="Bit")]
+		public System.Nullable<bool> tangible
+		{
+			get
+			{
+				return this._tangible;
+			}
+			set
+			{
+				if ((this._tangible != value))
+				{
+					this.OntangibleChanging(value);
+					this.SendPropertyChanging();
+					this._tangible = value;
+					this.SendPropertyChanged("tangible");
+					this.OntangibleChanged();
+				}
+			}
+		}
+		
+		[Column(Storage="_meta_title", DbType="NText", UpdateCheck=UpdateCheck.Never)]
+		public string meta_title
+		{
+			get
+			{
+				return this._meta_title;
+			}
+			set
+			{
+				if ((this._meta_title != value))
+				{
+					this.Onmeta_titleChanging(value);
+					this.SendPropertyChanging();
+					this._meta_title = value;
+					this.SendPropertyChanged("meta_title");
+					this.Onmeta_titleChanged();
 				}
 			}
 		}

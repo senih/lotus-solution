@@ -62,6 +62,84 @@
       <Column Name="value6" Type="System.DateTime" DbType="SmallDateTime" CanBeNull="true" />
       <Column Name="submitted_date" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
       <Column Name="status" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="[user]" Member="user" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.pages" Member="pages">
+    <Type Name="page">
+      <Column Name="page_id" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="version" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="parent_id" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="sorting" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="channel_id" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="use_default_template" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="template_id" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="page_type" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="file_name" Type="System.String" DbType="NVarChar(128)" CanBeNull="true" />
+      <Column Name="title" Type="System.String" DbType="NVarChar(255)" CanBeNull="true" />
+      <Column Name="summary" Type="System.String" DbType="NText" CanBeNull="true" UpdateCheck="Never" />
+      <Column Name="picture" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="price" Type="System.Decimal" DbType="Money" CanBeNull="true" />
+      <Column Name="link_text" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="link_placement" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="content_left" Type="System.String" DbType="NText" CanBeNull="true" UpdateCheck="Never" />
+      <Column Name="content_body" Type="System.String" DbType="NText" CanBeNull="true" UpdateCheck="Never" />
+      <Column Name="content_right" Type="System.String" DbType="NText" CanBeNull="true" UpdateCheck="Never" />
+      <Column Name="file_attachment" Type="System.String" DbType="NVarChar(255)" CanBeNull="true" />
+      <Column Name="file_size" Type="System.Single" DbType="Real" CanBeNull="true" />
+      <Column Name="owner" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="created_date" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="last_updated_date" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="last_updated_by" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="published_start_date" Type="System.DateTime" DbType="SmallDateTime" CanBeNull="true" />
+      <Column Name="published_end_date" Type="System.DateTime" DbType="SmallDateTime" CanBeNull="true" />
+      <Column Name="meta_keywords" Type="System.String" DbType="NText" CanBeNull="true" UpdateCheck="Never" />
+      <Column Name="meta_description" Type="System.String" DbType="NText" CanBeNull="true" UpdateCheck="Never" />
+      <Column Name="status" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="is_hidden" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="is_system" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="page_module" Type="System.String" DbType="NVarChar(255)" CanBeNull="true" />
+      <Column Name="use_discussion" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="use_rating" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="allow_links_crawled" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="allow_page_indexed" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="is_marked_for_archival" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="editor_review_by" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="publisher_review_by" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="notes" Type="System.String" DbType="NText" CanBeNull="true" UpdateCheck="Never" />
+      <Column Name="display_date" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="properties" Type="System.String" DbType="NVarChar(255)" CanBeNull="true" />
+      <Column Name="properties2" Type="System.String" DbType="NText" CanBeNull="true" UpdateCheck="Never" />
+      <Column Name="https" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="root_id" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="event_all_day" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="event_start_date" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="event_end_date" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="sale_price" Type="System.Decimal" DbType="Money" CanBeNull="true" />
+      <Column Name="weight" Type="System.Decimal" DbType="Decimal(18,0)" CanBeNull="true" />
+      <Column Name="sku" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="units_in_stock" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="discount_percentage" Type="System.Decimal" DbType="Money" CanBeNull="true" />
+      <Column Name="use_comments" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="is_listing" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="listing_type" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="listing_property" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="listing_datetime_format" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="listing_columns" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="listing_page_size" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="link" Type="System.String" DbType="NText" CanBeNull="true" UpdateCheck="Never" />
+      <Column Name="link_target" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="is_link" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="listing_template_id" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="listing_use_categories" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="elements" Type="System.String" DbType="NText" CanBeNull="true" UpdateCheck="Never" />
+      <Column Name="listing_elements" Type="System.String" DbType="NText" CanBeNull="true" UpdateCheck="Never" />
+      <Column Name="first_published_date" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="listing_default_order" Type="System.String" DbType="NVarChar(255)" CanBeNull="true" />
+      <Column Name="file_view" Type="System.String" DbType="NVarChar(255)" CanBeNull="true" />
+      <Column Name="file_view_listing" Type="System.String" DbType="NVarChar(255)" CanBeNull="true" />
+      <Column Name="tangible" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="meta_title" Type="System.String" DbType="NText" CanBeNull="true" UpdateCheck="Never" />
     </Type>
   </Table>
 </Database>
