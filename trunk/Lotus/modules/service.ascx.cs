@@ -6,15 +6,21 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Web.UI.HtmlControls;
 using Services;
+using System.Data.SqlTypes;
 
 public partial class modules_service : BaseUserControl
 {
 
 
+	/// <summary>
+	/// Handles the Init event of the Page control.
+	/// </summary>
+	/// <param name="sender">The source of the event.</param>
+	/// <param name="e">The <see cref="System.EventArgs"/> instance containing the event data.</param>
 	protected void Page_Init(object sender, EventArgs e)
 	{
 		RenderFormControls();
-		//RenderFormControlsTest();
+		//RenderFormControlsLiteral();
 	}
 	
 	/// <summary>
@@ -37,6 +43,7 @@ public partial class modules_service : BaseUserControl
 				LogedinPanel.Visible = false;
 				FormControlsGridView.DataSource = Data.GetControls(PageID);
 				FormControlsGridView.DataBind();
+				LinqDataSource1.Where = "page_id=" + PageID.ToString();
 			}
 			else
 			{
@@ -225,6 +232,7 @@ public partial class modules_service : BaseUserControl
 	{
 		ControlOptions.Visible = false;
 		ValuesPanel.Visible = true;
+		LinqDataSource2.Where = "form_field_definition_id=" + FormControlsGridView.SelectedDataKey.Value.ToString();
 	}
 
 	/// <summary>
@@ -254,6 +262,9 @@ public partial class modules_service : BaseUserControl
 		db.SubmitChanges();
 	}
 
+	/// <summary>
+	/// Renders the form controls.
+	/// </summary>
 	protected void RenderFormControls()
 	{
 		List<container> listOfContainers = Data.GetContainers(PageID);
@@ -274,7 +285,10 @@ public partial class modules_service : BaseUserControl
 		}
 	}
 
-	protected void RenderFormControlsTest()
+	/// <summary>
+	/// Renders the form controls literal.
+	/// </summary>
+	protected void RenderFormControlsLiteral()
 	{
 		List<container> listOfContainers = Data.GetContainers(PageID);
 		foreach (container div in listOfContainers)
@@ -293,6 +307,11 @@ public partial class modules_service : BaseUserControl
 		}
 	}
 
+	/// <summary>
+	/// Handles the Click event of the AddContainerButton control.
+	/// </summary>
+	/// <param name="sender">The source of the event.</param>
+	/// <param name="e">The <see cref="System.EventArgs"/> instance containing the event data.</param>
 	protected void AddContainerButton_Click(object sender, EventArgs e)
 	{
 		LotusDataContext db = new LotusDataContext(Data.ConnectionManager());
@@ -304,5 +323,55 @@ public partial class modules_service : BaseUserControl
 		newContainer.sorting = sortNumber;
 		db.containers.InsertOnSubmit(newContainer);
 		db.SubmitChanges();
+		ContainersGridView.DataBind();
+	}
+
+	protected void SubmitButton_Click(object sender, EventArgs e)
+	{
+		LotusDataContext db = new LotusDataContext(Data.ConnectionManager());
+		int dataId = (from d in db.form_datas select d.form_data_id).Max() + 1;
+		List<form_field_definition> listControls = Data.GetControls(PageID);
+		string sValue = null;
+		bool? bValue = null;
+		DateTime? dValue = null;
+		foreach (form_field_definition control in listControls)
+		{
+			string ctrlId = control.form_field_name.Replace(" ","");
+			switch (control.input_type)
+			{
+				case "txtBox":
+				case "txtArea":
+				sValue = ((TextBox)this.FindControl(ctrlId)).Text;				
+				break;
+
+				case "ddList":
+				sValue = ((DropDownList)this.FindControl(ctrlId)).SelectedValue;
+				break;
+
+				case "chkBox":
+				bValue = ((CheckBox)this.FindControl(ctrlId)).Checked;
+				break;
+
+				case "ckhBoxList":
+				sValue = ((CheckBoxList)this.FindControl(ctrlId)).SelectedValue;
+				break;
+
+				case "radioBtnList":
+				sValue = ((RadioButtonList)this.FindControl(ctrlId)).SelectedValue;
+				break;
+
+				case "datePicker":
+				int day = int.Parse(((DropDownList)this.FindControl("days")).SelectedValue);
+				int month = int.Parse(((DropDownList)this.FindControl("months")).SelectedValue);
+				int year = int.Parse(((DropDownList)this.FindControl("years")).SelectedValue);
+				dValue = new DateTime(year, month, day);
+				break;
+
+				case "timePicker":
+				sValue = ((DropDownList)this.FindControl("hours")).SelectedValue + ":" + ((DropDownList)this.FindControl("minutes"));
+				break;
+			}
+			Data.InsertData(dataId, control.form_field_definition_id, PageID, control.input_type, sValue, bValue, dValue);
+		}
 	}
 }

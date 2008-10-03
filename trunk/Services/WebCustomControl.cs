@@ -36,13 +36,16 @@ namespace Services
 			Label nameLbl = new Label();
 			nameLbl.Text = name;
 			PlaceHolder ctrlHolder = new PlaceHolder();
-			ctrlHolder.Controls.Add(new LiteralControl("<td align=\"right\">"));
-			ctrlHolder.Controls.Add(nameLbl);
-			ctrlHolder.Controls.Add(new LiteralControl("</td>"));
-			ctrlHolder.Controls.Add(new LiteralControl("<td>"));
-			ctrlHolder.Controls.Add(new LiteralControl("&nbsp;:&nbsp;"));
-			ctrlHolder.Controls.Add(new LiteralControl("</td>"));
 			RequiredFieldValidator validator = new RequiredFieldValidator();
+			if (type != "header" && type != "lblNoName")
+			{
+				ctrlHolder.Controls.Add(new LiteralControl("<td align=\"right\">"));
+				ctrlHolder.Controls.Add(nameLbl);
+				ctrlHolder.Controls.Add(new LiteralControl("</td>"));
+				ctrlHolder.Controls.Add(new LiteralControl("<td>"));
+				ctrlHolder.Controls.Add(new LiteralControl("&nbsp;:&nbsp;"));
+				ctrlHolder.Controls.Add(new LiteralControl("</td>"));				
+			}
 
 			switch (type)
 			{
@@ -157,9 +160,34 @@ namespace Services
 				break;
 
 				case "datePicker":
-				EclipseWebSolutions.DatePicker.DatePicker datePicker = new EclipseWebSolutions.DatePicker.DatePicker();
-				datePicker.ID = id;
-				datePicker.CalendarPosition = EclipseWebSolutions.DatePicker.DatePicker.CalendarDisplay.DisplayRight;
+				//EclipseWebSolutions.DatePicker.DatePicker datePicker = new EclipseWebSolutions.DatePicker.DatePicker();
+				//datePicker.ID = id;
+				//datePicker.CalendarPosition = EclipseWebSolutions.DatePicker.DatePicker.CalendarDisplay.DisplayRight;
+				Panel datePicker = new Panel();
+				DropDownList days = new DropDownList();
+				days.ID = "days";
+				DropDownList months = new DropDownList();
+				months.ID = "months";
+				DropDownList years = new DropDownList();
+				years.ID = "years";
+				for (int i=1; i<=31; i++)
+					days.Items.Add(new ListItem(i.ToString(), i.ToString()));
+				for (int i=1; i<=12; i++)
+					months.Items.Add(new ListItem(i.ToString(), i.ToString()));
+				for (int i=2008; i<=2015; i++)
+					years.Items.Add(new ListItem(i.ToString(), i.ToString()));
+				datePicker.Controls.Add(new LiteralControl("<table><tr>"));
+				datePicker.Controls.Add(new LiteralControl("<td>"));
+				datePicker.Controls.Add(days);
+				datePicker.Controls.Add(new LiteralControl("</td>"));
+				datePicker.Controls.Add(new LiteralControl("<td>"));
+				datePicker.Controls.Add(months);
+				datePicker.Controls.Add(new LiteralControl("</td>"));
+				datePicker.Controls.Add(new LiteralControl("<td>"));
+				datePicker.Controls.Add(years);
+				datePicker.Controls.Add(new LiteralControl("</td>"));
+				datePicker.Controls.Add(new LiteralControl("</tr></table>"));
+
 				ctrlHolder.Controls.Add(new LiteralControl("<td>"));
 				ctrlHolder.Controls.Add(datePicker);
 				ctrlHolder.Controls.Add(new LiteralControl("</td>"));
@@ -167,13 +195,16 @@ namespace Services
 
 				case "timePicker":
 				DropDownList hour = new DropDownList();
+				hour.ID = "hours";
 				DropDownList minutes = new DropDownList();
+				minutes.ID = "minutes";
 				Panel timePicker = new Panel();
 				for (int i = 0; i <= 60; i++)
 				{
-					minutes.Items.Add(i.ToString());
-					if (i / 10 != 0)
-						hour.Items.Add(i.ToString());
+					if (i > 0 && i <= 24)
+						hour.Items.Add(new ListItem(i.ToString(), i.ToString()));
+					if (i % 10 == 0)
+						minutes.Items.Add(new ListItem(i.ToString(), i.ToString()));
 				}
 				timePicker.Controls.Add(new LiteralControl("<table><tr>"));
 				timePicker.Controls.Add(new LiteralControl("<td>"));
@@ -185,6 +216,8 @@ namespace Services
 				timePicker.Controls.Add(new LiteralControl("<td>"));
 				timePicker.Controls.Add(minutes);
 				timePicker.Controls.Add(new LiteralControl("</td>"));
+				timePicker.Controls.Add(new LiteralControl("</tr></table>"));
+
 				ctrlHolder.Controls.Add(new LiteralControl("<td>"));
 				ctrlHolder.Controls.Add(timePicker);
 				ctrlHolder.Controls.Add(new LiteralControl("</td>"));
@@ -195,11 +228,24 @@ namespace Services
 				break;
 
 				case "header":
-				;
+				Label headerCtrl = new Label();
+				headerCtrl.ID = id;
+				headerCtrl.Text = defaultValue;
+				headerCtrl.Font.Bold = true;
+				ctrlHolder.Controls.Add(new LiteralControl("<td colspan=\"3\">"));
+				ctrlHolder.Controls.Add(headerCtrl);
+				ctrlHolder.Controls.Add(new LiteralControl("</td>"));
 				break;
 
 				case "lblNoName":
-				;
+				Label infoCtrl = new Label();
+				infoCtrl.ID = id;
+				infoCtrl.Text = defaultValue;
+				ctrlHolder.Controls.Add(new LiteralControl("<td></td>"));
+				ctrlHolder.Controls.Add(new LiteralControl("<td></td>"));
+				ctrlHolder.Controls.Add(new LiteralControl("<td>"));
+				ctrlHolder.Controls.Add(infoCtrl);
+				ctrlHolder.Controls.Add(new LiteralControl("</td>"));
 				break;
 			}
 			newControl = ctrlHolder;

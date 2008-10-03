@@ -1,7 +1,8 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" CodeFile="service.ascx.cs" Inherits="modules_service" %>
 
 <asp:Panel ID="AnonymousPanel" runat="server" Visible="false">
-    <asp:Label ID="WelcomeLabel" runat="server" Text="Please login to book a ride"></asp:Label><br /><br />
+    <asp:Label ID="WelcomeLabel" runat="server" Text="Please login to book a ride" 
+        Font-Bold="True"></asp:Label><br /><br />
     <asp:Login ID="BookingLogin" runat="server" PasswordRecoveryText="Password Recovery" 
         PasswordRecoveryUrl="~/password.aspx" TitleText="">
     </asp:Login>
@@ -208,6 +209,24 @@
                         </tr>
                     </table>
                     <asp:Panel ID="ValuesPanel" runat="server" Visible="false">
+                        <asp:LinqDataSource ID="LinqDataSource2" runat="server" 
+                            ContextTypeName="Services.LotusDataContext" 
+                            TableName="form_field_values" EnableDelete="True" EnableUpdate="True" 
+                            OrderBy="form_field_value_id">
+                        </asp:LinqDataSource>
+                        <asp:GridView ID="ValuesGridView" runat="server" AutoGenerateColumns="False" 
+                            DataKeyNames="form_field_value_id" DataSourceID="LinqDataSource2" 
+                            SkinID="gridControls">
+                            <Columns>
+                                <asp:BoundField DataField="form_field_value_id" HeaderText="ID" InsertVisible="False" ReadOnly="True"/>
+                                <asp:BoundField DataField="display_value" HeaderText="Value" />
+                                <asp:CheckBoxField DataField="is_default" HeaderText="Default" />
+                                <asp:CommandField ShowDeleteButton="True" ShowEditButton="True" />
+                            </Columns>
+                        </asp:GridView>
+                        <br />
+                        <hr style="width:730px"/>
+                        <br />
                         <table>
                             <tr>
                                 <td>
@@ -298,4 +317,6 @@
 
 <asp:Panel ID="LogedinPanel" runat="server" Visible="false">
     <asp:PlaceHolder ID="ControlsPlaceHolder" runat="server"></asp:PlaceHolder>
+    <asp:Button ID="SubmitButton" runat="server" Text="Submit" 
+        onclick="SubmitButton_Click" />
 </asp:Panel>

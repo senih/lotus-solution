@@ -30,9 +30,6 @@ namespace Services
 		
     #region Extensibility Method Definitions
     partial void OnCreated();
-    partial void Insertform_data(form_data instance);
-    partial void Updateform_data(form_data instance);
-    partial void Deleteform_data(form_data instance);
     partial void Insertform_data_impression(form_data_impression instance);
     partial void Updateform_data_impression(form_data_impression instance);
     partial void Deleteform_data_impression(form_data_impression instance);
@@ -48,6 +45,9 @@ namespace Services
     partial void Insertform_field_definition(form_field_definition instance);
     partial void Updateform_field_definition(form_field_definition instance);
     partial void Deleteform_field_definition(form_field_definition instance);
+    partial void Insertform_data(form_data instance);
+    partial void Updateform_data(form_data instance);
+    partial void Deleteform_data(form_data instance);
     #endregion
 		
 		public LotusDataContext() : 
@@ -78,14 +78,6 @@ namespace Services
 				base(connection, mappingSource)
 		{
 			OnCreated();
-		}
-		
-		public System.Data.Linq.Table<form_data> form_datas
-		{
-			get
-			{
-				return this.GetTable<form_data>();
-			}
 		}
 		
 		public System.Data.Linq.Table<form_data_impression> form_data_impressions
@@ -127,282 +119,12 @@ namespace Services
 				return this.GetTable<form_field_definition>();
 			}
 		}
-	}
-	
-	[Table(Name="dbo.form_data")]
-	public partial class form_data : INotifyPropertyChanging, INotifyPropertyChanged
-	{
 		
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-		private int _form_data_id;
-		
-		private int _page_id;
-		
-		private int _form_field_definition_id;
-		
-		private string _value1;
-		
-		private string _value2;
-		
-		private System.Nullable<bool> _value3;
-		
-		private System.Nullable<decimal> _value4;
-		
-		private System.Nullable<decimal> _value5;
-		
-		private System.Nullable<System.DateTime> _value6;
-		
-		private System.Nullable<System.DateTime> _submitted_date;
-		
-    #region Extensibility Method Definitions
-    partial void OnLoaded();
-    partial void OnValidate(System.Data.Linq.ChangeAction action);
-    partial void OnCreated();
-    partial void Onform_data_idChanging(int value);
-    partial void Onform_data_idChanged();
-    partial void Onpage_idChanging(int value);
-    partial void Onpage_idChanged();
-    partial void Onform_field_definition_idChanging(int value);
-    partial void Onform_field_definition_idChanged();
-    partial void Onvalue1Changing(string value);
-    partial void Onvalue1Changed();
-    partial void Onvalue2Changing(string value);
-    partial void Onvalue2Changed();
-    partial void Onvalue3Changing(System.Nullable<bool> value);
-    partial void Onvalue3Changed();
-    partial void Onvalue4Changing(System.Nullable<decimal> value);
-    partial void Onvalue4Changed();
-    partial void Onvalue5Changing(System.Nullable<decimal> value);
-    partial void Onvalue5Changed();
-    partial void Onvalue6Changing(System.Nullable<System.DateTime> value);
-    partial void Onvalue6Changed();
-    partial void Onsubmitted_dateChanging(System.Nullable<System.DateTime> value);
-    partial void Onsubmitted_dateChanged();
-    #endregion
-		
-		public form_data()
-		{
-			OnCreated();
-		}
-		
-		[Column(Storage="_form_data_id", DbType="Int NOT NULL", IsPrimaryKey=true)]
-		public int form_data_id
+		public System.Data.Linq.Table<form_data> form_datas
 		{
 			get
 			{
-				return this._form_data_id;
-			}
-			set
-			{
-				if ((this._form_data_id != value))
-				{
-					this.Onform_data_idChanging(value);
-					this.SendPropertyChanging();
-					this._form_data_id = value;
-					this.SendPropertyChanged("form_data_id");
-					this.Onform_data_idChanged();
-				}
-			}
-		}
-		
-		[Column(Storage="_page_id", DbType="Int NOT NULL", IsPrimaryKey=true)]
-		public int page_id
-		{
-			get
-			{
-				return this._page_id;
-			}
-			set
-			{
-				if ((this._page_id != value))
-				{
-					this.Onpage_idChanging(value);
-					this.SendPropertyChanging();
-					this._page_id = value;
-					this.SendPropertyChanged("page_id");
-					this.Onpage_idChanged();
-				}
-			}
-		}
-		
-		[Column(Storage="_form_field_definition_id", DbType="Int NOT NULL", IsPrimaryKey=true)]
-		public int form_field_definition_id
-		{
-			get
-			{
-				return this._form_field_definition_id;
-			}
-			set
-			{
-				if ((this._form_field_definition_id != value))
-				{
-					this.Onform_field_definition_idChanging(value);
-					this.SendPropertyChanging();
-					this._form_field_definition_id = value;
-					this.SendPropertyChanged("form_field_definition_id");
-					this.Onform_field_definition_idChanged();
-				}
-			}
-		}
-		
-		[Column(Storage="_value1", DbType="NVarChar(255)")]
-		public string value1
-		{
-			get
-			{
-				return this._value1;
-			}
-			set
-			{
-				if ((this._value1 != value))
-				{
-					this.Onvalue1Changing(value);
-					this.SendPropertyChanging();
-					this._value1 = value;
-					this.SendPropertyChanged("value1");
-					this.Onvalue1Changed();
-				}
-			}
-		}
-		
-		[Column(Storage="_value2", DbType="NText", UpdateCheck=UpdateCheck.Never)]
-		public string value2
-		{
-			get
-			{
-				return this._value2;
-			}
-			set
-			{
-				if ((this._value2 != value))
-				{
-					this.Onvalue2Changing(value);
-					this.SendPropertyChanging();
-					this._value2 = value;
-					this.SendPropertyChanged("value2");
-					this.Onvalue2Changed();
-				}
-			}
-		}
-		
-		[Column(Storage="_value3", DbType="Bit")]
-		public System.Nullable<bool> value3
-		{
-			get
-			{
-				return this._value3;
-			}
-			set
-			{
-				if ((this._value3 != value))
-				{
-					this.Onvalue3Changing(value);
-					this.SendPropertyChanging();
-					this._value3 = value;
-					this.SendPropertyChanged("value3");
-					this.Onvalue3Changed();
-				}
-			}
-		}
-		
-		[Column(Storage="_value4", DbType="Money")]
-		public System.Nullable<decimal> value4
-		{
-			get
-			{
-				return this._value4;
-			}
-			set
-			{
-				if ((this._value4 != value))
-				{
-					this.Onvalue4Changing(value);
-					this.SendPropertyChanging();
-					this._value4 = value;
-					this.SendPropertyChanged("value4");
-					this.Onvalue4Changed();
-				}
-			}
-		}
-		
-		[Column(Storage="_value5", DbType="Decimal(18,2)")]
-		public System.Nullable<decimal> value5
-		{
-			get
-			{
-				return this._value5;
-			}
-			set
-			{
-				if ((this._value5 != value))
-				{
-					this.Onvalue5Changing(value);
-					this.SendPropertyChanging();
-					this._value5 = value;
-					this.SendPropertyChanged("value5");
-					this.Onvalue5Changed();
-				}
-			}
-		}
-		
-		[Column(Storage="_value6", DbType="SmallDateTime")]
-		public System.Nullable<System.DateTime> value6
-		{
-			get
-			{
-				return this._value6;
-			}
-			set
-			{
-				if ((this._value6 != value))
-				{
-					this.Onvalue6Changing(value);
-					this.SendPropertyChanging();
-					this._value6 = value;
-					this.SendPropertyChanged("value6");
-					this.Onvalue6Changed();
-				}
-			}
-		}
-		
-		[Column(Storage="_submitted_date", DbType="DateTime")]
-		public System.Nullable<System.DateTime> submitted_date
-		{
-			get
-			{
-				return this._submitted_date;
-			}
-			set
-			{
-				if ((this._submitted_date != value))
-				{
-					this.Onsubmitted_dateChanging(value);
-					this.SendPropertyChanging();
-					this._submitted_date = value;
-					this.SendPropertyChanged("submitted_date");
-					this.Onsubmitted_dateChanged();
-				}
-			}
-		}
-		
-		public event PropertyChangingEventHandler PropertyChanging;
-		
-		public event PropertyChangedEventHandler PropertyChanged;
-		
-		protected virtual void SendPropertyChanging()
-		{
-			if ((this.PropertyChanging != null))
-			{
-				this.PropertyChanging(this, emptyChangingEventArgs);
-			}
-		}
-		
-		protected virtual void SendPropertyChanged(String propertyName)
-		{
-			if ((this.PropertyChanged != null))
-			{
-				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+				return this.GetTable<form_data>();
 			}
 		}
 	}
@@ -1244,6 +966,308 @@ namespace Services
 					this._div_id = value;
 					this.SendPropertyChanged("div_id");
 					this.Ondiv_idChanged();
+				}
+			}
+		}
+		
+		public event PropertyChangingEventHandler PropertyChanging;
+		
+		public event PropertyChangedEventHandler PropertyChanged;
+		
+		protected virtual void SendPropertyChanging()
+		{
+			if ((this.PropertyChanging != null))
+			{
+				this.PropertyChanging(this, emptyChangingEventArgs);
+			}
+		}
+		
+		protected virtual void SendPropertyChanged(String propertyName)
+		{
+			if ((this.PropertyChanged != null))
+			{
+				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+			}
+		}
+	}
+	
+	[Table(Name="dbo.form_data")]
+	public partial class form_data : INotifyPropertyChanging, INotifyPropertyChanged
+	{
+		
+		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+		
+		private int _form_data_id;
+		
+		private int _page_id;
+		
+		private int _form_field_definition_id;
+		
+		private string _value1;
+		
+		private string _value2;
+		
+		private System.Nullable<bool> _value3;
+		
+		private System.Nullable<decimal> _value4;
+		
+		private System.Nullable<decimal> _value5;
+		
+		private System.Nullable<System.DateTime> _value6;
+		
+		private System.Nullable<System.DateTime> _submitted_date;
+		
+		private System.Nullable<int> _status;
+		
+    #region Extensibility Method Definitions
+    partial void OnLoaded();
+    partial void OnValidate(System.Data.Linq.ChangeAction action);
+    partial void OnCreated();
+    partial void Onform_data_idChanging(int value);
+    partial void Onform_data_idChanged();
+    partial void Onpage_idChanging(int value);
+    partial void Onpage_idChanged();
+    partial void Onform_field_definition_idChanging(int value);
+    partial void Onform_field_definition_idChanged();
+    partial void Onvalue1Changing(string value);
+    partial void Onvalue1Changed();
+    partial void Onvalue2Changing(string value);
+    partial void Onvalue2Changed();
+    partial void Onvalue3Changing(System.Nullable<bool> value);
+    partial void Onvalue3Changed();
+    partial void Onvalue4Changing(System.Nullable<decimal> value);
+    partial void Onvalue4Changed();
+    partial void Onvalue5Changing(System.Nullable<decimal> value);
+    partial void Onvalue5Changed();
+    partial void Onvalue6Changing(System.Nullable<System.DateTime> value);
+    partial void Onvalue6Changed();
+    partial void Onsubmitted_dateChanging(System.Nullable<System.DateTime> value);
+    partial void Onsubmitted_dateChanged();
+    partial void OnstatusChanging(System.Nullable<int> value);
+    partial void OnstatusChanged();
+    #endregion
+		
+		public form_data()
+		{
+			OnCreated();
+		}
+		
+		[Column(Storage="_form_data_id", DbType="Int NOT NULL", IsPrimaryKey=true)]
+		public int form_data_id
+		{
+			get
+			{
+				return this._form_data_id;
+			}
+			set
+			{
+				if ((this._form_data_id != value))
+				{
+					this.Onform_data_idChanging(value);
+					this.SendPropertyChanging();
+					this._form_data_id = value;
+					this.SendPropertyChanged("form_data_id");
+					this.Onform_data_idChanged();
+				}
+			}
+		}
+		
+		[Column(Storage="_page_id", DbType="Int NOT NULL", IsPrimaryKey=true)]
+		public int page_id
+		{
+			get
+			{
+				return this._page_id;
+			}
+			set
+			{
+				if ((this._page_id != value))
+				{
+					this.Onpage_idChanging(value);
+					this.SendPropertyChanging();
+					this._page_id = value;
+					this.SendPropertyChanged("page_id");
+					this.Onpage_idChanged();
+				}
+			}
+		}
+		
+		[Column(Storage="_form_field_definition_id", DbType="Int NOT NULL", IsPrimaryKey=true)]
+		public int form_field_definition_id
+		{
+			get
+			{
+				return this._form_field_definition_id;
+			}
+			set
+			{
+				if ((this._form_field_definition_id != value))
+				{
+					this.Onform_field_definition_idChanging(value);
+					this.SendPropertyChanging();
+					this._form_field_definition_id = value;
+					this.SendPropertyChanged("form_field_definition_id");
+					this.Onform_field_definition_idChanged();
+				}
+			}
+		}
+		
+		[Column(Storage="_value1", DbType="NVarChar(255)")]
+		public string value1
+		{
+			get
+			{
+				return this._value1;
+			}
+			set
+			{
+				if ((this._value1 != value))
+				{
+					this.Onvalue1Changing(value);
+					this.SendPropertyChanging();
+					this._value1 = value;
+					this.SendPropertyChanged("value1");
+					this.Onvalue1Changed();
+				}
+			}
+		}
+		
+		[Column(Storage="_value2", DbType="NText", UpdateCheck=UpdateCheck.Never)]
+		public string value2
+		{
+			get
+			{
+				return this._value2;
+			}
+			set
+			{
+				if ((this._value2 != value))
+				{
+					this.Onvalue2Changing(value);
+					this.SendPropertyChanging();
+					this._value2 = value;
+					this.SendPropertyChanged("value2");
+					this.Onvalue2Changed();
+				}
+			}
+		}
+		
+		[Column(Storage="_value3", DbType="Bit")]
+		public System.Nullable<bool> value3
+		{
+			get
+			{
+				return this._value3;
+			}
+			set
+			{
+				if ((this._value3 != value))
+				{
+					this.Onvalue3Changing(value);
+					this.SendPropertyChanging();
+					this._value3 = value;
+					this.SendPropertyChanged("value3");
+					this.Onvalue3Changed();
+				}
+			}
+		}
+		
+		[Column(Storage="_value4", DbType="Money")]
+		public System.Nullable<decimal> value4
+		{
+			get
+			{
+				return this._value4;
+			}
+			set
+			{
+				if ((this._value4 != value))
+				{
+					this.Onvalue4Changing(value);
+					this.SendPropertyChanging();
+					this._value4 = value;
+					this.SendPropertyChanged("value4");
+					this.Onvalue4Changed();
+				}
+			}
+		}
+		
+		[Column(Storage="_value5", DbType="Decimal(18,2)")]
+		public System.Nullable<decimal> value5
+		{
+			get
+			{
+				return this._value5;
+			}
+			set
+			{
+				if ((this._value5 != value))
+				{
+					this.Onvalue5Changing(value);
+					this.SendPropertyChanging();
+					this._value5 = value;
+					this.SendPropertyChanged("value5");
+					this.Onvalue5Changed();
+				}
+			}
+		}
+		
+		[Column(Storage="_value6", DbType="SmallDateTime")]
+		public System.Nullable<System.DateTime> value6
+		{
+			get
+			{
+				return this._value6;
+			}
+			set
+			{
+				if ((this._value6 != value))
+				{
+					this.Onvalue6Changing(value);
+					this.SendPropertyChanging();
+					this._value6 = value;
+					this.SendPropertyChanged("value6");
+					this.Onvalue6Changed();
+				}
+			}
+		}
+		
+		[Column(Storage="_submitted_date", DbType="DateTime")]
+		public System.Nullable<System.DateTime> submitted_date
+		{
+			get
+			{
+				return this._submitted_date;
+			}
+			set
+			{
+				if ((this._submitted_date != value))
+				{
+					this.Onsubmitted_dateChanging(value);
+					this.SendPropertyChanging();
+					this._submitted_date = value;
+					this.SendPropertyChanged("submitted_date");
+					this.Onsubmitted_dateChanged();
+				}
+			}
+		}
+		
+		[Column(Storage="_status", DbType="Int")]
+		public System.Nullable<int> status
+		{
+			get
+			{
+				return this._status;
+			}
+			set
+			{
+				if ((this._status != value))
+				{
+					this.OnstatusChanging(value);
+					this.SendPropertyChanging();
+					this._status = value;
+					this.SendPropertyChanged("status");
+					this.OnstatusChanged();
 				}
 			}
 		}
