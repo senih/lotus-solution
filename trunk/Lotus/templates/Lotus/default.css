@@ -162,10 +162,10 @@ body
 	padding-top:20px;
 	height:40px;
 	background:url('images/bg1.gif') repeat-x;
-	text-align:center;
 	font-family:Verdana;
 	font-size:12px;
 	color:Gray;
+	text-align:center;
 }
 
 #footer a
@@ -178,6 +178,7 @@ body
 {
 	text-decoration:none;
 }
+
 
 .clear
 {
@@ -376,10 +377,10 @@ a.topmenu:visited{font-family:arial;font-size:11px;color:#555555;text-decoration
 a.topmenu:hover{font-family:arial;font-size:11px;color:#111111;text-decoration:underline}
 
 /* BOTTOM NAVIGATION */
-.bottommenu{font-family:arial;font-size:11px;color:#555555;}
-a.bottommenu:link{font-family:arial;font-size:11px;color:#555555;text-decoration:underline}
-a.bottommenu:visited{font-family:arial;font-size:11px;color:#555555;text-decoration:underline}
-a.bottommenu:hover{font-family:arial;font-size:11px;color:#111111;text-decoration:underline}
+.bottommenu{}
+a.bottommenu:link{}
+a.bottommenu:visited{}
+a.bottommenu:hover{}
 
 /* MAIN NAVIGATION (LINKS) 
 a.mainmenu:link{font-family:arial;font-size:12px;color:#282828;text-decoration:none; text-transform:uppercase}
@@ -669,3 +670,13 @@ input.nodeedit {
     border:#cfcfcf 1px solid;
     z-index:1;}
 .nlstree {text-align:left; border:#e6e7e8 5px solid;padding:12px;background:white;}
+.buttonBook 
+{
+    display:block;
+    float:right;
+    text-decoration:none;
+    padding:0px 8px;
+    height:26px;
+    line-height:26px;
+    background-image: url('images/admin_menu_bg.gif');
+}

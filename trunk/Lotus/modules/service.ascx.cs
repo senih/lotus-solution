@@ -22,7 +22,6 @@ public partial class modules_service : BaseUserControl
 	protected void Page_Init(object sender, EventArgs e)
 	{
 		RenderFormControls();
-		//RenderFormControlsLiteral();
 	}
 	
 	/// <summary>
@@ -46,6 +45,7 @@ public partial class modules_service : BaseUserControl
 				FormControlsGridView.DataSource = Data.GetControls(PageID);
 				FormControlsGridView.DataBind();
 				LinqDataSource1.Where = "page_id=" + PageID.ToString();
+				ContainerDropDownList.DataBind();
 			}
 			else
 			{
@@ -263,6 +263,7 @@ public partial class modules_service : BaseUserControl
 		controlValue.is_default = DefaultValueCheckBox.Checked;
 		db.form_field_values.InsertOnSubmit(controlValue);
 		db.SubmitChanges();
+		ValuesGridView.DataBind();
 	}
 
 	/// <summary>
@@ -270,6 +271,9 @@ public partial class modules_service : BaseUserControl
 	/// </summary>
 	protected void RenderFormControls()
 	{
+		form_setting settings = Data.GetFormSettings(PageID);
+		HeaderLabel.Text = settings.header;
+		FooterLabel.Text = settings.footer;
 		List<container> listOfContainers = Data.GetContainers(PageID);
 		foreach (container div in listOfContainers)
 		{
@@ -288,27 +292,6 @@ public partial class modules_service : BaseUserControl
 		}
 	}
 
-	/// <summary>
-	/// Renders the form controls literal.
-	/// </summary>
-	protected void RenderFormControlsLiteral()
-	{
-		List<container> listOfContainers = Data.GetContainers(PageID);
-		foreach (container div in listOfContainers)
-		{			
-			ControlsPlaceHolder.Controls.Add(new LiteralControl("<div class=" + div.name));
-			List<form_field_definition> listOfFormControls = Data.GetControlsInContainer(div.id);
-			ControlsPlaceHolder.Controls.Add(new LiteralControl("<table>"));
-			foreach (form_field_definition field in listOfFormControls)
-			{
-				ControlsPlaceHolder.Controls.Add(new LiteralControl("<tr>"));
-				ControlsPlaceHolder.Controls.Add(WebCustomControl.GetControl(field));
-				ControlsPlaceHolder.Controls.Add(new LiteralControl("</tr>"));
-			}
-			ControlsPlaceHolder.Controls.Add(new LiteralControl("</table>"));
-			ControlsPlaceHolder.Controls.Add(new LiteralControl("</div>"));
-		}
-	}
 
 	/// <summary>
 	/// Handles the Click event of the AddContainerButton control.
@@ -328,6 +311,17 @@ public partial class modules_service : BaseUserControl
 		db.SubmitChanges();
 		ContainersGridView.DataBind();
 	}
+
+	/// <summary>
+	/// Handles the Click event of the btnregister control.
+	/// </summary>
+	/// <param name="sender">The source of the event.</param>
+	/// <param name="e">The <see cref="System.EventArgs"/> instance containing the event data.</param>
+	protected void btnregister_Click(object sender, EventArgs e)
+    {
+        Response.Redirect("~/registration.aspx");
+    }
+	
 
 	/// <summary>
 	/// Handles the Click event of the SubmitButton control.
@@ -393,11 +387,24 @@ public partial class modules_service : BaseUserControl
 	/// </summary>
 	protected void SendMail()
 	{
+		form_setting settings = Data.GetFormSettings(PageID);
 		MembershipUser user = Membership.GetUser(Page.User.Identity.Name);
 		string body = "Your booking is registered. Soon operator will contact you. Thank you for using our services";
+		if (settings != null || settings.thank_you_message != string.Empty)
+			body = settings.thank_you_message;
 		MailMessage msg = new MailMessage("contact@lotustransport.com", user.Email, "Confirmation", body);
 		SmtpClient client = new SmtpClient();
 		client.Send(msg);
 		msg.Dispose();
+	}
+
+	/// <summary>
+	/// Handles the Click event of the SaveSettingsButton control.
+	/// </summary>
+	/// <param name="sender">The source of the event.</param>
+	/// <param name="e">The <see cref="System.EventArgs"/> instance containing the event data.</param>
+	protected void SaveSettingsButton_Click(object sender, EventArgs e)
+	{
+		Data.SaveSettings(PageID, HeaderTextBox.Text, FooterTextBox.Text, ThankYouTextBox.Text);
 	}
 }

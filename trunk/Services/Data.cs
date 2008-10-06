@@ -18,7 +18,7 @@ namespace Services
 		/// <returns>Gets the database connection string</returns>
 		public static string ConnectionManager()
 		{
-			string connection = ConfigurationSettings.AppSettings["SiteConnectionString"];
+			string connection = ConfigurationSettings.AppSettings["ConnectionString"];
 			return connection;
 		}
 
@@ -41,7 +41,8 @@ namespace Services
 		/// <returns>Returns list of all containers defined for this page</returns>
 		public static List<container> GetContainers(int pageId)
 		{
-			LotusDataContext db = new LotusDataContext(ConnectionManager());
+			string conn = ConnectionManager();
+			LotusDataContext db = new LotusDataContext(conn);
 			return db.containers.Where(c => c.page_id == pageId).OrderBy(c => c.sorting).ToList<container>();
 		}
 
@@ -52,7 +53,8 @@ namespace Services
 		/// <returns>Returns list of all controls in given container</returns>
 		public static List<form_field_definition> GetControlsInContainer(int containerId)
 		{
-			LotusDataContext db = new LotusDataContext(ConnectionManager());
+			string conn = ConnectionManager();
+			LotusDataContext db = new LotusDataContext(conn);
 			return db.form_field_definitions.Where(c => c.div_id == containerId).OrderBy(c => c.sorting).ToList<form_field_definition>();
 		}
 
@@ -70,7 +72,8 @@ namespace Services
 		/// <param name="user">The user.</param>
 		public static void InsertData(int dataId, int fieldId, int pageId, string inputType, string sValue, bool? bValue, DateTime? dValue, string user)
 		{
-			LotusDataContext db = new LotusDataContext(ConnectionManager());
+			string conn = ConnectionManager();
+			LotusDataContext db = new LotusDataContext(conn);
 			form_data data = new form_data();
 			data.form_data_id = dataId;
 			data.form_field_definition_id = fieldId;
@@ -103,6 +106,46 @@ namespace Services
 			}
 			db.form_datas.InsertOnSubmit(data);
 			db.SubmitChanges();
+		}
+
+
+		public static void SaveSettings(int pageId, string header, string footer, string msg)
+		{
+			string conn = ConnectionManager();
+			form_setting settings;
+			LotusDataContext db = new LotusDataContext(conn);
+			if (db.form_settings.Where(s => s.page_id == pageId).Any())
+			{
+				settings = db.form_settings.Where(s => s.page_id == pageId).Single<form_setting>();
+				settings.header = header;
+				settings.footer = footer;
+				settings.thank_you_message = msg;
+			}
+			else
+			{
+				settings = new form_setting();
+				settings.page_id = pageId;
+				settings.header = header;
+				settings.footer = footer;
+				settings.thank_you_message = msg;
+				db.form_settings.InsertOnSubmit(settings);
+			}
+			db.SubmitChanges();
+		}
+
+		/// <summary>
+		/// Gets the form settings.
+		/// </summary>
+		/// <param name="pageId">The page id.</param>
+		/// <returns></returns>
+		public static form_setting GetFormSettings(int pageId)
+		{
+			string conn = ConnectionManager();
+			LotusDataContext db = new LotusDataContext(conn);
+			form_setting settings = null;
+			if (db.form_settings.Where(s => s.page_id == pageId).Any<form_setting>())
+				settings = db.form_settings.Where(s => s.page_id == pageId).Single<form_setting>();
+			return settings;
 		}
 	}
 }
