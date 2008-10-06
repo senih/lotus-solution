@@ -169,10 +169,26 @@
         Dim sRole As String
         Dim sUserName As String = CreateUserWizard1.UserName
         Dim sEmail As String = CreateUserWizard1.Email
+        Dim sFirstName As String = CType(CreateUserWizardStep1.ContentTemplateContainer.FindControl("FirstName"), TextBox).Text
+        Dim sLastName As String = CType(CreateUserWizardStep1.ContentTemplateContainer.FindControl("LastName"), TextBox).Text
+        Dim sCompany As String = CType(CreateUserWizardStep1.ContentTemplateContainer.FindControl("Company"), TextBox).Text
+        Dim sPhone As String = CType(CreateUserWizardStep1.ContentTemplateContainer.FindControl("Phone"), TextBox).Text
+        Dim sAddress As String = CType(CreateUserWizardStep1.ContentTemplateContainer.FindControl("Address"), TextBox).Text
+        Dim sCity As String = CType(CreateUserWizardStep1.ContentTemplateContainer.FindControl("City"), TextBox).Text
+        Dim sPostalCode As String = CType(CreateUserWizardStep1.ContentTemplateContainer.FindControl("PostalCode"), TextBox).Text
+        Dim sCountry As String = CType(CreateUserWizardStep1.ContentTemplateContainer.FindControl("Country"), TextBox).Text
         Dim ID As String = Membership.GetUser(sUserName).ProviderUserKey.ToString.ToUpper
         Dim pcSelectedProfile As ProfileCommon = Profile.GetProfile(sUserName)
 
         pcSelectedProfile.UseWYSIWYG = True
+        pcSelectedProfile.FirstName = sFirstName
+        pcSelectedProfile.LastName = sLastName
+        pcSelectedProfile.Company = sCompany
+        pcSelectedProfile.Phone = sPhone
+        pcSelectedProfile.Address = sAddress
+        pcSelectedProfile.City = sCity
+        pcSelectedProfile.Zip = sPostalCode
+        pcSelectedProfile.Country = sCountry
         pcSelectedProfile.Save()
 
         If oSetting.OptionType = "single" Then
@@ -245,7 +261,7 @@
             CompleteWizardStep1.ContentTemplateContainer.Controls.Add(New LiteralControl("<p>" & GetLocalResourceObject("PleaseCheckEmail") & "</p>"))
         
         Catch ex As Exception
-            CreateUserWizard1.CompleteSuccessText = GetLocalResourceObject("RegistrationFailed")
+            CreateUserWizard1.CompleteSuccessText = GetLocalResourceObject("RegistrationFailed") & ex.Message
             Membership.DeleteUser(sUserName)
         End Try
 
@@ -266,75 +282,197 @@
     <asp:Button ID="btnContinue" runat="server" meta:resourcekey="btnContinue" OnClick="btnContinue_Click" />
 </asp:Panel>
 
-<asp:CreateUserWizard ID="CreateUserWizard1" meta:resourcekey="CreateUserWizard" runat="server" 
+<asp:CreateUserWizard ID="CreateUserWizard1" 
+    meta:resourcekey="CreateUserWizard" runat="server" 
     CreateUserButtonText="Create User"
     ContinueButtonText="Continue"    
     OnCreatedUser="CreateUserWizard1_CreatedUser" 
     ContinueDestinationPageUrl="~/default.aspx"
-    DisableCreatedUser="true">
+    DisableCreatedUser="true" Width="98%">
     <TitleTextStyle HorizontalAlign=Left Font-Bold=True Height=30px />
     <LabelStyle HorizontalAlign=Left />
     <WizardSteps>
         <asp:CreateUserWizardStep ID="CreateUserWizardStep1" meta:resourcekey="CreateUserWizardStep" runat="server" EnableViewState="False">
           <ContentTemplate>
-            <table border="0">
+            <table border="0" style="width:736px;">
               <tr>
-                <td align="left" colspan="2" style="font-weight: bold; height: 30px">
-                    <asp:Label ID="lblSignUp" meta:resourcekey="lblSignUp" runat="server" Text="Sign Up for Your New Account"></asp:Label>
+                  <td align="left" colspan="4">
+                      <asp:Label ID="lblSignUp" runat="server" meta:resourcekey="lblSignUp" 
+                          Text="Sign Up for Your New Account" CssClass="subTitle"></asp:Label>
                   </td>
               </tr>
+                <tr>
+                    <td align="left" style="width: 25%">
+                        <asp:Label ID="FirstNameLabel" runat="server" AssociatedControlID="FirstName">
+                        <asp:Label ID="lblFirstName" runat="server" meta:resourcekey="lblFirstName" 
+                            Text="First Name:"></asp:Label>
+                        </asp:Label>
+                    </td>
+                    <td style="width: 25%">
+                        <asp:TextBox ID="FirstName" runat="server"></asp:TextBox>
+                        <asp:RequiredFieldValidator ID="FirstNameRequired" runat="server" 
+                            ControlToValidate="FirstName" ErrorMessage="*" 
+                            ValidationGroup="CreateUserWizard1">*</asp:RequiredFieldValidator>
+                    </td>
+                    <td align="left" style="width: 25%">
+                        <asp:Label ID="UserNameLabel" runat="server" AssociatedControlID="UserName">
+                        <asp:Label ID="lblUserName" runat="server" meta:resourcekey="lblUserName" 
+                            Text="User Name:"></asp:Label>
+                        </asp:Label>
+                    </td>
+                    <td style="width: 25%">
+                        <asp:TextBox ID="UserName" runat="server"></asp:TextBox>
+                        <asp:RequiredFieldValidator ID="UserNameRequired" runat="server" 
+                            ControlToValidate="UserName" ErrorMessage="*" 
+                            ValidationGroup="CreateUserWizard1">*</asp:RequiredFieldValidator>
+                    </td>
+                </tr>
               <tr>
+                  <td >
+                      <asp:Label ID="LastNameLabel" runat="server" AssociatedControlID="LastName">
+                      <asp:Label ID="lblLastName" runat="server" meta:resourcekey="lbllastName" 
+                          Text="Last Name:"></asp:Label>
+                      </asp:Label>
+                  </td>
+                  <td >
+                      <asp:TextBox ID="LastName" runat="server"></asp:TextBox>
+                      <asp:RequiredFieldValidator ID="LastNameRequired" runat="server" 
+                          ControlToValidate="LastName" ErrorMessage="*" 
+                          ValidationGroup="CreateUserWizard1">*</asp:RequiredFieldValidator>
+                  </td>
                 <td align="left">
-                  <asp:Label ID="UserNameLabel" runat="server" AssociatedControlID="UserName">
-                      <asp:Label ID="lblUserName" meta:resourcekey="lblUserName" runat="server" Text="User Name:"></asp:Label></asp:Label></td>
-                <td style="width: 201px">
-                  <asp:TextBox ID="UserName" runat="server"></asp:TextBox>
-                  <asp:RequiredFieldValidator ID="UserNameRequired" runat="server" ControlToValidate="UserName"
-                    ErrorMessage="*" ValidationGroup="CreateUserWizard1">*</asp:RequiredFieldValidator>
+                    <asp:Label ID="PasswordLabel" runat="server" AssociatedControlID="Password">
+                    <asp:Label ID="lblPassword" runat="server" meta:resourcekey="lblPassword" 
+                        Text="Password:"></asp:Label>
+                    </asp:Label>
+                  </td>
+                <td >
+                    <asp:TextBox ID="Password" runat="server" TextMode="Password"></asp:TextBox>
+                    <asp:RequiredFieldValidator ID="PasswordRequired" runat="server" 
+                        ControlToValidate="Password" ErrorMessage="*" 
+                        ValidationGroup="CreateUserWizard1">*</asp:RequiredFieldValidator>
                 </td>
               </tr>
               <tr>
+                  <td ><asp:Label ID="CompanyLabel" runat="server" AssociatedControlID="Company">
+                      <asp:Label ID="lblCompany" runat="server" meta:resourcekey="lblCompany" 
+                          Text="Company:"></asp:Label>
+                      </asp:Label></td>
+                  <td ><asp:TextBox ID="Company" runat="server"></asp:TextBox></td>
                 <td align="left">
-                  <asp:Label ID="PasswordLabel" runat="server" AssociatedControlID="Password">
-                      <asp:Label ID="lblPassword" meta:resourcekey="lblPassword" runat="server" Text="Password:"></asp:Label></asp:Label></td>
-                <td style="width: 201px">
-                  <asp:TextBox ID="Password" runat="server" TextMode="Password"></asp:TextBox>
-                  <asp:RequiredFieldValidator ID="PasswordRequired" runat="server" ControlToValidate="Password"
-                    ErrorMessage="*" ValidationGroup="CreateUserWizard1">*</asp:RequiredFieldValidator>
+                    <asp:Label ID="ConfirmPasswordLabel" runat="server" 
+                        AssociatedControlID="ConfirmPassword" meta:resourcekey="ConfirmPasswordLabel" 
+                        Text="Confirm Password:"></asp:Label>
+                  </td>
+                <td >
+                    <asp:TextBox ID="ConfirmPassword" runat="server" TextMode="Password"></asp:TextBox>
+                    <asp:RequiredFieldValidator ID="ConfirmPasswordRequired" runat="server" 
+                        ControlToValidate="ConfirmPassword" ErrorMessage="*" 
+                        ValidationGroup="CreateUserWizard1">*</asp:RequiredFieldValidator>
+                    <asp:CompareValidator ID="CompareValidator1" runat="server" 
+                        ControlToCompare="Password" ControlToValidate="ConfirmPassword" 
+                        ErrorMessage="*" ValidationGroup="CreateUserWizard1"></asp:CompareValidator>
                 </td>
               </tr>
               <tr>
+                  <td><asp:Label ID="PhoneLabel" runat="server" AssociatedControlID="Phone">
+                      <asp:Label ID="lblPhone" runat="server" meta:resourcekey="lblPhone" 
+                          Text="Phone:"></asp:Label>
+                      </asp:Label>
+                  </td>
+                  <td><asp:TextBox ID="Phone" runat="server"></asp:TextBox>
+                      <asp:RequiredFieldValidator ID="PhoneRequired" runat="server" 
+                          ControlToValidate="Phone" ErrorMessage="*" 
+                          ValidationGroup="CreateUserWizard1">*</asp:RequiredFieldValidator></td>
                 <td align="left">
-                  <asp:Label ID="ConfirmPasswordLabel" meta:resourcekey="ConfirmPasswordLabel" runat="server" Text="Confirm Password:" AssociatedControlID="ConfirmPassword"></asp:Label></td>
-                <td style="width: 201px">
-                  <asp:TextBox ID="ConfirmPassword" runat="server" TextMode="Password"></asp:TextBox>
-                  <asp:RequiredFieldValidator ID="ConfirmPasswordRequired" runat="server" ControlToValidate="ConfirmPassword"
-                    ErrorMessage="*" ValidationGroup="CreateUserWizard1">*</asp:RequiredFieldValidator>
-                    <asp:CompareValidator ID="CompareValidator1" runat="server" ValidationGroup="CreateUserWizard1" ControlToValidate="ConfirmPassword" ControlToCompare="Password" ErrorMessage="*"></asp:CompareValidator>
+                    <asp:Label ID="EmailLabel" runat="server" AssociatedControlID="Email">
+                    <asp:Label ID="lblEmail" runat="server" meta:resourcekey="lblEmail" 
+                        Text="Email:"></asp:Label>
+                    </asp:Label>
+                  </td>
+                <td>
+                    <asp:TextBox ID="Email" runat="server"></asp:TextBox>
+                    <asp:RequiredFieldValidator ID="EmailRequired" runat="server" 
+                        ControlToValidate="Email" ErrorMessage="*" ValidationGroup="CreateUserWizard1">*</asp:RequiredFieldValidator>
                 </td>
               </tr>
               <tr>
-                <td align="left">
-                  <asp:Label ID="EmailLabel" runat="server" AssociatedControlID="Email">
-                      <asp:Label ID="lblEmail" meta:resourcekey="lblEmail" runat="server" Text="Email:"></asp:Label></asp:Label></td>
-                <td style="width: 201px">
-                  <asp:TextBox ID="Email" runat="server"></asp:TextBox>
-                  <asp:RequiredFieldValidator ID="EmailRequired" runat="server" ControlToValidate="Email"
-                    ErrorMessage="*" ValidationGroup="CreateUserWizard1">*</asp:RequiredFieldValidator>
-                </td>
-              </tr>
-              <tr>
+                  <td  valign="top">
+                     <asp:Label ID="AddressLabel" runat="server" AssociatedControlID="Address">
+                    <asp:Label ID="lblAddress" runat="server" meta:resourcekey="lblAddress" 
+                        Text="Address:"></asp:Label>
+                    </asp:Label>
+                  </td>
+                  <td>
+                      <asp:TextBox ID="Address" runat="server"></asp:TextBox>
+                    <asp:RequiredFieldValidator ID="AddressRequired" runat="server" 
+                        ControlToValidate="Address" ErrorMessage="*" ValidationGroup="CreateUserWizard1">*</asp:RequiredFieldValidator>
+                  </td>
                 <td align="left" valign="top">
-                  <asp:Label ID="lblOptDescription" runat="server"></asp:Label></td>
-                <td style="width: 201px;">
-                  <asp:CheckBoxList ID="cbRegOpt" runat="server" DataTextField="Key" DataValueField="Value">
-                  </asp:CheckBoxList>
-                  <asp:RadioButtonList ID="rbRegOpt" runat="server" DataTextField="Key" DataValueField="Value">
-                  </asp:RadioButtonList>
+                    <asp:Label ID="lblOptDescription" runat="server"></asp:Label>
+                  </td>
+                <td style="width: 201px">
+                    <asp:CheckBoxList ID="cbRegOpt" runat="server" DataTextField="Key" 
+                        DataValueField="Value">
+                    </asp:CheckBoxList>
+                    <asp:RadioButtonList ID="rbRegOpt" runat="server" DataTextField="Key" 
+                        DataValueField="Value">
+                    </asp:RadioButtonList>
                 </td>
               </tr>
               <tr>
-                <td align="center" colspan="2" style="color: red">
+                  <td  valign="top">
+                     <asp:Label ID="CityLabel" runat="server" AssociatedControlID="City">
+                    <asp:Label ID="lblCity" runat="server" meta:resourcekey="lblCity" 
+                        Text="City:"></asp:Label>
+                    </asp:Label>
+                  </td>
+                  <td>
+                      <asp:TextBox ID="City" runat="server"></asp:TextBox>
+                    <asp:RequiredFieldValidator ID="CityRequiredField" runat="server" 
+                        ControlToValidate="City" ErrorMessage="*" ValidationGroup="CreateUserWizard1">*</asp:RequiredFieldValidator>
+                  </td>
+                <td align="left" valign="top">
+                    &nbsp;</td>
+                <td style="width: 201px;">
+                    &nbsp;</td>
+              </tr>
+                <tr>
+                    <td  valign="top">
+                     <asp:Label ID="PostalCodeLabel" runat="server" AssociatedControlID="PostalCode">
+                    <asp:Label ID="lblPostalCode" runat="server" meta:resourcekey="lblPostalCode" 
+                        Text="Postal Code:"></asp:Label>
+                    </asp:Label>
+                  </td>
+                  <td>
+                      <asp:TextBox ID="PostalCode" runat="server"></asp:TextBox>
+                    <asp:RequiredFieldValidator ID="PostalCodeRequired" runat="server" 
+                        ControlToValidate="PostalCode" ErrorMessage="*" ValidationGroup="CreateUserWizard1">*</asp:RequiredFieldValidator>
+                  </td>
+                    <td align="left" valign="top">
+                        &nbsp;</td>
+                    <td >
+                        &nbsp;</td>
+                </tr>
+                <tr>
+                    <td  valign="top">
+                     <asp:Label ID="CountryLabel" runat="server" AssociatedControlID="Country">
+                    <asp:Label ID="lblCountry" runat="server" meta:resourcekey="lblCountry" 
+                        Text="Country:"></asp:Label>
+                    </asp:Label>
+                  </td>
+                  <td>
+                      <asp:TextBox ID="Country" runat="server"></asp:TextBox>
+                    <asp:RequiredFieldValidator ID="CountryRequired" runat="server" 
+                        ControlToValidate="Country" ErrorMessage="*" ValidationGroup="CreateUserWizard1">*</asp:RequiredFieldValidator>
+                  </td>
+                    <td align="left" valign="top">
+                        &nbsp;</td>
+                    <td >
+                        &nbsp;</td>
+                </tr>
+              <tr>
+                <td align="center" colspan="4" style="color: red">
                   <asp:Literal ID="ErrorMessage" runat="server" EnableViewState="False"></asp:Literal>
                 </td>
               </tr>

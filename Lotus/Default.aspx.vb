@@ -1395,6 +1395,9 @@ Partial Class _Default
         End If
 
         '*** COUNTRY SELECTION ***
+        'my code
+        Dim currentCountryID As Integer
+        'end mycode
         Dim sSelectInstruction As String = ""
         oCommand = New SqlCommand("advcms_GetRegion")
         oCommand.CommandType = CommandType.StoredProcedure
@@ -1403,6 +1406,9 @@ Partial Class _Default
         oDataReader = oCommand.ExecuteReader()
         If oDataReader.Read() Then
             sSelectInstruction = oDataReader("instruction_text").ToString
+            'my code
+            currentCountryID = oDataReader("locale_id")
+            'end mycode
         End If
         oDataReader.Close()
         If sSelectInstruction = "" Then
@@ -1416,6 +1422,9 @@ Partial Class _Default
         Dim oDropDownList As DropDownList = New DropDownList
         Dim sLocaleHomePage As String
         Dim sLocaleDescription As String
+        'my code
+        Dim sLangTabs As String = ""
+        'end my code
 
         oList = New ListItem
         oList.Text = sSelectInstruction
@@ -1432,6 +1441,10 @@ Partial Class _Default
             sLocaleDescription = oDataReader("description")
             sLocaleHomePage = oDataReader("home_page")
             sFileUrl = sAppPath & sLocaleHomePage
+
+            If oDataReader("locale_id") <> currentCountryID Then
+                sLangTabs += "<a  href=""" & sFileUrl & """>" & sLocaleDescription & "</a>&nbsp;&nbsp;|&nbsp;&nbsp;"
+            End If
 
             oList = New ListItem
             oList.Text = sLocaleDescription
@@ -1458,7 +1471,8 @@ Partial Class _Default
 
         If Not IsNothing(placeholderCountrySelect) Then
             If Not placeholderCountrySelect.Visible = False Then
-                placeholderCountrySelect.Controls.Add(oDropDownList)
+                'placeholderCountrySelect.Controls.Add(oDropDownList)
+                placeholderCountrySelect.Controls.Add(New LiteralControl(sLangTabs))
             End If
         End If
 

@@ -47,26 +47,8 @@
 	    	</div>
 	    	<div id="menu_right">
 	    	    <asp:ContentPlaceHolder ID="placeholderRightTop" runat="server"></asp:ContentPlaceHolder>
-	    	    <div class="box">
-            	<div class="box_header">
-                	<div class="box_header_left">
-                    	<div class="box_header_right"></div>
-                    </div>
-                </div>
-                <div class="box_middle">
-                	<div class="box_middle_left">
-                    	<div class="box_middle_right">
-                    	    <asp:ContentPlaceHolder ID="placeholderPagesWithin" runat="server"></asp:ContentPlaceHolder>
-                    	    <asp:ContentPlaceHolder ID="placeholderSameLevelPages" runat="server"></asp:ContentPlaceHolder>
-                        </div>
-                    </div>
-                </div>
-                <div class="box_footer">
-                	<div class="box_footer_left">
-                    	<div class="box_footer_right"></div>
-                    </div>
-                </div>            
-            </div>
+                <asp:ContentPlaceHolder ID="placeholderPagesWithin" runat="server"></asp:ContentPlaceHolder>
+                <asp:ContentPlaceHolder ID="placeholderSameLevelPages" runat="server"></asp:ContentPlaceHolder>
 	    	    
 	    	    <asp:ContentPlaceHolder ID="placeholderRight" runat="server"></asp:ContentPlaceHolder>
 	    	    <asp:ContentPlaceHolder ID="placeholderRightBottom" runat="server"></asp:ContentPlaceHolder>
@@ -75,11 +57,9 @@
     	</div>
     </div>
     <div id="footer">
-        <a href="#">Македонски</a>&nbsp;&nbsp;|&nbsp;&nbsp;
-        <a href="#">Shqip</a>&nbsp;&nbsp;|&nbsp;&nbsp;
-        <a href="legal.aspx">Legal Notice</a>&nbsp;&nbsp;|&nbsp;&nbsp;
-        <asp:ContentPlaceHolder ID="placeholderLoginLogout" runat="server"></asp:ContentPlaceHolder>&nbsp;&nbsp;|&nbsp;&nbsp;
-        © 2008 Lotus Transport
+        <asp:ContentPlaceHolder ID="placeholderCountrySelect" runat="server"></asp:ContentPlaceHolder>
+        <asp:ContentPlaceHolder ID="placeholderBottomMenu" runat="server"></asp:ContentPlaceHolder>&nbsp;&nbsp;|&nbsp;&nbsp;
+        <a href="login.aspx?ReturnUrl=services.aspx">Login</a>&nbsp;&nbsp;|&nbsp;&nbsp; © 2008 Lotus Transport
     </div>
 
 			
@@ -88,14 +68,14 @@
 	    <asp:ContentPlaceHolder ID="placeholderFileDownload" runat="server"></asp:ContentPlaceHolder>
 		<asp:ContentPlaceHolder ID="placeholderPublishingInfo" runat="server"></asp:ContentPlaceHolder>
 		<asp:ContentPlaceHolder ID="placeholderListing" runat="server"></asp:ContentPlaceHolder>
-		<asp:ContentPlaceHolder ID="placeholderCountrySelect" runat="server" Visible="false"></asp:ContentPlaceHolder>
+		
 		<asp:ContentPlaceHolder ID="placeholderLeftTop" runat="server"></asp:ContentPlaceHolder>
 		<asp:ContentPlaceHolder ID="placeholderOrderNow" runat="server"></asp:ContentPlaceHolder>				
 		<asp:ContentPlaceHolder ID="placeholderArchives" runat="server"></asp:ContentPlaceHolder>
 		<asp:ContentPlaceHolder ID="placeholderCategoryList" runat="server"></asp:ContentPlaceHolder>
 		<asp:ContentPlaceHolder ID="placeholderSubscribe" runat="server"></asp:ContentPlaceHolder>
 		<asp:ContentPlaceHolder ID="placeholderLeftBottom" runat="server"></asp:ContentPlaceHolder>		
-		<asp:ContentPlaceHolder ID="placeholderBottomMenu" runat="server" Visible="false"></asp:ContentPlaceHolder>
+		
 		<asp:ContentPlaceHolder ID="placeholderTopMenu" runat="server" Visible="false"></asp:ContentPlaceHolder>
 		<asp:ContentPlaceHolder ID="placeholderScript" runat="server"></asp:ContentPlaceHolder>							
 	</div>	

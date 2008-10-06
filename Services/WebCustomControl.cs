@@ -15,8 +15,9 @@ namespace Services
 	{
 		public static Control GetControl(form_field_definition control)
 		{
+			string conn = Data.ConnectionManager();
 			int ctrlId = control.form_field_definition_id;
-			LotusDataContext db = new LotusDataContext(Data.ConnectionManager());
+			LotusDataContext db = new LotusDataContext(conn);
 			List<form_field_value> listOfValues = db.form_field_values.Where(v => v.form_field_definition_id == ctrlId).ToList<form_field_value>();
 			Control newControl = new Control();			
 			string name = control.form_field_name;

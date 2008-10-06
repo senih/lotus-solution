@@ -78,10 +78,12 @@ body
 	color:#282828;
 	text-decoration:none;
 	text-transform:uppercase;
-	font-family:Tahoma;
-	font-size:small;
+	font-family:Trebuchet MS;
+	font-size:12px;
 	font-weight:bold;	
 	padding-right:20px;
+	letter-spacing:1px;	
+
 }
 
 #menu a:hover

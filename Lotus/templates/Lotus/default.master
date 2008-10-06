@@ -75,23 +75,22 @@
             </div>	    	    
 	    	    <asp:ContentPlaceHolder ID="placeholderRight" runat="server"></asp:ContentPlaceHolder>
 	    	    <asp:ContentPlaceHolder ID="placeholderRightBottom" runat="server"></asp:ContentPlaceHolder>
-	    	</div>
-	    	<div class="clear"></div>
-    	</div>
+	  </div>
+	  <div class="clear"></div>
+    </div>
     <div id="footer">
-        <a href="#">Македонски</a>&nbsp;&nbsp;|&nbsp;&nbsp;
-        <a href="#">Shqip</a>&nbsp;&nbsp;|&nbsp;&nbsp;
-        <a href="legal.aspx">Legal Notice</a>&nbsp;&nbsp;|&nbsp;&nbsp; © 2008 Lotus Transport
+        <asp:ContentPlaceHolder ID="placeholderCountrySelect" runat="server"></asp:ContentPlaceHolder>
+        <asp:ContentPlaceHolder ID="placeholderBottomMenu" runat="server"></asp:ContentPlaceHolder>&nbsp;&nbsp;|&nbsp;&nbsp; © 2008 Lotus Transport
     </div>
 
 			
 	<div>
 	    
-		<asp:ContentPlaceHolder ID="placeholderCountrySelect" runat="server" Visible="false"></asp:ContentPlaceHolder>
+		
 		<asp:ContentPlaceHolder ID="placeholderLeftTop" runat="server"></asp:ContentPlaceHolder>
 		<asp:ContentPlaceHolder ID="placeholderOrderNow" runat="server"></asp:ContentPlaceHolder>				
 		<asp:ContentPlaceHolder ID="placeholderLeftBottom" runat="server"></asp:ContentPlaceHolder>		
-		<asp:ContentPlaceHolder ID="placeholderBottomMenu" runat="server" Visible="false"></asp:ContentPlaceHolder>
+		
 		<asp:ContentPlaceHolder ID="placeholderTopMenu" runat="server" Visible="false"></asp:ContentPlaceHolder>
 		<asp:ContentPlaceHolder ID="placeholderScript" runat="server"></asp:ContentPlaceHolder>							
 	</div>	

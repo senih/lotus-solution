@@ -1,11 +1,41 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" CodeFile="service.ascx.cs" Inherits="modules_service" %>
 
 <asp:Panel ID="AnonymousPanel" runat="server" Visible="false">
-    <asp:Label ID="WelcomeLabel" runat="server" Text="Please login to book a ride" 
-        Font-Bold="True"></asp:Label><br /><br />
+    
+    <table style="width:728px;">
+    <tr>
+        <td style="width:50%;">
+            <asp:Label ID="lblLogin" meta:resourcekey="lblLogin" runat="server" Text="Login" CssClass="subTitle"></asp:Label>
+        </td>
+        <td style="width:50%;">
+           <asp:Label ID="lblRegister" runat="server" meta:resourcekey="lblRegister" Text="Create profile" CssClass="subTitle"></asp:Label>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            
+             <asp:Label ID="lblLogintxt" meta:resourcekey="lblLogintxt" runat="server" Text="If you have profile with us, please login below:"></asp:Label>
+             <br />
+        </td>
+        <td rowspan="2">
+            <asp:Label ID="lblregistertxt" meta:resourcekey="lblRegistertxt" runat="server" Text="Tuka treba da pishuva neshto kako Doklolku nemate profil, ve molime kreirajte so shto ke ni ovozmozite podobar, bla bla ..."></asp:Label>
+            <br />
+
+            <br />
+
+            <asp:Button ID="btnregister" runat="server" Text="Register" 
+                onclick="btnregister_Click" />
+        </td>
+    </tr>
+    <tr>
+        <td>
+
     <asp:Login ID="BookingLogin" runat="server" PasswordRecoveryText="Password Recovery" 
         PasswordRecoveryUrl="~/password.aspx" TitleText="">
     </asp:Login>
+        </td>
+    </tr>
+</table>
 </asp:Panel>
 
 <asp:Panel ID="AdministrationPanel" runat="server" Visible="false">
@@ -309,6 +339,46 @@
                             </td>
                         </tr>
                     </table>
+                    <br />
+                    <hr style="width:730px" />
+                    <br />
+                    <table>
+                        <tr>
+                            <td align="right">
+                                Header
+                            </td>
+                            <td>&nbsp;:&nbsp;</td>
+                            <td>
+                                <asp:TextBox ID="HeaderTextBox" runat="server"></asp:TextBox>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td align="right">
+                                Footer
+                            </td>
+                            <td>&nbsp;:&nbsp;</td>
+                            <td>
+                                <asp:TextBox ID="FooterTextBox" runat="server"></asp:TextBox>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td align="right">
+                                Mail message:
+                            </td>
+                            <td>&nbsp;:&nbsp;</td>
+                            <td>
+                                <asp:TextBox ID="ThankYouTextBox" runat="server" TextMode="MultiLine"></asp:TextBox>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td align="right">
+                                <asp:Button ID="SaveSettingsButton" runat="server" Text="Save" 
+                                    onclick="SaveSettingsButton_Click" />
+                            </td>
+                        </tr>
+                    </table>
                 </asp:Panel>
             </asp:Panel>
         </div>
@@ -323,9 +393,23 @@
     <asp:Panel ID="SubmitPanel" runat="server">
         <table>
         <tr>
+            <td>
+                <div class="form_header">
+                    <asp:Label ID="HeaderLabel" runat="server"></asp:Label>
+                </div>
+            </td>
+        </tr>
+        <tr>
         <td>
             <asp:PlaceHolder ID="ControlsPlaceHolder" runat="server"></asp:PlaceHolder>
         </td>
+        </tr>
+        <tr>
+            <td>
+                <div class="form_footer">
+                    <asp:Label ID="FooterLabel" runat="server"></asp:Label>
+                </div>
+            </td>
         </tr>
         <tr>
         <td align="right">
