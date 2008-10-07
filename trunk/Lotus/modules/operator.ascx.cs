@@ -11,32 +11,102 @@ public partial class modules_operator : BaseUserControl
 {
 	protected void Page_Load(object sender, EventArgs e)
 	{
-		Result res = new Result();
 		TimeLabel.Text = DateTime.Now.ToString();
 		LotusDataContext db = new LotusDataContext(Data.ConnectionManager());
-		var test = (from d in db.form_datas
-			select new
-			{
-				ID = d.form_data_id,
-				Hour = d.submitted_date.Value.Hour,
-				Minutes = d.submitted_date.Value.Minute,
-				Seconds = d.submitted_date.Value.Second
-			}).Distinct();
-		var source = (from d in db.form_datas
-					  join p in db.pages on d.page_id equals p.page_id
-					  where d.status == 0
-					  from v in test
-					  where v.ID == d.form_data_id
-					  orderby d.form_data_id descending
-					  select new { 
-						  ID = d.form_data_id, 
-						  User = d.user, 
+		var source = (from b in db.bookings
+					  join p in db.pages on b.page_id equals p.page_id
+					  where (b.status == "NEW")
+					  orderby b.id descending
+					  select new
+					  {
+						  ID = b.id,
+						  User = b.user_name,
 						  Service = p.title,
-						  Date = v,
-						  Status = d.status }).Distinct();
-		GridView1.DataSource = test;
-		GridView1.DataBind();
+						  Date = b.submited_date.ToString(),
+						  Status = b.status
+					  }).Distinct();
 		ResultsGridView.DataSource = source;
 		ResultsGridView.DataBind();
+	}
+
+	protected void ResultsGridView_SelectedIndexChanged(object sender, EventArgs e)
+	{
+		LotusDataContext db = new LotusDataContext();
+		var source1 = from b in db.bookings
+					  join p in db.pages on b.page_id equals p.page_id
+					  where (b.status == "NEW" && b.id == int.Parse(ResultsGridView.SelectedDataKey.Value.ToString()))
+					  orderby b.id descending
+					  select new
+					  {
+						  ID = b.id,
+						  User = b.user_name,
+						  Service = p.title,
+						  Date = b.submited_date.ToString(),
+						  Status = b.status
+					  };
+
+		var s =	from d in db.form_datas
+				join p in db.form_field_definitions on d.form_field_definition_id equals p.form_field_definition_id
+				where (d.form_data_id == int.Parse(ResultsGridView.SelectedDataKey.Value.ToString()))
+				orderby d.form_data_id descending
+				select new {
+					p.form_field_name,
+					d.value1,
+					d.value2,
+					d.value3,
+					d.value4,
+					d.value5,
+					d.value6
+				};
+		DataTable table = new DataTable();
+		table.Columns.Add("Name", typeof(string));
+		table.Columns.Add("Value", typeof(string));
+		foreach (var item in s)
+		{
+			DataRow dr = table.NewRow();
+			dr["Name"] = item.form_field_name;
+			if (item.value1 != null)
+				dr["Value"] = item.value1.ToString();
+			else
+				if (item.value2 != null)
+				dr["Value"] = item.value2.ToString();
+				else
+					if (item.value3 != null)
+						dr["Value"] = item.value3.ToString();
+					else
+						if (item.value4 != null)
+							dr["Value"] = item.value4.ToString();
+						else
+							if (item.value5 != null)
+								dr["Value"] = item.value5.ToString();
+							else
+								if (item.value6 != null)
+									dr["Value"] = item.value6.ToString();
+			table.Rows.Add(dr);
+		}
+
+		DataView dv = new DataView(table);
+
+		DetailsGridView.DataSource = dv;
+		DetailsGridView.DataBind();
+		DetailsView.DataSource = source1;
+		DetailsView.DataBind();
+		if (DetailsView.Rows[2].Cells[1].Text == "Taxi")
+			ReplyPanel.Visible = true;
+		DetailsPanel.Visible = true;
+		ResultsGridView.Visible = false;
+	}
+
+	protected void BackButton_Click(object sender, EventArgs e)
+	{
+		DetailsPanel.Visible = false;
+		ResultsGridView.Visible = true;
+	}
+	protected void ReplyButton_Click(object sender, EventArgs e)
+	{
+		int bookingId = int.Parse(ResultsGridView.SelectedDataKey.Value.ToString());
+		string comment = ReplyTextBox.Text;
+		string status = "ACCEPTED";
+		Data.UpdateBooking(bookingId, comment, status);
 	}
 }

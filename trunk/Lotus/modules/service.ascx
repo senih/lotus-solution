@@ -1,5 +1,6 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" CodeFile="service.ascx.cs" Inherits="modules_service" %>
-
+<asp:ScriptManager ID="ScriptManager1" runat="server">
+</asp:ScriptManager>
 <asp:Panel ID="AnonymousPanel" runat="server" Visible="false">
     
     <table style="width:728px;">
@@ -389,6 +390,16 @@
     <asp:Panel ID="ThankYouPanel" runat="server" Visible="false">
             <asp:Label ID="ThankYouLabel" runat="server" Text="Thank you for using our services. 
             We recived your booking and soon our operartor will contact you."></asp:Label>
+        <asp:UpdatePanel ID="UpdatePanel" runat="server">
+            <ContentTemplate>
+                <asp:Label ID="ResponseLabel" runat="server"></asp:Label>
+            </ContentTemplate>
+            <Triggers>
+                <asp:AsyncPostBackTrigger ControlID="Timer" />
+            </Triggers>
+        </asp:UpdatePanel>
+        <asp:Timer ID="Timer" runat="server">
+        </asp:Timer>
     </asp:Panel>
     <asp:Panel ID="SubmitPanel" runat="server">
         <table>
