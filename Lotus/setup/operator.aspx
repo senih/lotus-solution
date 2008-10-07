@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeFile="test.aspx.cs" Inherits="setup_test" %>
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeFile="operator.aspx.cs" Inherits="setup_test" %>
 
 <%@ Register src="../modules/operator.ascx" tagname="operator" tagprefix="uc1" %>
 

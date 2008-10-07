@@ -12,8 +12,7 @@ using System.Web.Security;
 
 public partial class modules_service : BaseUserControl
 {
-
-
+	
 	/// <summary>
 	/// Handles the Init event of the Page control.
 	/// </summary>
@@ -374,12 +373,16 @@ public partial class modules_service : BaseUserControl
 				sValue = ((DropDownList)this.FindControl("hours")).SelectedValue + ":" + ((DropDownList)this.FindControl("minutes"));
 				break;
 			}
-			Data.InsertData(dataId, control.form_field_definition_id, PageID, control.input_type, sValue, bValue, dValue, user);
+			Data.InsertData(dataId, control.form_field_definition_id, PageID, control.input_type, sValue, bValue, dValue);
 		}
+		Data.InsertBooking(dataId, PageID, Page.User.Identity.Name);
 		LogedinPanel.Visible = true;
 		SubmitPanel.Visible = false;
 		ThankYouPanel.Visible = true;
-		SendMail();
+		if (ModuleData != "taxi")
+			SendMail();
+		else
+			ResponseLabel.Text = Data.GetComment(dataId);
 	}
 
 	/// <summary>

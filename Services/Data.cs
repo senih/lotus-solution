@@ -69,8 +69,7 @@ namespace Services
 		/// <param name="sValue">The s value.</param>
 		/// <param name="bValue">The b value.</param>
 		/// <param name="dValue">The d value.</param>
-		/// <param name="user">The user.</param>
-		public static void InsertData(int dataId, int fieldId, int pageId, string inputType, string sValue, bool? bValue, DateTime? dValue, string user)
+		public static void InsertData(int dataId, int fieldId, int pageId, string inputType, string sValue, bool? bValue, DateTime? dValue)
 		{
 			string conn = ConnectionManager();
 			LotusDataContext db = new LotusDataContext(conn);
@@ -78,9 +77,6 @@ namespace Services
 			data.form_data_id = dataId;
 			data.form_field_definition_id = fieldId;
 			data.page_id = pageId;
-			data.submitted_date = DateTime.Now;
-			data.status = 0;
-			data.user = user;
 
 			switch (inputType)
 			{
@@ -109,6 +105,13 @@ namespace Services
 		}
 
 
+		/// <summary>
+		/// Saves the settings.
+		/// </summary>
+		/// <param name="pageId">The page id.</param>
+		/// <param name="header">The header.</param>
+		/// <param name="footer">The footer.</param>
+		/// <param name="msg">The MSG.</param>
 		public static void SaveSettings(int pageId, string header, string footer, string msg)
 		{
 			string conn = ConnectionManager();
@@ -146,6 +149,56 @@ namespace Services
 			if (db.form_settings.Where(s => s.page_id == pageId).Any<form_setting>())
 				settings = db.form_settings.Where(s => s.page_id == pageId).Single<form_setting>();
 			return settings;
+		}
+
+		/// <summary>
+		/// Inserts the booking.
+		/// </summary>
+		/// <param name="formDataId">The form data id.</param>
+		/// <param name="pageId">The page id.</param>
+		/// <param name="user">The user.</param>
+		public static void InsertBooking(int formDataId, int pageId, string user)
+		{
+			string conn = ConnectionManager();
+			LotusDataContext db = new LotusDataContext(conn);
+			booking newBooking = new booking();
+			newBooking.form_data_id = formDataId;
+			newBooking.page_id = pageId;
+			newBooking.user_name = user;
+			newBooking.status = "NEW";
+			newBooking.submited_date = DateTime.Now;
+
+			db.bookings.InsertOnSubmit(newBooking);
+			db.SubmitChanges();
+		}
+
+		/// <summary>
+		/// Updates the booking.
+		/// </summary>
+		/// <param name="id">The id.</param>
+		/// <param name="msg">The MSG.</param>
+		/// <param name="status">The status.</param>
+		public static void UpdateBooking(int id, string msg, string status)
+		{
+			string conn = ConnectionManager();
+			LotusDataContext db = new LotusDataContext(conn);
+			booking updateBooking = db.bookings.Where(b => b.id == id).Single<booking>();
+			updateBooking.comment = msg;
+			updateBooking.status = status;
+			db.SubmitChanges();
+		}
+
+		/// <summary>
+		/// Gets the comment.
+		/// </summary>
+		/// <param name="bookingId">The booking id.</param>
+		/// <returns>Returns response from operator</returns>
+		public static string GetComment(int bookingId)
+		{
+			string conn = ConnectionManager();
+			LotusDataContext db = new LotusDataContext(conn);
+			string response = db.bookings.Where(b => b.id == bookingId).Select(b => b.comment).ToString();
+			return response;
 		}
 	}
 }
