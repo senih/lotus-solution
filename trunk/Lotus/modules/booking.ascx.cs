@@ -50,6 +50,7 @@ public partial class modules_booking : BaseUserControl
 				select new
 				{
 					p.form_field_name,
+					p.input_type,
 					d.value1,
 					d.value2,
 					d.value3,
@@ -62,26 +63,29 @@ public partial class modules_booking : BaseUserControl
 		table.Columns.Add("Value", typeof(string));
 		foreach (var item in s)
 		{
-			DataRow dr = table.NewRow();
-			dr["Name"] = item.form_field_name;
-			if (item.value1 != null)
-				dr["Value"] = item.value1.ToString();
-			else
-				if (item.value2 != null)
-					dr["Value"] = item.value2.ToString();
+			if (item.input_type != "header" && item.input_type != "lblNoName" && item.input_type != "label")
+			{
+				DataRow dr = table.NewRow();
+				dr["Name"] = item.form_field_name;
+				if (item.value1 != null)
+					dr["Value"] = item.value1.ToString();
 				else
-					if (item.value3 != null)
-						dr["Value"] = item.value3.ToString();
+					if (item.value2 != null)
+						dr["Value"] = item.value2.ToString();
 					else
-						if (item.value4 != null)
-							dr["Value"] = item.value4.ToString();
+						if (item.value3 != null)
+							dr["Value"] = item.value3.ToString();
 						else
-							if (item.value5 != null)
-								dr["Value"] = item.value5.ToString();
+							if (item.value4 != null)
+								dr["Value"] = item.value4.ToString();
 							else
-								if (item.value6 != null)
-									dr["Value"] = item.value6.ToString();
-			table.Rows.Add(dr);
+								if (item.value5 != null)
+									dr["Value"] = item.value5.ToString();
+								else
+									if (item.value6 != null)
+										dr["Value"] = item.value6.ToString();
+				table.Rows.Add(dr);
+			}
 		}
 
 		DataView dv = new DataView(table);
@@ -90,8 +94,6 @@ public partial class modules_booking : BaseUserControl
 		DetailsGridView.DataBind();
 		DetailsView.DataSource = source1;
 		DetailsView.DataBind();
-		if (DetailsView.Rows[2].Cells[1].Text == "Taxi")
-			ReplyPanel.Visible = true;
 		DetailsPanel.Visible = true;
 		BookingsGridView.Visible = false;
 	}
