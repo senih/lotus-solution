@@ -8,6 +8,8 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Web.UI.HtmlControls;
 using EclipseWebSolutions;
+using System.Xml;
+using System.Xml.Linq;
 
 namespace Services
 {
@@ -200,7 +202,7 @@ namespace Services
 				DropDownList minutes = new DropDownList();
 				minutes.ID = "minutes";
 				Panel timePicker = new Panel();
-				for (int i = 0; i <= 60; i++)
+				for (int i = 0; i < 60; i++)
 				{
 					if (i > 0 && i <= 24)
 						hour.Items.Add(new ListItem(i.ToString(), i.ToString()));

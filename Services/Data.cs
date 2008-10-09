@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Configuration;
 using System.Data;
+using System.Xml;
+using System.Xml.Linq;
 
 namespace Services
 {
@@ -199,6 +201,23 @@ namespace Services
 			LotusDataContext db = new LotusDataContext(conn);
 			string response = db.bookings.Where(b => b.id == bookingId).Select(b => b.comment).ToString();
 			return response;
+		}
+
+		public static List<string> GetXmlElements(string path)
+		{
+			XDocument xmlFile = XDocument.Load(path);
+			List<string> list = (from e in xmlFile.Descendants("city")
+								  select e.Attribute("name").Value).ToList<string>();
+			return list;
+		}
+
+		public static List<string> GetXmlChildElements(string path, string parent)
+		{
+		    XDocument xmlFile = XDocument.Load(path);
+			List<string> list = (from e in xmlFile.Descendants("city")
+								 where e.Attribute("name").Value == parent
+								 select e.Element("region").Attribute("name").Value).ToList<string>();
+			return list;
 		}
 	}
 }

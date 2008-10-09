@@ -262,6 +262,7 @@ public partial class modules_service : BaseUserControl
 		controlValue.is_default = DefaultValueCheckBox.Checked;
 		db.form_field_values.InsertOnSubmit(controlValue);
 		db.SubmitChanges();
+		LinqDataSource2.Where = "form_field_definition_id=" + FormControlsGridView.SelectedDataKey.Value.ToString();
 		ValuesGridView.DataBind();
 	}
 
@@ -271,8 +272,10 @@ public partial class modules_service : BaseUserControl
 	protected void RenderFormControls()
 	{
 		form_setting settings = Data.GetFormSettings(PageID);
-		HeaderLabel.Text = settings.header;
-		FooterLabel.Text = settings.footer;
+		if (settings != null)
+			HeaderLabel.Text = settings.header;
+		if (settings != null)
+			FooterLabel.Text = settings.footer;
 		List<container> listOfContainers = Data.GetContainers(PageID);
 		foreach (container div in listOfContainers)
 		{
@@ -333,11 +336,11 @@ public partial class modules_service : BaseUserControl
 		int dataId = (from d in db.form_datas select d.form_data_id).Max() + 1;
 		string user = Page.User.Identity.Name;
 		List<form_field_definition> listControls = Data.GetControls(PageID);
-		string sValue = null;
-		bool? bValue = null;
-		DateTime? dValue = null;
 		foreach (form_field_definition control in listControls)
 		{
+			string sValue = null;
+			bool? bValue = null;
+			DateTime? dValue = null;
 			string ctrlId = control.form_field_name.Replace(" ","");
 			switch (control.input_type)
 			{
@@ -354,8 +357,13 @@ public partial class modules_service : BaseUserControl
 				bValue = ((CheckBox)this.FindControl(ctrlId)).Checked;
 				break;
 
-				case "ckhBoxList":
-				sValue = ((CheckBoxList)this.FindControl(ctrlId)).SelectedValue;
+				case "chkBoxList":
+				CheckBoxList chkList = (CheckBoxList)this.FindControl(ctrlId);
+				foreach (ListItem item in chkList.Items)
+				{
+					if (item.Selected)
+						sValue += item.Text + ", ";
+				}
 				break;
 
 				case "radioBtnList":
@@ -370,7 +378,7 @@ public partial class modules_service : BaseUserControl
 				break;
 
 				case "timePicker":
-				sValue = ((DropDownList)this.FindControl("hours")).SelectedValue + ":" + ((DropDownList)this.FindControl("minutes"));
+				sValue = ((DropDownList)this.FindControl("hours")).SelectedValue + ":" + ((DropDownList)this.FindControl("minutes")).SelectedValue;
 				break;
 			}
 			Data.InsertData(dataId, control.form_field_definition_id, PageID, control.input_type, sValue, bValue, dValue);
@@ -381,8 +389,6 @@ public partial class modules_service : BaseUserControl
 		ThankYouPanel.Visible = true;
 		if (ModuleData != "taxi")
 			SendMail();
-		else
-			ResponseLabel.Text = Data.GetComment(dataId);
 	}
 
 	/// <summary>
@@ -393,7 +399,7 @@ public partial class modules_service : BaseUserControl
 		form_setting settings = Data.GetFormSettings(PageID);
 		MembershipUser user = Membership.GetUser(Page.User.Identity.Name);
 		string body = "Your booking is registered. Soon operator will contact you. Thank you for using our services";
-		if (settings != null || settings.thank_you_message != string.Empty)
+		if (settings != null && settings.thank_you_message != string.Empty)
 			body = settings.thank_you_message;
 		MailMessage msg = new MailMessage("contact@lotustransport.com", user.Email, "Confirmation", body);
 		SmtpClient client = new SmtpClient();
