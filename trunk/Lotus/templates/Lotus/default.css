@@ -135,7 +135,6 @@ body
 	font-family:Verdana;
 	font-size:12px;
 	float:left;
-	width:517px;
 	padding-right:20px;
 	padding-left:10px;
 }
@@ -177,6 +176,15 @@ body
 #footer a:hover
 {
 	text-decoration:none;
+}
+.footerContainer 
+{
+    margin:0px auto;
+	width:736px;
+}
+.langSelect 
+{
+    float:left;
 }
 
 
@@ -252,6 +260,11 @@ body
 	background-color:#d1e0e4;
 }
 
+#form 
+{
+	
+}
+
 /*AdminWorkspace*/
 a.myworkspace:link{color:Black; text-decoration:none; font-family:Tahoma; font-size:12px; padding:0px 6px; border-right: 1px solid #000000;}
 a.myworkspace:visited{color:Black; text-decoration:none; font-family:Tahoma; font-size:12px; padding:0px 6px; border-right: 1px solid #000000;}
@@ -272,6 +285,8 @@ a.register:visited{color:Black; text-decoration:none; font-family:Tahoma; font-s
 
 /* PAGE ELEMENTS */
 .title{font-family:Trebuchet MS; font-size:28px; letter-spacing:2px; color:#405c64; padding-top:80px; text-align:right; padding-right:18px; }
+.subTitle{font-family:Trebuchet MS; font-size:20px; letter-spacing:1px; color:#405c64; margin-bottom:20px; }
+
 .publishing_info {margin-top:5px;margin-bottom:15px}
 .author_date_first_published {font-style:italic;color:#999999}
 .person_last_updating_and_date {font-style:italic;color:#999999}
@@ -670,6 +685,189 @@ input.nodeedit {
     border:#cfcfcf 1px solid;
     z-index:1;}
 .nlstree {text-align:left; border:#e6e7e8 5px solid;padding:12px;background:white;}
+<<<<<<< .mine
+.locationFrom_287
+{
+    float:left;
+    width:280px;
+    color:#0b4b5a;
+    margin-bottom:12px;
+}
+
+.form_header
+{
+	text-transform:uppercase;
+	font-size:12px;
+	font-weight:bold;
+	font-style:italic;
+	padding-bottom:10px;
+}
+
+
+.dateFrom_287
+{
+ margin-bottom:18px;
+ color:#0b4b5a;
+}
+.passengers_287
+{
+    white-space:nowrap;
+    color:#0b4b5a;
+    clear:left;
+    float:left;
+    margin-bottom:12px;
+    width:280px;
+}
+.flightNo_287
+{
+    white-space:nowrap;
+    color:#0b4b5a;
+    margin-bottom:12px;
+
+}
+
+.adresaod_286
+{
+    float:left;
+    width:320px;
+    white-space:nowrap;
+    color:#0b4b5a;
+    margin-bottom:12px;
+}
+
+.adresado_286
+{
+    color:#0b4b5a;
+    white-space:nowrap;
+    margin-bottom:12px;
+}
+
+.brPatnici_286 
+{
+    white-space:nowrap;
+    color:#0b4b5a;
+    clear:left;
+    float:left;
+    margin-bottom:12px;
+    width:320px;
+}
+
+.dt_286
+{
+    white-space:nowrap;
+    color:#0b4b5a;
+    margin-bottom:12px;
+}
+
+/*Children*/
+.adresaod_289
+{
+    float:left;
+    width:320px;
+    white-space:nowrap;
+    color:#0b4b5a;
+    margin-bottom:12px;
+}
+
+.adresado_289
+{
+    color:#0b4b5a;
+    white-space:nowrap;
+    margin-bottom:12px;
+}
+
+.brPatnici_289 
+{
+    white-space:nowrap;
+    color:#0b4b5a;
+    clear:left;
+    float:left;
+    margin-bottom:12px;
+    width:320px;
+}
+
+.datePicking_289
+{
+    white-space:nowrap;
+    color:#0b4b5a;
+    margin-bottom:12px;
+}
+
+/*VIP*/
+
+.adresaod_290
+{
+    float:left;
+    width:320px;
+    white-space:nowrap;
+    color:#0b4b5a;
+    margin-bottom:12px;
+}
+
+.adresado_290
+{
+    color:#0b4b5a;
+    white-space:nowrap;
+    margin-bottom:12px;
+}
+
+.brPatnici_290 
+{
+    white-space:nowrap;
+    color:#0b4b5a;
+    clear:left;
+    float:left;
+    margin-bottom:12px;
+    width:320px;
+}
+
+.datePicking_290
+{
+    white-space:nowrap;
+    color:#0b4b5a;
+    margin-bottom:12px;
+}
+
+.dodatoci_290
+{
+	width:320px;
+	float:left;
+}
+
+/*Pets*/
+
+.adresaod_292
+{
+    float:left;
+    width:320px;
+    white-space:nowrap;
+    color:#0b4b5a;
+    margin-bottom:12px;
+}
+
+.adresado_292
+{
+    color:#0b4b5a;
+    white-space:nowrap;
+    margin-bottom:12px;
+}
+
+.brPatnici_292 
+{
+    white-space:nowrap;
+    color:#0b4b5a;
+    clear:left;
+    float:left;
+    margin-bottom:12px;
+    width:320px;
+}
+
+.datePicking_292
+{
+    white-space:nowrap;
+    color:#0b4b5a;
+    margin-bottom:12px;
+}=======
 .buttonBook 
 {
     display:block;
@@ -679,4 +877,4 @@ input.nodeedit {
     height:26px;
     line-height:26px;
     background-image: url('images/admin_menu_bg.gif');
-}
+}>>>>>>> .r13
