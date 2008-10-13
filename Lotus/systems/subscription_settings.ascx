@@ -5,11 +5,7 @@
 <script runat="server">
  
     Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs)
-        panelLogin.Visible = True
-        panelSetting.Visible = False
-        lblStatus.Text = ""
-
-        If Not (IsNothing(GetUser())) Then
+        If Not IsNothing(GetUser()) Then
             If Roles.IsUserInRole(GetUser.UserName, "Administrators") Or _
                 Roles.IsUserInRole(GetUser.UserName, "Newsletters Managers") Then
                 Dim Setting As NewsletterSetting = New NewsletterSetting
@@ -24,11 +20,18 @@
                     txtSignatureText.Text = .UnsubscribeSignatureText
                 End With
             End If
+        Else
+            panelLogin.Visible = True
+            Dim oUC1 As Control = LoadControl("login.ascx")
+            panelLogin.Controls.Add(oUC1)
+            panelSetting.Visible = False
         End If
+        
+        lblStatus.Text = ""
     End Sub
 
     Protected Sub btnSave_Click(ByVal sender As Object, ByVal e As System.EventArgs)
-        If Not Me.IsUserLoggedIn Then Exit Sub
+        If Not Me.IsUserLoggedIn Then Response.Redirect(HttpContext.Current.Items("_path"))
         
         Dim Setting As NewsletterSetting = New NewsletterSetting
         With Setting
@@ -40,29 +43,13 @@
         End With
 
         CreateSetting(Setting)
-        'lblStatus.Text = GetLocalResourceObject("SavedSuccessfully")
+        lblStatus.Text = GetLocalResourceObject("SavedSuccessfully")
         
-        Response.Redirect(HttpContext.Current.Items("_path"))
-    End Sub
-
-    Protected Sub Login1_LoggedIn(ByVal sender As Object, ByVal e As System.EventArgs)
-        Response.Redirect(HttpContext.Current.Items("_path"))
-    End Sub
-
-    Protected Sub Login1_PreRender(ByVal sender As Object, ByVal e As System.EventArgs)
-        Login1.PasswordRecoveryUrl = "~/" & Me.LinkPassword & "?ReturnUrl=" & HttpContext.Current.Items("_path")
-    End Sub
-
-    Protected Sub btnCancel_Click(ByVal sender As Object, ByVal e As System.EventArgs)
-        Response.Redirect("~/" & Me.LinkWorkspaceNewsletters)
+        'Response.Redirect(HttpContext.Current.Items("_path"))
     End Sub
 </script>
 
 <asp:Panel ID="panelLogin" runat="server" Visible="False">
-    <asp:Login ID="Login1" runat="server" meta:resourcekey="Login1" PasswordRecoveryText="Password Recovery" TitleText="" OnLoggedIn="Login1_LoggedIn" OnPreRender="Login1_PreRender">
-        <LabelStyle HorizontalAlign="Left" Wrap="False" />
-    </asp:Login>
-    <br />
 </asp:Panel>
 
 <asp:Panel ID="panelSetting" runat="server">
@@ -85,8 +72,7 @@
     <tr valign="top">
     <td colspan="3">
         <div style="margin:7px"></div>
-      <asp:Button ID="btnSave" runat="server" Text=" Save " meta:resourcekey="btnSave" OnClick="btnSave_Click" />
-        <asp:Button ID="btnCancel" runat="server" Text=" Cancel " meta:resourcekey="btnCancel" OnClick="btnCancel_Click" />
+        <asp:Button ID="btnSave" runat="server" Text=" Save " meta:resourcekey="btnSave" OnClick="btnSave_Click" />
         <asp:Label ID="lblStatus" Font-Bold="true" runat="server" Text=""></asp:Label>
     </td>
     </tr>

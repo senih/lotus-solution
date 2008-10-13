@@ -126,9 +126,6 @@
   <data name="imgCustomListing.ImageUrl" xml:space="preserve">
     <value>images/ico_customlisting.gif</value>
   </data>
-  <data name="imgEvents.ImageUrl" xml:space="preserve">
-    <value>images/ico_events.gif</value>
-  </data>
   <data name="imgNewsletters.ImageUrl" xml:space="preserve">
     <value>images/ico_newsletters.gif</value>
   </data>
@@ -155,9 +152,6 @@
   </data>
   <data name="litCustomListing.text" xml:space="preserve">
     <value>Create &amp; Embed Custom Listing</value>
-  </data>
-  <data name="litEvents.text" xml:space="preserve">
-    <value>Create and manage events.</value>
   </data>
   <data name="litNewsletters.text" xml:space="preserve">
     <value>Create and manage email newsletters.</value>
@@ -186,9 +180,6 @@
   <data name="lnkCustomListing.text" xml:space="preserve">
     <value>Custom Listing</value>
   </data>
-  <data name="lnkEvents.text" xml:space="preserve">
-    <value>Events</value>
-  </data>
   <data name="lnkNewsletters.text" xml:space="preserve">
     <value>Newsletters</value>
   </data>
@@ -206,23 +197,5 @@
   </data>
   <data name="lnkShop.text" xml:space="preserve">
     <value>Shop</value>
-  </data>
-  <data name="Login1.FailureText" xml:space="preserve">
-    <value>Ihr Anmeldeversuch war nicht erfolgreich. Bitte versuchen Sie es erneut.</value>
-  </data>
-  <data name="Login1.LoginButtonText" xml:space="preserve">
-    <value>Anmelden</value>
-  </data>
-  <data name="Login1.PasswordLabelText" xml:space="preserve">
-    <value>Kennwort:</value>
-  </data>
-  <data name="Login1.PasswordRecoveryText" xml:space="preserve">
-    <value>Kennwortwiederherstellung</value>
-  </data>
-  <data name="Login1.RememberMeText" xml:space="preserve">
-    <value>Kennwort merken.</value>
-  </data>
-  <data name="Login1.UserNameLabelText" xml:space="preserve">
-    <value>Benutzername:</value>
   </data>
 </root>

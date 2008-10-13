@@ -3,257 +3,244 @@
 <%@ Import Namespace="NewsletterManager" %>
 
 <script runat="server">
-  Private sUsername As String = ""
-  
-  Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
-    panelUserDetail.Visible = False
-    panelLogin.Visible = True
-    panelLogin.FindControl("Login1").Focus()
-    If Me.IsUserLoggedIn Then
-      If Me.IsAdministrator Then
-        Dim myScript As String
-        Dim sSelectedUserName As String = Request.QueryString("username")
-        Dim iCount As Integer = Roles.GetRolesForUser(sSelectedUserName).GetLength(0)
-        Dim i, x As Integer
-        panelLogin.Visible = False
-        panelUserDetail.Visible = True
-        lblUserName.Text = sSelectedUserName
-        btnUpdatePermision.Attributes.Add("onclick", "button=this.id")
-        myScript = "<script language=Javascript>var button;<"
-        myScript += "/"
-        myScript += "script>"
-        Page.ClientScript.RegisterClientScriptBlock(Me.GetType, "NewScript", myScript)
+    Private sUsername As String = ""
 
-        btnAdd.Attributes.Add("onclick", "add(document.getElementById('" & lsbValuableRoles.ClientID & "'),document.getElementById('" & lsbPermision.ClientID & "'));return false;")
-        btnRemove.Attributes.Add("onclick", "remove(document.getElementById('" & lsbValuableRoles.ClientID & "'),document.getElementById('" & lsbPermision.ClientID & "'));return false;")
-        Page.ClientScript.RegisterOnSubmitStatement(Me.GetType, "OnSubmit", "if(button == '" & btnUpdatePermision.ClientID & "'){transferValues(document.getElementById('" & lsbPermision.ClientID & "'),document.getElementById('" & hidSelRoles.ClientID & "'))}else")
+    Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
+        panelUserDetail.Visible = False
+        panelLogin.Visible = True
+        Dim oUC1 As Control = LoadControl("login.ascx")
+        panelLogin.Controls.Add(oUC1)
+        If Me.IsUserLoggedIn Then
+            If Me.IsAdministrator Then
+                Dim myScript As String
+                Dim sSelectedUserName As String = Request.QueryString("username")
+                Dim iCount As Integer = Roles.GetRolesForUser(sSelectedUserName).GetLength(0)
+                Dim i, x As Integer
+                panelLogin.Visible = False
+                panelUserDetail.Visible = True
+                lblUserName.Text = sSelectedUserName
+                btnUpdatePermision.Attributes.Add("onclick", "button=this.id")
+                myScript = "<script language=Javascript>var button;<"
+                myScript += "/"
+                myScript += "script>"
+                Page.ClientScript.RegisterClientScriptBlock(Me.GetType, "NewScript", myScript)
 
-        ListRoles(sSelectedUserName)
+                btnAdd.Attributes.Add("onclick", "add(document.getElementById('" & lsbValuableRoles.ClientID & "'),document.getElementById('" & lsbPermision.ClientID & "'));return false;")
+                btnRemove.Attributes.Add("onclick", "remove(document.getElementById('" & lsbValuableRoles.ClientID & "'),document.getElementById('" & lsbPermision.ClientID & "'));return false;")
+                Page.ClientScript.RegisterOnSubmitStatement(Me.GetType, "OnSubmit", "if(button == '" & btnUpdatePermision.ClientID & "'){transferValues(document.getElementById('" & lsbPermision.ClientID & "'),document.getElementById('" & hidSelRoles.ClientID & "'))}else")
 
-        'User profile
-        Dim user As MembershipUser = Membership.GetUser(sSelectedUserName)
-        Dim userProfile As ProfileCommon = Profile.GetProfile(sSelectedUserName)
-        If Not Page.IsPostBack Then ' Kalau tanpa ini, wkt select Grid akan selalu tampil record teratas
-          hidUserName.Value = sSelectedUserName
-          lblUserName.Text = sSelectedUserName
-          txtEmail.Text = user.Email
-          hidEmail.Value = user.Email
-          cbActive.Checked = user.IsApproved
-          'cbLocked.Checked = user.IsLockedOut
-          If user.IsLockedOut Then
-            btnUnlock.Visible = True
-          Else
-            btnUnlock.Visible = False
-          End If
-          'txtFirstName.Text = userProfile.FirstName
-          'txtLastName.Text = userProfile.LastName
-          'txtCompany.Text = userProfile.Company
-          'txtAddress.Text = userProfile.Address
-          'txtCity.Text = userProfile.City
-          'txtZip.Text = userProfile.Zip
-          'txtState.Text = userProfile.State
-          'dropCountry.Value = userProfile.Country
-          'txtPhone.Text = userProfile.Phone
-          'txtAdditionalInfo.Text = userProfile.AdditionalInfo.ToString
-          txtFirstName.Text = userProfile.GetPropertyValue("FirstName").ToString
-          txtLastName.Text = userProfile.GetPropertyValue("LastName").ToString
-          txtCompany.Text = userProfile.GetPropertyValue("Company").ToString
-          txtAddress.Text = userProfile.GetPropertyValue("Address").ToString
-          txtCity.Text = userProfile.GetPropertyValue("City").ToString
-          txtZip.Text = userProfile.GetPropertyValue("Zip").ToString
-          txtState.Text = userProfile.GetPropertyValue("State").ToString
-          dropCountry.Value = userProfile.GetPropertyValue("Country").ToString
-          txtPhone.Text = userProfile.GetPropertyValue("Phone").ToString
-          txtAdditionalInfo.Text = userProfile.GetPropertyValue("AdditionalInfo").ToString
+                ListRoles(sSelectedUserName)
+
+                'User profile
+                Dim user As MembershipUser = Membership.GetUser(sSelectedUserName)
+                Dim userProfile As ProfileCommon = Profile.GetProfile(sSelectedUserName)
+                If Not Page.IsPostBack Then ' Kalau tanpa ini, wkt select Grid akan selalu tampil record teratas
+                    hidUserName.Value = sSelectedUserName
+                    lblUserName.Text = sSelectedUserName
+                    txtEmail.Text = user.Email
+                    hidEmail.Value = user.Email
+                    cbActive.Checked = user.IsApproved
+                    'cbLocked.Checked = user.IsLockedOut
+                    If user.IsLockedOut Then
+                        btnUnlock.Visible = True
+                    Else
+                        btnUnlock.Visible = False
+                    End If
+                    'txtFirstName.Text = userProfile.FirstName
+                    'txtLastName.Text = userProfile.LastName
+                    'txtCompany.Text = userProfile.Company
+                    'txtAddress.Text = userProfile.Address
+                    'txtCity.Text = userProfile.City
+                    'txtZip.Text = userProfile.Zip
+                    'txtState.Text = userProfile.State
+                    'dropCountry.Value = userProfile.Country
+                    'txtPhone.Text = userProfile.Phone
+                    'txtAdditionalInfo.Text = userProfile.AdditionalInfo.ToString
+                    txtFirstName.Text = userProfile.GetPropertyValue("FirstName").ToString
+                    txtLastName.Text = userProfile.GetPropertyValue("LastName").ToString
+                    txtCompany.Text = userProfile.GetPropertyValue("Company").ToString
+                    txtAddress.Text = userProfile.GetPropertyValue("Address").ToString
+                    txtCity.Text = userProfile.GetPropertyValue("City").ToString
+                    txtZip.Text = userProfile.GetPropertyValue("Zip").ToString
+                    txtState.Text = userProfile.GetPropertyValue("State").ToString
+                    dropCountry.Value = userProfile.GetPropertyValue("Country").ToString
+                    txtPhone.Text = userProfile.GetPropertyValue("Phone").ToString
+                    txtAdditionalInfo.Text = userProfile.GetPropertyValue("AdditionalInfo").ToString
+                End If
+                lblUpdatePasswordStatus.Text = ""
+                lblStatus.Text = ""
+
+                'List newsletter category
+                cbCategories.DataSource = GetCategoriesByRootID(Me.RootID)
+                cbCategories.DataBind()
+
+                'List selected user subscriptions
+                Dim colCategories As Collection = GetSubscription(user.Email)
+                If Not IsNothing(colCategories) Then
+                    For x = 1 To colCategories.Count
+                        sUsername = CType(colCategories(x), Subscription).Name
+                        For i = 0 To cbCategories.Items.Count - 1
+                            If cbCategories.Items(i).Value = CType(colCategories(x), Subscription).CategoryId Then
+                                cbCategories.Items(i).Selected = True
+                            End If
+                        Next
+                    Next
+                End If
+            End If
         End If
-        lblUpdatePasswordStatus.Text = ""
-        lblStatus.Text = ""
+    End Sub
 
-        'List newsletter category
-        cbCategories.DataSource = GetCategoriesByRootID(Me.RootID)
-        cbCategories.DataBind()
+    Protected Sub btnUpdatePermision_click(ByVal sender As Object, ByVal e As System.EventArgs) Handles btnUpdatePermision.Click
+        If Not Me.IsUserLoggedIn Then Response.Redirect(HttpContext.Current.Items("_path"))
 
-        'List selected user subscriptions
-        Dim colCategories As Collection = GetSubscription(user.Email)
-        If Not IsNothing(colCategories) Then
-          For x = 1 To colCategories.Count
-            sUsername = CType(colCategories(x), Subscription).Name
-            For i = 0 To cbCategories.Items.Count - 1
-              If cbCategories.Items(i).Value = CType(colCategories(x), Subscription).CategoryId Then
-                cbCategories.Items(i).Selected = True
-              End If
+        Dim sSelectedUserName As String = hidUserName.Value
+        Dim i As Integer
+
+        'Remove user roles terlebih dahulu kemudian ditambah lagi untuk yang terselect
+        If (lsbPermision.Items.Count > 0) Then
+            For i = 0 To lsbPermision.Items.Count - 1
+                Roles.RemoveUserFromRole(sSelectedUserName, lsbPermision.Items(i).Value)
             Next
-          Next
         End If
-      End If
-    End If
-  End Sub
 
-  Protected Sub btnUpdatePermision_click(ByVal sender As Object, ByVal e As System.EventArgs) Handles btnUpdatePermision.Click
-    If Not Me.IsUserLoggedIn Then Exit Sub
+        lsbPermision.Items.Clear()
 
-    Dim sSelectedUserName As String = hidUserName.Value
-    Dim i As Integer
-
-    'Remove user roles terlebih dahulu kemudian ditambah lagi untuk yang terselect
-    If (lsbPermision.Items.Count > 0) Then
-      For i = 0 To lsbPermision.Items.Count - 1
-        Roles.RemoveUserFromRole(sSelectedUserName, lsbPermision.Items(i).Value)
-      Next
-    End If
-
-    lsbPermision.Items.Clear()
-
-    Dim Item As String
-    If hidSelRoles.Value <> "" Then
-      For Each Item In hidSelRoles.Value.Split(",")
-        lsbPermision.Items.Add(Item)
-        If Not Roles.IsUserInRole(sSelectedUserName, Item) Then
-          Roles.AddUserToRole(sSelectedUserName, Item)
+        Dim Item As String
+        If hidSelRoles.Value <> "" Then
+            For Each Item In hidSelRoles.Value.Split(",")
+                lsbPermision.Items.Add(Item)
+                If Not Roles.IsUserInRole(sSelectedUserName, Item) Then
+                    Roles.AddUserToRole(sSelectedUserName, Item)
+                End If
+            Next
         End If
-      Next
-    End If
 
-    ListRoles(sSelectedUserName)
-  End Sub
-
-  Protected Sub btnCancel_click(ByVal sender As Object, ByVal e As System.EventArgs) Handles btnCancel.Click
-    Response.Redirect(Me.LinkAdminUsers)
-  End Sub
-
-  Protected Sub btnUpdate_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles btnUpdate.Click
-    If Not Me.IsUserLoggedIn Then Exit Sub
-
-    Dim sSelectedUserName As String = hidUserName.Value
-    Dim muSelectedUser As MembershipUser = Membership.GetUser(sSelectedUserName)
-    Dim pcSelectedProfile As ProfileCommon = Profile.GetProfile(sSelectedUserName)
-
-    If (Membership.GetUserNameByEmail(txtEmail.Text) IsNot Nothing) Then
-      If Not Membership.GetUserNameByEmail(txtEmail.Text) = sSelectedUserName Then
-        lblStatus.Text = GetLocalResourceObject("DuplicatedEmail")
         ListRoles(sSelectedUserName)
-        Exit Sub
-      End If
-    End If
-       
-    muSelectedUser.Email = txtEmail.Text
-    muSelectedUser.IsApproved = cbActive.Checked
+    
+        lblStatus2.Text = GetLocalResourceObject("AccountUpdated")
+    End Sub
+
+    Protected Sub btnUpdate_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles btnUpdate.Click
+        If Not Me.IsUserLoggedIn Then Response.Redirect(HttpContext.Current.Items("_path"))
+
+        Dim sSelectedUserName As String = hidUserName.Value
+        Dim muSelectedUser As MembershipUser = Membership.GetUser(sSelectedUserName)
+        Dim pcSelectedProfile As ProfileCommon = Profile.GetProfile(sSelectedUserName)
+
+        If (Membership.GetUserNameByEmail(txtEmail.Text) IsNot Nothing) Then
+            If Not Membership.GetUserNameByEmail(txtEmail.Text) = sSelectedUserName Then
+                lblStatus.Text = GetLocalResourceObject("DuplicatedEmail")
+                ListRoles(sSelectedUserName)
+                Exit Sub
+            End If
+        End If
    
-    Membership.UpdateUser(muSelectedUser)
+        muSelectedUser.Email = txtEmail.Text
+        muSelectedUser.IsApproved = cbActive.Checked
 
-    'pcSelectedProfile.FirstName = txtFirstName.Text
-    'pcSelectedProfile.LastName = txtLastName.Text
-    'pcSelectedProfile.Company = txtCompany.Text
-    'pcSelectedProfile.Address = txtAddress.Text
-    'pcSelectedProfile.City = txtCity.Text
-    'pcSelectedProfile.Zip = txtZip.Text
-    'pcSelectedProfile.State = txtState.Text
-    'pcSelectedProfile.Country = dropCountry.Value
-    'pcSelectedProfile.Phone = txtPhone.Text
-    'pcSelectedProfile.AdditionalInfo = txtAdditionalInfo.Text        
-    pcSelectedProfile.SetPropertyValue("FirstName", txtFirstName.Text)
-    pcSelectedProfile.SetPropertyValue("LastName", txtLastName.Text)
-    pcSelectedProfile.SetPropertyValue("Company", txtCompany.Text)
-    pcSelectedProfile.SetPropertyValue("Address", txtAddress.Text)
-    pcSelectedProfile.SetPropertyValue("City", txtCity.Text)
-    pcSelectedProfile.SetPropertyValue("Zip", txtZip.Text)
-    pcSelectedProfile.SetPropertyValue("State", txtState.Text)
-    pcSelectedProfile.SetPropertyValue("Country", dropCountry.Value)
-    pcSelectedProfile.SetPropertyValue("Phone", txtPhone.Text)
-    pcSelectedProfile.SetPropertyValue("AdditionalInfo", txtAdditionalInfo.Text)
-    pcSelectedProfile.Save()
+        Membership.UpdateUser(muSelectedUser)
 
-    'Update subcription
-    Dim i As Integer
-    Dim colSubscriptionInfo As Subscription = New Subscription
-    For i = 0 To cbCategories.Items.Count - 1
-      colSubscriptionInfo = CheckSubscription(hidEmail.Value, cbCategories.Items(i).Value)
-      If cbCategories.Items(i).Selected Then
-        'check apakah dia sudah terdaftar pad akategory tersebut ? 
-        If Not IsNothing(colSubscriptionInfo) Then
-          UpdateSubscription(hidEmail.Value, muSelectedUser.Email, cbCategories.Items(i).Value, False)
-        Else
-          If sUsername = "" Then ' Belum pernah terdaftar pada mailinglist
-            sUsername = pcSelectedProfile.FirstName & " " & pcSelectedProfile.LastName
-          End If
-          AddSubscriber(sUsername, muSelectedUser.Email, cbCategories.Items(i).Value, False)
+        'pcSelectedProfile.FirstName = txtFirstName.Text
+        'pcSelectedProfile.LastName = txtLastName.Text
+        'pcSelectedProfile.Company = txtCompany.Text
+        'pcSelectedProfile.Address = txtAddress.Text
+        'pcSelectedProfile.City = txtCity.Text
+        'pcSelectedProfile.Zip = txtZip.Text
+        'pcSelectedProfile.State = txtState.Text
+        'pcSelectedProfile.Country = dropCountry.Value
+        'pcSelectedProfile.Phone = txtPhone.Text
+        'pcSelectedProfile.AdditionalInfo = txtAdditionalInfo.Text        
+        pcSelectedProfile.SetPropertyValue("FirstName", txtFirstName.Text)
+        pcSelectedProfile.SetPropertyValue("LastName", txtLastName.Text)
+        pcSelectedProfile.SetPropertyValue("Company", txtCompany.Text)
+        pcSelectedProfile.SetPropertyValue("Address", txtAddress.Text)
+        pcSelectedProfile.SetPropertyValue("City", txtCity.Text)
+        pcSelectedProfile.SetPropertyValue("Zip", txtZip.Text)
+        pcSelectedProfile.SetPropertyValue("State", txtState.Text)
+        pcSelectedProfile.SetPropertyValue("Country", dropCountry.Value)
+        pcSelectedProfile.SetPropertyValue("Phone", txtPhone.Text)
+        pcSelectedProfile.SetPropertyValue("AdditionalInfo", txtAdditionalInfo.Text)
+        pcSelectedProfile.Save()
+
+        'Update subcription
+        Dim i As Integer
+        Dim colSubscriptionInfo As Subscription = New Subscription
+        For i = 0 To cbCategories.Items.Count - 1
+            colSubscriptionInfo = CheckSubscription(hidEmail.Value, cbCategories.Items(i).Value)
+            If cbCategories.Items(i).Selected Then
+                'check apakah dia sudah terdaftar pad akategory tersebut ? 
+                If Not IsNothing(colSubscriptionInfo) Then
+                    UpdateSubscription(hidEmail.Value, muSelectedUser.Email, cbCategories.Items(i).Value, False)
+                Else
+                    If sUsername = "" Then ' Belum pernah terdaftar pada mailinglist
+                        sUsername = pcSelectedProfile.FirstName & " " & pcSelectedProfile.LastName
+                    End If
+                    AddSubscriber(sUsername, muSelectedUser.Email, cbCategories.Items(i).Value, False)
+                End If
+                'If Not Roles.IsUserInRole(muSelectedUser.UserName, "Mailing List - " & cbCategories.Items(i).Text & " Subscribers") Then
+                '  Roles.AddUserToRole(muSelectedUser.UserName, "Mailing List - " & cbCategories.Items(i).Text & " Subscribers")
+                'End If
+            Else
+                If Not IsNothing(colSubscriptionInfo) Then
+                    UpdateSubscription(hidEmail.Value, muSelectedUser.Email, cbCategories.Items(i).Value, True)
+                End If
+                'If Roles.IsUserInRole(muSelectedUser.UserName, "Mailing List - " & cbCategories.Items(i).Text & " Subscribers") Then
+                '  Roles.RemoveUserFromRole(muSelectedUser.UserName, "Mailing List - " & cbCategories.Items(i).Text & " Subscribers")
+                'End If
+            End If
+        Next
+
+        ListRoles(sSelectedUserName)
+
+        lblStatus.Text = GetLocalResourceObject("AccountUpdated")
+    End Sub
+
+    Protected Sub ListRoles(ByVal sSelectedUserName As String)
+        Dim iCount As Integer = Roles.GetRolesForUser(sSelectedUserName).GetLength(0)
+        Dim i As Integer
+
+        'list All Roles
+        lsbValuableRoles.DataSource = Roles.GetAllRoles()
+        lsbValuableRoles.DataBind()
+
+        If iCount > 0 Then
+            For i = 0 To iCount - 1
+                lsbValuableRoles.Items.FindByValue(Roles.GetRolesForUser(sSelectedUserName).GetValue(i)).Enabled = False
+            Next
         End If
-        'If Not Roles.IsUserInRole(muSelectedUser.UserName, "Mailing List - " & cbCategories.Items(i).Text & " Subscribers") Then
-        '  Roles.AddUserToRole(muSelectedUser.UserName, "Mailing List - " & cbCategories.Items(i).Text & " Subscribers")
-        'End If
-      Else
-        If Not IsNothing(colSubscriptionInfo) Then
-          UpdateSubscription(hidEmail.Value, muSelectedUser.Email, cbCategories.Items(i).Value, True)
-        End If
-        'If Roles.IsUserInRole(muSelectedUser.UserName, "Mailing List - " & cbCategories.Items(i).Text & " Subscribers") Then
-        '  Roles.RemoveUserFromRole(muSelectedUser.UserName, "Mailing List - " & cbCategories.Items(i).Text & " Subscribers")
-        'End If
-      End If
-    Next
 
-    ListRoles(sSelectedUserName)
+        'List User Roles
+        lsbPermision.DataSource = Roles.GetRolesForUser(sSelectedUserName)
+        lsbPermision.DataBind()
+    End Sub
 
-    lblStatus.Text = GetLocalResourceObject("AccountUpdated")
-  End Sub
+    Protected Sub btnUpdatePassword_Click(ByVal sender As Object, ByVal e As System.EventArgs)
+        If Not Me.IsUserLoggedIn Then Response.Redirect(HttpContext.Current.Items("_path"))
 
-  Protected Sub ListRoles(ByVal sSelectedUserName As String)
-    Dim iCount As Integer = Roles.GetRolesForUser(sSelectedUserName).GetLength(0)
-    Dim i As Integer
+        Dim sSelectedUserName As String = hidUserName.Value
 
-    'list All Roles
-    lsbValuableRoles.DataSource = Roles.GetAllRoles()
-    lsbValuableRoles.DataBind()
+        Try
+            GetUser(sSelectedUserName).ChangePassword(GetUser(sSelectedUserName).GetPassword(), txtNewPassword.Text)
+        Catch ex As Exception
+            GetUser(sSelectedUserName).ChangePassword(GetUser(sSelectedUserName).ResetPassword(), txtNewPassword.Text)
+        End Try
 
-    If iCount > 0 Then
-      For i = 0 To iCount - 1
-        lsbValuableRoles.Items.FindByValue(Roles.GetRolesForUser(sSelectedUserName).GetValue(i)).Enabled = False
-      Next
-    End If
+        txtNewPassword.Text = ""
+        txtConfirmPassword.Text = ""
+        lblUpdatePasswordStatus.Text = GetLocalResourceObject("PasswordUpdated")
+    End Sub
 
-    'List User Roles
-    lsbPermision.DataSource = Roles.GetRolesForUser(sSelectedUserName)
-    lsbPermision.DataBind()
-  End Sub
+    Protected Sub btnUnlock_Click(ByVal sender As Object, ByVal e As System.EventArgs)
+        If Not Me.IsUserLoggedIn Then Response.Redirect(HttpContext.Current.Items("_path"))
 
-  Protected Sub btnUpdatePassword_Click(ByVal sender As Object, ByVal e As System.EventArgs)
-    If Not Me.IsUserLoggedIn Then Exit Sub
-
-    Dim sSelectedUserName As String = hidUserName.Value
-
-    Try
-      GetUser(sSelectedUserName).ChangePassword(GetUser(sSelectedUserName).GetPassword(), txtNewPassword.Text)
-    Catch ex As Exception
-      GetUser(sSelectedUserName).ChangePassword(GetUser(sSelectedUserName).ResetPassword(), txtNewPassword.Text)
-    End Try
-
-    txtNewPassword.Text = ""
-    txtConfirmPassword.Text = ""
-    lblUpdatePasswordStatus.Text = GetLocalResourceObject("PasswordUpdated")
-  End Sub
-
-  Protected Sub Login1_LoggedIn(ByVal sender As Object, ByVal e As System.EventArgs)
-    Response.Redirect(HttpContext.Current.Items("_path"))
-  End Sub
-
-  Protected Sub Login1_PreRender(ByVal sender As Object, ByVal e As System.EventArgs)
-    Login1.PasswordRecoveryUrl = "~/" & Me.LinkPassword & "?ReturnUrl=" & HttpContext.Current.Items("_path")
-  End Sub
-
-  Protected Sub btnUnlock_Click(ByVal sender As Object, ByVal e As System.EventArgs)
-    If Not Me.IsUserLoggedIn Then Exit Sub
-
-    Dim sSelectedUserName As String = hidUserName.Value
-    Dim muSelectedUser As MembershipUser = Membership.GetUser(sSelectedUserName)
-    muSelectedUser.UnlockUser()
-    Response.Redirect(HttpContext.Current.Items("_path"))
-  End Sub
+        Dim sSelectedUserName As String = hidUserName.Value
+        Dim muSelectedUser As MembershipUser = Membership.GetUser(sSelectedUserName)
+        muSelectedUser.UnlockUser()
+        Response.Redirect(HttpContext.Current.Items("_path"))
+    End Sub
 </script>
 
 <asp:Panel ID="panelLogin" runat="server" Visible="False">
-    <asp:Login ID="Login1" meta:resourcekey="Login1" runat="server"  PasswordRecoveryText="Password Recovery" TitleText="" OnLoggedIn="Login1_LoggedIn" OnPreRender="Login1_PreRender">
-        <LabelStyle HorizontalAlign="Left" Wrap="False" />
-    </asp:Login>
-    <br />
 </asp:Panel>
 
 <asp:HiddenField ID="hidUserName" runat="server" />
@@ -709,7 +696,7 @@
         <td colspan="3" style="padding-top:10px">
             <asp:Button ID="btnUpdatePermision" meta:resourcekey="btnUpdatePermision" runat="server" Text="Update User's Roles"  
                 OnClick="btnUpdatePermision_click" CausesValidation=false  />
-             <asp:Button ID="btnCancel" meta:resourcekey="btnCancel" runat="server" Text=" Cancel " CausesValidation=false OnClick="btnCancel_click" />
+             <asp:Label ID="lblStatus2" runat="server" Font-Bold="True"></asp:Label>&nbsp;
              <br /><br />
         </td>
     </tr>

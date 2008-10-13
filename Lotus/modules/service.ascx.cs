@@ -123,7 +123,8 @@ public partial class modules_service : BaseUserControl
 	/// <param name="e">The <see cref="System.EventArgs"/> instance containing the event data.</param>
 	protected void ControlTypeDropDownList_SelectedIndexChanged(object sender, EventArgs e)
 	{
-		if (ControlTypeDropDownList.SelectedValue == "txtBox" || ControlTypeDropDownList.SelectedValue == "txtArea")
+		if (ControlTypeDropDownList.SelectedValue == "txtBox" || ControlTypeDropDownList.SelectedValue == "txtArea" || 
+			ControlTypeDropDownList.SelectedValue == "ddList")
 			WidthPanel.Visible = true;
 		else
 			WidthPanel.Visible = false;

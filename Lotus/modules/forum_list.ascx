@@ -122,7 +122,12 @@
             <ItemTemplate><asp:Literal ID="litForum" runat="server"></asp:Literal></ItemTemplate>        
         </asp:TemplateField>
         <asp:BoundField HeaderText="Category" meta:resourcekey="hdrCategory" DataField="forum_category" HeaderStyle-Width="10%" HeaderStyle-Wrap="False" ItemStyle-Wrap="false"/>
-        <asp:BoundField HeaderText="Post Date" meta:resourcekey="hdrPosted" DataField="last_post_date" HeaderStyle-Width="10%" HeaderStyle-Wrap="False" ItemStyle-Wrap="false" DataFormatString="{0:d}" HtmlEncode="False"  />
+<%--        <asp:BoundField HeaderText="Post Date" meta:resourcekey="hdrPosted" DataField="last_post_date" HeaderStyle-Width="10%" HeaderStyle-Wrap="False" ItemStyle-Wrap="false" DataFormatString="{0:d}" HtmlEncode="False"  />
+--%>        <asp:TemplateField HeaderText="Post Date" meta:resourcekey="hdrPosted" HeaderStyle-Width="10%" HeaderStyle-Wrap="False" ItemStyle-Wrap="false">
+            <ItemTemplate>
+            <%#FormatDateTime(CDate(Eval("last_post_date")).AddHours(Me.TimeOffset), DateFormat.ShortDate)%>
+            </ItemTemplate>
+        </asp:TemplateField>
     </Columns>
     </asp:GridView>
 

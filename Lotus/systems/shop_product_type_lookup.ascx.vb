@@ -23,9 +23,12 @@ Partial Class systems_product_type_lookup
 
     Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
         If IsNothing(GetUser) Then
+            pnlCreate.Visible = False
+            pnlLookup.Visible = False
             pnlProdType.Visible = False
             panelLogin.Visible = True
-            panelLogin.FindControl("Login1").Focus()
+            Dim oUC1 As Control = LoadControl("login.ascx")
+            panelLogin.Controls.Add(oUC1)
         Else
             If Roles.IsUserInRole(GetUser.UserName.ToString(), "Administrators") Then
                 propId = Request.QueryString("propid")
@@ -295,7 +298,7 @@ Partial Class systems_product_type_lookup
     End Sub
 
     Private Sub DeletePropertyValue(ByVal propId As Integer, ByVal code As String)
-        If Not Me.IsUserLoggedIn Then Exit Sub
+        If Not Me.IsUserLoggedIn Then Response.Redirect(HttpContext.Current.Items("_path"))
 
         oConn = New SqlConnection(sConn)
         oConn.Open()
@@ -341,7 +344,7 @@ Partial Class systems_product_type_lookup
     End Sub
 
     Protected Sub btnSubmit_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles btnSubmit.Click
-        If Not Me.IsUserLoggedIn Then Exit Sub
+        If Not Me.IsUserLoggedIn Then Response.Redirect(HttpContext.Current.Items("_path"))
 
         'save the lookup
         oConn = New SqlConnection(sConn)
@@ -380,7 +383,7 @@ Partial Class systems_product_type_lookup
     End Sub
 
     Protected Sub btnUpdate_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles btnUpdate.Click
-        If Not Me.IsUserLoggedIn Then Exit Sub
+        If Not Me.IsUserLoggedIn Then Response.Redirect(HttpContext.Current.Items("_path"))
 
         'save the lookup
         oConn = New SqlConnection(sConn)
@@ -420,14 +423,6 @@ Partial Class systems_product_type_lookup
 
     Protected Sub btnCancel_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles btnCancel.Click
         Response.Redirect(GetCurrentPage() & "?propId=" & hdPropId.Value)
-    End Sub
-
-    Protected Sub Login1_LoggedIn(ByVal sender As Object, ByVal e As System.EventArgs) Handles Login1.LoggedIn
-        Response.Redirect(HttpContext.Current.Items("_path"))
-    End Sub
-
-    Protected Sub Login1_PreRender(ByVal sender As Object, ByVal e As System.EventArgs)
-        Login1.PasswordRecoveryUrl = "~/" & Me.LinkPassword & "?ReturnUrl=" & HttpContext.Current.Items("_path")
     End Sub
 
     Protected Sub btnBack_Click(ByVal sender As Object, ByVal e As System.EventArgs)

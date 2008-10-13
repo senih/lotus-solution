@@ -6,7 +6,7 @@
 <%@ Import Namespace="System.Web.Security.Membership"%>
 <%@ Import Namespace="System.Threading" %>
 <%@ Import Namespace="System.Globalization" %>
-
+<%@ Import Namespace="System.Net.Mail" %>
 
 <script runat="server">
     Private sConn As String = ConfigurationManager.ConnectionStrings("SiteConnectionString").ConnectionString.ToString()
@@ -15,10 +15,23 @@
     Private nOrderId As Integer
     Private sCurrencySymbol As String = ""
     Private sCurrencySeparator As String = ""
+    Private sPaypalDownloadsPage As String = ""
+    Private sEmailTemplate As String = ""
     Private nRootId As Integer
     Private nSubtotal As Decimal
     Private nShipping As Decimal
     Private nTax As Decimal
+    Private dtOrderDate As DateTime
+    Private sOrderBy As String = ""
+    Private sBaseUrl As String
+    Private sWebsiteUrl As String
+    Private sStatus As String
+    Private sShipping As String
+    Private sShippingStatus As String
+    Private bUseShipping As Boolean
+    Private dShippedDate As DateTime
+    Private sPaymentMethod As String
+    Private nTimeOffset As Double = 0
     
     Protected Sub RedirectForLogin()
         If IsNothing(GetUser) Then
@@ -41,9 +54,77 @@
         End If
     End Sub
     
+    
+    Protected Sub Page_Init(ByVal sender As Object, ByVal e As System.EventArgs)
+        sBaseUrl = Request.Url.AbsoluteUri.Replace(Request.Url.PathAndQuery, "") & Request.ApplicationPath
+        If Not sBaseUrl.EndsWith("/") Then sBaseUrl += "/"
+        sWebsiteUrl = Request.Url.AbsoluteUri.Replace(Request.Url.PathAndQuery, "")
+        
+        nOrderId = CInt(Request.QueryString("oid"))
+        
+        Dim oCmd As SqlCommand
+        Dim oDataReader As SqlDataReader
+        oConn.Open()
+        oCmd = New SqlCommand
+        oCmd.Connection = oConn
+        oCmd.CommandText = "SELECT * FROM orders WHERE order_id=@order_id"
+        oCmd.CommandType = CommandType.Text
+        oCmd.Parameters.Add("@order_id", SqlDbType.Int).Value = nOrderId
+        oDataReader = oCmd.ExecuteReader
+        If oDataReader.Read Then
+            
+            nRootId = oDataReader("root_id").ToString
+            dtOrderDate = oDataReader("order_date")
+            sOrderBy = oDataReader("order_by").ToString
+            sStatus = oDataReader("status").ToString
+            nSubtotal = oDataReader("sub_total")
+            nShipping = oDataReader("shipping")
+            nTax = oDataReader("tax")
+            dtOrderDate = Convert.ToDateTime(oDataReader("order_date")) '6/2/2007 9:58:01 AM
+            sPaymentMethod = oDataReader("payment_method").ToString
+            
+            If Not IsDBNull(oDataReader("shipping_first_name")) Then
+                bUseShipping = True
+                sShipping = "<div>" & oDataReader("shipping_first_name").ToString & " " & oDataReader("shipping_last_name").ToString & "</div>" & _
+                    "<div>" & oDataReader("shipping_company").ToString & "</div>" & _
+                    "<div>" & oDataReader("shipping_address").ToString & "</div>" & _
+                    "<div>" & oDataReader("shipping_city").ToString & "</div>" & _
+                    "<div>" & oDataReader("shipping_state").ToString & "</div>" & _
+                    "<div>" & oDataReader("shipping_country").ToString & "</div>" & _
+                    "<div>" & oDataReader("shipping_zip").ToString & "</div>" & _
+                    "<div>Ph. " & oDataReader("shipping_phone").ToString
+                If Not oDataReader("shipping_fax").ToString = "" Then
+                    sShipping += ", " & oDataReader("shipping_fax").ToString 
+                End If
+                sShipping += "</div>"
+                sShippingStatus = oDataReader("shipping_status").ToString
+                If Not IsDBNull(oDataReader("shipped_date")) Then
+                    dShippedDate = Convert.ToDateTime(oDataReader("shipped_date"))
+                End If
+            Else
+                bUseShipping = False
+            End If
+
+        End If
+        oDataReader.Close()
+        
+        Dim sSQL As String = "SELECT locales.time_offset FROM pages_working INNER JOIN locales ON pages_working.file_name = locales.home_page WHERE pages_working.root_id=" & nRootId
+        oCmd = New SqlCommand(sSQL, oConn)
+        oDataReader = oCmd.ExecuteReader()
+        If oDataReader.Read() Then
+            nTimeOffset = oDataReader("time_offset")
+        End If
+        oDataReader.Close()
+        
+        oCmd.Dispose()
+        oConn.Close()
+
+        GetConfigShop()
+    End Sub
+    
     Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs)
         RedirectForLogin()
-        
+               
         Dim sCulture As String = Request.QueryString("c")
         If Not sCulture = "" Then
             Dim ci As New CultureInfo(sCulture)
@@ -59,76 +140,60 @@
         lblShippingInfoLabel.Text = GetLocalResourceObject("lblShippingInfoLabel.Text")
         lblItemsLabel.Text = GetLocalResourceObject("lblItemsLabel.Text")
         lblTotalLabel.Text = GetLocalResourceObject("lblTotalLabel.Text")
-        lblStatusLabel.Text = GetLocalResourceObject("lblStatusLabel.Text")
-        lblShippedLabel.Text = GetLocalResourceObject("lblShippedLabel.Text")
         lblShippedDateLabel.Text = GetLocalResourceObject("lblShippedDateLabel.Text")
-
-        nOrderId = CInt(Request.QueryString("oid"))
-
+        lblPayment.Text = GetLocalResourceObject("lblPayment.Text")
+        chkPaid.Text = GetLocalResourceObject("chkPaid.Text")
+        lblShipment.Text = GetLocalResourceObject("lblShipment.Text")
+        chkShipped.Text = GetLocalResourceObject("chkShipped.Text")
+        
         If Not Page.IsPostBack Then
-            Dim oCmd As SqlCommand
-            Dim oDataReader As SqlDataReader
-            oConn.Open()
-            oCmd = New SqlCommand
-            oCmd.Connection = oConn
-            oCmd.CommandText = "SELECT * FROM orders WHERE order_id=@order_id"
-            oCmd.CommandType = CommandType.Text
-            oCmd.Parameters.Add("@order_id", SqlDbType.Int).Value = nOrderId
-            oDataReader = oCmd.ExecuteReader
-            If oDataReader.Read Then
-                nRootId = oDataReader("root_id").ToString
-            
-                lblID.Text = oDataReader("order_id").ToString
-                lblDate.Text = FormatDateTime(oDataReader("order_date"), DateFormat.LongDate) & " " & FormatDateTime(oDataReader("order_date"), DateFormat.ShortTime)
-                Dim sOrderBy As String = oDataReader("order_by").ToString
-                lblOrderBy.Text = sOrderBy & " - " & Membership.GetUser(sOrderBy).Email
-                If Not IsDBNull(oDataReader("shipping_first_name")) Then
-                    Dim sShipping As String
-                    sShipping = "<div>" & oDataReader("shipping_first_name").ToString & " " & oDataReader("shipping_last_name").ToString & "</div>" & _
-                        "<div>" & oDataReader("shipping_company").ToString & "</div>" & _
-                        "<div>" & oDataReader("shipping_address").ToString & "</div>" & _
-                        "<div>" & oDataReader("shipping_city").ToString & "</div>" & _
-                        "<div>" & oDataReader("shipping_state").ToString & "</div>" & _
-                        "<div>" & oDataReader("shipping_country").ToString & "</div>" & _
-                        "<div>" & oDataReader("shipping_zip").ToString & "</div>" & _
-                        "<div>Ph." & oDataReader("shipping_phone").ToString & "</div>"
-                    If Not oDataReader("shipping_fax").ToString = "" Then
-                        sShipping += "<div>Fax." & oDataReader("shipping_fax").ToString & "</div>"
-                    End If
-                    lblShippingInfo.Text = sShipping
-                    idShipping.Visible = True
-                    idShipping2.Visible = True
-                    idShipping3.Visible = True
-                    If oDataReader("shipping_status").ToString = "SHIPPED" Then
-                        chkShipped.Checked = True
-                    Else
-                        chkShipped.Checked = False
-                    End If
-                    If Not IsDBNull(oDataReader("shipped_date")) Then
-                        Dim dShippedDate As DateTime = Convert.ToDateTime(oDataReader("shipped_date"))
-                        txtShippedDate.Text = dShippedDate.Year & "/" & dShippedDate.Month & "/" & dShippedDate.Day
-                    End If
+            If bUseShipping Then
+                If sShippingStatus = "SHIPPED" Then
+                    chkShipped.Checked = True
                 Else
-                    btnSave.Visible = False
+                    chkShipped.Checked = False
                 End If
-                lblStatus.Text = ShowStatus(oDataReader("status").ToString)
-            
-                nSubtotal = oDataReader("sub_total")
-                nShipping = oDataReader("shipping")
-                nTax = oDataReader("tax")
-            
             End If
-            oDataReader.Close()
-            oCmd.Dispose()
-            oConn.Close()
-        
-            GetConfigShop()
-        
-            lblItems.Text = ShowItems(nOrderId)
-            lblTotal.Text = ShowTotal(nSubtotal, nShipping, nTax)
+            If sStatus = "VERIFIED" Then
+                chkPaid.Checked = True
+            Else
+                chkPaid.Checked = False
+            End If
         End If
+        If bUseShipping Then
+            'Shippable
+            lblShippingInfo.Text = sShipping
+            idShipping.Visible = True
+            idShipping2.Visible = True
+            idShipping3.Visible = True
+            If sShippingStatus <> "" Then
+                txtShippedDate.Text = dShippedDate.AddHours(nTimeOffset).Year & "/" & dShippedDate.AddHours(nTimeOffset).Month & "/" & dShippedDate.AddHours(nTimeOffset).Day
+            End If
+            
+            If sPaymentMethod = "PAYPAL" Then
+                lblPaymentMethod.Text = "Paypal (" & ShowStatus(sStatus) & ")&nbsp;"
+                chkPaid.Visible = False
+            ElseIf sPaymentMethod = "CASH_ON_DELIVERY" Then
+                lblPaymentMethod.Text = "COD (" & ShowStatus(sStatus) & ")&nbsp;"
+            End If
+        Else
+            'Downloadable
+            If sPaymentMethod = "PAYPAL" Then
+                btnSave.Visible = False
+                idPayment.Visible = False
+            ElseIf sPaymentMethod = "CASH_ON_DELIVERY" Then
+                lblPaymentMethod.Text = "COD (" & ShowStatus(sStatus) & ")&nbsp;"
+            End If
+        End If
+
+        lblOrderBy.Text = sOrderBy & " - " & Membership.GetUser(sOrderBy).Email
+        lblID.Text = nOrderId
+        lblDate.Text = dtOrderDate.AddHours(nTimeOffset) 'FormatDateTime(dtOrderDate, DateFormat.LongDate) & " " & FormatDateTime(dtOrderDate, DateFormat.ShortTime)
+        lblItems.Text = ShowItems(nOrderId)
+        lblTotal.Text = ShowTotal(nSubtotal, nShipping, nTax)
+        'lblStatus.Text = ShowStatus(sStatus)
         
-        btnClose.OnClientClick = "self.close()"
+        btnClose.OnClientClick = "parent.icCloseDlg();return false;" '"self.close()"
     End Sub
     
     Function ShowItems(ByVal nOrderId As Integer) As String
@@ -170,11 +235,11 @@
     
     Function ShowStatus(ByVal sStatus As String) As String
         If sStatus = "WAITING_FOR_PAYMENT" Then
-            Return "Waiting for payment"
+            Return "Waiting"
         ElseIf sStatus = "CONFIRMED" Then
-            Return "Confirmed"
+            Return "Waiting"
         Else
-            Return "Verified"
+            Return "Completed"
         End If
     End Function
     
@@ -194,7 +259,14 @@
             If sCurrencySymbol.Length > 1 Then
                 sCurrencySymbol = sCurrencySymbol.Substring(0, 1).ToUpper() & sCurrencySymbol.Substring(1).ToString
             End If
-            sCurrencySymbol = sCurrencySymbol & sCurrencySeparator
+            sCurrencySymbol = sCurrencySymbol & sCurrencySeparator '$
+            If nRootId = 1 Then
+                sPaypalDownloadsPage = "shop_downloads.aspx?oid=" & nOrderId
+            Else
+                sPaypalDownloadsPage = "shop_downloads_" & nRootId & ".aspx?oid=" & nOrderId
+            End If
+                
+            sEmailTemplate = oDataReader("paypal_order_email_template").ToString
         End While
         oDataReader.Close()
         oCmd.Dispose()
@@ -212,24 +284,129 @@
         oConn.Open()
         oCmd = New SqlCommand
         oCmd.Connection = oConn
-        If txtShippedDate.Text = "" Then
-            sSQL = "UPDATE orders SET shipping_status=@shipping_status WHERE order_id=@order_id"
-        Else
-            sSQL = "UPDATE orders SET shipping_status=@shipping_status, shipped_date=@shipped_date WHERE order_id=@order_id"
-        End If
+        sSQL = "UPDATE orders SET shipping_status=@shipping_status, shipped_date=@shipped_date WHERE order_id=@order_id"
         oCmd.CommandText = sSQL
         oCmd.CommandType = CommandType.Text
         oCmd.Parameters.Add("@order_id", SqlDbType.Int).Value = nOrderId
         oCmd.Parameters.Add("@shipping_status", SqlDbType.NVarChar, 50).Value = sShippingStatus
-        If Not txtShippedDate.Text = "" Then
-            oCmd.Parameters.Add("@shipped_date", SqlDbType.DateTime).Value = Convert.ToDateTime(txtShippedDate.Text)
+        If txtShippedDate.Text = "" Then
+            oCmd.Parameters.Add("@shipped_date", SqlDbType.DateTime).Value = Now
+        Else
+            Dim dTmp As DateTime = Convert.ToDateTime(txtShippedDate.Text)
+            oCmd.Parameters.Add("@shipped_date", SqlDbType.DateTime).Value = New DateTime(dTmp.Year, dTmp.Month, dTmp.Day, 23, 59, 59).AddHours(-nTimeOffset)
         End If
         oCmd.ExecuteNonQuery()
         oCmd.Dispose()
         oConn.Close()
+
+        If sStatus <> "VERIFIED" And chkPaid.Checked = True Then
+            SetPaidAndSendReceipt()
+        End If
+        If sStatus = "VERIFIED" And chkPaid.Checked = False Then
+            '*** update status ***
+            Dim oCommand As SqlCommand
+            oCommand = New SqlCommand("UPDATE orders set status='WAITING_FOR_PAYMENT' where order_id=@order_id")
+            oCommand.CommandType = CommandType.Text
+            oCommand.Parameters.Add("@order_id", SqlDbType.Int).Value = nOrderId
+            oConn.Open()
+            oCommand.Connection = oConn
+            oCommand.ExecuteNonQuery()
+            oConn.Close()
+        End If
         
         lblSaveStatus.Text = GetLocalResourceObject("DataUpdated")
     End Sub
+    
+    Protected Sub SetPaidAndSendReceipt()
+        Dim nOrderId As Integer = Request.QueryString("oid")
+        
+        '*** update status ***
+        Dim oCommand As SqlCommand
+        oCommand = New SqlCommand("UPDATE orders set status='VERIFIED' where order_id=@order_id")
+        oCommand.CommandType = CommandType.Text
+        oCommand.Parameters.Add("@order_id", SqlDbType.Int).Value = nOrderId
+        oConn.Open()
+        oCommand.Connection = oConn
+        oCommand.ExecuteNonQuery()
+        oConn.Close()
+        
+        '*** order items ***
+        Dim oDataReader As SqlDataReader
+        oCommand = New SqlCommand("SELECT * FROM order_items where order_id=@order_id")
+        oCommand.CommandType = CommandType.Text
+        oCommand.Parameters.Add("@order_id", SqlDbType.Int).Value = nOrderId
+        oConn.Open()
+        oCommand.Connection = oConn
+        oDataReader = oCommand.ExecuteReader
+        Dim sOrderDetail As String = "<table style=""margin-bottom:15px;width:100%;"">"
+        Dim nSubTotal As Decimal = 0
+        While oDataReader.Read()
+            sOrderDetail += "<tr>" & _
+                "<td style=""width:100%"">" & oDataReader("item_desc").ToString & "</td>" & _
+                "<td style=""text-align:right"">" & oDataReader("qty").ToString & "</td>" & _
+                "<td style=""padding-left:30px;text-align:right"">" & sCurrencySymbol & FormatNumber(Convert.ToDecimal(oDataReader("price")), 2) & "</td>" & _
+                "</tr>"
+            nSubTotal += Convert.ToInt32(oDataReader("qty")) * Convert.ToDecimal(oDataReader("price"))
+        End While
+        If nShipping <> 0 Or nTax <> 0 Then
+            sOrderDetail += "<tr><td colspan=""2"" style=""text-align:right"">Subtotal:&nbsp;</td>" & _
+                "<td style=""text-align:right"">" & sCurrencySymbol & FormatNumber(nSubTotal, 2) & "</td></tr>"
+        End If
+        If nShipping <> 0 Then
+            sOrderDetail += "<tr><td colspan=""2"" style=""text-align:right"">Postage and Packing:&nbsp;</td>" & _
+                "<td style=""text-align:right"">" & sCurrencySymbol & FormatNumber(nShipping, 2) & "</td></tr>"
+        End If
+        If nTax <> 0 Then
+            sOrderDetail += "<tr><td colspan=""2"" style=""text-align:right"">Tax:&nbsp;</td>" & _
+             "<td style=""text-align:right"">" & sCurrencySymbol & FormatNumber(nTax, 2) & "</td></tr>"
+        End If
+        sOrderDetail += "<tr><td colspan=""2"" style=""text-align:right"">Total:&nbsp;</td>" & _
+        "<td style=""text-align:right"">" & sCurrencySymbol & FormatNumber(nSubTotal + nShipping + nTax, 2) & "</td></tr>" & _
+        "</table>"
+        oDataReader.Close()
+        oConn.Close()
+        
+        '*** Send Email ***         
+        Dim sDownloadLink As String
+        sDownloadLink = sBaseUrl & sPaypalDownloadsPage
+        Dim sBody As String = sEmailTemplate
+        sBody = sBody.Replace("[%ORDER_ID%]", nOrderId.ToString)
+        sBody = sBody.Replace("[%ORDER_DATE%]", dtOrderDate.AddHours(nTimeOffset).ToString)
+        sBody = sBody.Replace("[%ORDER_DETAIL%]", sOrderDetail)
+        sBody = sBody.Replace("[%DOWNLOAD_LINK%]", sDownloadLink)
+        sBody = sBody.Replace("[%WEBSITE_URL%]", sWebsiteUrl)
+        Dim user As MembershipUser = Membership.GetUser(sOrderBy)
+        Dim mailTo As String() = New String() {user.Email}
+        If Not SendMail(mailTo, "Thank you for your order", sBody, True) Then
+            'Mailing Failed...
+            'Exit Sub
+        End If
+            
+        oCommand.Dispose()
+        oConn = Nothing
+    End Sub
+    
+    Private Function SendMail(ByVal mailTo() As String, ByVal sSubject As String, ByVal sBody As String, ByVal bIsHTML As Boolean) As Boolean
+        Dim oSmtpClient As SmtpClient = New SmtpClient
+        Dim oMailMessage As MailMessage = New MailMessage
+
+        Try
+            Dim i As Integer
+            For i = 0 To UBound(mailTo)
+                oMailMessage.To.Add(mailTo(i))
+            Next
+
+            oMailMessage.Subject = sSubject
+            oMailMessage.IsBodyHtml = bIsHTML
+            oMailMessage.Body = sBody
+
+            oSmtpClient.Send(oMailMessage)
+            Return True
+        Catch ex As Exception
+            Return False
+        End Try
+    End Function
+
 </script>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -306,19 +483,22 @@
         <td  valign="top">:</td>
         <td><asp:Label ID="lblTotal" runat="server" Text=""></asp:Label></td>
     </tr>
-    <tr>
-        <td valign="top" style="white-space:nowrap">
-            <asp:Label ID="lblStatusLabel" meta:resourcekey="lblStatusLabel" runat="server" Text="Status"></asp:Label>
+    <tr id="idPayment" runat="server">
+        <td style="white-space:nowrap">
+            <asp:Label ID="lblPayment" meta:resourcekey="lblPayment" runat="server" Text="Payment"></asp:Label>
         </td>
-        <td  valign="top">:</td>
-        <td><asp:Label ID="lblStatus" runat="server" Text=""></asp:Label></td>
+        <td>:</td>
+        <td>
+            <asp:Label ID="lblPaymentMethod" runat="server" Text=""></asp:Label>
+            <asp:CheckBox ID="chkPaid" meta:resourcekey="chkPaid" Text="Paid" runat="server" />
+        </td>
     </tr>
     <tr id="idShipping2" runat="server" visible=false>
         <td style="white-space:nowrap">
-            <asp:Label ID="lblShippedLabel" meta:resourcekey="lblShippedLabel" runat="server" Text="Shipped"></asp:Label>
+            <asp:Label ID="lblShipment" meta:resourcekey="lblShipment" runat="server" Text="Shipment"></asp:Label>
         </td>
         <td>:</td>
-        <td><asp:CheckBox ID="chkShipped" Text="" runat="server" /></td>
+        <td><asp:CheckBox ID="chkShipped" meta:resourcekey="chkShipped" Text="Shipped" runat="server" /></td>
     </tr>
     <tr id="idShipping3" runat="server" visible=false>
         <td style="white-space:nowrap">

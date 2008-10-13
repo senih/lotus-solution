@@ -192,24 +192,6 @@
   <data name="lnkImport.text" xml:space="preserve">
     <value>Import Users</value>
   </data>
-  <data name="Login1.FailureText" xml:space="preserve">
-    <value>Your login attempt was not successful. Please try again.</value>
-  </data>
-  <data name="Login1.LoginButtonText" xml:space="preserve">
-    <value>Login</value>
-  </data>
-  <data name="Login1.PasswordLabelText" xml:space="preserve">
-    <value>Password:</value>
-  </data>
-  <data name="Login1.PasswordRecoveryText" xml:space="preserve">
-    <value>Password Recovery</value>
-  </data>
-  <data name="Login1.RememberMeText" xml:space="preserve">
-    <value>Remember me next time.</value>
-  </data>
-  <data name="Login1.UserNameLabelText" xml:space="preserve">
-    <value>User Name:</value>
-  </data>
   <data name="NoUsersFound" xml:space="preserve">
     <value>No users found.</value>
   </data>

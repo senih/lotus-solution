@@ -159,9 +159,6 @@
   <data name="lblSucess.text" xml:space="preserve">
     <value>Lschen fehlgeschlagen. Kanal wird gerade benutzt.</value>
   </data>
-  <data name="lblSucess.text1" xml:space="preserve">
-    <value>Kanal existiert bereits.2</value>
-  </data>
   <data name="lblTemplate.text" xml:space="preserve">
     <value>Standardschablone</value>
   </data>
@@ -171,24 +168,6 @@
   <data name="lblViewPermission.HeaderText" xml:space="preserve">
     <value>Leseberechtigung</value>
   </data>
-  <data name="Login1.FailureText" xml:space="preserve">
-    <value>Ihr Anmeldeversuch war nicht erfolgreich. Bitte versuchen Sie es erneut.</value>
-  </data>
-  <data name="Login1.LoginButtonText" xml:space="preserve">
-    <value>Anmelden</value>
-  </data>
-  <data name="Login1.PasswordLabelText" xml:space="preserve">
-    <value>Kennwort:</value>
-  </data>
-  <data name="Login1.PasswordRecoveryText" xml:space="preserve">
-    <value>Kennwortwiederherstellung</value>
-  </data>
-  <data name="Login1.RememberMeText" xml:space="preserve">
-    <value>Kennwort merken.</value>
-  </data>
-  <data name="Login1.UserNameLabelText" xml:space="preserve">
-    <value>Benutzername:</value>
-  </data>
   <data name="ViewPermission1" xml:space="preserve">
     <value>Everyone (Anonymous Users)</value>
   </data>
@@ -197,5 +176,11 @@
   </data>
   <data name="ViewPermission3" xml:space="preserve">
     <value>Channel's Users Only</value>
+  </data>
+  <data name="btnCancel.text" xml:space="preserve">
+    <value>     Abbrechen  </value>
+  </data>
+  <data name="btnUpdate.text" xml:space="preserve">
+    <value>     Aktualisieren  </value>
   </data>
 </root>

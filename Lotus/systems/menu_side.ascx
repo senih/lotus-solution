@@ -57,7 +57,21 @@
         'Default Configuration
         sTmpItem = oColPath(2)
         Dim nTreeRootId As Integer = sTmpItem(3).ToString()
+        Dim sMaxLvl As Integer = 10
                 
+        'Load XML Configuration
+        Dim sXmlPath As String = Server.MapPath("templates/" & Me.TemplateFolderName & "/default.xml")
+        If IO.File.Exists(sXmlPath) Then
+            Dim xmldoc As New XmlDocument
+            Dim fs As New IO.FileStream(sXmlPath, IO.FileMode.Open, IO.FileAccess.Read)
+            xmldoc.Load(fs)
+            If Not IsNothing(xmldoc.SelectSingleNode("root/menu_side/maxlvl")) Then
+                sMaxLvl = xmldoc.SelectSingleNode("root/menu_side/maxlvl").InnerText
+            End If
+            xmldoc = Nothing
+            fs = Nothing
+        End If
+
         'DB & Content object Init
         Dim oCommand As SqlCommand
         Dim oDataReader As SqlDataReader
@@ -71,7 +85,7 @@
         End If
         oCommand.CommandType = CommandType.StoredProcedure
         oCommand.Parameters.Add("@root_id", SqlDbType.Int).Value = nTreeRootId
-        oCommand.Parameters.Add("@maxlvl", SqlDbType.Int).Value = 10
+        oCommand.Parameters.Add("@maxlvl", SqlDbType.Int).Value = sMaxLvl '10
         oCommand.Parameters.Add("@link_placement", SqlDbType.NVarChar).Value = sLinkPlacement
         oCommand.Connection = oConn
         oDataReader = oCommand.ExecuteReader()
@@ -153,7 +167,12 @@
                     If sTtl2.ToString = "" Then 'kalau published version blm ada => bShowLink = False
                         bShowMenu = False
                     Else
-                        bShowMenu = True
+                        'bShowMenu = True
+                        If CBool(oDataReader("is_hidden2")) Then
+                            bShowMenu = False
+                        Else
+                            bShowMenu = True
+                        End If
                         sTtl = sTtl2
 
                         '--- Linked Page

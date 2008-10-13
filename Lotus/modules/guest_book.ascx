@@ -98,15 +98,8 @@
 
         End Try
         
-        If Not IsNothing(Page.Master.FindControl("placeholderPublishingInfo")) Then
-            Page.Master.FindControl("placeholderPublishingInfo").Visible = False
-        End If
         Page.Master.FindControl("placeholderBodyTop").Visible = False
         Page.Master.FindControl("placeholderBodyBottom").Visible = False
-        Page.Master.FindControl("placeholderFileView").Visible = False
-        Page.Master.FindControl("placeholderFileDownload").Visible = False
-        Page.Master.FindControl("placeholderListing").Visible = False
-        Page.Master.FindControl("placeholderCategoryInfo").Visible = False
         'Page.Master.FindControl("placeholderContentRating").Visible = False
         Page.Master.FindControl("placeholderComments").Visible = False
         If Not IsNothing(Page.Master.FindControl("placeholderStatPageViews")) Then
@@ -209,7 +202,7 @@
         </tr>
         <tr >
             <td class="commentinfo">
-            <asp:Literal ID="litPostedBy" meta:resourcekey="litPostedBy" runat="server" Text="Posted by:"></asp:Literal> <%#Server.HtmlEncode(Eval("name"))%> - <%#FormatDateTime(Eval("posted_date"), DateFormat.ShortDate)%>
+            <asp:Literal ID="litPostedBy" meta:resourcekey="litPostedBy" runat="server" Text="Posted by:"></asp:Literal> <%#Server.HtmlEncode(Eval("name"))%> - <%#FormatDateTime(CDate(Eval("posted_date")).AddHours(Me.TimeOffset), DateFormat.ShortDate)%>
             </td>
         </tr>
         </table>

@@ -23,13 +23,13 @@ function setMozEdit(idIframe)
   } 
   
 function getHTMLBody(idIframe)
-	{
+  {
     var oEditor=document.getElementById(idIframe).contentWindow;
     sHTML=oEditor.document.body.innerHTML;
     sHTML=String(sHTML).replace(/ contentEditable=true/g,"");
     sHTML = String(sHTML).replace(/\<PARAM NAME=\"Play\" VALUE=\"0\">/ig,"<PARAM NAME=\"Play\" VALUE=\"-1\">");
     return sHTML;
-	}
+  }
 
 /*Insert custon HTML function*/
 function insertHTML(idIframe, sHTML)
@@ -55,7 +55,7 @@ function insertHTML(idIframe, sHTML)
   }
 
 function doCmd(idIframe,sCmd,sOption)
-	{
+  {
     var oEditor=document.getElementById(idIframe).contentWindow;
     oEditor.document.execCommand(sCmd,false,sOption);
     }
@@ -91,4 +91,7 @@ function applySource(idIframe) {
     range.selectNodeContents(oEditor.document.body);
     oEditor.document.body.innerHTML = range.toString();
 }
-    
+
+function encodeHTMLCode(sHTML) {
+  return sHTML.replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/&/g,"&amp;");
+}    

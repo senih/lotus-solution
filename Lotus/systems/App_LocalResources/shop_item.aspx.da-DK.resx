@@ -144,16 +144,22 @@
   <data name="lblShippedDateLabel.text" xml:space="preserve">
     <value>Forsendelses dato</value>
   </data>
-  <data name="lblShippedLabel.text" xml:space="preserve">
-    <value>Sendt</value>
-  </data>
   <data name="lblShippingInfoLabel.text" xml:space="preserve">
     <value>Forsendelse</value>
   </data>
-  <data name="lblStatusLabel.text" xml:space="preserve">
-    <value>Status</value>
-  </data>
   <data name="lblTotalLabel.text" xml:space="preserve">
     <value>Total</value>
+  </data>
+  <data name="chkPaid.text" xml:space="preserve">
+    <value>Paid</value>
+  </data>
+  <data name="chkShipped.text" xml:space="preserve">
+    <value>Shipped</value>
+  </data>
+  <data name="lblPayment.text" xml:space="preserve">
+    <value>Payment</value>
+  </data>
+  <data name="lblShipment.text" xml:space="preserve">
+    <value>Shipment</value>
   </data>
 </root>

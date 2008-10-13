@@ -1,5 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <CityRegion>
+  <city name="Please select city"></city>
   <city name="Skopje">
     <region name="Karpos"></region>
     <region name="Cair"></region>

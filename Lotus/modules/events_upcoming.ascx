@@ -67,7 +67,7 @@
         <asp:Repeater ID="dlPagesWithin" runat="server">
         <ItemTemplate>  
             <div style="height:100%;margin-bottom:8px;"> 
-                <div><%#FormatDateTime(Eval("start_time"), DateFormat.ShortDate)%></div>
+                <div><%#FormatDateTime(CDate(Eval("start_time")), DateFormat.LongDate)%></div>
                 <b><%#Eval("subject")%></b>
                 <div><%#Eval("location")%></div>
                 <div><%#ShowURL(Eval("url", ""))%><br /></div>

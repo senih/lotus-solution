@@ -17,8 +17,6 @@
         lnkResources2.NavigateUrl = "~/" & Me.LinkWorkspaceResources
         lnkApproval.NavigateUrl = "~/" & Me.LinkWorkspaceApproval
         lnkApproval2.NavigateUrl = "~/" & Me.LinkWorkspaceApproval
-        lnkEvents.NavigateUrl = "~/" & Me.LinkWorkspaceEvents
-        lnkEvents2.NavigateUrl = "~/" & Me.LinkWorkspaceEvents
         lnkPolls.NavigateUrl = "~/" & Me.LinkWorkspacePolls
         lnkPolls2.NavigateUrl = "~/" & Me.LinkWorkspacePolls
         lnkNewsletters.NavigateUrl = "~/" & Me.LinkWorkspaceNewsletters
@@ -35,7 +33,6 @@
             Dim bShowPagesLink As Boolean = False
             Dim bShowPrefLink As Boolean = False
             Dim bShowPollLink As Boolean = False
-            Dim bShowEventLink As Boolean = False
             Dim bShowNewsletterLink As Boolean = False
             Dim bShowShopLink As Boolean = False
             Dim bShowCustomListingLink As Boolean = False
@@ -50,7 +47,6 @@
                     If Item.Substring(Item.IndexOf("Authors")) = "Authors" Then
                         bShowPagesLink = True
                         bShowPrefLink = True
-                        'bShowEventLink = True
                     End If
                 End If
 
@@ -58,7 +54,6 @@
                     If Item.Substring(Item.IndexOf("Editors")) = "Editors" Then
                         bShowApprovalLink = True
                         bShowPagesLink = True
-                        'bShowEventLink = True
                     End If
                 End If
 
@@ -66,7 +61,6 @@
                     If Item.Substring(Item.IndexOf("Publishers")) = "Publishers" Then
                         bShowApprovalLink = True
                         bShowPagesLink = True
-                        'bShowEventLink = True
                     End If
                 End If
 
@@ -74,16 +68,11 @@
                     If Item.Substring(Item.IndexOf("Resource Managers")) = "Resource Managers" Then
                         bShowResourceLink = True
                         'bShowPagesLink = True
-                        'bShowEventLink = True
                     End If
                 End If
 
                 If Item = "Polls Managers" Then
                     bShowPollLink = True
-                End If
-
-                If Item = "Events Managers" Then
-                    bShowEventLink = True
                 End If
                 
                 If Item = "Newsletters Managers" Then
@@ -96,7 +85,6 @@
                     bShowPagesLink = True
                     bShowPrefLink = True
                     bShowPollLink = True
-                    bShowEventLink = True
                     bShowNewsletterLink = True
                     bShowShopLink = True
                     bShowCustomListingLink = True
@@ -118,9 +106,6 @@
             If Not bShowPollLink Then
                 idPolls.Visible = False
             End If
-            If Not bShowEventLink Then
-                idEvents.Visible = False
-            End If
             If Not bShowNewsletterLink Then
                 idNewsletters.Visible = False
             End If
@@ -137,32 +122,18 @@
         Else
             panelWorkspace.Visible = False
             panelLogin.Visible = True
-            panelLogin.FindControl("Login1").Focus()
+            Dim oUC1 As Control = LoadControl("login.ascx")
+            panelLogin.Controls.Add(oUC1)
         End If
         
         'Hide Shop
         If ConfigurationManager.AppSettings("Shop") = "no" Then
             idShop.Visible = False
         End If
-        
-        'Hide Events
-        idEvents.Visible = False
-    End Sub
-
-    Protected Sub Login1_LoggedIn(ByVal sender As Object, ByVal e As System.EventArgs) Handles Login1.LoggedIn
-        Response.Redirect(HttpContext.Current.Items("_path"))
-    End Sub
-
-    Protected Sub Login1_PreRender(ByVal sender As Object, ByVal e As System.EventArgs)
-        Login1.PasswordRecoveryUrl = "~/" & Me.LinkPassword & "?ReturnUrl=" & HttpContext.Current.Items("_path")
     End Sub
 </script>
 
 <asp:Panel ID="panelLogin" runat="server" Visible="False">
-    <asp:Login ID="Login1" meta:resourcekey="Login1" runat="server" PasswordRecoveryText="Password Recovery" TitleText="" OnLoggedIn="Login1_LoggedIn" OnPreRender="Login1_PreRender">
-        <LabelStyle HorizontalAlign="Left" Wrap="False" />
-    </asp:Login>
-    <br />
 </asp:Panel>
 
 <asp:Panel ID="panelWorkspace" runat="server" Visible="false">
@@ -260,22 +231,6 @@
 
 
 <table cellpadding="0" cellspacing="0" style="width:100%">
-<tr runat="server" id="idEvents">
-    <td style="padding-bottom:5px">
-        <asp:HyperLink ID="lnkEvents2" Font-Underline=false runat="server">
-            <asp:Image ID="imgEvents" meta:resourcekey="imgEvents" ImageUrl="images/ico_events.gif" Width="79px" Height="79px" runat="server" />
-        </asp:HyperLink>
-    </td>
-    <td valign="top" style="padding-top:9px;padding-left:20px">
-        <div style="border-top:#aaaaaa 1px dotted;width:100%;padding-top:3px">
-            <asp:HyperLink ID="lnkEvents" meta:resourcekey="lnkEvents" runat="server" Font-Size="12px">Events</asp:HyperLink>
-            <div style="margin:3px"></div>
-            <asp:Literal ID="litEvents" meta:resourcekey="litEvents" runat="server">
-            Create and manage events.
-            </asp:Literal>            
-        </div>
-    </td>
-</tr>
 <tr runat="server" id="idPolls">
     <td style="padding-bottom:5px">
         <asp:HyperLink ID="lnkPolls2" Font-Underline=false runat="server">

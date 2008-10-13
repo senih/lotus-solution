@@ -159,9 +159,6 @@
   <data name="lblSucess.text" xml:space="preserve">
     <value>Delete Failed. Channel is in use.</value>
   </data>
-  <data name="lblSucess.text1" xml:space="preserve">
-    <value>Channel already exists.</value>
-  </data>
   <data name="lblTemplate.text" xml:space="preserve">
     <value>Default Template</value>
   </data>
@@ -171,31 +168,19 @@
   <data name="lblViewPermission.HeaderText" xml:space="preserve">
     <value>View Permission</value>
   </data>
-  <data name="Login1.FailureText" xml:space="preserve">
-    <value>Your login attempt was not successful. Please try again.</value>
-  </data>
-  <data name="Login1.LoginButtonText" xml:space="preserve">
-    <value>Login</value>
-  </data>
-  <data name="Login1.PasswordLabelText" xml:space="preserve">
-    <value>Password:</value>
-  </data>
-  <data name="Login1.PasswordRecoveryText" xml:space="preserve">
-    <value>Password Recovery</value>
-  </data>
-  <data name="Login1.RememberMeText" xml:space="preserve">
-    <value>Remember me next time.</value>
-  </data>
-  <data name="Login1.UserNameLabelText" xml:space="preserve">
-    <value>User Name:</value>
-  </data>
   <data name="ViewPermission1" xml:space="preserve">
-    <value>Everyone (Anonymous Users)c</value>
+    <value>Everyone (Anonymous Users)</value>
   </data>
   <data name="ViewPermission2" xml:space="preserve">
     <value>All Users (Registered)</value>
   </data>
   <data name="ViewPermission3" xml:space="preserve">
     <value>Channel's Users Only</value>
+  </data>
+  <data name="btnCancel.text" xml:space="preserve">
+    <value>  Cancel  </value>
+  </data>
+  <data name="btnUpdate.text" xml:space="preserve">
+    <value>  Update  </value>
   </data>
 </root>

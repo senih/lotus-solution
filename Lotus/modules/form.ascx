@@ -20,7 +20,10 @@
         oConn.Open()
     
         If Me.IsAdministrator Or Me.IsAuthor Then
-        
+            'Enable this line if using AJAX
+            'Dim oUpdate As ScriptManager = ScriptManager.GetCurrent(Page)
+            'oUpdate.RegisterPostBackControl(btnDownloadCsv)
+                        
             If Request.QueryString("mode") = "edit" Then
             
                 '~~~ Prepare Panels ~~~
@@ -597,6 +600,7 @@
         'oConn.Close()
     
         Dim oFormManager As FormManager = New FormManager
+        oFormManager.TimeOffset = Me.TimeOffset
         dv = New DataView(oFormManager.GetData(nPageId))
 
         GridView1.DataSource = dv
@@ -753,7 +757,7 @@
     'End Sub
 
     Protected Sub btnDelete_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles btnDelete.Click
-        If Not Me.IsUserLoggedIn Then Exit Sub
+        If Not Me.IsUserLoggedIn Then Response.Redirect(HttpContext.Current.Items("_path"))
     
         Dim oCmd As SqlCommand
         oConn.Open()
@@ -847,7 +851,7 @@
     '~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     Protected Sub btnAddField_Click(ByVal sender As Object, ByVal e As System.EventArgs)
-        If Not Me.IsUserLoggedIn Then Exit Sub
+        If Not Me.IsUserLoggedIn Then Response.Redirect(HttpContext.Current.Items("_path"))
     
         Dim oCmd As SqlCommand
         oConn.Open()
@@ -918,7 +922,7 @@
     '~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     Protected Sub btnAddValue_Click(ByVal sender As Object, ByVal e As System.EventArgs)
-        If Not Me.IsUserLoggedIn Then Exit Sub
+        If Not Me.IsUserLoggedIn Then Response.Redirect(HttpContext.Current.Items("_path"))
     
         Dim oCmd As SqlCommand = New SqlCommand
         oCmd.CommandType = CommandType.Text
@@ -972,7 +976,7 @@
     End Function
 
     Protected Sub btnSaveSettings_Click(ByVal sender As Object, ByVal e As System.EventArgs)
-        If Not Me.IsUserLoggedIn Then Exit Sub
+        If Not Me.IsUserLoggedIn Then Response.Redirect(HttpContext.Current.Items("_path"))
     
         Dim oCmd As SqlCommand
         oConn.Open()
@@ -998,7 +1002,7 @@
     End Sub
 
     Protected Sub btnDownloadCsv_Click(ByVal sender As Object, ByVal e As System.EventArgs)
-        If Not Me.IsUserLoggedIn Then Exit Sub
+        If Not Me.IsUserLoggedIn Then Response.Redirect(HttpContext.Current.Items("_path"))
     
         Dim oFormManager As FormManager = New FormManager
         Dim dt As DataTable = oFormManager.GetData(nPageId)

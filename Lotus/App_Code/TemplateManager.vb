@@ -7,6 +7,7 @@ Public Class CMSTemplate
     Private intTemplateId As Integer
     Private strTemplateName As String
     Private strFolderName As String
+    Private intContentTemplateId As Integer
 
     Public Property TemplateId() As Integer
         Get
@@ -30,6 +31,14 @@ Public Class CMSTemplate
         End Get
         Set(ByVal value As String)
             strFolderName = value
+        End Set
+    End Property
+    Public Property ContentTemplateId() As Integer
+        Get
+            Return intContentTemplateId
+        End Get
+        Set(ByVal value As Integer)
+            intContentTemplateId = value
         End Set
     End Property
 
@@ -71,6 +80,7 @@ Public Class TemplateManager
         oCmd.CommandType = CommandType.StoredProcedure
         oCmd.Parameters.Add("@template_name", SqlDbType.NVarChar, 50).Value = template.TemplateName
         oCmd.Parameters.Add("@folder_name", SqlDbType.NVarChar, 50).Value = template.FolderName
+        oCmd.Parameters.Add("@content_template_id", SqlDbType.Int).Value = template.ContentTemplateId
 
         oConn.Open()
         oCmd.Connection = oConn

@@ -86,7 +86,7 @@
 
     Protected Sub btnSubmit_Click(ByVal sender As Object, ByVal e As System.EventArgs)
         If Not bAllowAnonymous Then
-            If Not Me.IsUserLoggedIn Then Exit Sub
+            If Not Me.IsUserLoggedIn Then Response.Redirect(HttpContext.Current.Items("_path"))
         End If
         
         Dim oCmd As SqlCommand = New SqlCommand
@@ -148,16 +148,8 @@
         panelComments.Visible = False
         panelPostMessage.Visible = False
         Page.Master.FindControl("placeholderBody").FindControl("panelBody").Visible = False
-        
-        If Not IsNothing(Page.Master.FindControl("placeholderPublishingInfo")) Then
-            Page.Master.FindControl("placeholderPublishingInfo").Visible = False
-        End If
         Page.Master.FindControl("placeholderBodyTop").Visible = False
         Page.Master.FindControl("placeholderBodyBottom").Visible = False
-        Page.Master.FindControl("placeholderFileView").Visible = False
-        Page.Master.FindControl("placeholderFileDownload").Visible = False
-        Page.Master.FindControl("placeholderListing").Visible = False
-        Page.Master.FindControl("placeholderCategoryInfo").Visible = False
         Page.Master.FindControl("placeholderContentRating").Visible = False
         'Page.Master.FindControl("placeholderComments").Visible = False
         If Not IsNothing(Page.Master.FindControl("placeholderStatPageViews")) Then
@@ -267,6 +259,7 @@
 
 <asp:Panel ID="panelTitle" runat="server">
     <div style="margin:7px"></div>
+    <a name="ic_comments" href="" title=""></a>
     <asp:Label ID="lblComments" meta:resourcekey="lblComments" runat="server" Font-Bold="true" Text="Comments"></asp:Label>
 </asp:Panel>
 
@@ -287,7 +280,7 @@
             </tr>
             <tr >
               <td class="commentinfo">
-              <%=GetLocalResourceObject("PostedBy")%> : <%#ShowPostedBy(Eval("posted_by"), Eval("url", ""))%> - <%#FormatDateTime(Eval("posted_date"), DateFormat.LongDate)%>
+              <%=GetLocalResourceObject("PostedBy")%> : <%#ShowPostedBy(Eval("posted_by"), Eval("url", ""))%> - <%#FormatDateTime(CDate(Eval("posted_date")).AddHours(Me.TimeOffset), DateFormat.LongDate)%>
               </td>
             </tr>
           </table>

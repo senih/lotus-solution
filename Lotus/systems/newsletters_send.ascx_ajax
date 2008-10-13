@@ -149,7 +149,7 @@
     End Sub
 
     Protected Sub btnSend_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles btnSend.Click
-        If Not Me.IsUserLoggedIn Then Exit Sub
+        If Not Me.IsUserLoggedIn Then Response.Redirect(HttpContext.Current.Items("_path"))
         SendMessage(nMessageCount)
     End Sub
 

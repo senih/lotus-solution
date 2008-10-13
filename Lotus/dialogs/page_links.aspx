@@ -184,7 +184,12 @@
                     If sTtl2.ToString = "" Then 'kalau published version blm ada => bShowLink = False
                         bShowMenu = False
                     Else
-                        bShowMenu = True
+                        'bShowMenu = True
+                        If CBool(oDataReader("is_hidden2")) Then
+                            bShowMenu = False
+                        Else
+                            bShowMenu = True
+                        End If
                         sTtl = sTtl2
                     End If
                 End If
@@ -287,7 +292,12 @@
                     If sTtl2.ToString = "" Then 'kalau published version blm ada => bShowLink = False
                         bShowMenu = False
                     Else
-                        bShowMenu = True
+                        'bShowMenu = True
+                        If CBool(oDataReader("is_hidden2")) Then
+                            bShowMenu = False
+                        Else
+                            bShowMenu = True
+                        End If
                         sTtl = sTtl2
                     End If
                 End If
@@ -379,7 +389,12 @@
                     If sTtl2.ToString = "" Then 'kalau published version blm ada => bShowLink = False
                         bShowMenu = False
                     Else
-                        bShowMenu = True
+                        'bShowMenu = True
+                        If CBool(oDataReader("is_hidden2")) Then
+                            bShowMenu = False
+                        Else
+                            bShowMenu = True
+                        End If
                         sTtl = sTtl2
                     End If
                 End If
@@ -416,9 +431,9 @@
         treeBottom.ExpandAll()
 
         oConn.Close()
-
-        btnOk.OnClientClick = "doInsert();self.close();return false;"
-        btnClose.OnClientClick = "self.close();return false;"
+       
+        btnOk.OnClientClick = "if(parent.oUtil+''=='undefined'){doInsert();self.close()}else{doInsert();parent.icCloseDlg()};return false;"
+        btnClose.OnClientClick = "if(parent.oUtil+''=='undefined'){self.close()}else{parent.icCloseDlg()};return false;"
 
     End Sub
 
@@ -662,7 +677,10 @@
         if(navigator.appName.indexOf('Microsoft')!=-1)
             {
             //IE
-            var oEditor=dialogArguments.oUtil.oEditor;
+            var oEditor;
+            if(parent.oUtil+''=='undefined')oEditor=dialogArguments.oUtil.oEditor;
+            else oEditor=parent.oUtil.oEditor;
+
             if(!oEditor)return;
             oEditor.focus()
 	        var oSel=oEditor.document.selection.createRange();
@@ -679,7 +697,10 @@
 	    else
 	        {
 	        //Moz
-	        var oEditor=window.opener.oUtil.oEditor;
+	        var oEditor;
+	        if(parent.oUtil+''=='undefined')oEditor=window.opener.oUtil.oEditor;
+	        else oEditor=parent.oUtil.oEditor;
+
             var oSel=oEditor.getSelection();
             var range = oSel.getRangeAt(0);
 
@@ -722,7 +743,7 @@
 	        }
         }
     function adjustHeight()
-        {
+        {return;
         if(navigator.appName.indexOf('Microsoft')!=-1)
             document.getElementById('cellContent').height=324;
         else
@@ -733,51 +754,35 @@
 <body onload="adjustHeight()" style="margin:0px;background-color:#E6E7E8;">
 <form id="form1" runat="server">
 
-<table width="100%" cellpadding=0 cellspacing=0 border=0>
-<tr>
-    <td colspan=3 id=cellContent valign=top>
-        <div style="height:100%;overflow:auto;background:white;padding:10px;border-bottom:#cccccc 1px solid;margin-bottom:5px">    
-        
-        <asp:Label ID="lblTop" meta:resourcekey="lblTop" runat="server" Font-Bold="true" Text="Top"></asp:Label>
-        <div style="margin:3px"></div>
-        <asp:TreeView ID="treeTop" runat="server" ShowLines=true></asp:TreeView><br /> 
-        
-        <asp:Label ID="lblMain" meta:resourcekey="lblMain" runat="server" Font-Bold="true" Text="Main"></asp:Label>
-        <div style="margin:3px"></div>       
-        <asp:TreeView ID="treeMain" runat="server" ShowLines=true></asp:TreeView><br />
-        
-        <asp:Label ID="lblBottom" meta:resourcekey="lblBottom" runat="server" Font-Bold="true" Text="Bottom"></asp:Label>
-        <div style="margin:3px"></div>
-        <asp:TreeView ID="treeBottom" runat="server" ShowLines=true></asp:TreeView><br />
-        
-        </div>
-    </td>
-</tr>
-<tr>
-    <td style="padding-left:5px">
-        <asp:Label ID="lblURL" meta:resourcekey="lblURL" runat="server" Text="URL"></asp:Label>
-    </td>
-    <td>&nbsp;:&nbsp;</td>
-    <td width="100%">
+<div style="width:480px;height:360px;overflow:auto;background:white;padding:10px;border-bottom:#cccccc 1px solid;margin-bottom:5px">    
+
+    <asp:Label ID="lblTop" meta:resourcekey="lblTop" runat="server" Font-Bold="true" Text="Top"></asp:Label>
+    <div style="margin:3px"></div>
+    <asp:TreeView ID="treeTop" runat="server" ShowLines=true></asp:TreeView><br /> 
+
+    <asp:Label ID="lblMain" meta:resourcekey="lblMain" runat="server" Font-Bold="true" Text="Main"></asp:Label>
+    <div style="margin:3px"></div>       
+    <asp:TreeView ID="treeMain" runat="server" ShowLines=true></asp:TreeView><br />
+
+    <asp:Label ID="lblBottom" meta:resourcekey="lblBottom" runat="server" Font-Bold="true" Text="Bottom"></asp:Label>
+    <div style="margin:3px"></div>
+    <asp:TreeView ID="treeBottom" runat="server" ShowLines=true></asp:TreeView><br />
+
+</div>
+<div style="width:480px;padding:10px">
+    <div style="width:480px;margin-bottom:3px">
+        <asp:Label ID="lblURL" meta:resourcekey="lblURL" Width="100" runat="server" Text="URL"></asp:Label>:
         <input id="txtURL" type="text" style="width:200px" />
-    </td>
-</tr>
-<tr>
-    <td style="padding-left:5px" nowrap=nowrap>
-        <asp:Label ID="lblDisplayText" meta:resourcekey="lblDisplayText" runat="server" Text="Display Text"></asp:Label>
-    </td>
-    <td>&nbsp;:&nbsp;</td>
-    <td>
+    </div>
+    <div style="width:480px;margin-bottom:3px">
+        <asp:Label ID="lblDisplayText" meta:resourcekey="lblDisplayText" Width="100" runat="server" Text="Display Text"></asp:Label>:
         <input id="txtDisplayText" type="text" style="width:200px" />
-    </td>
-</tr>
-<tr>
-    <td colspan=3 style="padding:10px;padding-right:15px" align=right>
-        <asp:Button ID="btnClose" meta:resourcekey="btnClose" runat="server" Text=" Close " />
-        <asp:Button ID="btnOk" meta:resourcekey="btnOk" runat="server" Text="  Insert  " />
-    </td>
-</tr>
-</table>
+    </div>
+</div>
+<div style="width:480px;text-align:right;">
+    <asp:Button ID="btnClose" meta:resourcekey="btnClose" runat="server" Text=" Close " />
+    <asp:Button ID="btnOk" meta:resourcekey="btnOk" runat="server" Text="  Insert  " />
+</div>
 
 </form>
 </body>

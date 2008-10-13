@@ -8,10 +8,8 @@
     Private oConn As New SqlConnection(sConn)
 
     Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs)
-        panelLogin.Visible = True
-        panelShipments.Visible = False
-        panelNewShipment.Visible = False
-        If Not (IsNothing(GetUser())) Then
+
+        If Not IsNothing(GetUser()) Then
             If Roles.IsUserInRole(GetUser.UserName, "Administrators") Then
                 panelLogin.Visible = False
                 panelShipments.Visible = True
@@ -25,17 +23,23 @@
 
                 'Add state for selected country
                 ddCountry_SelectedIndexChanged(sender, Nothing)
+                
+                'add atribute
+                txtFlatAmount.Attributes.Add("onchange", "clearPair(document.getElementById('" & txtPercentage.ClientID & "'));")
+                txtPercentage.Attributes.Add("onchange", "clearPair(document.getElementById('" & txtFlatAmount.ClientID & "'));")
+
+                txtMinWeight.Text = FormatNumber(0, 2)
+                txtTotal.Text = FormatNumber(0, 2)
+                txtMaxWeight.Text = FormatNumber(99999.99, 2)
+                txtTotal2.Text = FormatNumber(99999.99, 2)
             End If
+        Else
+            panelLogin.Visible = True
+            Dim oUC1 As Control = LoadControl("login.ascx")
+            panelLogin.Controls.Add(oUC1)
+            panelShipments.Visible = False
+            panelNewShipment.Visible = False
         End If
-
-        'add atribute
-        txtFlatAmount.Attributes.Add("onchange", "clearPair(document.getElementById('" & txtPercentage.ClientID & "'));")
-        txtPercentage.Attributes.Add("onchange", "clearPair(document.getElementById('" & txtFlatAmount.ClientID & "'));")
-
-        txtMinWeight.Text = FormatNumber(0, 2)
-        txtTotal.Text = FormatNumber(0, 2)
-        txtMaxWeight.Text = FormatNumber(99999.99, 2)
-        txtTotal2.Text = FormatNumber(99999.99, 2)
     End Sub
 
     Function showCalculation(ByVal flat As String, ByVal perc As String) As String
@@ -47,14 +51,6 @@
         End If
         Return sCalculation
     End Function
-
-    Protected Sub Login1_LoggedIn(ByVal sender As Object, ByVal e As System.EventArgs) Handles Login1.LoggedIn
-        Response.Redirect(HttpContext.Current.Items("_path"))
-    End Sub
-
-    Protected Sub Login1_PreRender(ByVal sender As Object, ByVal e As System.EventArgs)
-        Login1.PasswordRecoveryUrl = "~/" & Me.LinkPassword & "?ReturnUrl=" & HttpContext.Current.Items("_path")
-    End Sub
 
     Protected Sub gvShipments_PreRender(ByVal sender As Object, ByVal e As System.EventArgs)
         Dim i As Integer
@@ -72,7 +68,7 @@
     End Sub
     
     Protected Sub btnSave_Click(ByVal sender As Object, ByVal e As System.EventArgs)
-        If Not Me.IsUserLoggedIn Then Exit Sub
+        If Not Me.IsUserLoggedIn Then Response.Redirect(HttpContext.Current.Items("_path"))
         Dim oCmd As SqlCommand = New SqlCommand
         oConn.Open()
         oCmd.Connection = oConn
@@ -137,9 +133,6 @@
 </script>
 
 <asp:Panel ID="panelLogin" runat="server" Visible="False">
-    <asp:Login ID="Login1" meta:resourcekey="Login1" runat="server"  PasswordRecoveryText="Password Recovery" TitleText="" OnLoggedIn="Login1_LoggedIn" OnPreRender="Login1_PreRender">
-        <LabelStyle HorizontalAlign="Left" Wrap="False" />
-    </asp:Login>
 </asp:Panel> 
 
 <asp:Panel ID="panelShipments" runat="server">
@@ -243,7 +236,7 @@
   <td><%=GetLocalResourceObject("Country")%></td><td>:</td>
   <td>
       <asp:DropDownList id="ddCountry" runat="server" AutoPostBack="true" OnSelectedIndexChanged="ddCountry_SelectedIndexChanged">
-            <asp:ListItem value=""></asp:ListItem>
+            <asp:ListItem value="*">ALL COUNTRIES</asp:ListItem>
             <asp:ListItem value="AF">Afghanistan</asp:ListItem>
             <asp:ListItem value="AL">Albania</asp:ListItem>
             <asp:ListItem value="DZ">Algeria</asp:ListItem>
@@ -488,7 +481,7 @@
             <asp:ListItem value="ZM">Zambia</asp:ListItem>
             <asp:ListItem value="ZW">Zimbabwe</asp:ListItem>
         </asp:DropDownList>   
-    <asp:RequiredFieldValidator ID="rv1" ControlToValidate="ddCountry" ValidationGroup="shipment" runat="server" ErrorMessage="*"></asp:RequiredFieldValidator>
+    <%--<asp:RequiredFieldValidator ID="rv1" ControlToValidate="ddCountry" ValidationGroup="shipment" runat="server" ErrorMessage="*"></asp:RequiredFieldValidator>--%>
   </td>
 </tr>
 <tr >

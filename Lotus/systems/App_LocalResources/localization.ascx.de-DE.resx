@@ -123,9 +123,6 @@
   <data name="DeleteConfirm" xml:space="preserve">
     <value>Mchten Sie diese Regionseinstellung wirklich lschen?</value>
   </data>
-  <data name="Edit" xml:space="preserve">
-    <value>Edit</value>
-  </data>
   <data name="lblActive.HeaderText" xml:space="preserve">
     <value>Aktiv</value>
   </data>
@@ -201,22 +198,25 @@
   <data name="lblSiteZip.text" xml:space="preserve">
     <value>Zip</value>
   </data>
-  <data name="Login1.FailureText" xml:space="preserve">
-    <value>Ihr Anmeldeversuch war nicht erfolgreich. Bitte versuchen Sie es erneut.</value>
+  <data name="btnSave.text" xml:space="preserve">
+    <value>   Save   </value>
   </data>
-  <data name="Login1.LoginButtonText" xml:space="preserve">
-    <value>Anmelden</value>
+  <data name="btnSaveAndFinish.text" xml:space="preserve">
+    <value>   Save &amp; Finish   </value>
   </data>
-  <data name="Login1.PasswordLabelText" xml:space="preserve">
-    <value>Kennwort:</value>
+  <data name="DataUpdated" xml:space="preserve">
+    <value>Data Updated.</value>
   </data>
-  <data name="Login1.PasswordRecoveryText" xml:space="preserve">
-    <value>Kennwortwiederherstellung</value>
+  <data name="lnkEdit.text" xml:space="preserve">
+    <value>Edit</value>
   </data>
-  <data name="Login1.RememberMeText" xml:space="preserve">
-    <value>Kennwort merken.</value>
+  <data name="lblHours.text" xml:space="preserve">
+    <value>hours</value>
   </data>
-  <data name="Login1.UserNameLabelText" xml:space="preserve">
-    <value>Benutzername:</value>
+  <data name="lblServerTime.text" xml:space="preserve">
+    <value>Server Time is</value>
+  </data>
+  <data name="lblTimeOffset.text" xml:space="preserve">
+    <value>Times in the website should differ by</value>
   </data>
 </root>

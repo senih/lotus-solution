@@ -14,7 +14,10 @@
     Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs)
         If IsNothing(GetUser) Then
             panelLogin.Visible = True
-            panelLogin.FindControl("Login1").Focus()
+            Dim oUC1 As Control = LoadControl("login.ascx")
+            panelLogin.Controls.Add(oUC1)
+            panelCoupons.Visible = False
+            panelCouponsData.Visible = False
         Else
             panelCoupons.Visible = True
             panelCouponsData.Visible = True
@@ -22,12 +25,18 @@
             GetConfigShop()
             lblCurrencySymbol.Text = sCurrencySymbol
   
-            rbType1.Checked = True
-            rbType2.Checked = False
+            rbType1.Checked = False
+            rbType2.Checked = True
             rbType3.Checked = False
     
             rbProduct1.Checked = True
             rbProduct2.Checked = False
+            
+            Dim dDate As Date = Now
+            dDate = dDate.AddDays(30)
+            txtExp.Text = dDate.Year & "/" & dDate.Month & "/" & dDate.Day
+            
+            txtCode.Text = "SPECIAL" & Now.Minute & Now.Second
     
             ListCoupons()
         End If
@@ -42,7 +51,7 @@
     End Sub
 
     Protected Sub btnSave_Click(ByVal sender As Object, ByVal e As System.EventArgs)
-        If Not Me.IsUserLoggedIn Then Exit Sub
+        If Not Me.IsUserLoggedIn Then Response.Redirect(HttpContext.Current.Items("_path"))
 
         Dim sCmd As String
         Dim oCmd As New SqlCommand
@@ -83,7 +92,7 @@
             oCmd.Parameters.Add("@item_id", SqlDbType.Int).Value = txtProduct2.Text
         End If
     
-        oCmd.Parameters.Add("@exp", SqlDbType.DateTime).Value = txtExp.Text
+        oCmd.Parameters.Add("@exp", SqlDbType.DateTime).Value = DateTime.Parse(txtExp.Text).AddHours(-Me.TimeOffset)
         oCmd.Parameters.Add("@min", SqlDbType.Int).Value = txtMin.Text
         oCmd.Parameters.Add("@code", SqlDbType.NVarChar).Value = txtCode.Text
     
@@ -91,7 +100,8 @@
     
         oConn.Close()
         oCmd.Dispose()
-        Response.Redirect(Me.LinkShopCoupons)
+        
+        ListCoupons()
     End Sub
 
     Protected Sub gvCoupons_PreRender(ByVal sender As Object, ByVal e As System.EventArgs)
@@ -103,7 +113,7 @@
     End Sub
 
     Protected Sub gvCoupons_RowDeleting(ByVal sender As Object, ByVal e As System.Web.UI.WebControls.GridViewDeleteEventArgs)
-        If Not Me.IsUserLoggedIn Then Exit Sub
+        If Not Me.IsUserLoggedIn Then Response.Redirect(HttpContext.Current.Items("_path"))
 
         Dim oCmd As New SqlCommand
         oConn.Open()
@@ -117,14 +127,6 @@
         oCmd.Dispose()
     
         ListCoupons()
-    End Sub
-
-    Protected Sub Login1_LoggedIn(ByVal sender As Object, ByVal e As System.EventArgs)
-        Response.Redirect(HttpContext.Current.Items("_path"))
-    End Sub
-    
-    Protected Sub Login1_PreRender(ByVal sender As Object, ByVal e As System.EventArgs)
-        Login1.PasswordRecoveryUrl = "~/" & Me.LinkPassword & "?ReturnUrl=" & HttpContext.Current.Items("_path")
     End Sub
 
     Function ShowCouponValue(ByVal nCouponType As Integer, ByVal bAllItem As Boolean, _
@@ -198,10 +200,6 @@
 </script>
 
 <asp:Panel ID="panelLogin" runat="server" Visible="False">
-    <asp:Login ID="Login1" meta:resourcekey="Login1" runat="server"  PasswordRecoveryText="Password Recovery" TitleText="" OnLoggedIn="Login1_LoggedIn" OnPreRender="Login1_PreRender">
-        <LabelStyle HorizontalAlign="Left" Wrap="False" />
-    </asp:Login>
-    <br />
 </asp:Panel>
 
 <asp:Panel ID="panelCoupons" runat="server" Wrap=false Visible="false">
@@ -209,7 +207,7 @@
   <Columns>
     <asp:TemplateField HeaderText="Expires" ItemStyle-VerticalAlign="top">
       <ItemTemplate>
-        <%#FormatDateTime(Eval("expire_date"), DateFormat.ShortDate)%>
+        <%#FormatDateTime(CDate(Eval("expire_date")).AddHours(Me.TimeOffset), DateFormat.ShortDate)%>
       </ItemTemplate>
     </asp:TemplateField>
     <asp:BoundField HeaderText="Code" DataField="code" ItemStyle-VerticalAlign="top" />
@@ -226,9 +224,9 @@
 </asp:SqlDataSource>
 </asp:panel>
 
-<div style="margin:15px"></div>
 
 <asp:Panel ID="panelCouponsData" runat="server" Wrap=false Visible="false">
+<p>
   <table>
     <tr>
       <td valign="top" style="padding-top:5px"><%=GetLocalResourceObject("Type")%></td><td valign="top" style="padding-top:5px">:</td>
@@ -237,15 +235,15 @@
         <table cellpadding="0" cellspacing="0">
         <tr style="display:none">
             <td colspan="2">
-                <asp:RadioButton GroupName="Type" ID="rbType1" Checked="true" meta:resourcekey="rbType1" Text="Free Shipping" runat="server" />
+                <asp:RadioButton GroupName="Type" ID="rbType1" meta:resourcekey="rbType1" Text="Free Shipping" runat="server" />
             </td>
         </tr>
         <tr>
             <td>
-                <asp:RadioButton GroupName="Type" ID="rbType2" meta:resourcekey="rbType2" Text="Percentage Off" runat="server" />:&nbsp;
+                <asp:RadioButton GroupName="Type" ID="rbType2" Checked="true" meta:resourcekey="rbType2" Text="Percentage Off" runat="server" />:&nbsp;
             </td>
             <td>
-                <asp:TextBox ID="txtType2" runat="server"></asp:TextBox> % 
+                <asp:TextBox ID="txtType2" Text="10" Width="50" runat="server"></asp:TextBox> % 
             </td>
         </tr>
         <tr>
@@ -253,7 +251,7 @@
                 <asp:RadioButton GroupName="Type" ID="rbType3" meta:resourcekey="rbType3" Text="Amount Off" runat="server" />:&nbsp;
             </td>
             <td>
-                <asp:TextBox ID="txtType3" runat="server"></asp:TextBox>
+                <asp:TextBox ID="txtType3" Width="50" runat="server"></asp:TextBox>
                 (<asp:Label ID="lblCurrencySymbol" runat="server" Text=""></asp:Label>)
             </td>
         </tr>
@@ -269,33 +267,39 @@
     </tr>
     <tr>
       <td colspan="2"></td>
-      <td><asp:RadioButton GroupName="Product" ID="rbProduct2" meta:resourcekey="rbProduct2" Text="Item #" runat="server" /></td>
-      <td> : <asp:TextBox ID="txtProduct2" runat="server"></asp:TextBox></td>
+      <td colspan="2"><asp:RadioButton GroupName="Product" ID="rbProduct2" meta:resourcekey="rbProduct2" Text="Item #" runat="server" />: 
+      <asp:TextBox ID="txtProduct2" Width="50" runat="server"></asp:TextBox>
+      </td>
     </tr>
     <tr>
       <td><%=GetLocalResourceObject("Min Purchase")%></td><td>:</td>
       <td>
-          <asp:TextBox ID="txtMin" runat="server"></asp:TextBox>
+          <asp:TextBox ID="txtMin" Text="1" runat="server"></asp:TextBox>
+          <asp:RequiredFieldValidator ID="rfv3" ControlToValidate="txtMin" ValidationGroup="CreateCoupon" runat="server" ErrorMessage="*"></asp:RequiredFieldValidator>
       </td><td></td>
     </tr>
     <tr>
       <td><%=GetLocalResourceObject("Expiration Date")%></td><td>:</td>
       <td colspan="2">
-          <asp:TextBox ID="txtExp" runat="server"></asp:TextBox> <i>(yyyy/mm/dd)</i>
+          <asp:TextBox ID="txtExp" runat="server"></asp:TextBox> 
+          <asp:RequiredFieldValidator ControlToValidate="txtExp" ID="rfv2" ValidationGroup="CreateCoupon" runat="server" ErrorMessage="*"></asp:RequiredFieldValidator>
+          <i>(yyyy/mm/dd)</i>
       </td>
     </tr>
     <tr>
       <td><%=GetLocalResourceObject("Coupon Code")%></td><td>:</td>
       <td>
           <asp:TextBox ID="txtCode" runat="server"></asp:TextBox>
+          <asp:RequiredFieldValidator ID="rfv1" ControlToValidate="txtCode" ValidationGroup="CreateCoupon" runat="server" ErrorMessage="*"></asp:RequiredFieldValidator>
       </td><td></td>
     </tr>
     <tr>
       <td colspan="4">
-          <br /><asp:Button ID="btnSave" runat="server" meta:resourcekey="btnSave" Text=" Create Coupon " OnClick="btnSave_Click" />
+          <br /><asp:Button ID="btnSave" runat="server" meta:resourcekey="btnSave" Text=" Create Coupon " ValidationGroup="CreateCoupon" OnClick="btnSave_Click" />
       </td>
     </tr>
 </table>
+</p>
 </asp:Panel>
 
 

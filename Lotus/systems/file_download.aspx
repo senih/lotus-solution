@@ -172,8 +172,8 @@
                 Response.AddHeader("content-disposition", "attachment;filename=" & sName)
                 Response.AddHeader("Content-Length", infoFile.Length.ToString)
                 Response.ContentType = "application/octet-stream"
-                    
-                Response.WriteFile(sFile)
+                'fix to allow big files    
+                Response.TransmitFile(sFile)
                 Response.End()
 
             Else

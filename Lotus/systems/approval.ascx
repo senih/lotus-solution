@@ -76,13 +76,14 @@
         Else
             panelApproval.Visible = False
             panelLogin.Visible = True
-            panelLogin.FindControl("Login1").Focus()
+            Dim oUC1 As Control = LoadControl("login.ascx")
+            panelLogin.Controls.Add(oUC1)
         End If
         Page.ClientScript.RegisterOnSubmitStatement(Me.GetType, "tes", "transferValue(document.getElementById('" & hidPageIDs.ClientID & "'),document.getElementById('" & hidStats.ClientID & "'))")
     End Sub
 
     Protected Sub btnApprove_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles btnApprove.Click
-        If Not Me.IsUserLoggedIn Then Exit Sub
+        If Not Me.IsUserLoggedIn Then Response.Redirect(HttpContext.Current.Items("_path"))
         
         Dim oWorkflowManager As WorkflowManager = New WorkflowManager
 
@@ -99,12 +100,12 @@
         Next
 
         oWorkflowManager = Nothing
-
-        Response.Redirect(Me.LinkWorkspaceApproval)
+        
+        GridView1.DataBind()
     End Sub
 
     Protected Sub btnDecline_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles btnDecline.Click
-        If Not Me.IsUserLoggedIn Then Exit Sub
+        If Not Me.IsUserLoggedIn Then Response.Redirect(HttpContext.Current.Items("_path"))
         
         Dim oWorkflowManager As WorkflowManager = New WorkflowManager
 
@@ -122,7 +123,7 @@
 
         oWorkflowManager = Nothing
 
-        Response.Redirect(Me.LinkWorkspaceApproval)
+        GridView1.DataBind()
     End Sub
 
     Protected Sub GridView1_DataBound(ByVal sender As Object, ByVal e As System.EventArgs) Handles GridView1.DataBound
@@ -153,21 +154,9 @@
             Return ""
         End If
     End Function
-
-    Protected Sub Login1_LoggedIn(ByVal sender As Object, ByVal e As System.EventArgs) Handles Login1.LoggedIn
-        Response.Redirect(HttpContext.Current.Items("_path"))
-    End Sub
-
-    Protected Sub Login1_PreRender(ByVal sender As Object, ByVal e As System.EventArgs)
-        Login1.PasswordRecoveryUrl = "~/" & Me.LinkPassword & "?ReturnUrl=" & HttpContext.Current.Items("_path")
-    End Sub
 </script>
 
 <asp:Panel ID="panelLogin" runat="server" Visible="False">
-    <asp:Login ID="Login1" meta:resourcekey="Login1" runat="server" PasswordRecoveryText="Password Recovery" TitleText="" OnLoggedIn="Login1_LoggedIn" OnPreRender="Login1_PreRender">
-        <LabelStyle HorizontalAlign="Left" Wrap="False" />
-    </asp:Login>
-    <br />
 </asp:Panel>
 
 <asp:Panel ID="panelApproval" runat="server" Visible="False">

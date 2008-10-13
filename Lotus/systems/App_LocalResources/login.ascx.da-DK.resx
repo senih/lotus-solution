@@ -120,19 +120,19 @@
   <data name="Login1.FailureText" xml:space="preserve">
     <value>Login mislykkes. Prøv venligst igen.</value>
   </data>
-  <data name="Login1.LoginButtonText" xml:space="preserve">
-    <value>   Login   </value>
+  <data name="LoginButton.Text" xml:space="preserve">
+    <value>   Log In   </value>
   </data>
-  <data name="Login1.PasswordLabelText" xml:space="preserve">
+  <data name="PasswordLabel.Text" xml:space="preserve">
     <value>Password:</value>
   </data>
-  <data name="Login1.PasswordRecoveryText" xml:space="preserve">
+  <data name="PasswordRecoveryLink.Text" xml:space="preserve">
     <value>Jeg har glemt mit password</value>
   </data>
-  <data name="Login1.RememberMeText" xml:space="preserve">
+  <data name="RememberMe.Text" xml:space="preserve">
     <value>Husk mig.</value>
   </data>
-  <data name="Login1.UserNameLabelText" xml:space="preserve">
-    <value>Brugernavn:</value>
+  <data name="UserNameLabel.Text" xml:space="preserve">
+    <value>Email / Brugernavn:</value>
   </data>
 </root>

@@ -142,13 +142,13 @@
     <value>Forsendelse</value>
   </data>
   <data name="colStatus.HeaderText" xml:space="preserve">
-    <value>Status</value>
+    <value>Payment</value>
   </data>
   <data name="colTotal.HeaderText" xml:space="preserve">
     <value>Total</value>
   </data>
   <data name="Confirmed" xml:space="preserve">
-    <value>Bekræftet</value>
+    <value>Venter</value>
   </data>
   <data name="lblEmail.text" xml:space="preserve">
     <value>Email:</value>
@@ -174,35 +174,18 @@
   <data name="lblTo.text" xml:space="preserve">
     <value>Til:</value>
   </data>
-  <data name="Login1.FailureText" xml:space="preserve">
-    <value>Dit login lykkedes ikke. Prøv venligst igen.</value>
-  </data>
-  <data name="Login1.LoginButtonText" xml:space="preserve">
-    <value>Login</value>
-  </data>
-  <data name="Login1.PasswordLabelText" xml:space="preserve">
-    <value>Password:</value>
-  </data>
-  <data name="Login1.PasswordRecoveryText" xml:space="preserve">
-    <value>Password genoprettelse</value>
-  </data>
-  <data name="Login1.RememberMeText" xml:space="preserve">
-    <value>Husk mig næste gang.</value>
-  </data>
-  <data name="Login1.UserNameLabelText" xml:space="preserve">
-    <value>Bruger navn:</value>
-  </data>
   <data name="NotRequired" xml:space="preserve">
     <value>Ikke nødvendig</value>
   </data>
   <data name="optConfirmed.text" xml:space="preserve">
     <value>Bekræftet</value>
+    <comment>Not Used</comment>
   </data>
   <data name="optVerified.text" xml:space="preserve">
-    <value>Verificeret</value>
+    <value>Completed</value>
   </data>
   <data name="optWaitingForPayment.text" xml:space="preserve">
-    <value>Venter på betaling</value>
+    <value>Venter</value>
   </data>
   <data name="Shipped" xml:space="preserve">
     <value>Sendt</value>
@@ -217,12 +200,15 @@
     <value>(skat)</value>
   </data>
   <data name="Verified" xml:space="preserve">
-    <value>Verifceret</value>
+    <value>Completed</value>
   </data>
   <data name="Waiting" xml:space="preserve">
     <value>Venter</value>
   </data>
   <data name="WaitingForPayment" xml:space="preserve">
-    <value>Venter på betaling</value>
+    <value>Venter</value>
+  </data>
+  <data name="COD" xml:space="preserve">
+    <value>COD</value>
   </data>
 </root>

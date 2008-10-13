@@ -428,15 +428,15 @@ Public Class BaseMaster
     'End Property
 
     'Country/Locale Select
-    Private dictLocales As Dictionary(Of String, ArrayList)
-    Public Property Locales() As Dictionary(Of String, ArrayList)
-        Get
-            Return dictLocales
-        End Get
-        Set(ByVal value As Dictionary(Of String, ArrayList))
-            dictLocales = value
-        End Set
-    End Property
+    'Private dictLocales As Dictionary(Of String, ArrayList)
+    'Public Property Locales() As Dictionary(Of String, ArrayList)
+    '    Get
+    '        Return dictLocales
+    '    End Get
+    '    Set(ByVal value As Dictionary(Of String, ArrayList))
+    '        dictLocales = value
+    '    End Set
+    'End Property
 
     'Print Link
     Private sPrintLink As String

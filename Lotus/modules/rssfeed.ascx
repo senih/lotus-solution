@@ -139,7 +139,7 @@
   <asp:DataList ID="repeaterRss" Width="100%" SkinID="gridNewsFeedBox" runat="server">
     <ItemTemplate>
       <div><%#XPath("pubDate")%></div>
-      <b><%#XPath("title")%></b>
+      <b><%#HttpUtility.HtmlEncode(XPath("title"))%></b>
       <div><%#XPath("description")%>
       <a href="<%#XPath("link")%>"><asp:Literal ID="litMore" meta:resourcekey="litMore" runat="server" Text="More"></asp:Literal></a>
       </div><br />

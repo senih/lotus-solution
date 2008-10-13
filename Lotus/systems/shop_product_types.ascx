@@ -14,7 +14,8 @@
             panelProductTypes.Visible = False
             panelProductProperties.Visible = False
             panelLogin.Visible = True
-            panelLogin.FindControl("Login1").Focus()
+            Dim oUC1 As Control = LoadControl("login.ascx")
+            panelLogin.Controls.Add(oUC1)
         Else
             If Roles.IsUserInRole(GetUser.UserName.ToString(), "Administrators") Then
                 panelProductTypes.Visible = True
@@ -56,7 +57,7 @@
     End Sub
 
     Protected Sub btnAddProductType_Click(ByVal sender As Object, ByVal e As System.EventArgs)
-        If Not Me.IsUserLoggedIn Then Exit Sub
+        If Not Me.IsUserLoggedIn Then Response.Redirect(HttpContext.Current.Items("_path"))
     
         Dim oCommand As SqlCommand = New SqlCommand
         oCommand.Connection = oConn
@@ -105,21 +106,13 @@
     Protected Sub gvProductProperties_RowDeleted(ByVal sender As Object, ByVal e As System.Web.UI.WebControls.GridViewDeletedEventArgs)
         gvProductProperties.DataBind()
     End Sub
-        
-    Protected Sub Login1_LoggedIn(ByVal sender As Object, ByVal e As System.EventArgs) Handles Login1.LoggedIn
-        Response.Redirect(HttpContext.Current.Items("_path"))
-    End Sub
-
-    Protected Sub Login1_PreRender(ByVal sender As Object, ByVal e As System.EventArgs)
-        Login1.PasswordRecoveryUrl = "~/" & Me.LinkPassword & "?ReturnUrl=" & HttpContext.Current.Items("_path")
-    End Sub
 
     Protected Sub btnBack_Click(ByVal sender As Object, ByVal e As System.EventArgs)
         Response.Redirect(Me.LinkShopProductTypes)
     End Sub
 
     Protected Sub gvProductProperties_RowDeleting(ByVal sender As Object, ByVal e As System.Web.UI.WebControls.GridViewDeleteEventArgs)
-        If Not Me.IsUserLoggedIn Then Exit Sub
+        If Not Me.IsUserLoggedIn Then Response.Redirect(HttpContext.Current.Items("_path"))
         
         Dim bDelete As Boolean = True
         Dim oCmd As SqlCommand = New SqlCommand
@@ -168,7 +161,7 @@
     End Function
 
     Protected Sub btnAddProperty_Click(ByVal sender As Object, ByVal e As System.EventArgs)
-        If Not Me.IsUserLoggedIn Then Exit Sub
+        If Not Me.IsUserLoggedIn Then Response.Redirect(HttpContext.Current.Items("_path"))
         
         Dim oCommand As SqlCommand = New SqlCommand
         oCommand.Connection = oConn
@@ -209,10 +202,6 @@
 </script>
 
 <asp:Panel ID="panelLogin" runat="server" Visible="False">
-    <asp:Login ID="Login1" meta:resourcekey="Login1" runat="server"  PasswordRecoveryText="Password Recovery" TitleText="" OnLoggedIn="Login1_LoggedIn" OnPreRender="Login1_PreRender">
-        <LabelStyle HorizontalAlign="Left" Wrap="False" />
-    </asp:Login>
-    <br />
 </asp:Panel>
 
 <asp:Panel ID="panelProductTypes" runat="server">

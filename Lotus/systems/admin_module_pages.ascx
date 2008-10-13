@@ -13,7 +13,9 @@
         
         If IsNothing(GetUser) Then
             panelLogin.Visible = True
-            panelLogin.FindControl("Login1").Focus()
+            Dim oUC1 As Control = LoadControl("login.ascx")
+            panelLogin.Controls.Add(oUC1)
+            panelExtensions.Visible = False
         Else
             If Roles.IsUserInRole(GetUser.UserName.ToString(), "Administrators") Then
                 Dim sModuleFile As String = Replace(Request.QueryString("file"), "'", "''")
@@ -24,7 +26,7 @@
                 'sdsExtensions.SelectCommand = "SELECT * FROM [page_modules] where [module_file]='" & Request.QueryString("file") & "'"
                 sdsExtensions.SelectCommand = "SELECT page_modules.*, templates.template_name FROM templates RIGHT OUTER JOIN " & _
                     "page_modules ON templates.template_id=page_modules.template_id" & _
-                    " where page_modules.module_file='" & Request.QueryString("file") & "'"
+                    " where page_modules.module_file='" & sModuleFile & "'"
                 sdsExtensions.OldValuesParameterFormatString = "original_{0}"
                 panelExtensions.Visible = True
 
@@ -82,7 +84,7 @@
     End Sub
 
     Protected Sub btnEmbed_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles btnEmbed.Click
-        If Not Me.IsUserLoggedIn Then Exit Sub
+        If Not Me.IsUserLoggedIn Then Response.Redirect(HttpContext.Current.Items("_path"))
         
         Dim sModuleFile As String = Request.QueryString("file")
         If dropTemplates.SelectedValue = "" And txtPage.Text = "" Then
@@ -113,11 +115,8 @@
         oCmd.ExecuteNonQuery()
         oConn.Close()
 
-        Response.Redirect(Me.LinkAdminModulePages & "?file=" & sModuleFile)
-    End Sub
-
-    Protected Sub btnCancel_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles btnCancel.Click
-        Response.Redirect(Me.LinkAdminModules)
+        grvExtensions.DataBind()
+        'Response.Redirect(Me.LinkAdminModulePages & "?file=" & sModuleFile)
     End Sub
 
     Protected Sub grvExtensions_PreRender(ByVal sender As Object, ByVal e As System.EventArgs)
@@ -140,21 +139,9 @@
         End If
         
     End Function
-    
-    Protected Sub Login1_LoggedIn(ByVal sender As Object, ByVal e As System.EventArgs) Handles Login1.LoggedIn
-        Response.Redirect(HttpContext.Current.Items("_path"))
-    End Sub
-    
-    Protected Sub Login1_PreRender(ByVal sender As Object, ByVal e As System.EventArgs)
-        Login1.PasswordRecoveryUrl = "~/" & Me.LinkPassword & "?ReturnUrl=" & HttpContext.Current.Items("_path")
-    End Sub
 </script>
 
 <asp:Panel ID="panelLogin" runat="server" Visible="False">
-    <asp:Login ID="Login1" meta:resourcekey="Login1" runat="server"  PasswordRecoveryText="Password Recovery" TitleText="" OnLoggedIn="Login1_LoggedIn" OnPreRender="Login1_PreRender">
-        <LabelStyle HorizontalAlign="Left" Wrap="False" />
-    </asp:Login>
-    <br />
 </asp:Panel>
 
 <asp:Panel ID="panelExtensions" runat="server" Visible="false" >
@@ -247,7 +234,6 @@ Module: <b><asp:Literal ID="litModuleInfo" runat="server"></asp:Literal></b>
     <tr>
         <td style="padding-left:0;padding-top:10px" colspan=3>
             <asp:Button ID="btnEmbed" meta:resourcekey="btnEmbed" runat="server" Text=" Embed " />
-            <asp:Button ID="btnCancel" meta:resourcekey="btnCancel" CausesValidation=false runat="server" Text=" Cancel " />
         </td>
     </tr>
     </table>

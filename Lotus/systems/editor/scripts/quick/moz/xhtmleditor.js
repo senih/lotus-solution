@@ -15,11 +15,19 @@ function onload_original()
 function setMozEdit(oName) 
   { 
     if ((oName != null) && (oName!="")) {
-        try {document.getElementById("idContent" + oName).contentDocument.designMode="on";} catch(e) {}
+        try {
+            var d = document.getElementById("idContent" + oName).contentDocument;
+            d.designMode="on";
+            if(typeof(d.contentEditable)!="undefined") d.contentEditable=true;
+        } catch(e) {}
     } else {
         for (var i=0; i<oUtil.arrEditor.length; i++)
         {
-        try {document.getElementById("idContent" + oUtil.arrEditor[i]).contentDocument.designMode="on";} catch(e) {alert(e)}
+            try {
+                var d = document.getElementById("idContent" + oUtil.arrEditor[i]).contentDocument;
+                d.designMode="on";
+                if(typeof(d.contentEditable)!="undefined") d.contentEditable=true;
+            } catch(e) {}
         }
     }
   } 
@@ -67,6 +75,7 @@ function edt_getHTMLBody()
     sHTML=String(sHTML).replace(/ contentEditable=true/g,"");
     sHTML = String(sHTML).replace(/\<PARAM NAME=\"Play\" VALUE=\"0\">/ig,"<PARAM NAME=\"Play\" VALUE=\"-1\">");
     if(this.encodeIO)sHTML = encodeHTMLCode(sHTML);
+    sHTML = sHTML.replace(/class="Apple-style-span"/gi, "");
     return sHTML;
   }
 
@@ -84,6 +93,7 @@ function edt_getXHTMLBody()
             sHTML = recur(oEditor.document.body,"");
         } 
   if(this.encodeIO)sHTML = encodeHTMLCode(sHTML);
+  sHTML = sHTML.replace(/class="Apple-style-span"/gi, "");
   return sHTML;
   }
 
@@ -649,6 +659,7 @@ function edt_viewSource() {
     
     this.cleanDeprecated();
     var sHTML=recur(oEditor.document.body,"");
+    sHTML = sHTML.replace(/class="Apple-style-span"/gi, "");
 
     var docBody = oEditor.document.body;
     docBody.innerHTML = "";

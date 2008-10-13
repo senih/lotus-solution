@@ -118,9 +118,9 @@
             dlListing.RepeatDirection = RepeatDirection.Horizontal
             dlListing.ItemStyle.VerticalAlign = VerticalAlign.Top
             dlListing.RepeatColumns = nColumns
-            dlListing.HeaderTemplate = New TemplateListing(ListItemType.Header, nListingTemplateId, Me.RootID, Me.IsReader)
-            dlListing.ItemTemplate = New TemplateListing(ListItemType.Item, nListingTemplateId, Me.RootID, Me.IsReader)
-            dlListing.FooterTemplate = New TemplateListing(ListItemType.Footer, nListingTemplateId, Me.RootID, Me.IsReader)
+            dlListing.HeaderTemplate = New TemplateListing(ListItemType.Header, nListingTemplateId, Me.RootID, Me.IsReader, Me.TimeOffset)
+            dlListing.ItemTemplate = New TemplateListing(ListItemType.Item, nListingTemplateId, Me.RootID, Me.IsReader, Me.TimeOffset)
+            dlListing.FooterTemplate = New TemplateListing(ListItemType.Footer, nListingTemplateId, Me.RootID, Me.IsReader, Me.TimeOffset)
             
             dlListing.DataSource = GetListingItems().DefaultView
             dlListing.DataBind()
@@ -133,9 +133,9 @@
             dlListing2.RepeatDirection = RepeatDirection.Horizontal
             dlListing2.ItemStyle.VerticalAlign = VerticalAlign.Top
             dlListing2.RepeatColumns = nColumns
-            dlListing2.HeaderTemplate = New TemplateListing(ListItemType.Header, nListingTemplateId, Me.RootID, Me.IsReader)
-            dlListing2.ItemTemplate = New TemplateListing(ListItemType.Item, nListingTemplateId, Me.RootID, Me.IsReader)
-            dlListing2.FooterTemplate = New TemplateListing(ListItemType.Footer, nListingTemplateId, Me.RootID, Me.IsReader)
+            dlListing2.HeaderTemplate = New TemplateListing(ListItemType.Header, nListingTemplateId, Me.RootID, Me.IsReader, Me.TimeOffset)
+            dlListing2.ItemTemplate = New TemplateListing(ListItemType.Item, nListingTemplateId, Me.RootID, Me.IsReader, Me.TimeOffset)
+            dlListing2.FooterTemplate = New TemplateListing(ListItemType.Footer, nListingTemplateId, Me.RootID, Me.IsReader, Me.TimeOffset)
 
             dlListing2.DataSource = oContent.GetPagesWithin(nParentId, nRecords, 2)
             dlListing2.DataBind()

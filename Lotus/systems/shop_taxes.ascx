@@ -8,10 +8,8 @@
     Private oConn As New SqlConnection(sConn)
 
     Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs)
-        panelLogin.Visible = True
-        panelTaxRate.Visible = False
-        panelViewRate.Visible = False
-        If Not (IsNothing(GetUser())) Then
+
+        If Not IsNothing(GetUser()) Then
             If Roles.IsUserInRole(GetUser.UserName, "Administrators") Then
                 panelLogin.Visible = False
                 panelTaxRate.Visible = True
@@ -26,8 +24,13 @@
    
                 'Add state for selected country
                 ddCountry_SelectedIndexChanged(sender, Nothing)
-                
             End If
+        Else
+            panelLogin.Visible = True
+            Dim oUC1 As Control = LoadControl("login.ascx")
+            panelLogin.Controls.Add(oUC1)
+            panelTaxRate.Visible = False
+            panelViewRate.Visible = False
         End If
     End Sub
 
@@ -64,7 +67,7 @@
     End Sub
 
     Protected Sub btnAddTaxRate_Click(ByVal sender As Object, ByVal e As System.EventArgs)
-        If Not Me.IsUserLoggedIn Then Exit Sub
+        If Not Me.IsUserLoggedIn Then Response.Redirect(HttpContext.Current.Items("_path"))
         
         Dim oCommand As SqlCommand = New SqlCommand
         oCommand.Connection = oConn
@@ -81,14 +84,6 @@
         
         gvTaxRate.DataBind()
         ddCountry.SelectedValue = ""
-    End Sub
-
-    Protected Sub Login1_LoggedIn(ByVal sender As Object, ByVal e As System.EventArgs) Handles Login1.LoggedIn
-        Response.Redirect(HttpContext.Current.Items("_path"))
-    End Sub
-
-    Protected Sub Login1_PreRender(ByVal sender As Object, ByVal e As System.EventArgs)
-        Login1.PasswordRecoveryUrl = "~/" & Me.LinkPassword & "?ReturnUrl=" & HttpContext.Current.Items("_path")
     End Sub
 
     Protected Sub gvTaxRate_PreRender(ByVal sender As Object, ByVal e As System.EventArgs)
@@ -118,11 +113,10 @@
         End If
     End Function
 </script>
+
 <asp:Panel ID="panelLogin" runat="server" Visible="False">
-    <asp:Login ID="Login1" meta:resourcekey="Login1" runat="server"  PasswordRecoveryText="Password Recovery" TitleText="" OnLoggedIn="Login1_LoggedIn" OnPreRender="Login1_PreRender">
-        <LabelStyle HorizontalAlign="Left" Wrap="False" />
-    </asp:Login>
 </asp:Panel> 
+
 <asp:Panel ID="panelViewRate" runat="server" >
 
  <asp:GridView ID="gvTaxRate" runat="server" AllowSorting="true"
@@ -155,9 +149,9 @@
   </asp:SqlDataSource>  
 </asp:Panel>
 
-<div style="margin:15px"></div>
-
 <asp:Panel ID="panelTaxRate" runat="server" >
+
+<p>
 <table>
 <tr>
 <td><%=GetLocalResourceObject("Country")%></td>
@@ -436,7 +430,9 @@
 </td>
 </tr>
 </table>
-<div style="margin:15px"></div>
+</p>
+<p>
 <asp:Button ID="btnAddTaxRate" runat="server" meta:resourcekey="btnAddTaxRate" OnClick="btnAddTaxRate_Click"  ValidationGroup="taxRate" />
+</p>
 
 </asp:Panel>

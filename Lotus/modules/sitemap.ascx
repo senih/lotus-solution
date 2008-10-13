@@ -232,7 +232,12 @@
                     If sTtl2.ToString = "" Then 'kalau published version blm ada => bShowLink = False
                         bShowMenu = False
                     Else
-                        bShowMenu = True
+                        'bShowMenu = True
+                        If CBool(oDataReader("is_hidden2")) Then
+                            bShowMenu = False
+                        Else
+                            bShowMenu = True
+                        End If
                         sTtl = sTtl2
                     End If
                 End If
@@ -458,9 +463,9 @@
             Else
                 'Show Published (Title/Link Text)
                 vRetVal = 2
-                If bIsHdn Then
-                    vRetVal = 0
-                End If
+                'If bIsHdn Then
+                '    vRetVal = 0
+                'End If
             End If
         ElseIf nCPermission = 3 Then
             If bUserCanManage Then
@@ -469,9 +474,9 @@
             ElseIf bUserIsSubscriber Then
                 'Show Published (Title/Link Text)
                 vRetVal = 2
-                If bIsHdn Then
-                    vRetVal = 0
-                End If
+                'If bIsHdn Then
+                '    vRetVal = 0
+                'End If
             Else
                 vRetVal = 0
             End If

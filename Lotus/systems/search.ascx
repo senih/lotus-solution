@@ -8,7 +8,6 @@
     Private oConn As New SqlConnection(sConn)
 
     Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs)
-
         SqlDataSource2.ConnectionString = sConn
         Dim sqlSearch As Search = New Search
         Dim sKeywords As String = ""
@@ -19,16 +18,23 @@
             If Not IsNothing(GetUser()) Then
                 sUser = GetUser.UserName
             End If
-
+            
+            SqlDataSource2.SelectParameters("Key1").DefaultValue = "%" & sKeywords
+            SqlDataSource2.SelectParameters("Key2").DefaultValue = sKeywords & "%"
+            SqlDataSource2.SelectParameters("Key3").DefaultValue = sKeywords
+            SqlDataSource2.SelectParameters("Key4").DefaultValue = "%" & sKeywords & "%"
+            SqlDataSource2.SelectParameters("root_id").DefaultValue = Me.RootID.ToString
+            
             'Search Site
             SqlDataSource2.SelectCommand = sqlSearch.GetSqlScript(Me.RootID, sKeywords, sUser, "site") 'sqlSearch.GetSqlScript(sKeywords, sUser, "site")
+            'Response.Write(SqlDataSource2.SelectCommand)
+            
             dlSearchResult.DataBind()
 
             If (dlSearchResult.Rows.Count = 0) Then
                 lblResult.Text = GetLocalResourceObject("Result1") & " - " & Server.HtmlEncode(sKeywords) & " - " & GetLocalResourceObject("Result2")
                 lblResult.Visible = True
             End If
-
         End If
     End Sub
 
@@ -78,4 +84,11 @@ AllowPaging="true" Width="100%" >
 </asp:GridView>
 
 <asp:SqlDataSource ID="SqlDataSource2" runat="server">
+<SelectParameters>
+    <asp:Parameter Name="Key1" Type="String" />
+    <asp:Parameter Name="Key2" Type="String" />
+    <asp:Parameter Name="Key3" Type="String" />
+    <asp:Parameter Name="Key4" Type="String" />
+    <asp:Parameter Name="root_id" Type="Int32" />
+</SelectParameters>
 </asp:SqlDataSource>

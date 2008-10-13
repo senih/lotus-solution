@@ -14,7 +14,7 @@
 
 var iconOffsetTop = -75;
 
-function init() 
+function init()
   {
   var idSource = document.getElementById("idSource").contentWindow;
   var doc = idSource.document;
@@ -22,20 +22,20 @@ function init()
   doc.write("<html><head><head><body></body></html>");
   doc.close();
   }
-  
+
 function doCmd(sCmd,sOption)
     {
     var idSource = document.getElementById("idSource").contentWindow;
     idSource.document.execCommand(sCmd, false, sOption);
     }
-    
+
 function jsReplace(sText, sFind, sReplace)
     {
     var arrTmp = sText.split(sFind);
     if (arrTmp.length > 1) sText = arrTmp.join(sReplace);
     return sText;
     }
-    
+
 var sBodyHeader;
 var sBodyFooter;
 var sBodyTag;
@@ -44,23 +44,24 @@ function bodyOnLoad()
     {
     var oEditor=window.opener.oUtil.oEditor;
     var obj = window.opener.oUtil.obj;
-    
+
     var sHTML="";
     sHTML=window.opener.getOuterHTML(oEditor.document.documentElement);
     sHTML=jsReplace(sHTML," designMode=on","");
     sHTML = sHTML.replace(/>\s+</gi, "><"); //replace space between tag
     sHTML = sHTML.replace(/\r/gi, ""); //replace space between tag
     sHTML = sHTML.replace(/(<br>)\s+/gi, "$1"); //replace space between BR and text
-    
+    sHTML = sHTML.replace(/<br class="innova">/gi, "");
+
     if(obj.docType!="") sHTML=obj.docType+"\n"+sHTML;//restore doctype (if any)
-    
+
     var idSource = document.getElementById("idSource").contentWindow;
     var sourceDocBody = idSource.document.body;
-    
+
     //remove all child
     sourceDocBody.innerHTML = "";
     sourceDocBody.appendChild(document.createTextNode(sHTML));
-    
+
     sourceDocBody.style.cssText="overflow-x:scroll;overflow-y:scroll;white-space:nowrap";
     sourceDocBody.clearAttributes;
     sourceDocBody.style.marginTop='4px';
@@ -74,9 +75,9 @@ function bodyOnLoad()
     doWrap()
 
     idSource.document.designMode="on";
-    idSource.focus();    
+    idSource.focus();
     }
-    
+
 function doKeyPress(evt)
     {
     /*
@@ -98,7 +99,7 @@ function doKeyPress(evt)
         if(evt.keyCode==65)doCmd("SelectAll");
         }*/
     }
-    
+
 function doUpdate()
     {
     window.opener.oUtil.obj.saveForUndo();
@@ -114,7 +115,7 @@ function doUpdate()
 function doWrap()
     {
     var inpWrap = document.getElementById("inpWrap");
-    
+
     if(inpWrap.checked==true)
         {
         //Wrap Text
@@ -135,19 +136,19 @@ function setupToolbar()
   tb.iconPath="../"+obj.iconPath;
   tb.btnWidth=obj.iconWidth;
   tb.btnHeight=obj.iconHeight;
-  
+
   //tb.addButton("btnCut","btnCut.gif",getTxt("Cut"));
   //tb.addButton("btnCopy","btnCopy.gif",getTxt("Copy"));
   //tb.addButton("btnPaste","btnPaste.gif",getTxt("Paste"));
-  //tb.addSeparator();  
+  //tb.addSeparator();
   tb.addButton("btnUndo","btnUndo.gif",getTxt("Uedo"));
   tb.addButton("btnRedo","btnRedo.gif",getTxt("Redo"));
-  tb.addSeparator();  
+  tb.addSeparator();
   tb.addButton("btnSearch","btnSearch.gif",getTxt("Search"));
-  idToolbar.innerHTML=tb.render();
+  document.getElementById("idToolbar").innerHTML=tb.render();
   }
-  
-function tbAction(tb, id) 
+
+function tbAction(tb, id)
   {
   switch(id)
     {
@@ -158,7 +159,7 @@ function tbAction(tb, id)
     case "btnRedo": doCmd('Redo'); break;
     case "btnSearch": modelessDialogShow('search2.htm',375,163); break;
     }
-  
+
   }
 //*******************
 
@@ -168,7 +169,7 @@ function modelessDialogShow(url,width,height)
     var top = screen.availHeight/2 - height/2;
     window.open(url, "", "dependent=yes,width="+width+"px,height="+height+",left="+left+",top="+top);
     }
-    
+
 </script>
 </head>
 <body onload="setupToolbar();loadTxt();init();bodyOnLoad()" style="overflow:hidden;margin:0;background: #f4f4f4;">

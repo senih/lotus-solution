@@ -16,7 +16,7 @@ var iconOffsetTop = -75;
 
 var sBaseHREF="";
 
-function init() 
+function init()
   {
   var idSource = document.getElementById("idSource").contentWindow;
   var doc = idSource.document;
@@ -30,11 +30,11 @@ function doCmd(sCmd,sOption)
     var idSource = document.getElementById("idSource").contentWindow;
     idSource.document.execCommand(sCmd, false, sOption);
   }
-  
+
 function bodyOnLoad()
   {
   var oEditor=window.opener.oUtil.oEditor;
-  
+
   //base handling
   sHTML=window.opener.getOuterHTML(oEditor.document.documentElement);
   var arrTmp=sHTML.match(/<BASE([^>]*)>/ig);
@@ -48,7 +48,7 @@ function bodyOnLoad()
   //~~~~~~~~~~~~~
 
   sHTML=recur(oEditor.document.documentElement,"");
-  
+
   //restore doctype (if any) & html
   var obj = window.opener.oUtil.obj;
   sHTMLDocType=obj.docType;
@@ -66,15 +66,17 @@ function bodyOnLoad()
   sHTMLOpenTag=sHTMLOpenTag.replace(/</g,"&lt;");
   sHTMLOpenTag=sHTMLOpenTag.replace(/>/g,"&gt;");
   sHTMLOpenTag="<font color='#000000'>"+sHTMLOpenTag+"</font>";
-  
+
   sHTMLCloseTag= "<font color='#000000'>&lt;/html&gt;</font>";
-  
+
   //construct
   if(sHTMLDocType!="")
     sHTML = sHTMLDocType + "<br>" + sHTMLOpenTag + sHTML + "<br>" + sHTMLCloseTag;
   else
     sHTML = sHTMLOpenTag + sHTML + "<br>" + sHTMLCloseTag;
-    
+
+  sHTML = sHTML.replace(/<br class="innova" \/>/gi, "");
+
   //Display
   var idSource = document.getElementById("idSource").contentWindow;
   var sourceDocBody = idSource.document.body;
@@ -99,7 +101,7 @@ function bodyOnLoad()
   idSource.focus();
 
   }
-  
+
 function doKeyPress(evt)
   {
   /*
@@ -126,9 +128,9 @@ function doKeyPress(evt)
 function doUpdate()
   {
   window.opener.oUtil.obj.saveForUndo();
-  
+
   var obj = window.opener.oUtil.obj;
-  
+
   var idSource = document.getElementById("idSource").contentWindow;
   var range = idSource.document.body.ownerDocument.createRange();
   range.selectNodeContents(idSource.document.body);
@@ -152,22 +154,22 @@ function doUpdate()
 function lineBreak2(tag) //[0]<TAG>[1]text[2]</TAG>
   {
   arrReturn = ["<br>","",""];
-  if( tag=="A"||tag=="B"||tag=="CITE"||tag=="CODE"||tag=="EM"|| 
+  if( tag=="A"||tag=="B"||tag=="CITE"||tag=="CODE"||tag=="EM"||
     tag=="FONT"||tag=="I"||tag=="SMALL"||tag=="STRIKE"||tag=="BIG"||
     tag=="STRONG"||tag=="SUB"||tag=="SUP"||tag=="U"||tag=="SAMP"||
-    tag=="S"||tag=="VAR"||tag=="BASEFONT"||tag=="KBD"||tag=="TT"||tag=="SPAN") 
+    tag=="S"||tag=="VAR"||tag=="BASEFONT"||tag=="KBD"||tag=="TT"||tag=="SPAN")
     arrReturn=["","",""];
 
-  if( tag=="TEXTAREA"||tag=="TABLE"||tag=="THEAD"||tag=="TBODY"|| 
-    tag=="TR"||tag=="OL"||tag=="UL"||tag=="DIR"||tag=="MENU"|| 
-    tag=="FORM"||tag=="SELECT"||tag=="MAP"||tag=="DL"||tag=="HEAD"|| 
-    tag=="BODY"||tag=="HTML") 
+  if( tag=="TEXTAREA"||tag=="TABLE"||tag=="THEAD"||tag=="TBODY"||
+    tag=="TR"||tag=="OL"||tag=="UL"||tag=="DIR"||tag=="MENU"||
+    tag=="FORM"||tag=="SELECT"||tag=="MAP"||tag=="DL"||tag=="HEAD"||
+    tag=="BODY"||tag=="HTML")
     arrReturn=["<br>","","<br>"];
 
   if( tag=="STYLE"||tag=="SCRIPT")
     arrReturn=["<br>","",""];
 
-  if(tag=="BR"||tag=="HR") 
+  if(tag=="BR"||tag=="HR")
     arrReturn=["","<br>",""];
 
   return arrReturn;
@@ -185,7 +187,7 @@ function fixVal(s)
   {
   s = String(s).replace(/&/g, "&amp;amp;");//harus di awal
   s = String(s).replace(/</g, "&amp;lt;");
-  var x = escape(s);  
+  var x = escape(s);
   x = unescape(x.replace(/\%A0/gi, "-*REPL*-"));
   s = x.replace(/-\*REPL\*-/gi, "&nbsp;");
 
@@ -200,7 +202,9 @@ function recur(oEl,sTab)
     if(oNode.nodeType==1)//tag
       {
       var sTagName = oNode.nodeName;
-      
+
+      if(sTagName=="BR" && oNode.className=="innova") continue;
+
       var bDoNotProcess=false;
       if(sTagName.substring(0,1)=="/")
         {
@@ -210,7 +214,7 @@ function recur(oEl,sTab)
         {
         /*** tabs ***/
         var sT= sTab;
-        sHTML+= lineBreak2(sTagName)[0];  
+        sHTML+= lineBreak2(sTagName)[0];
         if(lineBreak2(sTagName)[0] !="") sHTML+= sT;//If new line, use base Tabs
         /************/
         }
@@ -220,29 +224,29 @@ function recur(oEl,sTab)
         ;//do not process
         }
       else if(sTagName=="OBJECT" || sTagName=="EMBED")
-        {   
+        {
         s=window.opener.getOuterHTML(oNode);
 
-        s=s.replace(/\"[^\"]*\"/ig,function(x){           
+        s=s.replace(/\"[^\"]*\"/ig,function(x){
             x=x.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/'/g, "&apos;").replace(/\s+/ig,"#_#").replace(/&amp;amp;/gi,"&amp;");
             return x});
-        s=s.replace(/<([^ >]*)/ig,function(x){return x.toLowerCase()})            
+        s=s.replace(/<([^ >]*)/ig,function(x){return x.toLowerCase()})
         s=s.replace(/ ([^=]+)=([^"' >]+)/ig," $1=\"$2\"");//new
-        
+
         s=s.replace(/ ([^=]+)=/ig,function(x){return x.toLowerCase()});
         s=s.replace(/#_#/ig," ");
-  
+
         s=s.replace(/<param([^>]*)>/ig,"\n<param$1 />").replace(/\/ \/>$/ig," \/>");//no closing tag
-        
+
         if(sTagName=="EMBED")
           if(oNode.innerHTML=="")
             s=s.replace(/>$/ig," \/>").replace(/\/ \/>$/ig,"\/>");//no closing tag
-        
+
         s=s.replace(/<param name=\"Play\" value=\"0\" \/>/,"<param name=\"Play\" value=\"-1\" \/>")
-        
+
         //sSelThis="";//selThis
-        //if(oElement==oNode)sSelThis=" selThis='selThis'"        
-        
+        //if(oElement==oNode)sSelThis=" selThis='selThis'"
+
         /*** format ***/ //selThis
         sHTML+="<span style='color:#555555;background:#f7f7f7'><xmp style='font-family:tahoma;margin-top:0px;margin-bottom:0px;'>"+s+"</xmp></span>";
         /**************/
@@ -251,11 +255,11 @@ function recur(oEl,sTab)
         {
         //s="<title>"+oNode.innerHTML+"</title>";
 
-        /*** format ***/      
+        /*** format ***/
         sHTML+="<font color='#0000cc'>&lt;<\/font><font color='#8b4513'>title</font>"+
           "<font color='#0000cc'>&gt;<\/font>" + oNode.innerHTML +
           "<font color='#0000cc'>&lt;/</font><font color='#8b4513'>title</font>"+
-          "<font color='#0000cc'>&gt;</font>";        
+          "<font color='#0000cc'>&gt;</font>";
         /**************/
         }
       else
@@ -266,20 +270,20 @@ function recur(oEl,sTab)
           var sShape=oNode.shape;
           }
 
-        var oNode2=oNode.cloneNode(false);//hasil: <tag..>..</tag>       
+        var oNode2=oNode.cloneNode(false);//hasil: <tag..>..</tag>
         s=window.opener.getOuterHTML(oNode2).replace(/<\/[^>]*>/,"");//hasil: <tag..>
-        
+
         if(sTagName=="STYLE")//hasil: <tag..>..
           {
           var arrTmp=s.match(/<[^>]*>/ig);
           s=arrTmp[0];//hasil: <tag..>
-          }       
+          }
 
         s=s.replace(/\"[^\"]*\"/ig,function(x){
             //x=x.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/'/g, "&apos;").replace(/\s+/ig,"#_#");
             x=x.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/\s+/ig,"#_#");
             return x});
-        s=s.replace(/<([^ >]*)/ig,function(x){return x.toLowerCase()})            
+        s=s.replace(/<([^ >]*)/ig,function(x){return x.toLowerCase()})
         s=s.replace(/ ([^=]+)=([^" >]+)/ig," $1=\"$2\"");
         s=s.replace(/ ([^=]+)=/ig,function(x){return x.toLowerCase()});
         s=s.replace(/#_#/ig," ");
@@ -292,49 +296,49 @@ function recur(oEl,sTab)
         s=s.replace(/(<input[^>]*)(readonly="")/ig,"$1readonly=\"readonly\"");
         s=s.replace(/(<input[^>]*)(disabled="")/ig,"$1disabled=\"disabled\"");
         s=s.replace(/(<td[^>]*)(nowrap="" )/ig,"$1nowrap=\"nowrap\" ");
-        s=s.replace(/(<td[^>]*)(nowrap=""\>)/ig,"$1nowrap=\"nowrap\"\>");         
-        
+        s=s.replace(/(<td[^>]*)(nowrap=""\>)/ig,"$1nowrap=\"nowrap\"\>");
+
         s=s.replace(/ contenteditable=\"true\"/ig,"");
-        
+
         if(sTagName=="AREA")
           {
           s=s.replace(/ coords=\"0,0,0,0\"/ig," coords=\""+sCoords+"\"");
           s=s.replace(/ shape=\"RECT\"/ig," shape=\""+sShape+"\"");
           }
-          
+
         var bClosingTag=true;
         if(sTagName=="IMG"||sTagName=="BR"||
-          sTagName=="AREA"||sTagName=="HR"|| 
+          sTagName=="AREA"||sTagName=="HR"||
           sTagName=="INPUT"||sTagName=="BASE"||
           sTagName=="LINK"||sTagName=="META")//no closing tag
           {
           s=s.replace(/>$/ig," \/>").replace(/\/ \/>$/ig,"\/>");//no closing tag
-          bClosingTag=false;      
+          bClosingTag=false;
           }
 
         //sSelThis="";//selThis
         //if(oElement==oNode)sSelThis=" selThis='selThis'"
-        
+
         /*** format ***/  //selThis
         //sA1="<span"+sSelThis+"><font color='#0000cc'>&lt;<\/font><font color='#8b4513'>"
         sA1="<span><font color='#0000cc'>&lt;<\/font><font color='#8b4513'>"
         sA2="<\/font>"
-        sA3="<font color='#0000cc'>&gt;<\/font>"    
-        sA4="<font color='#0000cc'>/&gt;<\/font>"       
+        sA3="<font color='#0000cc'>&gt;<\/font>"
+        sA4="<font color='#0000cc'>/&gt;<\/font>"
         s=s.replace(/<([^ >]*)([^ \/>]*)/ig,sA1+"$1"+sA2+"$2");
         //s=s.replace(/\/>$/ig,sA4);//if there is no closing tag
         s=s.replace(/>$/ig,sA3);
         /**************/
 
-        sHTML+=s; 
-        
+        sHTML+=s;
+
         if(!bClosingTag)sHTML+="</span>";//selThis
-          
+
         /*** tabs ***/
         if(sTagName!="TEXTAREA")sHTML+= lineBreak2(sTagName)[1];
         if(sTagName!="TEXTAREA")if(lineBreak2(sTagName)[1] !="") sHTML+= sT;//If new line, use base Tabs
-        /************/  
-        
+        /************/
+
         if(bClosingTag)
           {
           /*** CONTENT ***/
@@ -346,8 +350,8 @@ function recur(oEl,sTab)
             s = s.replace(/<script([^>]*)>\/\/<!\[CDATA\[/ig,"");
             s = s.replace(/\/\/\]\]><\/script>/ig,"");
             s = s.replace(/<script([^>]*)>/ig,"");
-            s = s.replace(/<\/script>/ig,"");         
-            s = s.replace(/^\s+/,'').replace(/\s+$/,'');            
+            s = s.replace(/<\/script>/ig,"");
+            s = s.replace(/^\s+/,'').replace(/\s+$/,'');
             /*** format ***/
             sHTML+="<div><span style='color:#828282;'>//&lt;![CDATA[<xmp style='font-family:tahoma;margin-top:0px;margin-bottom:0px;'>"+s+"</xmp>//]]&gt;</span></div>";
             /**************/
@@ -359,15 +363,15 @@ function recur(oEl,sTab)
             s = s.replace(/<style([^>]*)><!--/ig,"");
             s = s.replace(/--><\/style>/ig,"");
             s = s.replace(/<style([^>]*)>/ig,"");
-            s = s.replace(/<\/style>/ig,"");          
-            s = s.replace(/^\s+/,"").replace(/\s+$/,"");      
+            s = s.replace(/<\/style>/ig,"");
+            s = s.replace(/^\s+/,"").replace(/\s+$/,"");
             /*** format ***/
             sHTML+="<div><span style='color:#828282;'>&lt;!--<xmp style='font-family:tahoma;margin-top:0px;margin-bottom:0px;'>"+s+"</xmp>--&gt;</span></div>";
             /**************/
             }
           if(sTagName=="DIV"||sTagName=="P")
             {
-            if(oNode.innerHTML==""||oNode.innerHTML=="&nbsp;") 
+            if(oNode.innerHTML==""||oNode.innerHTML=="&nbsp;")
               {
               sHTML+="&amp;nbsp;";
               }
@@ -380,23 +384,23 @@ function recur(oEl,sTab)
             }
           else
             {
-            sHTML+=recur(oNode,sT+"&nbsp;&nbsp;");  
-            }         
-            
+            sHTML+=recur(oNode,sT+"&nbsp;&nbsp;");
+            }
+
           /*** tabs ***/
           if(sTagName!="TEXTAREA")sHTML+= lineBreak2(sTagName)[2];
           if(sTagName!="TEXTAREA")if(lineBreak2(sTagName)[2] !="") sHTML+= sT;//If new line, use base Tabs
           /************/
-            
+
           /*** format ***/ //selThis
           sHTML+="<font color='#0000cc'>&lt;/</font><font color='#8b4513'>" + sTagName.toLowerCase() + "</font><font color='#0000cc'>&gt;</font></span>";
           /**************/
-          }     
+          }
         }
       }
     else if(oNode.nodeType==3)//text
       {
-      sHTML+= fixVal(oNode.nodeValue);  
+      sHTML+= fixVal(oNode.nodeValue);
       }
     else if(oNode.nodeType==8)
       {
@@ -418,11 +422,11 @@ function recur(oEl,sTab)
       {
       ;//Not Processed
       }
-      
+
     }
   return sHTML;
   }
-  
+
 function doWrap()
     {
     var inpWrap = document.getElementById("inpWrap");
@@ -436,7 +440,7 @@ function doWrap()
         idSource.document.body.style.whiteSpace="nowrap";
         }
     }
-    
+
 //*******************
 function setupToolbar()
   {
@@ -446,19 +450,19 @@ function setupToolbar()
   tb.iconPath="../"+obj.iconPath;
   tb.btnWidth=obj.iconWidth;
   tb.btnHeight=obj.iconHeight;
-  
+
   //tb.addButton("btnCut","btnCut.gif",getTxt("Cut"));
   //tb.addButton("btnCopy","btnCopy.gif",getTxt("Copy"));
   //tb.addButton("btnPaste","btnPaste.gif",getTxt("Paste"));
-  //tb.addSeparator();  
+  //tb.addSeparator();
   tb.addButton("btnUndo","btnUndo.gif",getTxt("Uedo"));
   tb.addButton("btnRedo","btnRedo.gif",getTxt("Redo"));
-  tb.addSeparator();  
+  tb.addSeparator();
   tb.addButton("btnSearch","btnSearch.gif",getTxt("Search"));
-  idToolbar.innerHTML=tb.render();
+  document.getElementById("idToolbar").innerHTML=tb.render();
   }
-  
-function tbAction(tb, id) 
+
+function tbAction(tb, id)
   {
   switch(id)
     {
@@ -469,7 +473,7 @@ function tbAction(tb, id)
     case "btnRedo": doCmd('Redo'); break;
     case "btnSearch": modelessDialogShow('search2.htm',375,163); break;
     }
-  
+
   }
 //*******************
 function modelessDialogShow(url,width,height)
@@ -478,7 +482,7 @@ function modelessDialogShow(url,width,height)
     var top = screen.availHeight/2 - height/2;
     window.open(url, "", "dependent=yes,width="+width+"px,height="+height+",left="+left+",top="+top);
     }
-    
+
 </script>
 </head>
 <body onload="setupToolbar();loadTxt();init();bodyOnLoad()" style="overflow:hidden;margin:0;background: #f4f4f4;">
@@ -492,7 +496,7 @@ function modelessDialogShow(url,width,height)
 <tr>
 <tr>
 <td style="height:100%">
-  <iframe style="width:100%;height:100%;" name="idSource" id="idSource"></iframe>    
+  <iframe style="width:100%;height:100%;" name="idSource" id="idSource"></iframe>
 </td>
 </tr>
 <tr>

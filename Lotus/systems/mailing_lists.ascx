@@ -8,6 +8,8 @@
         litMsg.Text = ""
        
         panelLogin.Visible = True
+        Dim oUC1 As Control = LoadControl("login.ascx")
+        panelLogin.Controls.Add(oUC1)
         panelConfigure.Visible = False
         
         If Not (IsNothing(GetUser())) Then
@@ -34,16 +36,8 @@
         End If
     End Sub
 
-    Protected Sub Login1_LoggedIn(ByVal sender As Object, ByVal e As System.EventArgs)
-        Response.Redirect(HttpContext.Current.Items("_path"))
-    End Sub
-
-    Protected Sub Login1_PreRender(ByVal sender As Object, ByVal e As System.EventArgs)
-        Login1.PasswordRecoveryUrl = "~/" & Me.LinkPassword & "?ReturnUrl=" & HttpContext.Current.Items("_path")
-    End Sub
-
     Protected Sub btnCreate_Click(ByVal sender As Object, ByVal e As System.EventArgs)
-        If Not Me.IsUserLoggedIn Then Exit Sub
+        If Not Me.IsUserLoggedIn Then Response.Redirect(HttpContext.Current.Items("_path"))
         Dim oCategory As Category = New Category
         oCategory.IsPrivate = chkPrivate.Checked
         oCategory.RootId = Me.RootID
@@ -63,7 +57,7 @@
     End Sub
 
     Protected Sub gvCategories_RowDeleting(ByVal sender As Object, ByVal e As System.Web.UI.WebControls.GridViewDeleteEventArgs)
-        If Not Me.IsUserLoggedIn Then Exit Sub
+        If Not Me.IsUserLoggedIn Then Response.Redirect(HttpContext.Current.Items("_path"))
         Dim CategoryID As Integer = gvCategories.DataKeys.Item(e.RowIndex).Value
         Dim Category As String = gvCategories.Rows(e.RowIndex).Cells(0).Text
         If ListSubscribers(CategoryID) Then
@@ -117,10 +111,6 @@
 </script>
 
 <asp:Panel ID="panelLogin" runat="server" Visible="False">
-    <asp:Login ID="Login1" runat="server" meta:resourcekey="Login1" PasswordRecoveryText="Password Recovery" TitleText="" OnLoggedIn="Login1_LoggedIn" OnPreRender="Login1_PreRender">
-        <LabelStyle HorizontalAlign="Left" Wrap="False" />
-    </asp:Login>
-    <br />
 </asp:Panel>
 
 <asp:Panel ID="panelConfigure" runat="server" Visible="false">

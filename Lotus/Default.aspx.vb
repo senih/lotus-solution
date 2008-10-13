@@ -1,5 +1,5 @@
 '***********************************
-'   InsiteCreation 2008 ver.1.7.3
+'   InsiteCreation 2008 ver.1.7.5
 '***********************************
 Imports System.Data
 Imports System.Data.SqlClient
@@ -72,6 +72,14 @@ Partial Class _Default
     Private bUseEndDate As Boolean
     Private sCustomProperties As String 'Custom Properties
     Private bHttps As Boolean
+    Private bIsHidden As Boolean
+    'Private sSideTemplate As String = "<div class=""boxHeader"">Archives</div>" & _
+    '    "<div class=""boxContent"">[%CALENDAR%]</div>" & _
+    '    "<div class=""boxContent"">[%MONTHLIST%]</div>" & _
+    '    "<div class=""boxHeader"">Categories</div>" & _
+    '    "<div class=""boxContent"">[%CATEGORYLIST%]</div>" & _
+    '    "<div class=""boxHeader"">Subscribe</div>" & _
+    '    "<div class=""boxContent"">[%RSS%] [%PODCAST%]</div>"
 
     Private bIsListing As Boolean
     Private nListingTemplateId As Integer
@@ -83,6 +91,9 @@ Partial Class _Default
     Private nListingPageSize As Integer
     Private bListingUseCategories As Boolean
     Private sListingDefaultOrder As String
+    Private bListingContentEnableComment As Boolean
+    Private bListingContentEnableCommentAnonymous As Boolean
+    Private bListingContentEnableRating As Boolean
 
     Dim sListingTemplateName As String = ""
     Dim sListingTemplateItem As String = ""
@@ -109,9 +120,12 @@ Partial Class _Default
 
     Private bParentIsListing As Boolean
     Private nParentListingType As Integer
+    Private nParentListingTemplateId As Integer
     Private nParentListingProperty As Integer
     Private bParentListingUseCategories As Boolean
     Private sParentElements As String
+    Private bContentLeftUseParent As Boolean = False
+    Private bContentRightUseParent As Boolean = False
 
     Private bUserLoggedIn As Boolean
     Private arrUserRoles() As String
@@ -126,6 +140,9 @@ Partial Class _Default
     Private bIsAdministrator As Boolean
     Private bIsReader As Boolean 'Not an Admin, Author, Editor or Publisher                 
     Private bIsOwner As Boolean
+
+    Private bShowAddNewTop As Boolean = False
+    Private bShowAddNewBottom As Boolean = False
 
     Private bInitialPage As Boolean
 
@@ -142,14 +159,11 @@ Partial Class _Default
     Private placeholderLeftTop As ContentPlaceHolder
     Private placeholderLeft As ContentPlaceHolder
     Private placeholderLeftBottom As ContentPlaceHolder
-    Private placeholderBody As ContentPlaceHolder
     Private placeholderBodyTop As ContentPlaceHolder
     Private placeholderBodyBottom As ContentPlaceHolder
     Private placeholderRightTop As ContentPlaceHolder
     Private placeholderRight As ContentPlaceHolder
     Private placeholderRightBottom As ContentPlaceHolder
-    Private placeholderPageInfo As ContentPlaceHolder
-    Private placeholderAuthoring As ContentPlaceHolder
     Private placeholderContentRating As ContentPlaceHolder
     Private placeholderComments As ContentPlaceHolder
     Private placeholderPrint As ContentPlaceHolder
@@ -165,23 +179,15 @@ Partial Class _Default
     Private placeholderMainMenu_Tabs As ContentPlaceHolder
     Private placeholderMainMenu_Side As ContentPlaceHolder
     Private placeholderMenu_Tree As ContentPlaceHolder
-    Private placeholderScript As ContentPlaceHolder
     Private placeholderOrderNow As ContentPlaceHolder
     Private placeholderCartInfo As ContentPlaceHolder
-    Private placeholderFileView As ContentPlaceHolder
-    Private placeholderFileDownload As ContentPlaceHolder
     Private placeholderArchives As ContentPlaceHolder
     Private placeholderCategoryList As ContentPlaceHolder
     Private placeholderSubscribe As ContentPlaceHolder
-    Private placeholderListing As ContentPlaceHolder
-
-    Private placeholderPublishingInfo As ContentPlaceHolder
     Private placeholderStatPageViews As ContentPlaceHolder
     Private placeholderStatPageViews_Vertical As ContentPlaceHolder
     Private placeholderStatPageViews_Private As ContentPlaceHolder
     Private placeholderStatPageViews_Vertical_Private As ContentPlaceHolder
-    Private placeholderCategoryInfo As ContentPlaceHolder
-
     Private placeholderPageTools As ContentPlaceHolder
     Private placeholderSiteRss As ContentPlaceHolder
 
@@ -195,6 +201,8 @@ Partial Class _Default
     Private sSitePhone As String
     Private sSiteFax As String
     Private sSiteEmail As String
+    Private nTimeOffset As Double
+    Private sUICulture As String
 
     Private sLinkPageNotFound As String = "pagenotfound.aspx"
     Private sLinkShoppingCart As String = "shoppingcart.aspx"
@@ -207,8 +215,6 @@ Partial Class _Default
     Private sLinkApproval As String = "approval.aspx"
     Private sLinkTellAFriend As String = "tell_a_friend.aspx"
     Private sLinkSiteRss As String = "site_rss.aspx"
-
-    Private sCurrencySymbol As String
 
     Private sResourcesInternal_FileDownload As String
     Private sResourcesInternal_FileView As String
@@ -353,6 +359,16 @@ Partial Class _Default
             sSitePhone = oDataReader("site_phone").ToString
             sSiteFax = oDataReader("site_fax").ToString
             sSiteEmail = oDataReader("site_email").ToString
+            If Not IsDBNull(oDataReader("time_offset")) Then
+                nTimeOffset = CDbl(oDataReader("time_offset"))
+            Else
+                nTimeOffset = 0
+            End If
+            If Not IsDBNull(oDataReader("uiculture")) Then
+                sUICulture = oDataReader("uiculture").ToString
+            Else
+                sUICulture = oDataReader("culture").ToString 'Same as culture
+            End If
         Else
             sCulture = "en-US"
             sSiteName = ""
@@ -364,12 +380,15 @@ Partial Class _Default
             sSitePhone = ""
             sSiteFax = ""
             sSiteEmail = ""
+            nTimeOffset = 0
+            sUICulture = "en-US"
         End If
         oDataReader.Close()
         Try
             Dim ci As New CultureInfo(sCulture)
             Thread.CurrentThread.CurrentCulture = ci
-            Thread.CurrentThread.CurrentUICulture = ci
+            Dim ci2 As New CultureInfo(sUICulture)
+            Thread.CurrentThread.CurrentUICulture = ci2
         Catch ex As Exception
             sCulture = "en-US"
             Dim ci As New CultureInfo(sCulture)
@@ -552,6 +571,11 @@ Partial Class _Default
             If Not IsDBNull(oDataReader("parent_is_listing")) Then
                 bParentIsListing = Convert.ToBoolean(oDataReader("parent_is_listing"))
             End If
+
+            If Not IsDBNull(oDataReader("parent_listing_template_id")) Then
+                nParentListingTemplateId = CInt(oDataReader("parent_listing_template_id"))
+            End If
+
             sParentElements = oDataReader("parent_elements").ToString
 
             If bShowWorking Then
@@ -618,7 +642,7 @@ Partial Class _Default
         sContentRight = oDataReader("content_right").ToString
         sFileDownload = oDataReader("file_attachment").ToString
         sFileView = oDataReader("file_view").ToString
-        dDisplayDate = oDataReader("display_date")
+        dDisplayDate = CDate(oDataReader("display_date"))
         nFileSize = CInt(oDataReader("file_size"))
         bIsSystem = CBool(oDataReader("is_system"))
         sMetaTitle = oDataReader("meta_title").ToString
@@ -635,6 +659,7 @@ Partial Class _Default
         bLinksCrawled = oDataReader("allow_links_crawled")
         bPageIndexed = oDataReader("allow_page_indexed")
         nChannelPermission = oDataReader("channel_permission")
+        bIsHidden = oDataReader("is_hidden")
 
         sCustomProperties = oDataReader("properties2").ToString 'Custom Properties
         If IsDBNull(oDataReader("https")) Then
@@ -697,6 +722,22 @@ Partial Class _Default
         End If
         sListingDefaultOrder = oDataReader("listing_default_order").ToString
 
+        If IsDBNull(oDataReader("content_enable_comment")) Then
+            bListingContentEnableComment = False
+        Else
+            bListingContentEnableComment = Convert.ToBoolean(oDataReader("content_enable_comment"))
+        End If
+        If IsDBNull(oDataReader("content_enable_comment_anonymous")) Then
+            bListingContentEnableCommentAnonymous = False
+        Else
+            bListingContentEnableCommentAnonymous = Convert.ToBoolean(oDataReader("content_enable_comment_anonymous"))
+        End If
+        If IsDBNull(oDataReader("content_enable_rating")) Then
+            bListingContentEnableRating = False
+        Else
+            bListingContentEnableRating = Convert.ToBoolean(oDataReader("content_enable_rating"))
+        End If
+
         If IsDBNull(oDataReader("link")) Then
             sLink = False
         Else
@@ -725,6 +766,10 @@ Partial Class _Default
             bParentIsListing = Convert.ToBoolean(oDataReader("parent_is_listing"))
         Else
             bParentIsListing = Nothing
+        End If
+
+        If Not IsDBNull(oDataReader("parent_listing_template_id")) Then
+            nParentListingTemplateId = CInt(oDataReader("parent_listing_template_id"))
         End If
 
         If Not IsDBNull(oDataReader("parent_listing_type")) Then
@@ -852,12 +897,52 @@ Partial Class _Default
         End If
     End Sub
 
+    Protected Sub OnAuthenticate(ByVal sender As Object, ByVal e As System.Web.UI.WebControls.AuthenticateEventArgs)
+        Dim Login1 As Login
+
+        Login1 = CType(placeholderLoginForm.FindControl("login"), Login)
+
+        If Login1.UserName.Contains("@") Then
+            Dim sUserName As String
+            sUserName = Membership.GetUserNameByEmail(Login1.UserName)
+            If Not IsNothing(sUserName) Then
+                If Membership.ValidateUser(sUserName, Login1.Password) Then
+                    Login1.UserName = sUserName
+                    e.Authenticated = True
+                Else
+                    e.Authenticated = False
+                End If
+            Else
+                e.Authenticated = False
+            End If
+        Else
+            If Membership.ValidateUser(Login1.UserName, Login1.Password) Then
+                e.Authenticated = True
+            Else
+                e.Authenticated = False
+            End If
+        End If
+    End Sub
+
     Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
 
-        'If Me.IsPostBack And hidModule.Value <> "" Then
-        '    btnModulePosition_Click(sender, e)
-        'End If
+        'Redirect To Home
+        If bRedirectToHome Then
+            Response.Redirect(sRootFile)
+        End If
 
+        'Redirect To Link
+        If bIsLink And bIsReader Then
+            Response.Redirect(sLink)
+        End If
+
+        'Debug Purpose
+        lblRawUrl.Text = HttpContext.Current.Items("action")
+        lblRawUrl.Style.Add("display", "none")
+
+        '************************************************
+        '   PREPARATION
+        '************************************************
         sResourcesInternal_FileDownload = ConfigurationManager.AppSettings("FileStorage")
         If ConfigurationManager.AppSettings("UseSecureFileStorageForViewing") = "yes" Then
             sResourcesInternal_FileView = ConfigurationManager.AppSettings("FileStorage")
@@ -869,18 +954,49 @@ Partial Class _Default
             lblPreviewOnPage_FileType.Text = "(FLV, MP3, JPG, GIF, PNG)"
         End If
 
-        lblRawUrl.Text = HttpContext.Current.Items("action")
-        lblRawUrl.Style.Add("display", "none")
+        'Base Href
+        Dim sBaseHref As String = Request.Url.Scheme & "://" & sUrlAuthority & sAppPath
+        Page.Master.Page.Header.Controls.AddAt(0, New LiteralControl("<base href=""" & sBaseHref & """ />"))
 
-        If bRedirectToHome Then
-            Response.Redirect(sRootFile)
+        'Editor
+        txtSummary.scriptPath = sAppPath & "systems/editor/scripts/"
+        txtBody.scriptPath = sAppPath & "systems/editor/scripts/"
+
+        'Used for Approval Link
+        lnkApprovalAssistant.NavigateUrl = sLinkApproval
+        lnkApprovalAssistant2.NavigateUrl = sLinkApproval
+
+        'Include js script utility for dialogs
+        If bUserLoggedIn Then
+            Page.Master.Page.Header.Controls.Add(New LiteralControl("<script language=""javascript"" type=""text/javascript"" src=""dialogs/dialog.js""></script>"))
         End If
 
-        If bIsLink And bIsReader Then
-            Response.Redirect(sLink)
-        End If
+        'Include js script utility for floating 
+        Page.Master.Page.Header.Controls.Add(New LiteralControl("<script language=""javascript"" type=""text/javascript"" src=""systems/float/float.js""></script>"))
 
-        '*** PREPARATION ***
+        'Include css for ajax
+        Dim sCssAjax As String = vbCrLf & "<style type=""text/css"">" & vbCrLf & _
+            "<!--" & vbCrLf & _
+            ".icProgBg {position:fixed;left:0;top:0;width:100%;height:100%}" & vbCrLf & _
+            "-->" & vbCrLf & _
+            "</style>" & vbCrLf & _
+            "<!--[if gte IE 5.5]>" & vbCrLf & _
+            "<![if lt IE 7]>" & vbCrLf & _
+            "<style type=""text/css"">" & vbCrLf & _
+            ".icProgBg" & vbCrLf & _
+            "{" & vbCrLf & _
+            "position:absolute;" & vbCrLf & _
+            "left:expression(ignoreMe=document.documentElement.scrollLeft + ""px"");" & vbCrLf & _
+            "top:expression(ignoreMe=document.documentElement.scrollTop + ""px"");" & vbCrLf & _
+            "width:expression(ignoreMe=document.documentElement.clientWidth + ""px"");" & vbCrLf & _
+            "height:expression(ignoreMe=document.documentElement.clientHeight + ""px"");" & vbCrLf & _
+            "}" & vbCrLf & _
+            "</style>" & vbCrLf & _
+            "<![endif]>" & vbCrLf & _
+            "<![endif]-->" & vbCrLf
+        Page.Master.Page.Header.Controls.Add(New LiteralControl(sCssAjax))
+
+        'Placeholders
         placeholderTopMenu = Page.Master.FindControl("placeholderTopMenu")
         placeholderTopMenu_VerticalMenu = Page.Master.FindControl("placeholderTopMenu_VerticalMenu")
         placeholderBottomMenu = Page.Master.FindControl("placeholderBottomMenu")
@@ -894,14 +1010,11 @@ Partial Class _Default
         placeholderLeftTop = Page.Master.FindControl("placeholderLeftTop")
         placeholderLeft = Page.Master.FindControl("placeholderLeft")
         placeholderLeftBottom = Page.Master.FindControl("placeholderLeftBottom")
-        placeholderBody = Page.Master.FindControl("placeholderBody")
         placeholderBodyTop = Page.Master.FindControl("placeholderBodyTop")
         placeholderBodyBottom = Page.Master.FindControl("placeholderBodyBottom")
         placeholderRightTop = Page.Master.FindControl("placeholderRightTop")
         placeholderRight = Page.Master.FindControl("placeholderRight")
         placeholderRightBottom = Page.Master.FindControl("placeholderRightBottom")
-        placeholderPageInfo = Page.Master.FindControl("placeholderPageInfo")
-        placeholderAuthoring = Page.Master.FindControl("placeholderAuthoring")
         placeholderContentRating = Page.Master.FindControl("placeholderContentRating")
         placeholderComments = Page.Master.FindControl("placeholderComments")
         placeholderPrint = Page.Master.FindControl("placeholderPrint")
@@ -917,57 +1030,74 @@ Partial Class _Default
         placeholderMainMenu_Tabs = Page.Master.FindControl("placeholderMainMenu_Tabs")
         placeholderMainMenu_Side = Page.Master.FindControl("placeholderMainMenu_Side")
         placeholderMenu_Tree = Page.Master.FindControl("placeholderMenu_Tree")
-        placeholderScript = Page.Master.FindControl("placeholderScript")
         placeholderOrderNow = Page.Master.FindControl("placeholderOrderNow")
         placeholderCartInfo = Page.Master.FindControl("placeholderCartInfo")
-        placeholderFileView = Page.Master.FindControl("placeholderFileView")
-        placeholderFileDownload = Page.Master.FindControl("placeholderFileDownload")
         placeholderArchives = Page.Master.FindControl("placeholderArchives")
         placeholderCategoryList = Page.Master.FindControl("placeholderCategoryList")
         placeholderSubscribe = Page.Master.FindControl("placeholderSubscribe")
-        placeholderListing = Page.Master.FindControl("placeholderListing")
-
-        placeholderPublishingInfo = Page.Master.FindControl("placeholderPublishingInfo")
         placeholderStatPageViews = Page.Master.FindControl("placeholderStatPageViews")
         placeholderStatPageViews_Vertical = Page.Master.FindControl("placeholderStatPageViews_Vertical")
         placeholderStatPageViews_Private = Page.Master.FindControl("placeholderStatPageViews_Private")
         placeholderStatPageViews_Vertical_Private = Page.Master.FindControl("placeholderStatPageViews_Vertical_Private")
-        placeholderCategoryInfo = Page.Master.FindControl("placeholderCategoryInfo")
-
         placeholderPageTools = Page.Master.FindControl("placeholderPageTools")
         placeholderSiteRss = Page.Master.FindControl("placeholderSiteRss")
 
-        '~~~ Template Object ~~~
+        'Layout Type
+        If Not IsNothing(placeholderLeft) Then
+            If Not IsNothing(placeholderRight) Then
+                'All embedded
+                If placeholderLeft.Visible = True And placeholderRight.Visible = False Then
+                    nLayoutType = 1
+                ElseIf placeholderLeft.Visible = False And _
+                    placeholderRight.Visible = True Then
+                    nLayoutType = 2
+                ElseIf placeholderLeft.Visible = True And placeholderRight.Visible = True Then
+                    nLayoutType = 3
+                Else
+                    nLayoutType = 0
+                End If
+            Else
+                'Only placeholderLeft is embedded
+                If placeholderLeft.Visible = True Then
+                    nLayoutType = 1
+                Else
+                    nLayoutType = 0
+                End If
+            End If
+        Else
+            If Not IsNothing(placeholderRight) Then
+                'Only placeholderRight is embedded
+                If placeholderRight.Visible = True Then
+                    nLayoutType = 2
+                Else
+                    nLayoutType = 0
+                End If
+            Else
+                'Nothing is embedded
+                nLayoutType = 0
+            End If
+        End If
+
+
+        'Floating My Workspace & Admin
+        ShowWorkspace()
+        ShowAdmin()
+
+        'Template Object 
         Dim oMasterPage As BaseMaster = CType(Me.Master, BaseMaster)
         Dim dictSiteMap As New Dictionary(Of String, ArrayList)
         Dim dictMainMenu As New Dictionary(Of String, ArrayList)
         Dim dictTopMenu As New Dictionary(Of String, ArrayList)
         Dim dictBottomMenu As New Dictionary(Of String, ArrayList)
         Dim dictSameLevelPages As New Dictionary(Of String, ArrayList)
-        Dim dictLocales As New Dictionary(Of String, ArrayList)
         Dim dictPagesWithin As New Dictionary(Of String, ArrayList)
         Dim dictFixedMenu As New Dictionary(Of String, ArrayList)
-        Dim arrItem As ArrayList
-        '~~~ /Template Object ~~~
 
-        sCurrencySymbol = oMasterPage.CurrencySymbol 'Thread.CurrentThread.CurrentUICulture.NumberFormat.CurrencySymbol
-
-        '~~~ Template Object (Shopping Cart) ~~~
-        oMasterPage.ShoppingCartLink = sLinkShoppingCart
-        oMasterPage.ShoppingCartTitle = GetLocalResourceObject("Shopping Cart") 'krn hardcoded di SQL
-        '~~~ /Template Object ~~~
-
-        '~~~ Template Object (Home Link) ~~~
-        oMasterPage.HomeLink = sRootFile
-        oMasterPage.HomeLinkTitle = sRootTitle
-        '~~~ /Template Object ~~~
-
-        '~~~ Template Object (General Purpose BodyStart & BodyEnd) ~~~
+        'Template Object (General Purpose BodyStart & BodyEnd) 
         litBodyStart.Text = oMasterPage.BodyStart
         litBodyEnd.Text = oMasterPage.BodyEnd
-        '~~~ /Template Object ~~~
 
-        '~~~ Template Object (Custom Properties) ~~~
+        'Template Object (Custom Properties) 
         Dim nCount As Integer = Split(sCustomProperties, "#||#").Length
         If nCount > 0 Then oMasterPage.CustomValue1 = Split(sCustomProperties, "#||#")(0)
         If nCount > 1 Then oMasterPage.CustomValue2 = Split(sCustomProperties, "#||#")(1)
@@ -979,9 +1109,8 @@ Partial Class _Default
         If nCount > 7 Then oMasterPage.CustomValue8 = Split(sCustomProperties, "#||#")(7)
         If nCount > 8 Then oMasterPage.CustomValue9 = Split(sCustomProperties, "#||#")(8)
         If nCount > 9 Then oMasterPage.CustomValue10 = Split(sCustomProperties, "#||#")(9)
-        '~~~~
 
-        '~~~ Template Object (Site Info) ~~~
+        'Template Object (Site Info)
         oMasterPage.SiteName = sSiteName
         oMasterPage.SiteAddress = sSiteAddress
         oMasterPage.SiteCity = sSiteCity
@@ -991,58 +1120,20 @@ Partial Class _Default
         oMasterPage.SitePhone = sSitePhone
         oMasterPage.SiteFax = sSiteFax
         oMasterPage.SiteEmail = sSiteEmail
-        '~~~~
 
-        'Common variables
-        Dim sTtl As String
-        Dim sLnk As String
-        Dim sFile As String 'eg.default.aspx, mysite/default.aspx
-        Dim sFileUrl As String 'eg. /default.aspx, /mysite/default.aspx
-        Dim nPgId As Integer
-        Dim nPrId As Integer
-        Dim nLevel As Integer
-        Dim nCPermission As Integer
-        Dim sCName As String
-        Dim bIsHdn As Boolean
-        Dim bIsSys As Boolean
-        Dim sTarget As String
-        Dim bUseWindowOpen As Boolean
-
-        Dim bIsLnk As Boolean 'tdk perlu bIsLnk krn pasti sama
-        Dim sLnkTrgt As String = ""
-        Dim sLnkTrgt2 As String = ""
-
-        Dim sLnk2 As String 'Published Version
-        Dim sTtl2 As String = "" 'Published Version
-        Dim bDisCollab As Boolean
-        Dim dtLastUpdBy As DateTime
-        Dim sStat As String = ""
-        Dim sOwn As String = ""
-
+        'Database Connection
         Dim oConn As SqlConnection
         Dim oCommand As SqlCommand
         Dim oDataReader As SqlDataReader
         oConn = New SqlConnection(sConn)
         oConn.Open()
 
-        'Used for Approval Link
-        lnkApprovalAssistant.NavigateUrl = sLinkApproval
-        lnkApprovalAssistant2.NavigateUrl = sLinkApproval
 
-        'Floating My Workspace & Admin
-        ShowWorkspace()
-        ShowAdmin()
+        '************************************************
+        '   Template Placeholders
+        '************************************************
 
-        '~~~ Template Object (Login Link) ~~~
-        oMasterPage.LoginLink = sLinkLogin
-        oMasterPage.LoginLinkTitle = GetLocalResourceObject("LoginLinkText")
-        oMasterPage.LogoutLinkTitle = GetLocalResourceObject("LogoutLinkText")
-        '~~~ /Template Object ~~~
-
-        'Include js script utility for dialogs
-        ClientScript.RegisterClientScriptInclude("js1", "dialogs/dialog.js")
-
-        'Print Link
+        '*** PRINT LINK ***
         If Not IsNothing(placeholderPrint) Then
             Dim lnkPrint As HyperLink = New HyperLink
             'Specify querystring "print=Y" for printer friendly url
@@ -1057,28 +1148,50 @@ Partial Class _Default
             placeholderPrint.Controls.Add(lnkPrint)
         End If
 
-        '~~~ Template Object (Login Link) ~~~
-        If sRawUrl.Contains("?") Then
-            oMasterPage.PrintLink = Request.RawUrl.ToString & "&print=Y"
-        Else
-            oMasterPage.PrintLink = Request.RawUrl.ToString & "?print=Y"
-        End If
-        oMasterPage.PrintLinkTitle = GetLocalResourceObject("Print this page")
-        '~~~ /Template Object ~~~
-
+        '*** SEARCH ***
         If Not IsNothing(placeholderSearch) Then
             If Not placeholderSearch.Visible = False Then
-                lblSearch.Text = GetLocalResourceObject("Search")
-                lblSearch.Style.Add("display", "none")
-                btnSearch.Attributes.Add("onkeypress", "this.onclick")
+
+                Dim oLblSearch As New Label
+                oLblSearch.ID = "lblSearch"
+                oLblSearch.AssociatedControlID = "txtSearch"
+                oLblSearch.Text = GetLocalResourceObject("Search")
+                oLblSearch.Style.Add("display", "none")
+
+                Dim oTxtSearch As New TextBox
+                oTxtSearch.ID = "txtSearch"
+                oTxtSearch.CssClass = "txtSearch"
+                oTxtSearch.ValidationGroup = "SearchProduct"
                 If Not Page.IsPostBack Then
-                    txtSearch.Text = GetLocalResourceObject("Search")
-                    txtSearch.Attributes.Add("onfocus", "if(this.value=='" & GetLocalResourceObject("Search") & "'){this.value=''}")
-                    txtSearch.Attributes.Add("onblur", "if(this.value==''){this.value='" & GetLocalResourceObject("Search") & "'}")
+                    oTxtSearch.Text = GetLocalResourceObject("Search")
+                    oTxtSearch.Attributes.Add("onfocus", "if(this.value=='" & GetLocalResourceObject("Search") & "'){this.value=''}")
+                    oTxtSearch.Attributes.Add("onblur", "if(this.value==''){this.value='" & GetLocalResourceObject("Search") & "'}")
                 End If
+
+                Dim oBtnSearch As New Button
+                oBtnSearch.ID = "btnSearch"
+                oBtnSearch.CssClass = "btnSearch"
+                oBtnSearch.ValidationGroup = "SearchProduct"
+                oBtnSearch.SkinID = "btnSearch"
+                oBtnSearch.UseSubmitBehavior = False
+                oBtnSearch.Text = GetLocalResourceObject("btnSearch.text")
+                oBtnSearch.Attributes.Add("onkeypress", "this.onclick")
+
+                Dim oPanel As New Panel
+                oPanel.DefaultButton = "btnSearch"
+                oPanel.CssClass = "boxSearch"
+                oPanel.Wrap = "false"
+
+                oPanel.Controls.Add(oLblSearch)
+                oPanel.Controls.Add(oTxtSearch)
+                oPanel.Controls.Add(oBtnSearch)
+                placeholderSearch.Controls.Add(oPanel)
+
+                oBtnSearch.OnClientClick = "window.location.href='" & sLinkSearch & "?q=' + document.getElementById('" & oTxtSearch.ClientID & "').value;return false;"
             End If
         End If
 
+        '*** LOGIN FORM ***
         If Not IsNothing(placeholderLoginForm) Then
             If Not placeholderLoginForm.Visible = False Then
                 Dim sLoginBefore As String = ""
@@ -1116,6 +1229,11 @@ Partial Class _Default
                     oLogin.SkinID = "lgnLogin"
                     oLogin.DestinationPageUrl = HttpContext.Current.Items("_path")
 
+                    oLogin.TextLayout = LoginTextLayout.TextOnTop
+                    'oLogin.TextBoxStyle.Width = 120
+                    oLogin.FailureTextStyle.HorizontalAlign = HorizontalAlign.Left
+                    AddHandler oLogin.Authenticate, AddressOf OnAuthenticate
+
                     Dim oPanel As New Panel
                     oPanel.DefaultButton = "Login$LoginButton"
 
@@ -1134,14 +1252,16 @@ Partial Class _Default
             End If
         End If
 
+        '*** WELCOME ***
         If Not IsNothing(placeholderWelcome) Then
             If Not placeholderWelcome.Visible = False Then
                 If bUserLoggedIn Then
-                    placeholderWelcome.Controls.Add(New LiteralControl("" & GetLocalResourceObject("Welcome") & " <b>" & sUserName & "</b>&nbsp;&nbsp;|"))
+                    placeholderWelcome.Controls.Add(New LiteralControl("" & GetLocalResourceObject("Welcome") & " <b>" & sUserName & "</b>&nbsp;"))
                 End If
             End If
         End If
 
+        '*** ADMIN & MY WORKSPACE LINK ***
         If Not IsNothing(placeholderAdminWorkspaceLink) Then
             If Not placeholderAdminWorkspaceLink.Visible = False Then
                 If bUserLoggedIn Then
@@ -1155,6 +1275,7 @@ Partial Class _Default
             End If
         End If
 
+        '*** LOGIN & LOGOUT LINK ***
         If Not IsNothing(placeholderLoginLogout) Then
             If Not placeholderLoginLogout.Visible = False Then
 
@@ -1184,22 +1305,21 @@ Partial Class _Default
             End If
         End If
 
+        '*** LOGOUT LINK ***
         If Not IsNothing(placeholderLogout) Then
             If Not placeholderLogout.Visible = False Then
-
                 Dim lsLogout As LoginStatus = New LoginStatus
                 lsLogout.LogoutAction = LogoutAction.Redirect
                 lsLogout.LogoutPageUrl = HttpContext.Current.Items("_path")
                 lsLogout.CssClass = "logout"
                 lsLogout.LogoutText = GetLocalResourceObject("LogoutLinkText")
-
                 If bUserLoggedIn Then
                     placeholderLogout.Controls.Add(lsLogout)
                 End If
-
             End If
         End If
 
+        '*** REGISTER LINK ***
         If Not IsNothing(placeholderRegister) Then
             If Not placeholderRegister.Visible = False Then
                 If Not bUserLoggedIn Then
@@ -1212,33 +1332,14 @@ Partial Class _Default
             End If
         End If
 
-        'Layout Type
-        If placeholderLeft.Visible = True And _
-            placeholderRight.Visible = False Then
-            nLayoutType = 1
-        ElseIf placeholderLeft.Visible = False And _
-            placeholderRight.Visible = True Then
-            nLayoutType = 2
-        Else
-            nLayoutType = 3
-        End If
-
         '*** BREADCRUMBS ***
         Dim oColPath As Collection
         oColPath = colPath()
         Dim sPathInfo As String = ""
         Dim sTmpItem() As String
-
         Dim sBreadcrumbLinkSeparator As String = ">"
 
-        '~~~ Template Object ~~~
-        If Not oMasterPage.BreadcrumbLinkSeparator = "" Then
-            sBreadcrumbLinkSeparator = oMasterPage.BreadcrumbLinkSeparator
-        End If
-        '~~~ /Template Object ~~~
-
         For Each sTmpItem In oColPath
-
             'Database Stored Title Localization
             Dim sTmpTitle As String = sTmpItem(1).ToString
             Dim sTmpTitle2 As String = GetLocalResourceObject(sTmpTitle)
@@ -1260,17 +1361,10 @@ Partial Class _Default
                 End If
             End If
         Next
-
         If Not IsNothing(placeholderBreadcrumb) Then
             If Not placeholderBreadcrumb.Visible = False Then
                 placeholderBreadcrumb.Controls.Add(New LiteralControl("<div class=""breadcrumb"">" & sPathInfo & "</div>"))
             End If
-        End If
-
-        'Hide Home link
-        Dim bHideHomeLink As Boolean = False
-        If oMasterPage.HideHomeLink Then
-            bHideHomeLink = True
         End If
 
         '*** MAIN MENU (VERTICAL) ***
@@ -1332,6 +1426,7 @@ Partial Class _Default
                 Dim oUC As Control = LoadControl("systems/menu_side.ascx")
                 Dim oUCType As Type = oUC.GetType
                 oUCType.GetProperty("PageID").SetValue(oUC, nPageId, Nothing)
+                oUCType.GetProperty("TemplateFolderName").SetValue(oUC, sTemplateFolderName, Nothing)
                 oUCType.GetProperty("ColPath").SetValue(oUC, oColPath, Nothing)
                 oUCType.GetProperty("IsUserLoggedIn").SetValue(oUC, bUserLoggedIn, Nothing)
                 oUCType.GetProperty("LinkPlacement").SetValue(oUC, sLinkPlacement, Nothing)
@@ -1375,169 +1470,65 @@ Partial Class _Default
             End If
         End If
 
-        '***  TOP/BOTTOM MENU ***
-        If Not IsNothing(placeholderTopMenu) Or Not IsNothing(placeholderBottomMenu) Then
-            Dim oUC As Control = LoadControl("systems/menu_topbottom.ascx")
-            Dim oUCType As Type = oUC.GetType
-            oUCType.GetProperty("PageID").SetValue(oUC, nPageId, Nothing)
-            oUCType.GetProperty("TemplateFolderName").SetValue(oUC, sTemplateFolderName, Nothing)
-            oUCType.GetProperty("IsUserLoggedIn").SetValue(oUC, bUserLoggedIn, Nothing)
-            If Not IsNothing(placeholderTopMenu) Then
-                If Not placeholderTopMenu.Visible = False Then
-                    placeholderTopMenu.Controls.Add(New LiteralControl(oUCType.GetProperty("TopMenu").GetValue(oUC, Nothing)))
-                End If
-            End If
-            If Not IsNothing(placeholderBottomMenu) Then
-                If Not placeholderBottomMenu.Visible = False Then
-                    placeholderBottomMenu.Controls.Add(New LiteralControl(oUCType.GetProperty("BottomMenu").GetValue(oUC, Nothing)))
-                End If
-            End If
-        End If
-
         '*** COUNTRY SELECTION ***
-        'my code
-        Dim currentCountryID As Integer
-        'end mycode
-        Dim sSelectInstruction As String = ""
-        oCommand = New SqlCommand("advcms_GetRegion")
-        oCommand.CommandType = CommandType.StoredProcedure
-        oCommand.Parameters.Add("@root_id", SqlDbType.Int).Value = nRootId
-        oCommand.Connection = oConn
-        oDataReader = oCommand.ExecuteReader()
-        If oDataReader.Read() Then
-            sSelectInstruction = oDataReader("instruction_text").ToString
-            'my code
-            currentCountryID = oDataReader("locale_id")
-            'end mycode
-        End If
-        oDataReader.Close()
-        If sSelectInstruction = "" Then
-            sSelectInstruction = "- Select Country/Region -"
-        Else
-            sSelectInstruction = "- " & sSelectInstruction & " -"
-        End If
-        '~~~~~~~
-
-        Dim oList As ListItem
-        Dim oDropDownList As DropDownList = New DropDownList
-        Dim sLocaleHomePage As String
-        Dim sLocaleDescription As String
-        'my code
-        Dim sLangTabs As String = ""
-        'end my code
-
-        oList = New ListItem
-        oList.Text = sSelectInstruction
-        oList.Value = ""
-        oList.Selected = True
-        oDropDownList.Items.Add(oList)
-
-        Dim sSQL As String = "SELECT * FROM locales where active=@active order by description"
-        oCommand = New SqlCommand(sSQL, oConn)
-        oCommand.CommandType = CommandType.Text
-        oCommand.Parameters.Add("@active", SqlDbType.Bit).Value = True
-        oDataReader = oCommand.ExecuteReader()
-        While oDataReader.Read()
-            sLocaleDescription = oDataReader("description")
-            sLocaleHomePage = oDataReader("home_page")
-            sFileUrl = sAppPath & sLocaleHomePage
-
-            If oDataReader("locale_id") <> currentCountryID Then
-                sLangTabs += "<a  href=""" & sFileUrl & """>" & sLocaleDescription & "</a>&nbsp;&nbsp;|&nbsp;&nbsp;"
-            End If
-
-            oList = New ListItem
-            oList.Text = sLocaleDescription
-            oList.Value = sFileUrl 'sLocaleHomePage
-            oDropDownList.Items.Add(oList)
-
-            '~~~ Template Object ~~~
-            arrItem = New ArrayList
-            arrItem.Add(sLocaleHomePage)
-            arrItem.Add(sLocaleDescription)
-            If sRootFile = sLocaleHomePage Then
-                arrItem.Add(True)
-            Else
-                arrItem.Add(False)
-            End If
-            dictLocales.Add(sLocaleHomePage, arrItem)
-            '~~~ /Template Object ~~~
-        End While
-        oDataReader.Close()
-        If oDropDownList.Items.Count = 1 Then 'cuma ada instruction saja
-            oDropDownList.Visible = False
-        End If
-        oDropDownList.Attributes.Add("onchange", "if(this.value!='')window.location.href=this.value;")
-
         If Not IsNothing(placeholderCountrySelect) Then
             If Not placeholderCountrySelect.Visible = False Then
-                'placeholderCountrySelect.Controls.Add(oDropDownList)
-                placeholderCountrySelect.Controls.Add(New LiteralControl(sLangTabs))
+
+                Dim sSelectInstruction As String = ""
+                oCommand = New SqlCommand("advcms_GetRegion")
+                oCommand.CommandType = CommandType.StoredProcedure
+                oCommand.Parameters.Add("@root_id", SqlDbType.Int).Value = nRootId
+                oCommand.Connection = oConn
+                oDataReader = oCommand.ExecuteReader()
+                If oDataReader.Read() Then
+                    sSelectInstruction = oDataReader("instruction_text").ToString
+                End If
+                oDataReader.Close()
+                If sSelectInstruction = "" Then
+                    sSelectInstruction = "- Select Country/Region -"
+                Else
+                    sSelectInstruction = "- " & sSelectInstruction & " -"
+                End If
+
+                Dim oList As ListItem
+                Dim oDropDownList As DropDownList = New DropDownList
+                Dim sLocaleDescription As String
+                Dim sLocaleHomePage As String
+                Dim sFileUrl As String 'eg. /default.aspx, /mysite/default.aspx
+
+                oList = New ListItem
+                oList.Text = sSelectInstruction
+                oList.Value = ""
+                oList.Selected = True
+                oDropDownList.Items.Add(oList)
+
+                oCommand = New SqlCommand("SELECT * FROM locales where active=@active order by description", oConn)
+                oCommand.CommandType = CommandType.Text
+                oCommand.Parameters.Add("@active", SqlDbType.Bit).Value = True
+                oDataReader = oCommand.ExecuteReader()
+                While oDataReader.Read()
+                    sLocaleDescription = oDataReader("description")
+                    sLocaleHomePage = oDataReader("home_page")
+                    sFileUrl = sAppPath & sLocaleHomePage
+
+                    oList = New ListItem
+                    oList.Text = sLocaleDescription
+                    oList.Value = sFileUrl 'sLocaleHomePage
+                    oDropDownList.Items.Add(oList)
+                End While
+                oDataReader.Close()
+                If oDropDownList.Items.Count = 1 Then 'cuma ada instruction saja
+                    oDropDownList.Visible = False
+                End If
+                oDropDownList.Attributes.Add("onchange", "if(this.value!='')window.location.href=this.value;")
+                placeholderCountrySelect.Controls.Add(oDropDownList)
             End If
         End If
 
-        '~~~ Template Object ~~~
-        oMasterPage.Locales = dictLocales
-        '~~~ /Template Object ~~~
-
-        '*** USER AUTHENTICATION ***
-
-        'Check URL
-        Dim sServerUrl As String = sRawUrl
-        If sRawUrl.Contains("?") Then
-            sServerUrl = sRawUrl.Split(CChar("?"))(0).ToString
-        End If
-
-        If nChannelPermission = 2 Then 'nChannelPermission=3 tdk perlu krn lgs di-redirect ke home (lihat Page_PreInit) 
-            If Not bUserLoggedIn Then
-                'Show Login
-                panelLogin.Visible = True
-
-                'Required (krn bagian ini lgs exit. Lihat code selanjutnya for details)
-                placeholderPageInfo.Visible = False
-                btnModulePosition.Style.Add("display", "none")
-
-                '~~~~ Title ~~~~
-                'Database Stored Title Localization
-                If bIsSystem Then
-                    If Not GetLocalResourceObject(sTitle) = "" Then
-                        sTitle = GetLocalResourceObject(sTitle)
-                    End If
-                End If
-                litTitle.Text = "<div class=""title"">" & sTitle & "</div>"
-                Page.Master.Page.Title = Page.Master.Page.Title & sTitle
-                '~~~~ /Title ~~~~
-
-                'Float scripts
-                Page.Master.Page.Header.Controls.Add(New LiteralControl("<script language=""javascript"" type=""text/javascript"" src=""systems/float/float.js""></script>"))
-
-                Exit Sub
-            End If
-        End If
-
-        '*** PAGE WITHIN & SAME LEVEL PAGES MENU ***
-        If Not IsNothing(placeholderPagesWithin) Or Not IsNothing(placeholderSameLevelPages) Then
-            If Not placeholderPagesWithin.Visible = False Or Not placeholderSameLevelPages.Visible = False Then
-                Dim oUC As Control = LoadControl("systems/menu_pageswithin.ascx")
-                Dim oUCType As Type = oUC.GetType
-                oUCType.GetProperty("PageID").SetValue(oUC, nPageId, Nothing)
-                oUCType.GetProperty("ParentID").SetValue(oUC, nParentId, Nothing)
-                oUCType.GetProperty("ParentParentID").SetValue(oUC, nParentParentId, Nothing)
-                oUCType.GetProperty("TemplateFolderName").SetValue(oUC, sTemplateFolderName, Nothing)
-                oUCType.GetProperty("IsUserLoggedIn").SetValue(oUC, bUserLoggedIn, Nothing)
-                If Not placeholderPagesWithin.Visible = False Then
-                    placeholderPagesWithin.Controls.Add(New LiteralControl(oUCType.GetProperty("PagesWithin").GetValue(oUC, Nothing)))
-                End If
-                If Not placeholderSameLevelPages.Visible = False Then
-                    placeholderSameLevelPages.Controls.Add(New LiteralControl(oUCType.GetProperty("SameLevelPages").GetValue(oUC, Nothing)))
-                End If
-            End If
-        End If
 
         '************************************************
         '   Listing Templates
         '************************************************
-
         If bIsListing Then
             oCommand = New SqlCommand("SELECT * FROM listing_templates WHERE id=@id")
             oCommand.CommandType = CommandType.Text
@@ -1553,30 +1544,153 @@ Partial Class _Default
             oDataReader.Close()
         End If
 
+
         '************************************************
-        '   Show / Hide Status & Authoring Links
+        '   Show/Hide Status & Authoring Links
         '************************************************
+        ShowHideAuthoringLink(False) 'requires sListingTemplateName
 
-        ShowHideAuthoringLink(False)
 
-        Dim sBaseHref As String = Request.Url.Scheme & "://" & sUrlAuthority & sAppPath
-        Page.Master.Page.Header.Controls.AddAt(0, New LiteralControl("<base href=""" & sBaseHref & """ />"))
+        '***  TOP/BOTTOM MENU ***
+        If Not IsNothing(placeholderTopMenu) Or Not IsNothing(placeholderBottomMenu) Then
+            Dim oUC As Control = LoadControl("systems/menu_topbottom.ascx")
+            Dim oUCType As Type = oUC.GetType
+            oUCType.GetProperty("PageID").SetValue(oUC, nPageId, Nothing)
+            oUCType.GetProperty("TemplateFolderName").SetValue(oUC, sTemplateFolderName, Nothing)
+            oUCType.GetProperty("IsUserLoggedIn").SetValue(oUC, bUserLoggedIn, Nothing)
+            If Not IsNothing(placeholderTopMenu) Then
+                If Not placeholderTopMenu.Visible = False Then
+                    If bShowAddNewTop Then 'requires ShowHideAuthoringLink
+                        placeholderTopMenu.Controls.Add(New LiteralControl("[<a class=""topmenu"" href=""" & sRootFile & "?action=top"">" & GetLocalResourceObject("lnkAddNewTop.text") & "</a>]&nbsp;"))
+                    End If
+                    placeholderTopMenu.Controls.Add(New LiteralControl(oUCType.GetProperty("TopMenu").GetValue(oUC, Nothing)))
+                End If
+            End If
+            If Not IsNothing(placeholderBottomMenu) Then
+                If Not placeholderBottomMenu.Visible = False Then
+                    If bShowAddNewBottom Then 'requires ShowHideAuthoringLink
+                        placeholderBottomMenu.Controls.Add(New LiteralControl("[<a class=""bottommenu"" href=""" & sRootFile & "?action=bottom"">" & GetLocalResourceObject("lnkAddNewBottom.text") & "</a>]&nbsp;"))
+                    End If
+                    placeholderBottomMenu.Controls.Add(New LiteralControl(oUCType.GetProperty("BottomMenu").GetValue(oUC, Nothing)))
+                End If
+            End If
+        End If
 
-        txtSummary.scriptPath = sAppPath & "systems/editor/scripts/"
-        txtBody.scriptPath = sAppPath & "systems/editor/scripts/"
+        '*** USER AUTHENTICATION ***
+        Dim sServerUrl As String = sRawUrl 'Check URL
+        If sRawUrl.Contains("?") Then
+            sServerUrl = sRawUrl.Split(CChar("?"))(0).ToString
+        End If
 
-        '*** SHOW CONTENT ***
+        If nChannelPermission = 2 Then 'nChannelPermission=3 tdk perlu krn lgs di-redirect ke home (lihat Page_PreInit) 
+            If Not bUserLoggedIn Then
+                panelLogin.Visible = True 'Show Login
+                Dim oUC1 As Control = LoadControl("systems/login.ascx")
+                panelLogin.Controls.Add(oUC1)
 
+                'Required (krn bagian ini lgs exit. Lihat code selanjutnya for details)
+                panelPageInfo.Visible = False
+                btnModulePosition.Style.Add("display", "none")
+
+                'Title
+                If bIsSystem Then
+                    If Not GetLocalResourceObject(sTitle) = "" Then
+                        sTitle = GetLocalResourceObject(sTitle)
+                    End If
+                End If
+                litTitle.Text = "<h1 class=""title"">" & sTitle & "</h1>"
+				Page.Master.Page.Title = Page.Master.Page.Title & sTitle
+
+                Exit Sub
+            End If
+        End If
+
+        '*** PAGE WITHIN & SAME LEVEL PAGES MENU ***
+        Dim bShowPagesWithin As Boolean = False
+        Dim bShowSameLevelPages As Boolean = False
+        If Not IsNothing(placeholderPagesWithin) Then
+            If Not IsNothing(placeholderSameLevelPages) Then
+                'All Embedded
+                If placeholderPagesWithin.Visible = True Then
+                    bShowPagesWithin = True
+                End If
+                If placeholderSameLevelPages.Visible = True Then
+                    bShowSameLevelPages = True
+                End If
+            Else
+                'placeholderPagesWithin is embedded
+                If placeholderPagesWithin.Visible = True Then
+                    bShowPagesWithin = True
+                End If
+            End If
+        Else
+            If Not IsNothing(placeholderSameLevelPages) Then
+                'placeholderSameLevelPages is embedded
+                If placeholderSameLevelPages.Visible = True Then
+                    bShowSameLevelPages = True
+                End If
+            Else
+                'Nothing embedded
+            End If
+        End If
+        If bShowPagesWithin Or bShowSameLevelPages Then
+            Dim oUC As Control = LoadControl("systems/menu_pageswithin.ascx")
+            Dim oUCType As Type = oUC.GetType
+            oUCType.GetProperty("PageID").SetValue(oUC, nPageId, Nothing)
+            oUCType.GetProperty("ParentID").SetValue(oUC, nParentId, Nothing)
+            oUCType.GetProperty("ParentParentID").SetValue(oUC, nParentParentId, Nothing)
+            oUCType.GetProperty("TemplateFolderName").SetValue(oUC, sTemplateFolderName, Nothing)
+            oUCType.GetProperty("IsUserLoggedIn").SetValue(oUC, bUserLoggedIn, Nothing)
+
+            If bShowPagesWithin Then
+                placeholderPagesWithin.Controls.Add(New LiteralControl(oUCType.GetProperty("PagesWithin").GetValue(oUC, Nothing)))
+            End If
+            If bShowSameLevelPages Then
+                placeholderSameLevelPages.Controls.Add(New LiteralControl(oUCType.GetProperty("SameLevelPages").GetValue(oUC, Nothing)))
+            End If
+        End If
+
+        '************************************************
+        '   Content Templates
+        '************************************************
+        Dim sContentTemplate As String = ""
+        Dim oReaderContentTemplate As SqlDataReader
+        If bParentIsListing Then
+            oCommand = New SqlCommand("SELECT content_templates.content_template_id, content_templates.content_template FROM content_templates INNER JOIN listing_templates ON content_templates.content_template_id = listing_templates.content_template_id WHERE listing_templates.id = @listing_templates_id", oConn)
+            oCommand.CommandType = CommandType.Text
+            oCommand.Parameters.Add("@listing_templates_id", SqlDbType.Int).Value = nParentListingTemplateId
+            oReaderContentTemplate = oCommand.ExecuteReader()
+            While oReaderContentTemplate.Read()
+                sContentTemplate = oReaderContentTemplate("content_template").ToString
+            End While
+        Else
+            oCommand = New SqlCommand("SELECT content_templates.content_template_id, content_templates.content_template FROM templates INNER JOIN content_templates ON templates.content_template_id = content_templates.content_template_id WHERE templates.template_id = @template_id", oConn)
+            oCommand.CommandType = CommandType.Text
+            oCommand.Parameters.Add("@template_id", SqlDbType.Int).Value = nTemplateId
+            oReaderContentTemplate = oCommand.ExecuteReader()
+            While oReaderContentTemplate.Read()
+                sContentTemplate = oReaderContentTemplate("content_template").ToString
+            End While
+        End If
+        oReaderContentTemplate.Close()
+
+        If sContentBody.Contains("[%LISTING%]") Then
+            sContentTemplate = sContentTemplate.Replace("[%LISTING%]", "")
+        End If
+        If sContentBody.Contains("[%FILE_VIEW%]") Then
+            sContentTemplate = sContentTemplate.Replace("[%FILE_VIEW%]", "")
+        End If
+        If sContentBody.Contains("[%FILE_DOWNLOAD%]") Then
+            sContentTemplate = sContentTemplate.Replace("[%FILE_DOWNLOAD%]", "")
+        End If
+
+        '************************************************
+        '   Page Elements
+        '************************************************
         Dim sDefaultElements As String = "<root>" & _
                 "<title>True</title>" & _
                 "<file_view>True</file_view>" & _
                 "<file_download>True</file_download>" & _
-                "<author>False</author>" & _
-                "<author_full_name>False</author_full_name>" & _
-                "<person_last_updating>False</person_last_updating>" & _
-                "<person_last_updating_full_name>False</person_last_updating_full_name>" & _
-                "<publish_date>False</publish_date>" & _
-                "<last_updated_date>False</last_updated_date>" & _
                 "<statistic_info>False</statistic_info>" & _
                 "<category_info>False</category_info>" & _
                 "<rating>False</rating>" & _
@@ -1586,6 +1700,7 @@ Partial Class _Default
                 "<listing_ordering_by_title>False</listing_ordering_by_title>" & _
                 "<listing_ordering_by_author>False</listing_ordering_by_author>" & _
                 "<listing_ordering_by_person_last_updating>False</listing_ordering_by_person_last_updating>" & _
+                "<listing_ordering_by_display_date>False</listing_ordering_by_display_date>" & _
                 "<listing_ordering_by_publish_date>False</listing_ordering_by_publish_date>" & _
                 "<listing_ordering_by_last_updated_date>False</listing_ordering_by_last_updated_date>" & _
                 "<listing_ordering_by_size>False</listing_ordering_by_size>" & _
@@ -1598,11 +1713,8 @@ Partial Class _Default
                 "<listing_ordering_by_price>False</listing_ordering_by_price>" & _
                 "<calendar>True</calendar>" & _
                 "<month_list>True</month_list>" & _
-                "<category_list>False</category_list>" & _
+                "<category_list>True</category_list>" & _
                 "<subscribe>True</subscribe>" & _
-                "<posted_by>False</posted_by>" & _
-                "<posted_by_full_name>False</posted_by_full_name>" & _
-                "<display_date>False</display_date>" & _
                 "</root>"
 
         If sElements = "" Then
@@ -1618,631 +1730,34 @@ Partial Class _Default
         oXMLParent.LoadXml(sParentElements)
 
 
+        '*** TITLE ***
+        If bIsSystem Then
+            'Database Stored Title Localization
+            If Not GetLocalResourceObject(sTitle) = "" Then
+                sTitle = GetLocalResourceObject(sTitle)
+            End If
+        End If
+        litTitle.Text = "<h1 class=""title"">" & sTitle & "</h1>"
+        If sMetaTitle <> "" Then
+            Page.Master.Page.Title = Page.Master.Page.Title & sMetaTitle
+        Else
+            Page.Master.Page.Title = Page.Master.Page.Title & sTitle
+        End If
+
         If Not CBool(oXML.DocumentElement.Item("title").InnerText) Then
+            'Title is set hidden
+            If sContentTemplate.Contains("[%TITLE%]") Then
+                sContentTemplate = sContentTemplate.Replace("[%TITLE%]", "")
+            End If
             litTitle.Visible = False
-        End If
-        Dim bUseRating As Boolean = False
-        If CBool(oXML.DocumentElement.Item("rating").InnerText) Then
-            bUseRating = True
-        End If
-        Dim bUseComments As Boolean = False
-        Dim bCommentsAnonymous As Boolean = False
-        If CBool(oXML.DocumentElement.Item("comments").InnerText) Then
-            bUseComments = True
-        End If
-        If CBool(oXML.DocumentElement.Item("comments_anonymous").InnerText) Then
-            bCommentsAnonymous = True
-        End If
-
-        If Not CBool(oXML.DocumentElement.Item("listing_ordering").InnerText) Then
-            dropListingOrdering.Visible = False
-            litOrderBy.Visible = False
-        End If
-        If bIsListing And nListingType = 2 Then
-            dropListingOrdering.Visible = False
-            litOrderBy.Visible = False
-        End If
-        If bIsListing And nListingType = 1 And (nListingProperty = 1 Or nListingProperty = 3) Then
-            dropListingOrdering.Visible = False
-            litOrderBy.Visible = False
-        End If
-
-        If Not CBool(oXML.DocumentElement.Item("listing_ordering_by_title").InnerText) Then
-            dropListingOrdering.Items.Remove(dropListingOrdering.Items.FindByValue("title"))
-        End If
-        If Not CBool(oXML.DocumentElement.Item("listing_ordering_by_author").InnerText) Then
-            dropListingOrdering.Items.Remove(dropListingOrdering.Items.FindByValue("owner"))
-        End If
-        If Not CBool(oXML.DocumentElement.Item("listing_ordering_by_person_last_updating").InnerText) Then
-            dropListingOrdering.Items.Remove(dropListingOrdering.Items.FindByValue("last_updated_by"))
-        End If
-        If Not CBool(oXML.DocumentElement.Item("listing_ordering_by_publish_date").InnerText) Then
-            dropListingOrdering.Items.Remove(dropListingOrdering.Items.FindByValue("first_published_date"))
-        End If
-        If Not CBool(oXML.DocumentElement.Item("listing_ordering_by_last_updated_date").InnerText) Then
-            dropListingOrdering.Items.Remove(dropListingOrdering.Items.FindByValue("last_updated_date"))
-        End If
-        If Not CBool(oXML.DocumentElement.Item("listing_ordering_by_rating").InnerText) Then
-            dropListingOrdering.Items.Remove(dropListingOrdering.Items.FindByValue("rating"))
-        End If
-        If Not CBool(oXML.DocumentElement.Item("listing_ordering_by_comments").InnerText) Then
-            dropListingOrdering.Items.Remove(dropListingOrdering.Items.FindByValue("comments"))
-        End If
-        If Not CBool(oXML.DocumentElement.Item("listing_ordering_by_size").InnerText) Then
-            dropListingOrdering.Items.Remove(dropListingOrdering.Items.FindByValue("file_size"))
-        End If
-        If Not CBool(oXML.DocumentElement.Item("listing_ordering_by_total_downloads").InnerText) Then
-            dropListingOrdering.Items.Remove(dropListingOrdering.Items.FindByValue("total_downloads"))
-        End If
-        If Not CBool(oXML.DocumentElement.Item("listing_ordering_by_downloads_today").InnerText) Then
-            dropListingOrdering.Items.Remove(dropListingOrdering.Items.FindByValue("downloads_today"))
-        End If
-
-        If Not CBool(oXML.DocumentElement.Item("listing_ordering_by_total_hits").InnerText) Then
-            dropListingOrdering.Items.Remove(dropListingOrdering.Items.FindByValue("total_hits"))
-        End If
-        If Not CBool(oXML.DocumentElement.Item("listing_ordering_by_hits_today").InnerText) Then
-            dropListingOrdering.Items.Remove(dropListingOrdering.Items.FindByValue("hits_today"))
-        End If
-        If Not CBool(oXML.DocumentElement.Item("listing_ordering_by_price").InnerText) Then
-            dropListingOrdering.Items.Remove(dropListingOrdering.Items.FindByValue("current_price"))
-        End If
-
-        '~~~~~ Author (Person First Creating) & Date First Published
-        Dim sPublishingInfo As String = ""
-        Dim bUsePublishingInfo As Boolean = False
-        If CBool(oXML.DocumentElement.Item("author").InnerText) Then
-            sPublishingInfo += "<div class=""author_date_first_published"" >"
-            If CBool(oXML.DocumentElement.Item("author_full_name").InnerText) Then
-                Dim userProfile As ProfileCommon = Profile.GetProfile(sOwner)
-                If CBool(oXML.DocumentElement.Item("publish_date").InnerText) And bHasPublished Then
-                    sPublishingInfo += "Added by " & userProfile.FirstName & " " & userProfile.LastName & " - Publish date: " & FormatDateTime(dtFirstPublishedDate, DateFormat.LongDate) & " - " & FormatDateTime(dtFirstPublishedDate, DateFormat.ShortTime)
-                Else
-                    sPublishingInfo += "Added by " & userProfile.FirstName & " " & userProfile.LastName
-                End If
-            Else
-                If CBool(oXML.DocumentElement.Item("publish_date").InnerText) And bHasPublished Then
-                    sPublishingInfo += "Added by " & sOwner & " - Publish date: " & FormatDateTime(dtFirstPublishedDate, DateFormat.LongDate) & " - " & FormatDateTime(dtFirstPublishedDate, DateFormat.ShortTime)
-                Else
-                    sPublishingInfo += "Added by " & sOwner
-                End If
-            End If
-            sPublishingInfo += "</div>"
-            bUsePublishingInfo = True
         Else
-            If CBool(oXML.DocumentElement.Item("publish_date").InnerText) And bHasPublished Then
-                sPublishingInfo += "<div class=""author_date_first_published"" >"
-                sPublishingInfo += "Publish date: " & FormatDateTime(dtFirstPublishedDate, DateFormat.LongDate) & " - " & FormatDateTime(dtFirstPublishedDate, DateFormat.ShortTime)
-                sPublishingInfo += "</div>"
-                bUsePublishingInfo = True
+            If sContentTemplate.Contains("[%TITLE%]") Then
+                sContentTemplate = sContentTemplate.Replace("[%TITLE%]", sTitle)
+                litTitle.Visible = False
             End If
         End If
 
-        '~~~~~ Person Last Updating & Date Last Updated/Published
-        If CBool(oXML.DocumentElement.Item("person_last_updating").InnerText) Then
-            sPublishingInfo += "<div class=""person_last_updating_and_date"" >"
-            If CBool(oXML.DocumentElement.Item("person_last_updating_full_name").InnerText) Then
-                Dim userProfile As ProfileCommon = Profile.GetProfile(sLastUpdatedBy)
-                If CBool(oXML.DocumentElement.Item("last_updated_date").InnerText) Then
-                    sPublishingInfo += "Last updated by " & userProfile.FirstName & " " & userProfile.LastName & " - " & FormatDateTime(dtLastUpdatedDate, DateFormat.LongDate) & " - " & FormatDateTime(dtLastUpdatedDate, DateFormat.ShortTime)
-                Else
-                    sPublishingInfo += "Last updated by " & userProfile.FirstName & " " & userProfile.LastName
-                End If
-            Else
-                If CBool(oXML.DocumentElement.Item("last_updated_date").InnerText) Then
-                    sPublishingInfo += "Last updated by " & sLastUpdatedBy & " - " & FormatDateTime(dtLastUpdatedDate, DateFormat.LongDate) & " - " & FormatDateTime(dtLastUpdatedDate, DateFormat.ShortTime)
-                Else
-                    sPublishingInfo += "Last updated by " & sLastUpdatedBy
-                End If
-            End If
-            sPublishingInfo += "</div>"
-            bUsePublishingInfo = True
-        Else
-            If CBool(oXML.DocumentElement.Item("last_updated_date").InnerText) Then
-                sPublishingInfo += "<div class=""person_last_updating_and_date"" >"
-                sPublishingInfo += "Last updated: " & FormatDateTime(dtLastUpdatedDate, DateFormat.LongDate) & " - " & FormatDateTime(dtLastUpdatedDate, DateFormat.ShortTime)
-                sPublishingInfo += "</div>"
-                bUsePublishingInfo = True
-            End If
-        End If
-
-        '~~~~~ Posted By (Person Last Updating) & Display Date
-        Dim sTime As String
-        If dDisplayDate.Hour = 0 And dDisplayDate.Minute = 0 Then
-            sTime = ""
-        Else
-            sTime = " - " & FormatDateTime(dDisplayDate, DateFormat.ShortTime)
-        End If
-
-        If CBool(oXMLParent.DocumentElement.Item("posted_by").InnerText) And _
-            bParentIsListing And nParentListingType = 2 Then
-
-            sPublishingInfo += "<div class=""posted_by_and_date"" >"
-            If CBool(oXMLParent.DocumentElement.Item("posted_by_full_name").InnerText) Then
-                Dim userProfile As ProfileCommon = Profile.GetProfile(sLastUpdatedBy)
-                If CBool(oXMLParent.DocumentElement.Item("display_date").InnerText) And _
-                    nParentListingType = 2 Then
-                    sPublishingInfo += "Posted by " & userProfile.FirstName & " " & userProfile.LastName & " - " & FormatDateTime(dDisplayDate, DateFormat.LongDate) & sTime
-                Else
-                    sPublishingInfo += "Posted by " & userProfile.FirstName & " " & userProfile.LastName
-                End If
-            Else
-                If CBool(oXMLParent.DocumentElement.Item("display_date").InnerText) And _
-                    nParentListingType = 2 Then
-
-                    sPublishingInfo += "Posted by " & sLastUpdatedBy & " - " & FormatDateTime(dDisplayDate, DateFormat.LongDate) & sTime
-                Else
-                    sPublishingInfo += "Posted by " & sLastUpdatedBy
-                End If
-            End If
-            sPublishingInfo += "</div>"
-            bUsePublishingInfo = True
-        Else
-            If CBool(oXMLParent.DocumentElement.Item("display_date").InnerText) And _
-                bParentIsListing And nParentListingType = 2 Then
-
-                sPublishingInfo += "<div class=""posted_by_and_date"" >"
-                sPublishingInfo += FormatDateTime(dDisplayDate, DateFormat.LongDate) & sTime
-                sPublishingInfo += "</div>"
-                bUsePublishingInfo = True
-            End If
-        End If
-        If bUsePublishingInfo Then
-            sPublishingInfo = "<div class=""publishing_info"">" & sPublishingInfo & "</div>"
-            If Not IsNothing(placeholderPublishingInfo) Then
-                placeholderPublishingInfo.Controls.Add(New LiteralControl(sPublishingInfo))
-            End If
-        End If
-
-        Dim oContentManager As ContentManager = New ContentManager
-
-        '~~~~~ Category Info ~~~~~~
-        If CBool(oXMLParent.DocumentElement.Item("category_info").InnerText) And _
-            bParentIsListing And bParentListingUseCategories Then
-
-            Dim oReaderCategories As SqlDataReader
-            Dim sCategories As String = ""
-            oReaderCategories = oContentManager.GetPageCategories(nPageId)
-            Dim bIsUncategorized As Boolean = True
-            While oReaderCategories.Read()
-                bIsUncategorized = False
-                If Not sCategories = "" Then sCategories += ", "
-                sCategories = sCategories & oReaderCategories("listing_category_name").ToString
-            End While
-            oReaderCategories.Close()
-            If bIsUncategorized Then
-                sCategories = GetLocalResourceObject("Uncategorized")
-            End If
-            If Not IsNothing(placeholderCategoryInfo) Then
-                placeholderCategoryInfo.Controls.Add(New LiteralControl("<div class=""category_info"">" & GetLocalResourceObject("Category") & " " & sCategories & "</div>"))
-            End If
-            oReaderCategories = Nothing
-        End If
-        '~~~~~ /Category Info ~~~~~~
-
-        '~~~~~ Archives ~~~~~~
-        Dim sArchivesStart As String = "<table cellpadding=""0"" cellspacing=""0"" class=""boxArchives"">" & _
-            "<tr><td class=""boxHeaderArchives"">" & _
-            GetLocalResourceObject("Archives") & _
-            "</td></tr>"
-        Dim bUseCal As Boolean = False
-        Dim bUseMonths As Boolean = False
-
-        'Calendar
-        If (CBool(oXML.DocumentElement.Item("calendar").InnerText) And bIsListing And nListingType = 2) Or _
-           (CBool(oXMLParent.DocumentElement.Item("calendar").InnerText) And _
-            bParentIsListing And nParentListingType = 2) Then
-
-            If Not IsNothing(placeholderArchives) Then
-                Dim bIsEntry As Boolean = False
-                If CBool(oXMLParent.DocumentElement.Item("month_list").InnerText) And _
-                    bParentIsListing And nParentListingType = 2 Then
-                    bIsEntry = True
-                End If
-
-                Dim oUC As Control = LoadControl("systems/news_calendar.ascx")
-                Dim oUCType As Type = oUC.GetType
-                oUCType.GetProperty("IsEntry").SetValue(oUC, bIsEntry, Nothing)
-                oUCType.GetProperty("RootID").SetValue(oUC, nRootId, Nothing)
-                oUCType.GetProperty("RootFile").SetValue(oUC, sRootFile, Nothing)
-                oUCType.GetProperty("PageID").SetValue(oUC, nPageId, Nothing)
-                oUCType.GetProperty("ParentID").SetValue(oUC, nParentId, Nothing)
-                oUCType.GetProperty("ParentFileName").SetValue(oUC, sParentFileName, Nothing)
-                oUCType.GetProperty("TemplateID").SetValue(oUC, nTemplateId, Nothing)
-                oUCType.GetProperty("TemplateFolderName").SetValue(oUC, sTemplateFolderName, Nothing)
-                oUCType.GetProperty("IsPublisher").SetValue(oUC, bIsPublisher, Nothing)
-                oUCType.GetProperty("IsSubscriber").SetValue(oUC, bIsSubscriber, Nothing)
-                oUCType.GetProperty("IsAuthor").SetValue(oUC, bIsAuthor, Nothing)
-                oUCType.GetProperty("IsEditor").SetValue(oUC, bIsEditor, Nothing)
-                oUCType.GetProperty("IsResourceManager").SetValue(oUC, bIsResourceManager, Nothing)
-                oUCType.GetProperty("IsAdministrator").SetValue(oUC, bIsAdministrator, Nothing)
-                oUCType.GetProperty("IsReader").SetValue(oUC, bIsReader, Nothing)
-                oUCType.GetProperty("IsOwner").SetValue(oUC, bIsOwner, Nothing)
-                oUCType.GetProperty("IsUserLoggedIn").SetValue(oUC, bUserLoggedIn, Nothing)
-                oUCType.GetProperty("UserName").SetValue(oUC, sUserName, Nothing)
-
-                placeholderArchives.Controls.Add(New LiteralControl(sArchivesStart & "<tr><td class=""boxContentArchives"">"))
-                placeholderArchives.Controls.Add(oUC)
-
-                bUseCal = True
-            End If
-        End If
-
-        'Month List
-        If (CBool(oXML.DocumentElement.Item("month_list").InnerText) And bIsListing And nListingType = 2) Or _
-           (CBool(oXMLParent.DocumentElement.Item("month_list").InnerText) And _
-            bParentIsListing And nParentListingType = 2) Then
-
-            If Not IsNothing(placeholderArchives) Then
-                Dim bIsEntry As Boolean = False
-                If CBool(oXMLParent.DocumentElement.Item("month_list").InnerText) And _
-                    bParentIsListing And nParentListingType = 2 Then
-                    bIsEntry = True
-                End If
-
-                Dim nFirstPostMonth As Integer
-                Dim nFirstPostYear As Integer
-                Dim oReaderTmp As SqlDataReader
-                If bIsEntry Then
-                    oReaderTmp = oContentManager.GetFirstPost(nParentId)
-                Else
-                    oReaderTmp = oContentManager.GetFirstPost(nPageId)
-                End If
-                While oReaderTmp.Read()
-                    nFirstPostMonth = CDate(oReaderTmp("display_date")).Month
-                    nFirstPostYear = CDate(oReaderTmp("display_date")).Year
-                End While
-                oReaderTmp.Close()
-                oReaderTmp = Nothing
-
-                Dim i As Integer
-                Dim sMonth As String = ""
-                Dim nCurrMonth As Integer = Now.Month
-                Dim nCurrYear As Integer = Now.Year
-                For i = 1 To 12
-                    If (nFirstPostMonth = 0) Then Exit For
-                    If bIsEntry Then
-                        sMonth += "<div><a href=""" & sParentFileName & "?d=" & nCurrYear & "-" & nCurrMonth & """>" & MonthName(nCurrMonth) & " " & nCurrYear & "</a></div>"
-                    Else
-                        sMonth += "<div><a href=""" & HttpContext.Current.Items("_page") & "?d=" & nCurrYear & "-" & nCurrMonth & """>" & MonthName(nCurrMonth) & " " & nCurrYear & "</a></div>"
-                    End If
-
-                    If nFirstPostYear = nCurrYear And nFirstPostMonth = nCurrMonth Then
-                        Exit For
-                    End If
-
-                    nCurrMonth = nCurrMonth - 1
-                    If nCurrMonth = 0 Then
-                        nCurrMonth = 12
-                        nCurrYear = nCurrYear - 1
-                    End If
-                Next
-                'If Not sMonth = "" Then
-                '    sMonth = "<div class=""month_list"">" & sMonth & "</div>"
-                'End If
-
-
-                If bUseCal Then
-                    placeholderArchives.Controls.Add(New LiteralControl("</td></tr><tr><td class=""boxMonthList"">"))
-                Else
-                    placeholderArchives.Controls.Add(New LiteralControl(sArchivesStart & "<tr><td class=""boxMonthList"">"))
-                End If
-                placeholderArchives.Controls.Add(New LiteralControl(sMonth))
-
-                bUseMonths = True
-            End If
-        End If
-
-        Dim sArchivesEnd As String = "</td></tr></table>"
-        If bUseCal Or bUseMonths Then
-            If Not IsNothing(placeholderArchives) Then
-                placeholderArchives.Controls.Add(New LiteralControl(sArchivesEnd))
-            End If
-        End If
-        '~~~~~ /Archives ~~~~~~
-
-        '~~~~~ Category List ~~~~~~
-        If (CBool(oXML.DocumentElement.Item("category_list").InnerText) And bIsListing And bListingUseCategories) Or _
-           (CBool(oXMLParent.DocumentElement.Item("category_list").InnerText) And _
-            bParentIsListing And bParentListingUseCategories) Then
-
-            If Not IsNothing(placeholderCategoryList) Then
-                Dim bIsEntry As Boolean = False
-                If CBool(oXMLParent.DocumentElement.Item("category_list").InnerText) And _
-                    bParentIsListing Then
-                    bIsEntry = True
-                End If
-
-                Dim sHTML As String = ""
-
-                'Dim oReaderCategInfo As SqlDataReader
-
-                'If bIsEntry Then
-                '    If bIsReader Then
-                '        oReaderCategInfo = oContentManager.GetPageCategoriesPublished(nParentId)
-                '    Else
-                '        oReaderCategInfo = oContentManager.GetPageCategoriesWorking(nParentId)
-                '    End If
-                'Else
-                '    If bIsReader Then
-                '        oReaderCategInfo = oContentManager.GetPageCategoriesPublished(nPageId)
-                '    Else
-                '        oReaderCategInfo = oContentManager.GetPageCategoriesWorking(nPageId)
-                '    End If
-                'End If
-
-                'While oReaderCategInfo.Read()
-                '    If bIsEntry Then
-                '        sHTML += "<div><a href=""" & sParentFileName & "?cat=" & oReaderCategInfo("listing_category_id") & """>" & oReaderCategInfo("listing_category_name") & " (" & oReaderCategInfo("posts") & ")</a></div>"
-                '    Else
-                '        sHTML += "<div><a href=""" & HttpContext.Current.Items("_page") & "?cat=" & oReaderCategInfo("listing_category_id") & """>" & oReaderCategInfo("listing_category_name") & " (" & oReaderCategInfo("posts") & ")</a></div>"
-                '    End If
-                'End While
-                'oReaderCategInfo.Close()
-                'oReaderCategInfo = Nothing
-
-                'sHTML = "<table cellpadding=""0"" cellspacing=""0"" class=""boxCategories"">" & _
-                '"<tr><td class=""boxHeaderCategories"">" & _
-                'GetLocalResourceObject("Categories") & _
-                '"</td></tr>" & _
-                '"<tr><td class=""boxContentCategories"">" & sHTML
-
-                'TREE STYLE
-                sHTML = "<table cellpadding=""0"" cellspacing=""0"" class=""boxCategories"">" & _
-                "<tr><td class=""boxHeaderCategories"">" & _
-                GetLocalResourceObject("Categories") & _
-                "</td></tr>" & _
-                "<tr><td class=""boxContentCategories"">" & sHTML
-                placeholderCategoryList.Controls.Add(New LiteralControl(sHTML))
-
-                Dim oUC As Control = LoadControl("systems/news_categories.ascx")
-                Dim oUCType As Type = oUC.GetType
-                If bIsEntry Then
-                    oUCType.GetProperty("NewsPage").SetValue(oUC, sParentFileName, Nothing)
-                Else
-                    oUCType.GetProperty("NewsPage").SetValue(oUC, HttpContext.Current.Items("_page"), Nothing)
-                End If
-                If bIsEntry Then
-                    oUCType.GetProperty("NewsPageId").SetValue(oUC, nParentId, Nothing)
-                Else
-                    oUCType.GetProperty("NewsPageId").SetValue(oUC, nPageId, Nothing)
-                End If
-                oUCType.GetProperty("RootID").SetValue(oUC, nRootId, Nothing)
-                oUCType.GetProperty("RootFile").SetValue(oUC, sRootFile, Nothing)
-                oUCType.GetProperty("PageID").SetValue(oUC, nPageId, Nothing)
-                oUCType.GetProperty("ParentID").SetValue(oUC, nParentId, Nothing)
-                oUCType.GetProperty("ParentFileName").SetValue(oUC, sParentFileName, Nothing)
-                oUCType.GetProperty("TemplateID").SetValue(oUC, nTemplateId, Nothing)
-                oUCType.GetProperty("TemplateFolderName").SetValue(oUC, sTemplateFolderName, Nothing)
-                oUCType.GetProperty("IsPublisher").SetValue(oUC, bIsPublisher, Nothing)
-                oUCType.GetProperty("IsSubscriber").SetValue(oUC, bIsSubscriber, Nothing)
-                oUCType.GetProperty("IsAuthor").SetValue(oUC, bIsAuthor, Nothing)
-                oUCType.GetProperty("IsEditor").SetValue(oUC, bIsEditor, Nothing)
-                oUCType.GetProperty("IsResourceManager").SetValue(oUC, bIsResourceManager, Nothing)
-                oUCType.GetProperty("IsAdministrator").SetValue(oUC, bIsAdministrator, Nothing)
-                oUCType.GetProperty("IsReader").SetValue(oUC, bIsReader, Nothing)
-                oUCType.GetProperty("IsOwner").SetValue(oUC, bIsOwner, Nothing)
-                oUCType.GetProperty("IsUserLoggedIn").SetValue(oUC, bUserLoggedIn, Nothing)
-                oUCType.GetProperty("UserName").SetValue(oUC, sUserName, Nothing)
-                placeholderCategoryList.Controls.Add(oUC)
-                '/TREE STYLE
-
-                sHTML = "" 'Added for TREE STYLE
-
-                If lnkEdit.Visible Then
-                    If bIsEntry Then
-                        Session(nParentId.ToString) = True
-                        sHTML += "<div style=""margin-top:20px""><a href=""javascript:modalDialog('" & sAppPath & "dialogs/page_categories.aspx?c=" & sCulture & "&pg=" & nParentId & "',450,400)"">" & GetLocalResourceObject("ManageCategories") & "</a></div>"
-                    Else
-                        Session(nPageId.ToString) = True
-                        sHTML += "<div style=""margin-top:20px""><a href=""javascript:modalDialog('" & sAppPath & "dialogs/page_categories.aspx?c=" & sCulture & "&pg=" & nPageId & "',450,400)"">" & GetLocalResourceObject("ManageCategories") & "</a></div>"
-                    End If
-                End If
-
-                sHTML += "</td></tr></table>"
-                placeholderCategoryList.Controls.Add(New LiteralControl(sHTML))
-            End If
-        End If
-        '~~~~~ /Category List ~~~~~~
-
-        '~~~~~ Subscribe ~~~~~~
-        Dim sSubscribe As String = ""
-        If (CBool(oXML.DocumentElement.Item("subscribe").InnerText) And bIsListing And nListingType = 2) Or _
-            (CBool(oXMLParent.DocumentElement.Item("subscribe").InnerText) And _
-            bParentIsListing And nParentListingType = 2) Then
-
-            If Not IsNothing(placeholderSubscribe) Then
-                Dim bIsEntry As Boolean = False
-                If CBool(oXMLParent.DocumentElement.Item("subscribe").InnerText) And _
-                    bParentIsListing And nParentListingType = 2 Then
-                    bIsEntry = True
-                End If
-
-                If bIsEntry Then
-                    sSubscribe = "<a href=""" & sAppPath & "systems/rss.aspx?pg=" & nParentId & "&c=" & sCulture & """ target=""_blank""><img src=""" & sAppPath & "systems/images/rss.gif"" style=""border:none"" alt=""""/></a>&nbsp;"
-                Else
-                    sSubscribe = "<a href=""" & sAppPath & "systems/rss.aspx?pg=" & nPageId & "&c=" & sCulture & """ target=""_blank""><img src=""" & sAppPath & "systems/images/rss.gif"" style=""border:none"" alt=""""/></a>&nbsp;"
-                End If
-
-            End If
-        End If
-
-        Dim sPodcast As String = ""
-        Dim bUsePodcast As Boolean = False
-        If Not IsNothing(oXML.GetElementsByTagName("subscribe_podcast")(0)) Then
-            bUsePodcast = CBool(oXML.DocumentElement.Item("subscribe_podcast").InnerText)
-        End If
-        Dim bParentUsePodcast As Boolean
-        If Not IsNothing(oXMLParent.GetElementsByTagName("subscribe_podcast")(0)) Then
-            bParentUsePodcast = CBool(oXMLParent.DocumentElement.Item("subscribe_podcast").InnerText)
-        End If
-        If (bUsePodcast And bIsListing) Or _
-            (bParentUsePodcast And bParentIsListing) Then
-
-            If Not IsNothing(placeholderSubscribe) Then
-                Dim bIsEntry As Boolean = False
-                If bParentUsePodcast And _
-                    bParentIsListing Then
-                    bIsEntry = True
-                End If
-
-                If bIsEntry Then
-                    sPodcast = "<a href=""" & sAppPath & "systems/listing_podcast.aspx?pg=" & nParentId & "&c=" & sCulture & """ target=""_blank""><img src=""" & sAppPath & "systems/images/pod.gif"" style=""border:none"" alt=""""/></a>&nbsp;"
-                Else
-                    sPodcast = "<a href=""" & sAppPath & "systems/listing_podcast.aspx?pg=" & nPageId & "&c=" & sCulture & """ target=""_blank""><img src=""" & sAppPath & "systems/images/pod.gif"" style=""border:none"" alt=""""/></a>&nbsp;"
-                End If
-
-            End If
-
-        End If
-
-        If sSubscribe <> "" Or sPodcast <> "" Then
-            Dim sHTML As String = "<table cellpadding=""0"" cellspacing=""0"" class=""boxNewsFeedSubscribe"">" & _
-                "<tr><td class=""boxHeaderNewsFeedSubscribe"">" & _
-                GetLocalResourceObject("Subscribe") & _
-                "</td></tr>" & _
-                "<tr><td class=""boxContentNewsFeedSubscribe"">" & _
-                sSubscribe & sPodcast & _
-                "</td></tr></table>"
-
-            placeholderSubscribe.Controls.Add(New LiteralControl(sHTML))
-        End If
-
-        '~~~~~ /Subscribe ~~~~~~
-
-        '~~~~~ Shop Config ~~~~~~
-        Dim sCurrSymbol As String = ""
-        Dim sCurrSeparator As String = ""
-        Dim sPaypalCartPage As String = ""
-        Dim sOrderNowTemplate As String = ""
-        If ConfigurationManager.AppSettings("Shop") = "yes" Then
-            If Not IsNothing(placeholderOrderNow) Or Not IsNothing(placeholderCartInfo) Then
-                oCommand = New SqlCommand("SELECT * FROM config_shop WHERE root_id=@root_id", oConn)
-                oCommand.CommandType = CommandType.Text
-                oCommand.Parameters.Add("@root_id", SqlDbType.Int).Value = nRootId
-                oDataReader = oCommand.ExecuteReader()
-                While oDataReader.Read
-                    sCurrSymbol = oDataReader("currency_symbol").ToString
-                    sCurrSeparator = oDataReader("currency_separator").ToString
-                    If sCurrSymbol.Length > 1 Then
-                        sCurrSymbol = sCurrSymbol.Substring(0, 1).ToUpper() & sCurrSymbol.Substring(1).ToString
-                    End If
-                    sCurrSymbol = sCurrSymbol & sCurrSeparator
-                    If nRootId = 1 Then
-                        sPaypalCartPage = "shop_pcart.aspx"
-                    Else
-                        sPaypalCartPage = "shop_pcart_" & nRootId & ".aspx"
-                    End If
-                    sOrderNowTemplate = oDataReader("order_now_template").ToString
-                End While
-                oDataReader.Close()
-            End If
-        End If
-        '~~~~~ /Shop Config ~~~~~~
-
-        '~~~~~ Order Now ~~~~~~
-        If ConfigurationManager.AppSettings("Shop") = "yes" Then
-            If Not IsNothing(placeholderOrderNow) Then
-                If Not placeholderOrderNow.Visible = False And Not nPrice = 0 Then
-
-                    bForceShowSummaryEditor = True
-
-                    Dim nCurrentPrice As Decimal
-                    If nSalePrice > 0 Then
-                        nCurrentPrice = nSalePrice
-                    ElseIf nDiscountPercentage > 0 Then
-                        nCurrentPrice = nPrice - (nPrice * (nDiscountPercentage / 100))
-                    Else
-                        nCurrentPrice = nPrice
-                    End If
-
-                    Dim sOrderNow As String = sOrderNowTemplate
-                    sOrderNow = sOrderNow.Replace("[%TITLE%]", sTitle)
-                    sOrderNow = sOrderNow.Replace("[%SUMMARY%]", sSummary)
-                    sOrderNow = sOrderNow.Replace("[%PRICE%]", sCurrSymbol & FormatNumber(nPrice, 2))
-                    sOrderNow = sOrderNow.Replace("[%CURRENT_PRICE%]", sCurrSymbol & FormatNumber(nCurrentPrice, 2))
-                    If nCurrentPrice = nPrice Then
-                        sOrderNow = sOrderNow.Replace("[%HIDE_PRICE%]", "display:none;")
-                    End If
-                    sOrderNow = sOrderNow.Replace("[%PAYPAL_ADD_TO_CART_URL%]", sAppPath & sPaypalCartPage & "?item=" & nPageId)
-                    placeholderOrderNow.Controls.Add(New LiteralControl(sOrderNow))
-                End If
-            End If
-        End If
-        '~~~~~ /Order Now ~~~~~~
-
-        '~~~~~ Cart Info ~~~~~~
-        If ConfigurationManager.AppSettings("Shop") = "yes" Then
-            If Not IsNothing(placeholderCartInfo) Then
-                If Not placeholderCartInfo.Visible = False Then
-                    Dim sCartInfo As String
-                    sCartInfo = "<img src=""" & sAppPath & "systems/images/add_to_cart.gif"" /> <a class=""cart"" href=""" & sAppPath & sPaypalCartPage & """>" & GetLocalResourceObject("ViewCart") & "</a>"
-                    placeholderCartInfo.Controls.Add(New LiteralControl(sCartInfo))
-                End If
-            End If
-        End If
-        '~~~~~ /Cart Info ~~~~~~
-
-        '~~~~~ Page Tools ~~~~~~
-        If Not IsNothing(placeholderPageTools) And Not bIsSystem And Not sRawUrl.Contains("print=Y") Then
-            If Not placeholderPageTools.Visible = False Then
-                Dim sPageTools As String = ""
-
-                'Print this page
-                Dim sPrintLink As String
-                If sRawUrl.Contains("?") Then
-                    sPrintLink = Request.RawUrl.ToString & "&print=Y"
-                Else
-                    sPrintLink = Request.RawUrl.ToString & "?print=Y"
-                End If
-                sPageTools += "<a href=""" & sPrintLink & """ target=""_blank""><img src=""" & sAppPath & "systems/images/pg_print.gif"" style=""border:none"" alt=""" & GetLocalResourceObject("Print this Page") & """ /></a>"
-
-                'Tell A Friend
-                If Not nChannelPermission = 3 Then
-                    sPageTools += " <a href=""" & sLinkTellAFriend & "?id=" & nPageId & """ ><img src=""" & sAppPath & "systems/images/pg_tell.gif"" style=""border:none"" alt=""" & GetLocalResourceObject("Tell a Friend") & """ /></a>"
-                End If
-
-                'Bookmark
-                Dim sBookmark As String = ""
-                sBookmark += "<script language=""javascript"" type=""text/javascript"">" & vbCrLf & _
-                "<!--" & vbCrLf & _
-                "function bookmarkThis()" & vbCrLf & _
-                "   {" & vbCrLf & _
-                "   var url = """ & sRawUrl & """;" & vbCrLf & _
-                "   var title = """ & sTitle & """;" & vbCrLf & _
-                "   if (document.all) " & vbCrLf & _
-                "       {" & vbCrLf & _
-                "       window.external.AddFavorite(location.href,title) " & vbCrLf & _
-                "       } " & vbCrLf & _
-                "   else if (window.sidebar) " & vbCrLf & _
-                "       { " & vbCrLf & _
-                "       window.sidebar.addPanel(title, location.href, """") " & vbCrLf & _
-                "       } " & vbCrLf & _
-                "   else " & vbCrLf & _
-                "       { " & vbCrLf & _
-                "       //alert(""Sorry! Your browser doesn't support this function."") " & vbCrLf & _
-                "       } " & vbCrLf & _
-                "   }" & vbCrLf & _
-                "// -->" & vbCrLf & _
-                "</script>"
-                sPageTools += sBookmark & " <a href=""javascript:bookmarkThis()""><img src=""" & sAppPath & "systems/images/pg_bookmark.gif"" style=""border:none"" alt=""" & GetLocalResourceObject("Add to Favorites") & """ /></a>"
-
-                ''Site Rss
-                'sPageTools += " <a href=""" & sLinkSiteRss & """ ><img src=""" & sAppPath & "systems/images/pg_rss.gif"" style=""border:none"" alt=""" & GetLocalResourceObject("Site Rss") & """ /></a>"
-
-                placeholderPageTools.Controls.Add(New LiteralControl(sPageTools))
-            End If
-        End If
-        If Not IsNothing(placeholderSiteRss) And Not bIsSystem And Not sRawUrl.Contains("print=Y") Then
-            If Not placeholderSiteRss.Visible = False Then
-                Dim sSiteRss As String = " <a href=""" & sLinkSiteRss & """ ><img src=""" & sAppPath & "systems/images/pg_rss.gif"" style=""border:none"" alt=""" & GetLocalResourceObject("Site Rss") & """ /></a>"
-                placeholderSiteRss.Controls.Add(New LiteralControl(sSiteRss))
-            End If
-        End If
-        '~~~~~ /Page Tools ~~~~~~
-
-
-        '~~~~~ File Download ~~~~~~
+        '*** FILE DOWNLOAD ***
         Dim sFileDownloadTemplate As String = ""
         Dim sFileDownloadURL As String = ""
         If CBool(oXML.DocumentElement.Item("file_download").InnerText) And Not sFileDownload = "" Then
@@ -2320,19 +1835,26 @@ Partial Class _Default
                 sFileDownloadTemplate = ""
             End If
 
-            If Not IsNothing(placeholderFileDownload) Then
-                If Not sContentBody.Contains("[%FILE_DOWNLOAD%]") And Not sContentBody.Contains("[%FILE_DOWNLOAD_URL%]") Then
-                    placeholderFileDownload.Controls.Add(New LiteralControl(sFileDownloadTemplate))
-                End If
+            'Show File Download
+            If sContentTemplate.Contains("[%FILE_DOWNLOAD%]") Then
+                sContentTemplate = sContentTemplate.Replace("[%FILE_DOWNLOAD%]", sFileDownloadTemplate)
             End If
-
+        Else
+            'Hide File Download
+            If sContentTemplate.Contains("[%FILE_DOWNLOAD%]") Then
+                sContentTemplate = sContentTemplate.Replace("[%FILE_DOWNLOAD%]", "")
+            End If
         End If
-        '~~~~~ /File Download ~~~~~~
 
-        '~~~~~ File View ~~~~~~
+        'File Download URL
+        If sContentTemplate.Contains("[%FILE_DOWNLOAD_URL%]") Then
+            sContentTemplate = sContentTemplate.Replace("[%FILE_DOWNLOAD_URL%]", sFileDownloadURL)
+        End If
+
+        '*** FILE VIEW ***
         Dim sFileViewTemplate As String = ""
         Dim sFileViewURL As String = ""
-        If CBool(oXML.DocumentElement.Item("file_view").InnerText) And Not sFileView = "" Then
+        If Not sFileView = "" Then
 
             Dim sFileViewExt As String = sFileView.Substring(sFileView.LastIndexOf(".") + 1).ToLower
 
@@ -2437,17 +1959,324 @@ Partial Class _Default
                 End If
 
             End If
+        End If
 
-            If Not IsNothing(placeholderFileView) Then
-                If Not sContentBody.Contains("[%FILE_VIEW%]") And Not sContentBody.Contains("[%FILE_VIEW_URL%]") Then
-                    placeholderFileView.Controls.Add(New LiteralControl(sFileViewTemplate))
+        If CBool(oXML.DocumentElement.Item("file_view").InnerText) Then
+            'Show File View
+            If sContentTemplate.Contains("[%FILE_VIEW%]") Then
+                sContentTemplate = sContentTemplate.Replace("[%FILE_VIEW%]", sFileViewTemplate)
+            End If
+        Else
+            'Hide File View
+            If sContentTemplate.Contains("[%FILE_VIEW%]") Then
+                sContentTemplate = sContentTemplate.Replace("[%FILE_VIEW%]", "")
+            End If
+        End If
+
+        'File View URL
+        If sContentTemplate.Contains("[%FILE_VIEW_URL%]") Then
+            sContentTemplate = sContentTemplate.Replace("[%FILE_VIEW_URL%]", sFileViewURL)
+        End If
+
+        '*** RATING & COMMENTS ***
+        Dim bUseRating As Boolean = False
+        If CBool(oXML.DocumentElement.Item("rating").InnerText) Then
+            bUseRating = True
+        End If
+        Dim bUseComments As Boolean = False
+        Dim bCommentsAnonymous As Boolean = False
+        If CBool(oXML.DocumentElement.Item("comments").InnerText) Then
+            bUseComments = True
+        End If
+        If CBool(oXML.DocumentElement.Item("comments_anonymous").InnerText) Then
+            bCommentsAnonymous = True
+        End If
+
+        '*** VISIBLE ON THIS PAGE & LISTING ENTRY PAGES ***
+
+        '*** CONTENT LEFT & RIGHT ***
+        If bParentIsListing Then
+            If sContentLeft = "" Or sContentRight = "" Then
+                Dim oCmd As New SqlCommand("SELECT * FROM pages WHERE page_id=@page_id AND status=@status", oConn)
+                oCmd.CommandType = CommandType.Text
+                oCmd.Parameters.Add("@page_id", SqlDbType.Int).Value = nParentId
+                oCmd.Parameters.Add("@status", SqlDbType.NVarChar, 50).Value = CMSContent.STATUS_PUBLISHED
+                oDataReader = oCmd.ExecuteReader()
+                If oDataReader.Read() Then
+                    If sContentLeft = "" Then
+                        sContentLeft = oDataReader("content_left")
+                        bContentLeftUseParent = True
+                    End If
+                    If sContentRight = "" Then
+                        sContentRight = oDataReader("content_right")
+                        bContentRightUseParent = True
+                    End If
+                End If
+                oDataReader.Close()
+                'lnkAdditionalContent.Visible = False
+            End If
+        End If
+
+        '*** ARCHIVES ***
+        Dim oContentManager As ContentManager = New ContentManager
+
+        If Not IsNothing(placeholderArchives) Then 'And Not (sContentLeft.Contains("[%CALENDAR%]") Or sContentLeft.Contains("[%MONTHLIST%]"))
+            Dim bUseCal As Boolean = False
+            Dim bUseMonths As Boolean = False
+            Dim sArchivesStart As String = "<div class=""boxHeader"">" & _
+                GetLocalResourceObject("Archives") & "</div>"
+
+            'Calendar
+            Dim bUseCurrentCal As Boolean = False
+            Dim bUseParentCal As Boolean = False
+            If bIsListing And nListingType = 2 Then
+                If CBool(oXML.DocumentElement.Item("calendar").InnerText) Then
+                    'Even the parent is a listing, parent's calendar will be replaced with the current listing's calendar
+                    bUseCurrentCal = True
+                Else
+                    'if current listing doesn't use calendar, then use parent calendar
+                    If CBool(oXMLParent.DocumentElement.Item("calendar").InnerText) And bParentIsListing And nParentListingType = 2 Then
+                        bUseParentCal = True
+                    End If
+                End If
+            Else
+                'if current page is not a listing, then use parent calendar
+                If CBool(oXMLParent.DocumentElement.Item("calendar").InnerText) And bParentIsListing And nParentListingType = 2 Then
+                    bUseParentCal = True
                 End If
             End If
 
-        End If
-        '~~~~~ /File View ~~~~~~
+            If bUseCurrentCal Or bUseParentCal Then
+                Dim oUC As Control = LoadControl("systems/news_calendar.ascx")
+                Dim oUCType As Type = oUC.GetType
+                oUCType.GetProperty("IsEntry").SetValue(oUC, bUseParentCal, Nothing)
+                oUCType.GetProperty("RootID").SetValue(oUC, nRootId, Nothing)
+                oUCType.GetProperty("RootFile").SetValue(oUC, sRootFile, Nothing)
+                oUCType.GetProperty("PageID").SetValue(oUC, nPageId, Nothing)
+                oUCType.GetProperty("ParentID").SetValue(oUC, nParentId, Nothing)
+                oUCType.GetProperty("ParentFileName").SetValue(oUC, sParentFileName, Nothing)
+                oUCType.GetProperty("TemplateID").SetValue(oUC, nTemplateId, Nothing)
+                oUCType.GetProperty("TemplateFolderName").SetValue(oUC, sTemplateFolderName, Nothing)
+                oUCType.GetProperty("IsPublisher").SetValue(oUC, bIsPublisher, Nothing)
+                oUCType.GetProperty("IsSubscriber").SetValue(oUC, bIsSubscriber, Nothing)
+                oUCType.GetProperty("IsAuthor").SetValue(oUC, bIsAuthor, Nothing)
+                oUCType.GetProperty("IsEditor").SetValue(oUC, bIsEditor, Nothing)
+                oUCType.GetProperty("IsResourceManager").SetValue(oUC, bIsResourceManager, Nothing)
+                oUCType.GetProperty("IsAdministrator").SetValue(oUC, bIsAdministrator, Nothing)
+                oUCType.GetProperty("IsReader").SetValue(oUC, bIsReader, Nothing)
+                oUCType.GetProperty("IsOwner").SetValue(oUC, bIsOwner, Nothing)
+                oUCType.GetProperty("IsUserLoggedIn").SetValue(oUC, bUserLoggedIn, Nothing)
+                oUCType.GetProperty("UserName").SetValue(oUC, sUserName, Nothing)
+                oUCType.GetProperty("TimeOffset").SetValue(oUC, nTimeOffset, Nothing)
+                placeholderArchives.Controls.Add(New LiteralControl(sArchivesStart & "<div class=""boxContent"">"))
+                placeholderArchives.Controls.Add(oUC)
+                bUseCal = True
+            End If
 
-        '~~~~~ Statistic Info ~~~~~
+            'Month List
+            Dim bUseCurrentMonList As Boolean = False
+            Dim bUseParentMonList As Boolean = False
+            If bIsListing And nListingType = 2 Then
+                If CBool(oXML.DocumentElement.Item("month_list").InnerText) Then
+                    'Even the parent is a listing, parent's month list will be replaced with the current listing's month list
+                    bUseCurrentMonList = True
+                Else
+                    'if current listing doesn't use month list, then use parent month list
+                    If CBool(oXMLParent.DocumentElement.Item("month_list").InnerText) And bParentIsListing And nParentListingType = 2 Then
+                        bUseParentMonList = True
+                    End If
+                End If
+            Else
+                'if current page is not a listing, then use parent month list
+                If CBool(oXMLParent.DocumentElement.Item("month_list").InnerText) And bParentIsListing And nParentListingType = 2 Then
+                    bUseParentMonList = True
+                End If
+            End If
+
+            If bUseCurrentMonList Or bUseParentMonList Then
+                Dim nFirstPostMonth As Integer
+                Dim nFirstPostYear As Integer
+                Dim oReaderTmp As SqlDataReader
+                If bUseParentMonList Then
+                    oReaderTmp = oContentManager.GetFirstPost(nParentId)
+                Else
+                    oReaderTmp = oContentManager.GetFirstPost(nPageId)
+                End If
+                While oReaderTmp.Read()
+                    nFirstPostMonth = CDate(oReaderTmp("display_date")).Month
+                    nFirstPostYear = CDate(oReaderTmp("display_date")).Year
+                End While
+                oReaderTmp.Close()
+                oReaderTmp = Nothing
+
+                Dim i As Integer
+                Dim sMonth As String = ""
+                Dim nCurrMonth As Integer = Now.AddHours(nTimeOffset).Month
+                Dim nCurrYear As Integer = Now.AddHours(nTimeOffset).Year
+                For i = 1 To 12
+                    If (nFirstPostMonth = 0) Then Exit For
+                    If bUseParentMonList Then
+                        sMonth += "<div><a href=""" & sParentFileName & "?d=" & nCurrYear & "-" & nCurrMonth & """>" & MonthName(nCurrMonth) & " " & nCurrYear & "</a></div>"
+                    Else
+                        sMonth += "<div><a href=""" & HttpContext.Current.Items("_page") & "?d=" & nCurrYear & "-" & nCurrMonth & """>" & MonthName(nCurrMonth) & " " & nCurrYear & "</a></div>"
+                    End If
+                    If nFirstPostYear = nCurrYear And nFirstPostMonth = nCurrMonth Then
+                        Exit For
+                    End If
+                    nCurrMonth = nCurrMonth - 1
+                    If nCurrMonth = 0 Then
+                        nCurrMonth = 12
+                        nCurrYear = nCurrYear - 1
+                    End If
+                Next
+                If bUseCal Then
+                    placeholderArchives.Controls.Add(New LiteralControl("</div><div class=""boxContent"">"))
+                Else
+                    placeholderArchives.Controls.Add(New LiteralControl(sArchivesStart & "<div class=""boxContent"">"))
+                End If
+                placeholderArchives.Controls.Add(New LiteralControl(sMonth))
+                bUseMonths = True
+            End If
+            Dim sArchivesEnd As String = "</div>"
+            If bUseCal Or bUseMonths Then
+                If Not IsNothing(placeholderArchives) Then
+                    placeholderArchives.Controls.Add(New LiteralControl(sArchivesEnd))
+                End If
+            End If
+        End If
+
+        '*** CATEGORY LIST ***
+        If Not IsNothing(placeholderCategoryList) Then
+            Dim bUseParentCat As Boolean = False
+            Dim bUseCat As Boolean = False
+            If bIsListing Then
+                If CBool(oXML.DocumentElement.Item("category_list").InnerText) And bListingUseCategories Then
+                    'Even the parent is a listing, parent's category list will be replaced with the current listing's category list
+                    'noop: bUseParentCat=False
+                    bUseCat = True
+                Else
+                    'if current listing doesn't use category list, then use parent category list
+                    If CBool(oXMLParent.DocumentElement.Item("category_list").InnerText) And bParentIsListing And bParentListingUseCategories Then
+                        bUseParentCat = True
+                        bUseCat = True
+                    End If
+                End If
+            Else
+                'if current page is not a listing, then use parent category list
+                If CBool(oXMLParent.DocumentElement.Item("category_list").InnerText) And bParentIsListing And bParentListingUseCategories Then
+                    bUseParentCat = True
+                    bUseCat = True
+                End If
+            End If
+
+            If bUseCat Then
+                Dim sHTML As String = ""
+                sHTML = "<div class=""boxHeader"">" & _
+                GetLocalResourceObject("Categories") & _
+                "</div><div class=""boxContent"">" & sHTML
+                placeholderCategoryList.Controls.Add(New LiteralControl(sHTML))
+
+                Dim oUC As Control = LoadControl("systems/news_categories.ascx")
+                Dim oUCType As Type = oUC.GetType
+                If bUseParentCat Then
+                    oUCType.GetProperty("NewsPage").SetValue(oUC, sParentFileName, Nothing)
+                Else
+                    oUCType.GetProperty("NewsPage").SetValue(oUC, HttpContext.Current.Items("_page"), Nothing)
+                End If
+                If bUseParentCat Then
+                    oUCType.GetProperty("NewsPageId").SetValue(oUC, nParentId, Nothing)
+                Else
+                    oUCType.GetProperty("NewsPageId").SetValue(oUC, nPageId, Nothing)
+                End If
+                oUCType.GetProperty("RootID").SetValue(oUC, nRootId, Nothing)
+                oUCType.GetProperty("RootFile").SetValue(oUC, sRootFile, Nothing)
+                oUCType.GetProperty("PageID").SetValue(oUC, nPageId, Nothing)
+                oUCType.GetProperty("ParentID").SetValue(oUC, nParentId, Nothing)
+                oUCType.GetProperty("ParentFileName").SetValue(oUC, sParentFileName, Nothing)
+                oUCType.GetProperty("TemplateID").SetValue(oUC, nTemplateId, Nothing)
+                oUCType.GetProperty("TemplateFolderName").SetValue(oUC, sTemplateFolderName, Nothing)
+                oUCType.GetProperty("IsPublisher").SetValue(oUC, bIsPublisher, Nothing)
+                oUCType.GetProperty("IsSubscriber").SetValue(oUC, bIsSubscriber, Nothing)
+                oUCType.GetProperty("IsAuthor").SetValue(oUC, bIsAuthor, Nothing)
+                oUCType.GetProperty("IsEditor").SetValue(oUC, bIsEditor, Nothing)
+                oUCType.GetProperty("IsResourceManager").SetValue(oUC, bIsResourceManager, Nothing)
+                oUCType.GetProperty("IsAdministrator").SetValue(oUC, bIsAdministrator, Nothing)
+                oUCType.GetProperty("IsReader").SetValue(oUC, bIsReader, Nothing)
+                oUCType.GetProperty("IsOwner").SetValue(oUC, bIsOwner, Nothing)
+                oUCType.GetProperty("IsUserLoggedIn").SetValue(oUC, bUserLoggedIn, Nothing)
+                oUCType.GetProperty("UserName").SetValue(oUC, sUserName, Nothing)
+                placeholderCategoryList.Controls.Add(oUC)
+
+                sHTML = ""
+                If lnkEdit.Visible Then
+                    If bUseParentCat Then
+                        Session(nParentId.ToString) = True
+                        sHTML += "<div style=""margin-top:20px""><a href=""javascript:modalDialog('" & sAppPath & "dialogs/page_categories.aspx?c=" & sCulture & "&pg=" & nParentId & "',450,400)"">" & GetLocalResourceObject("ManageCategories") & "</a></div>"
+                    Else
+                        Session(nPageId.ToString) = True
+                        sHTML += "<div style=""margin-top:20px""><a href=""javascript:modalDialog('" & sAppPath & "dialogs/page_categories.aspx?c=" & sCulture & "&pg=" & nPageId & "',450,400)"">" & GetLocalResourceObject("ManageCategories") & "</a></div>"
+                    End If
+                End If
+                sHTML += "</div>"
+                placeholderCategoryList.Controls.Add(New LiteralControl(sHTML))
+            End If
+        End If
+
+        '*** SUBSCRIBE ***
+        If Not IsNothing(placeholderSubscribe) Then
+            Dim sSubscribe As String = ""
+            If bIsListing Then
+                If CBool(oXML.DocumentElement.Item("subscribe").InnerText) Then
+                    'Even the parent is a listing, parent's rss will be replaced with the current listing's rss
+                    sSubscribe = "<a href=""" & sAppPath & "systems/rss.aspx?pg=" & nPageId & "&c=" & sCulture & """ target=""_blank""><img src=""" & sAppPath & "systems/images/rss.gif"" style=""border:none"" alt=""""/></a>&nbsp;"
+                Else
+                    'if current listing doesn't use rss, then use parent rss
+                    If CBool(oXMLParent.DocumentElement.Item("subscribe").InnerText) And bParentIsListing Then
+                        sSubscribe = "<a href=""" & sAppPath & "systems/rss.aspx?pg=" & nParentId & "&c=" & sCulture & """ target=""_blank""><img src=""" & sAppPath & "systems/images/rss.gif"" style=""border:none"" alt=""""/></a>&nbsp;"
+                    End If
+                End If
+            Else
+                'if current page is not a listing, then use parent rss
+                If CBool(oXMLParent.DocumentElement.Item("subscribe").InnerText) And bParentIsListing Then
+                    sSubscribe = "<a href=""" & sAppPath & "systems/rss.aspx?pg=" & nParentId & "&c=" & sCulture & """ target=""_blank""><img src=""" & sAppPath & "systems/images/rss.gif"" style=""border:none"" alt=""""/></a>&nbsp;"
+                End If
+            End If
+
+            Dim sPodcast As String = ""
+            Dim bUsePodcast As Boolean = False
+            If Not IsNothing(oXML.GetElementsByTagName("subscribe_podcast")(0)) Then
+                bUsePodcast = CBool(oXML.DocumentElement.Item("subscribe_podcast").InnerText)
+            End If
+            Dim bParentUsePodcast As Boolean
+            If Not IsNothing(oXMLParent.GetElementsByTagName("subscribe_podcast")(0)) Then
+                bParentUsePodcast = CBool(oXMLParent.DocumentElement.Item("subscribe_podcast").InnerText)
+            End If
+            If bIsListing Then
+                If bUsePodcast Then
+                    'Even the parent is a listing, parent's rss will be replaced with the current listing's rss
+                    sPodcast = "<a href=""" & sAppPath & "systems/listing_podcast.aspx?pg=" & nPageId & "&c=" & sCulture & """ target=""_blank""><img src=""" & sAppPath & "systems/images/pod.gif"" style=""border:none"" alt=""""/></a>&nbsp;"
+                Else
+                    'if current listing doesn't use rss, then use parent rss
+                    If bParentUsePodcast And bParentIsListing Then
+                        sPodcast = "<a href=""" & sAppPath & "systems/listing_podcast.aspx?pg=" & nParentId & "&c=" & sCulture & """ target=""_blank""><img src=""" & sAppPath & "systems/images/pod.gif"" style=""border:none"" alt=""""/></a>&nbsp;"
+                    End If
+                End If
+            Else
+                'if current page is not a listing, then use parent rss
+                If bParentUsePodcast And bParentIsListing Then
+                    sPodcast = "<a href=""" & sAppPath & "systems/listing_podcast.aspx?pg=" & nParentId & "&c=" & sCulture & """ target=""_blank""><img src=""" & sAppPath & "systems/images/pod.gif"" style=""border:none"" alt=""""/></a>&nbsp;"
+                End If
+            End If
+
+            If sSubscribe <> "" Or sPodcast <> "" Then
+                Dim sHTML As String = "<div class=""boxHeader"">" & _
+                    GetLocalResourceObject("Subscribe") & "</div>" & _
+                    "<div class=""boxContent"">" & sSubscribe & sPodcast & "</div>"
+                placeholderSubscribe.Controls.Add(New LiteralControl(sHTML))
+            End If
+        End If
+
+        '*** STATISTIC INFO ***
         Dim bStatHorizontal As Boolean = False
         Dim bStatVertical As Boolean = False
         If CBool(oXML.DocumentElement.Item("statistic_info").InnerText) Then
@@ -2461,7 +2290,6 @@ Partial Class _Default
                     bStatVertical = True
                 End If
             End If
-
             If Not IsNothing(placeholderStatPageViews_Private) And Not bIsSystem And Not sRawUrl.Contains("print=Y") Then
                 If Not placeholderStatPageViews_Private.Visible = False Then
                     If bIsAuthor Or bIsAdministrator Then
@@ -2479,7 +2307,6 @@ Partial Class _Default
         End If
 
         If bStatHorizontal Or bStatVertical Then
-
             Dim nThisMonth As Integer = 0
             Dim nLastMonth As Integer = 0
             Dim nOverall As Integer = 0
@@ -2566,7 +2393,7 @@ Partial Class _Default
             oDataReader.Close()
 
             For n = 0 To 6
-                dD(n) = New Date(Now.Year, Now.Month, Now.Day).Subtract(System.TimeSpan.FromDays(n))
+                dD(n) = New Date(Now.Year, Now.Month, Now.Day).Subtract(System.TimeSpan.FromDays(n)).AddHours(nTimeOffset)
             Next
 
             Dim sStatistic As String = ""
@@ -2668,26 +2495,234 @@ Partial Class _Default
                     placeholderStatPageViews_Vertical_Private.Controls.Add(New LiteralControl("<div class=""boxStatVertical"">" & sStatistic & "</div>"))
                 End If
             End If
-
         End If
-        '~~~~~ /Statistic Info ~~~~~
 
-        '~~~~ Title ~~~~
-        'Database Stored Title Localization
-        If bIsSystem Then
-            If Not GetLocalResourceObject(sTitle) = "" Then
-                sTitle = GetLocalResourceObject(sTitle)
+
+        '************************************************
+        '   Template Placeholders
+        '************************************************
+
+        '*** ORDER NOW & CART INFO ***
+        Dim sCurrSymbol As String = ""
+        Dim sCurrSeparator As String = ""
+        Dim sPaypalCartPage As String = ""
+        Dim sOrderNowTemplate As String = ""
+        If ConfigurationManager.AppSettings("Shop") = "yes" Then
+
+            If Not IsNothing(placeholderOrderNow) Or Not IsNothing(placeholderCartInfo) Then
+                oCommand = New SqlCommand("SELECT * FROM config_shop WHERE root_id=@root_id", oConn)
+                oCommand.CommandType = CommandType.Text
+                oCommand.Parameters.Add("@root_id", SqlDbType.Int).Value = nRootId
+                oDataReader = oCommand.ExecuteReader()
+                While oDataReader.Read
+                    sCurrSymbol = oDataReader("currency_symbol").ToString
+                    sCurrSeparator = oDataReader("currency_separator").ToString
+                    If sCurrSymbol.Length > 1 Then
+                        sCurrSymbol = sCurrSymbol.Substring(0, 1).ToUpper() & sCurrSymbol.Substring(1).ToString
+                    End If
+                    sCurrSymbol = sCurrSymbol & sCurrSeparator
+                    If nRootId = 1 Then
+                        sPaypalCartPage = "shop_pcart.aspx"
+                    Else
+                        sPaypalCartPage = "shop_pcart_" & nRootId & ".aspx"
+                    End If
+                    sOrderNowTemplate = oDataReader("order_now_template").ToString
+                End While
+                oDataReader.Close()
+            End If
+
+            If Not IsNothing(placeholderOrderNow) Then
+                If Not placeholderOrderNow.Visible = False And Not nPrice = 0 Then
+
+                    Dim nCurrentPrice As Decimal
+                    If nSalePrice > 0 Then
+                        nCurrentPrice = nSalePrice
+                    ElseIf nDiscountPercentage > 0 Then
+                        nCurrentPrice = nPrice - (nPrice * (nDiscountPercentage / 100))
+                    Else
+                        nCurrentPrice = nPrice
+                    End If
+
+                    Dim sOrderNow As String = sOrderNowTemplate
+                    sOrderNow = sOrderNow.Replace("[%TITLE%]", sTitle)
+                    sOrderNow = sOrderNow.Replace("[%SUMMARY%]", sSummary)
+                    sOrderNow = sOrderNow.Replace("[%PRICE%]", sCurrSymbol & FormatNumber(nPrice, 2))
+                    sOrderNow = sOrderNow.Replace("[%CURRENT_PRICE%]", sCurrSymbol & FormatNumber(nCurrentPrice, 2))
+                    If nCurrentPrice = nPrice Then
+                        sOrderNow = sOrderNow.Replace("[%HIDE_PRICE%]", "display:none;")
+                    End If
+                    sOrderNow = sOrderNow.Replace("[%PAYPAL_ADD_TO_CART_URL%]", sAppPath & sPaypalCartPage & "?item=" & nPageId)
+                    placeholderOrderNow.Controls.Add(New LiteralControl(sOrderNow))
+                End If
+            End If
+
+            If Not IsNothing(placeholderCartInfo) Then
+                If Not placeholderCartInfo.Visible = False Then
+                    Dim sCartInfo As String
+                    sCartInfo = "<img src=""" & sAppPath & "systems/images/add_to_cart.gif"" /> <a class=""cart"" href=""" & sAppPath & sPaypalCartPage & """>" & GetLocalResourceObject("ViewCart") & "</a>"
+                    placeholderCartInfo.Controls.Add(New LiteralControl(sCartInfo))
+                End If
             End If
         End If
-        litTitle.Text = "<div class=""title"">" & sTitle & "</div>"
-        If sMetaTitle <> "" Then
-            Page.Master.Page.Title = Page.Master.Page.Title & sMetaTitle
-        Else
-            Page.Master.Page.Title = Page.Master.Page.Title & sTitle
-        End If
-        '~~~~ /Title ~~~~
 
-        '~~~~~ HEAD Content ~~~~~ 
+
+        '*** PAGE TOOLS ***
+        If Not IsNothing(placeholderPageTools) And Not bIsSystem And Not sRawUrl.Contains("print=Y") Then
+            If Not placeholderPageTools.Visible = False Then
+                Dim sPageTools As String = ""
+
+                'Print this page
+                Dim sPrintLink As String
+                If sRawUrl.Contains("?") Then
+                    sPrintLink = Request.RawUrl.ToString & "&print=Y"
+                Else
+                    sPrintLink = Request.RawUrl.ToString & "?print=Y"
+                End If
+                sPageTools += "<a href=""" & sPrintLink & """ target=""_blank""><img src=""" & sAppPath & "systems/images/pg_print.gif"" style=""border:none"" alt=""" & GetLocalResourceObject("Print this Page") & """ /></a>"
+
+                'Tell A Friend
+                If Not nChannelPermission = 3 Then
+                    sPageTools += " <a href=""" & sLinkTellAFriend & "?id=" & nPageId & """ ><img src=""" & sAppPath & "systems/images/pg_tell.gif"" style=""border:none"" alt=""" & GetLocalResourceObject("Tell a Friend") & """ /></a>"
+                End If
+
+                'Bookmark
+                Dim sBookmark As String = ""
+                sBookmark += "<script language=""javascript"" type=""text/javascript"">" & vbCrLf & _
+                "<!--" & vbCrLf & _
+                "function bookmarkThis()" & vbCrLf & _
+                "   {" & vbCrLf & _
+                "   var url = """ & sRawUrl & """;" & vbCrLf & _
+                "   var title = """ & sTitle & """;" & vbCrLf & _
+                "   if (document.all) " & vbCrLf & _
+                "       {" & vbCrLf & _
+                "       window.external.AddFavorite(location.href,title) " & vbCrLf & _
+                "       } " & vbCrLf & _
+                "   else if (window.sidebar) " & vbCrLf & _
+                "       { " & vbCrLf & _
+                "       window.sidebar.addPanel(title, location.href, """") " & vbCrLf & _
+                "       } " & vbCrLf & _
+                "   else " & vbCrLf & _
+                "       { " & vbCrLf & _
+                "       //alert(""Sorry! Your browser doesn't support this function."") " & vbCrLf & _
+                "       } " & vbCrLf & _
+                "   }" & vbCrLf & _
+                "// -->" & vbCrLf & _
+                "</script>"
+                sPageTools += sBookmark & " <a href=""javascript:bookmarkThis()""><img src=""" & sAppPath & "systems/images/pg_bookmark.gif"" style=""border:none"" alt=""" & GetLocalResourceObject("Add to Favorites") & """ /></a>"
+
+                ''Site Rss
+                'sPageTools += " <a href=""" & sLinkSiteRss & """ ><img src=""" & sAppPath & "systems/images/pg_rss.gif"" style=""border:none"" alt=""" & GetLocalResourceObject("Site Rss") & """ /></a>"
+
+                placeholderPageTools.Controls.Add(New LiteralControl(sPageTools))
+            End If
+        End If
+        If Not IsNothing(placeholderSiteRss) And Not bIsSystem And Not sRawUrl.Contains("print=Y") Then
+            If Not placeholderSiteRss.Visible = False Then
+                Dim sSiteRss As String = " <a href=""" & sLinkSiteRss & """ ><img src=""" & sAppPath & "systems/images/pg_rss.gif"" style=""border:none"" alt=""" & GetLocalResourceObject("Site Rss") & """ /></a>"
+                placeholderSiteRss.Controls.Add(New LiteralControl(sSiteRss))
+            End If
+        End If
+
+
+        '************************************************
+        '   Content Templates
+        '************************************************
+
+        '*** OWNER/AUTHOR ***
+        If sContentTemplate.Contains("[%OWNER%]") Then
+            sContentTemplate = sContentTemplate.Replace("[%OWNER%]", sOwner)
+        End If
+        If sContentTemplate.Contains("[%OWNER_FULLNAME%]") Then
+            Dim userProfile As ProfileCommon = Profile.GetProfile(sOwner)
+            sContentTemplate = sContentTemplate.Replace("[%OWNER_FULLNAME%]", userProfile.FirstName & " " & userProfile.LastName)
+        End If
+
+        '*** LAST_UPDATED_BY ***
+        If sContentTemplate.Contains("[%LAST_UPDATED_BY%]") Then
+            sContentTemplate = sContentTemplate.Replace("[%LAST_UPDATED_BY%]", sLastUpdatedBy)
+        End If
+        If sContentTemplate.Contains("[%LAST_UPDATED_BY_FULLNAME%]") Then
+            Dim userProfile As ProfileCommon = Profile.GetProfile(sLastUpdatedBy)
+            sContentTemplate = sContentTemplate.Replace("[%LAST_UPDATED_BY_FULLNAME%]", userProfile.FirstName & " " & userProfile.LastName)
+        End If
+
+        '*** FIRST_PUBLISHED_DATE ***
+        If sContentTemplate.Contains("[%FIRST_PUBLISHED_DATE%]") Then
+            sContentTemplate = sContentTemplate.Replace("[%FIRST_PUBLISHED_DATE%]", FormatDateTime(dtFirstPublishedDate.AddHours(nTimeOffset), DateFormat.LongDate) & " - " & FormatDateTime(dtFirstPublishedDate.AddHours(nTimeOffset), DateFormat.ShortTime))
+        End If
+        If sContentTemplate.Contains("[%FIRST_PUBLISHED_DAY%]") Then
+            sContentTemplate = sContentTemplate.Replace("[%FIRST_PUBLISHED_DAY%]", dtFirstPublishedDate.AddHours(nTimeOffset).Day)
+        End If
+        If sContentTemplate.Contains("[%FIRST_PUBLISHED_MONTH%]") Then
+            sContentTemplate = sContentTemplate.Replace("[%FIRST_PUBLISHED_MONTH%]", dtFirstPublishedDate.AddHours(nTimeOffset).ToString("MMM"))
+        End If
+        If sContentTemplate.Contains("[%FIRST_PUBLISHED_YEAR%]") Then
+            sContentTemplate = sContentTemplate.Replace("[%FIRST_PUBLISHED_YEAR%]", dtFirstPublishedDate.AddHours(nTimeOffset).Year)
+        End If
+
+        '*** LAST_UPDATED_DATE ***
+        If sContentTemplate.Contains("[%LAST_UPDATED_DATE%]") Then
+            sContentTemplate = sContentTemplate.Replace("[%LAST_UPDATED_DATE%]", FormatDateTime(dtLastUpdatedDate.AddHours(nTimeOffset), DateFormat.LongDate) & " - " & FormatDateTime(dtLastUpdatedDate.AddHours(nTimeOffset), DateFormat.ShortTime))
+        End If
+        If sContentTemplate.Contains("[%LAST_UPDATED_DAY%]") Then
+            sContentTemplate = sContentTemplate.Replace("[%LAST_UPDATED_DAY%]", dtLastUpdatedDate.AddHours(nTimeOffset).Day)
+        End If
+        If sContentTemplate.Contains("[%LAST_UPDATED_MONTH%]") Then
+            sContentTemplate = sContentTemplate.Replace("[%LAST_UPDATED_MONTH%]", dtLastUpdatedDate.AddHours(nTimeOffset).ToString("MMM"))
+        End If
+        If sContentTemplate.Contains("[%LAST_UPDATED_YEAR%]") Then
+            sContentTemplate = sContentTemplate.Replace("[%LAST_UPDATED_YEAR%]", dtLastUpdatedDate.AddHours(nTimeOffset).Year)
+        End If
+
+        '*** DISPLAY DATE ***
+        If sContentTemplate.Contains("[%DISPLAY_DATE%]") Then
+            Dim sDisplayTime As String = ""
+            If dDisplayDate.AddHours(nTimeOffset).Hour = 0 And dDisplayDate.AddHours(nTimeOffset).Minute = 0 Then
+                sDisplayTime = ""
+            Else
+                sDisplayTime = " - " & FormatDateTime(dDisplayDate.AddHours(nTimeOffset), DateFormat.ShortTime)
+            End If
+            sContentTemplate = sContentTemplate.Replace("[%DISPLAY_DATE%]", FormatDateTime(dDisplayDate.AddHours(nTimeOffset), DateFormat.LongDate) & sDisplayTime)
+        End If
+        If sContentTemplate.Contains("[%DISPLAY_DAY%]") Then
+            sContentTemplate = sContentTemplate.Replace("[%DISPLAY_DAY%]", dDisplayDate.AddHours(nTimeOffset).Day)
+        End If
+        If sContentTemplate.Contains("[%DISPLAY_MONTH%]") Then
+            sContentTemplate = sContentTemplate.Replace("[%DISPLAY_MONTH%]", dDisplayDate.AddHours(nTimeOffset).ToString("MMM"))
+        End If
+        If sContentTemplate.Contains("[%DISPLAY_YEAR%]") Then
+            sContentTemplate = sContentTemplate.Replace("[%DISPLAY_YEAR%]", dDisplayDate.AddHours(nTimeOffset).Year)
+        End If
+
+        '*** CATEGORY_INFO ***
+        If sContentTemplate.Contains("[%CATEGORY_INFO%]") Then
+            Dim oReaderCategories As SqlDataReader
+            Dim sCategories As String = ""
+            oReaderCategories = oContentManager.GetPageCategories(nPageId)
+            Dim bIsUncategorized As Boolean = True
+            While oReaderCategories.Read()
+                bIsUncategorized = False
+                If Not sCategories = "" Then sCategories += ", "
+                sCategories = sCategories & oReaderCategories("listing_category_name").ToString
+            End While
+            oReaderCategories.Close()
+            If bIsUncategorized Then
+                sCategories = GetLocalResourceObject("Uncategorized")
+            End If
+            oReaderCategories = Nothing
+            sContentTemplate = sContentTemplate.Replace("[%CATEGORY_INFO%]", sCategories)
+        End If
+
+        '*** CONTENT_BODY ***
+        If sContentTemplate.Contains("[%CONTENT_BODY%]") Then
+            sContentTemplate = sContentTemplate.Replace("[%CONTENT_BODY%]", sContentBody)
+        End If
+        sContentBody = sContentTemplate
+
+
+        '************************************************
+        '   HEAD
+        '************************************************
         Dim sHeadContent As String = ""
         If sMetaDescription <> "" Then
             sHeadContent = "<meta name=""description"" content=""" & sMetaDescription & """ />"
@@ -2716,15 +2751,15 @@ Partial Class _Default
             Page.Master.Page.Header.Controls.Add(New LiteralControl(sHeadContent))
         End If
 
-        'Float scripts
-        Page.Master.Page.Header.Controls.Add(New LiteralControl("<script language=""javascript"" type=""text/javascript"" src=""systems/float/float.js""></script>"))
-        '~~~~~ /HEAD Content ~~~~~ 
 
-        '~~~~ Channel ~~~~
+        '************************************************
+        '   PAGE INFO 
+        '************************************************
+
+        '*** Channel Name ***
         lblChannelName.Text = sChannelName
-        '~~~~ /Channel ~~~~
 
-        '~~~~ Page Elements ~~~~
+        '*** Page Elements Dialog ***
         If lnkEdit.Visible Then
             Session(nPageId.ToString) = True
 
@@ -2732,36 +2767,49 @@ Partial Class _Default
                 If bListingUseCategories Then
                     If nListingType = 1 Then
                         If nListingProperty = 1 Or nListingProperty = 3 Then
-                            'manual order
-                            lnkPageElements.OnClientClick = "modalDialog('" & sAppPath & "dialogs/page_elements.aspx?c=" & sCulture & "&pg=" & nPageId & "',365,534);return false;"
+                            'manual order (order by sorting)
+                            lnkPageElements.OnClientClick = "modalDialog('" & sAppPath & "dialogs/page_elements.aspx?c=" & sCulture & "&pg=" & nPageId & "',350,327);return false;"
                         Else
-                            lnkPageElements.OnClientClick = "modalDialog('" & sAppPath & "dialogs/page_elements.aspx?c=" & sCulture & "&pg=" & nPageId & "',365,696);return false;"
+                            'order by field specified
+                            lnkPageElements.OnClientClick = "modalDialog('" & sAppPath & "dialogs/page_elements.aspx?c=" & sCulture & "&pg=" & nPageId & "',530,417);return false;"
                         End If
                     Else 'uses date
-                        lnkPageElements.OnClientClick = "modalDialog('" & sAppPath & "dialogs/page_elements.aspx?c=" & sCulture & "&pg=" & nPageId & "',345,622);return false;"
+                        lnkPageElements.OnClientClick = "modalDialog('" & sAppPath & "dialogs/page_elements.aspx?c=" & sCulture & "&pg=" & nPageId & "',530,438);return false;" '345,622
                     End If
                 Else
                     If nListingType = 1 Then
                         If nListingProperty = 1 Or nListingProperty = 3 Then
                             'manual order
-                            lnkPageElements.OnClientClick = "modalDialog('" & sAppPath & "dialogs/page_elements.aspx?c=" & sCulture & "&pg=" & nPageId & "',365,442);return false;"
+                            lnkPageElements.OnClientClick = "modalDialog('" & sAppPath & "dialogs/page_elements.aspx?c=" & sCulture & "&pg=" & nPageId & "',350,327);return false;"
                         Else
-                            lnkPageElements.OnClientClick = "modalDialog('" & sAppPath & "dialogs/page_elements.aspx?c=" & sCulture & "&pg=" & nPageId & "',365,602);return false;"
+                            lnkPageElements.OnClientClick = "modalDialog('" & sAppPath & "dialogs/page_elements.aspx?c=" & sCulture & "&pg=" & nPageId & "',530,417);return false;"
                         End If
                     Else 'uses date
-                        lnkPageElements.OnClientClick = "modalDialog('" & sAppPath & "dialogs/page_elements.aspx?c=" & sCulture & "&pg=" & nPageId & "',345,580);return false;"
+                        lnkPageElements.OnClientClick = "modalDialog('" & sAppPath & "dialogs/page_elements.aspx?c=" & sCulture & "&pg=" & nPageId & "',530,417);return false;"
                     End If
                 End If
             Else
-                lnkPageElements.OnClientClick = "modalDialog('" & sAppPath & "dialogs/page_elements.aspx?c=" & sCulture & "&pg=" & nPageId & "',325,407);return false;"
+                lnkPageElements.OnClientClick = "modalDialog('" & sAppPath & "dialogs/page_elements.aspx?c=" & sCulture & "&pg=" & nPageId & "',335,360);return false;"
             End If
 
         Else
             lnkPageElements.Visible = False
         End If
-        '~~~~ /Page Elements ~~~~
 
-        '~~~~ Content ~~~~
+
+        '************************************************
+        '   QUICK ADD
+        '************************************************
+        If bIsListing Then
+            If lnkEdit.Visible Then
+                panelQuickAdd.Visible = True
+            End If
+        End If
+
+
+        '************************************************
+        '   CONTENT
+        '************************************************
         If Not sContentBody = "" Then
             If bIsLink Then
                 Dim sLinkToInfo As String
@@ -2788,54 +2836,26 @@ Partial Class _Default
             End If
         End If
 
-        'Additional Content
-        If nLayoutType = 1 Then
-            placeholderLeft.Controls.Add(New LiteralControl(Split(sContentLeft, "[%BREAK%]")(0)))
-        ElseIf nLayoutType = 2 Then
-            placeholderRight.Controls.Add(New LiteralControl(Split(sContentRight, "[%BREAK%]")(0)))
-        Else
-            placeholderLeft.Controls.Add(New LiteralControl(Split(sContentLeft, "[%BREAK%]")(0)))
-            placeholderRight.Controls.Add(New LiteralControl(Split(sContentRight, "[%BREAK%]")(0)))
-        End If
-        '~~~~ /Content ~~~~
-
-        '~~~~ LISTING ~~~~
-        If bIsListing Then
-            If Not Page.IsPostBack Then
-                'sListingScript = "<scr" & "ipt type=""text/javascript"" src=""[%APP_PATH%]systems/media/swfobject.js""></scr" & "ipt>" & vbCrLf & _
-                '    "<p id=""[%UNIQUE_ID%]""><a href=""http" & "://www.macromedia.com/go/getflashplayer"">Get the Flash Player</a> to see this player.</p>" & vbCrLf & _
-                '    "<script type=""text/javascript"">" & vbCrLf & _
-                '    "var s3 = new SWFObject(""[%APP_PATH%]systems/media/mediaplayer.swf"", ""playlist"", ""300"", ""312"", ""7"");" & vbCrLf & _
-                '    "s3.addVariable(""file"",""[%APP_PATH%]systems/listing_xspf.aspx?pg=[%PAGE_ID%]"");" & vbCrLf & _
-                '    "s3.addVariable(""allowfullscreen"",""true"");" & vbCrLf & _
-                '    "s3.addVariable(""backcolor"",""0x00000"");" & vbCrLf & _
-                '    "s3.addVariable(""frontcolor"",""0xD9CFE7"");" & vbCrLf & _
-                '    "s3.addVariable(""lightcolor"",""0xB5A0D3"");" & vbCrLf & _
-                '    "s3.addVariable(""linktarget"",""_self"");" & vbCrLf & _
-                '    "s3.addVariable(""width"",""300"");" & vbCrLf & _
-                '    "s3.addVariable(""height"",""312"");" & vbCrLf & _
-                '    "s3.addVariable(""displayheight"",""200"");" & vbCrLf & _
-                '    "s3.write(""[%UNIQUE_ID%]"");" & vbCrLf & _
-                '    "</scr" & "ipt>"
-                sListingScript = sListingScript.Replace("[%APP_PATH%]", sAppPath)
-                sListingScript = sListingScript.Replace("[%UNIQUE_ID%]", litPlayer.ClientID & "abc")
-                sListingScript = sListingScript.Replace("[%PAGE_ID%]", nPageId)
-                litPlayer.Text = sListingScript
-                ShowListing(0)
-            End If
-            If lnkEdit.Visible Then
-                panelQuickAdd.Visible = True
-                If dlDataList.Items.Count = 0 Then
-                    idListingEmpty.Visible = True
-                End If
-            Else
-                panelQuickAdd.Visible = False
-            End If
-        End If
-        '~~~~ /LISTING ~~~~
 
         '************************************************
-        '   Modules
+        '   ADDITIONAL CONTENT
+        '************************************************
+        If nLayoutType = 1 Then
+            'placeholderLeft.Controls.Add(New LiteralControl(Split(sContentLeft, "[%BREAK%]")(0)))
+            PlaceControl(placeholderLeft, Split(sContentLeft, "[%BREAK%]")(0))
+        ElseIf nLayoutType = 2 Then
+            'placeholderRight.Controls.Add(New LiteralControl(Split(sContentRight, "[%BREAK%]")(0)))
+            PlaceControl(placeholderRight, Split(sContentRight, "[%BREAK%]")(0))
+        ElseIf nLayoutType = 3 Then
+            'placeholderLeft.Controls.Add(New LiteralControl(Split(sContentLeft, "[%BREAK%]")(0)))
+            'placeholderRight.Controls.Add(New LiteralControl(Split(sContentRight, "[%BREAK%]")(0)))
+            PlaceControl(placeholderLeft, Split(sContentLeft, "[%BREAK%]")(0))
+            PlaceControl(placeholderRight, Split(sContentRight, "[%BREAK%]")(0))
+        End If
+
+
+        '************************************************
+        '   MODULES
         '************************************************
 
         'System Module
@@ -2860,9 +2880,7 @@ Partial Class _Default
             oUCType.GetProperty("IsUserLoggedIn").SetValue(oUC1, bUserLoggedIn, Nothing)
             oUCType.GetProperty("UserName").SetValue(oUC1, sUserName, Nothing)
             oUCType.GetProperty("ChannelPermission").SetValue(oUC1, nChannelPermission, Nothing)
-
-            'Site Info
-            oUCType.GetProperty("SiteName").SetValue(oUC1, sSiteName, Nothing)
+            oUCType.GetProperty("SiteName").SetValue(oUC1, sSiteName, Nothing) 'Site Info
             oUCType.GetProperty("SiteAddress").SetValue(oUC1, sSiteAddress, Nothing)
             oUCType.GetProperty("SiteCity").SetValue(oUC1, sSiteCity, Nothing)
             oUCType.GetProperty("SiteState").SetValue(oUC1, sSiteState, Nothing)
@@ -2871,9 +2889,8 @@ Partial Class _Default
             oUCType.GetProperty("SitePhone").SetValue(oUC1, sSitePhone, Nothing)
             oUCType.GetProperty("SiteFax").SetValue(oUC1, sSiteFax, Nothing)
             oUCType.GetProperty("SiteEmail").SetValue(oUC1, sSiteEmail, Nothing)
-
+            oUCType.GetProperty("TimeOffset").SetValue(oUC1, nTimeOffset, Nothing)
             oUCType.GetProperty("CurrencySeparator").SetValue(oUC1, oMasterPage.CurrencySeparator, Nothing)
-
             panelBody.Controls.Add(oUC1)
         End If
 
@@ -2900,9 +2917,7 @@ Partial Class _Default
                 oUC1Type.GetProperty("IsUserLoggedIn").SetValue(oUC1, bUserLoggedIn, Nothing)
                 oUC1Type.GetProperty("UserName").SetValue(oUC1, sUserName, Nothing)
                 oUC1Type.GetProperty("ChannelPermission").SetValue(oUC1, nChannelPermission, Nothing)
-
-                'Site Info
-                oUC1Type.GetProperty("SiteName").SetValue(oUC1, sSiteName, Nothing)
+                oUC1Type.GetProperty("SiteName").SetValue(oUC1, sSiteName, Nothing) 'Site Info
                 oUC1Type.GetProperty("SiteAddress").SetValue(oUC1, sSiteAddress, Nothing)
                 oUC1Type.GetProperty("SiteCity").SetValue(oUC1, sSiteCity, Nothing)
                 oUC1Type.GetProperty("SiteState").SetValue(oUC1, sSiteState, Nothing)
@@ -2911,9 +2926,8 @@ Partial Class _Default
                 oUC1Type.GetProperty("SitePhone").SetValue(oUC1, sSitePhone, Nothing)
                 oUC1Type.GetProperty("SiteFax").SetValue(oUC1, sSiteFax, Nothing)
                 oUC1Type.GetProperty("SiteEmail").SetValue(oUC1, sSiteEmail, Nothing)
-
+                oUC1Type.GetProperty("TimeOffset").SetValue(oUC1, nTimeOffset, Nothing)
                 oUC1Type.GetProperty("CurrencySeparator").SetValue(oUC1, oMasterPage.CurrencySeparator, Nothing)
-
                 placeholderContentRating.Controls.Add(oUC1)
             End If
         End If
@@ -2941,9 +2955,7 @@ Partial Class _Default
                 oUC2Type.GetProperty("IsUserLoggedIn").SetValue(oUC2, bUserLoggedIn, Nothing)
                 oUC2Type.GetProperty("UserName").SetValue(oUC2, sUserName, Nothing)
                 oUC2Type.GetProperty("ChannelPermission").SetValue(oUC2, nChannelPermission, Nothing)
-
-                'Site Info
-                oUC2Type.GetProperty("SiteName").SetValue(oUC2, sSiteName, Nothing)
+                oUC2Type.GetProperty("SiteName").SetValue(oUC2, sSiteName, Nothing) 'Site Info
                 oUC2Type.GetProperty("SiteAddress").SetValue(oUC2, sSiteAddress, Nothing)
                 oUC2Type.GetProperty("SiteCity").SetValue(oUC2, sSiteCity, Nothing)
                 oUC2Type.GetProperty("SiteState").SetValue(oUC2, sSiteState, Nothing)
@@ -2952,15 +2964,13 @@ Partial Class _Default
                 oUC2Type.GetProperty("SitePhone").SetValue(oUC2, sSitePhone, Nothing)
                 oUC2Type.GetProperty("SiteFax").SetValue(oUC2, sSiteFax, Nothing)
                 oUC2Type.GetProperty("SiteEmail").SetValue(oUC2, sSiteEmail, Nothing)
-
+                oUC2Type.GetProperty("TimeOffset").SetValue(oUC2, nTimeOffset, Nothing)
                 oUC2Type.GetProperty("CurrencySeparator").SetValue(oUC2, oMasterPage.CurrencySeparator, Nothing)
-
                 If bCommentsAnonymous Then
                     oUC2Type.GetProperty("AllowAnonymous").SetValue(oUC2, True, Nothing)
                 Else
                     oUC2Type.GetProperty("AllowAnonymous").SetValue(oUC2, False, Nothing)
                 End If
-
                 placeholderComments.Controls.Add(oUC2)
             End If
         End If
@@ -3132,6 +3142,10 @@ Partial Class _Default
                     Catch ex As Exception
                     End Try
                     Try
+                        oUCType.GetProperty("TimeOffset").SetValue(oUC, nTimeOffset, Nothing)
+                    Catch ex As Exception
+                    End Try
+                    Try
                         oUCType.GetProperty("CurrencySeparator").SetValue(oUC, oMasterPage.CurrencySeparator, Nothing)
                     Catch ex As Exception
                     End Try
@@ -3169,7 +3183,7 @@ Partial Class _Default
                                 panelBody.Controls.Add(oButtonDown)
                                 panelBody.Controls.Add(oButtonDel)
                                 panelBody.Controls.Add(New LiteralControl("</div>"))
-							End If
+                            End If
                             panelBody.Controls.Add(oUC)
 
                             'Body Content
@@ -3197,13 +3211,19 @@ Partial Class _Default
                             If sPlaceholder = "placeholderLeft" Then
                                 nAddContentLeft = nAddContentLeft + 1
                                 If Split(sContentLeft, "[%BREAK%]").Length >= nAddContentLeft + 1 Then
-                                    oPlaceholder.Controls.Add(New LiteralControl(Split(sContentLeft, "[%BREAK%]")(nAddContentLeft)))
+                                    'oPlaceholder.Controls.Add(New LiteralControl(Split(sContentLeft, "[%BREAK%]")(nAddContentLeft)))
+
+                                    Dim sNext As String = Split(sContentLeft, "[%BREAK%]")(nAddContentLeft)
+                                    PlaceControl(placeholderLeft, sNext)
                                 End If
                             End If
                             If sPlaceholder = "placeholderRight" Then
                                 nAddContentRight = nAddContentRight + 1
                                 If Split(sContentRight, "[%BREAK%]").Length >= nAddContentRight + 1 Then
-                                    oPlaceholder.Controls.Add(New LiteralControl(Split(sContentRight, "[%BREAK%]")(nAddContentRight)))
+                                    'oPlaceholder.Controls.Add(New LiteralControl(Split(sContentRight, "[%BREAK%]")(nAddContentRight)))
+
+                                    Dim sNext As String = Split(sContentRight, "[%BREAK%]")(nAddContentRight)
+                                    PlaceControl(placeholderRight, sNext)
                                 End If
                             End If
 
@@ -3235,17 +3255,19 @@ Partial Class _Default
         'Additional Content (Sisanya)
         If Split(sContentLeft, "[%BREAK%]").Length >= nAddContentLeft Then
             For j = nAddContentLeft + 1 To Split(sContentLeft, "[%BREAK%]").Length - 1
-                placeholderLeft.Controls.Add(New LiteralControl(Split(sContentLeft, "[%BREAK%]")(j)))
+                'placeholderLeft.Controls.Add(New LiteralControl(Split(sContentLeft, "[%BREAK%]")(j)))
+                PlaceControl(placeholderLeft, Split(sContentLeft, "[%BREAK%]")(j))
             Next
         End If
 
         If Split(sContentRight, "[%BREAK%]").Length >= nAddContentRight Then
             For j = nAddContentRight + 1 To Split(sContentRight, "[%BREAK%]").Length - 1
-                placeholderRight.Controls.Add(New LiteralControl(Split(sContentRight, "[%BREAK%]")(j)))
+                'placeholderRight.Controls.Add(New LiteralControl(Split(sContentRight, "[%BREAK%]")(j)))
+                PlaceControl(placeholderRight, Split(sContentRight, "[%BREAK%]")(j))
             Next
         End If
 
-        If sSummary <> "" Then
+        If sSummary <> "" And Not sRawUrl.Contains("print=Y") Then
             If bIsAuthor Or bIsEditor Or bIsPublisher Or bIsAdministrator Then
                 panelBody.Controls.Add(New LiteralControl("<fieldset style=""padding:12px;padding-top:0px;margin-top:12px;-moz-border-radius:7pt;""><legend><b>" & GetLocalResourceObject("lblSummary.Text") & "</b></legend><div style=""padding-top:7px"">" & sSummary & "</div></fieldset><div style=""font-size:8pt;font-style:italic;margin-bottom:12px;text-align:right"">" & GetLocalResourceObject("SummaryNote") & "</div>"))
             End If
@@ -3269,11 +3291,354 @@ Partial Class _Default
         oContentManager = Nothing
     End Sub
 
+    Protected Sub PlaceControl(ByVal oPlaceholder As ContentPlaceHolder, ByVal sContent As String)
+
+        Dim bNeedCalendar As Boolean = False
+        If oPlaceholder.ID = "placeholderLeft" Then
+            If bContentLeftUseParent Then
+                If nParentListingType = 2 Then
+                    bNeedCalendar = True
+                End If
+            Else
+                If nListingType = 2 Then
+                    bNeedCalendar = True
+                End If
+            End If
+        Else
+            If bContentRightUseParent Then
+                If nParentListingType = 2 Then
+                    bNeedCalendar = True
+                End If
+            Else
+                If nListingType = 2 Then
+                    bNeedCalendar = True
+                End If
+            End If
+        End If
+        Dim bNeedCategory As Boolean = False
+        If oPlaceholder.ID = "placeholderLeft" Then
+            If bContentLeftUseParent Then
+                If bParentListingUseCategories Then
+                    bNeedCategory = True
+                End If
+            Else
+                If bListingUseCategories Then
+                    bNeedCategory = True
+                End If
+            End If
+        Else
+            If bContentRightUseParent Then
+                If bParentListingUseCategories Then
+                    bNeedCategory = True
+                End If
+            Else
+                If bListingUseCategories Then
+                    bNeedCategory = True
+                End If
+            End If
+        End If
+
+
+        Dim i As Integer
+        Dim arrText As String() = Regex.Split(sContent, "\[\%(?<functionName>[^\$]*?)\%\]")
+        For i = 0 To arrText.Length - 1
+            Select Case arrText(i).ToString
+                Case "CALENDAR"
+                    If bNeedCalendar Then
+                        Dim oUC As Control = LoadControl("systems/news_calendar.ascx")
+                        Dim oUCType As Type = oUC.GetType
+                        If oPlaceholder.ID = "placeholderLeft" Then
+                            If bContentLeftUseParent Then
+                                oUCType.GetProperty("IsEntry").SetValue(oUC, True, Nothing)
+                            Else
+                                oUCType.GetProperty("IsEntry").SetValue(oUC, False, Nothing)
+                            End If
+                        Else 'placeholderRight
+                            If bContentRightUseParent Then
+                                oUCType.GetProperty("IsEntry").SetValue(oUC, True, Nothing)
+                            Else
+                                oUCType.GetProperty("IsEntry").SetValue(oUC, False, Nothing)
+                            End If
+                        End If
+                        oUCType.GetProperty("RootID").SetValue(oUC, nRootId, Nothing)
+                        oUCType.GetProperty("RootFile").SetValue(oUC, sRootFile, Nothing)
+                        oUCType.GetProperty("PageID").SetValue(oUC, nPageId, Nothing)
+                        oUCType.GetProperty("ParentID").SetValue(oUC, nParentId, Nothing)
+                        oUCType.GetProperty("ParentFileName").SetValue(oUC, sParentFileName, Nothing)
+                        oUCType.GetProperty("TemplateID").SetValue(oUC, nTemplateId, Nothing)
+                        oUCType.GetProperty("TemplateFolderName").SetValue(oUC, sTemplateFolderName, Nothing)
+                        oUCType.GetProperty("IsPublisher").SetValue(oUC, bIsPublisher, Nothing)
+                        oUCType.GetProperty("IsSubscriber").SetValue(oUC, bIsSubscriber, Nothing)
+                        oUCType.GetProperty("IsAuthor").SetValue(oUC, bIsAuthor, Nothing)
+                        oUCType.GetProperty("IsEditor").SetValue(oUC, bIsEditor, Nothing)
+                        oUCType.GetProperty("IsResourceManager").SetValue(oUC, bIsResourceManager, Nothing)
+                        oUCType.GetProperty("IsAdministrator").SetValue(oUC, bIsAdministrator, Nothing)
+                        oUCType.GetProperty("IsReader").SetValue(oUC, bIsReader, Nothing)
+                        oUCType.GetProperty("IsOwner").SetValue(oUC, bIsOwner, Nothing)
+                        oUCType.GetProperty("IsUserLoggedIn").SetValue(oUC, bUserLoggedIn, Nothing)
+                        oUCType.GetProperty("UserName").SetValue(oUC, sUserName, Nothing)
+                        oUCType.GetProperty("TimeOffset").SetValue(oUC, nTimeOffset, Nothing)
+                        oPlaceholder.Controls.Add(oUC)
+                    End If
+                Case "MONTHLIST"
+                    If bNeedCalendar Then
+                        Dim nFirstPostMonth As Integer
+                        Dim nFirstPostYear As Integer
+                        Dim oReaderTmp As SqlDataReader
+                        Dim oCM As ContentManager = New ContentManager
+                        If oPlaceholder.ID = "placeholderLeft" Then
+                            If bContentLeftUseParent Then
+                                oReaderTmp = oCM.GetFirstPost(nParentId)
+                            Else
+                                oReaderTmp = oCM.GetFirstPost(nPageId)
+                            End If
+                        Else 'placeholderRight
+                            If bContentRightUseParent Then
+                                oReaderTmp = oCM.GetFirstPost(nParentId)
+                            Else
+                                oReaderTmp = oCM.GetFirstPost(nPageId)
+                            End If
+                        End If
+                        oCM = Nothing
+                        While oReaderTmp.Read()
+                            nFirstPostMonth = CDate(oReaderTmp("display_date")).Month
+                            nFirstPostYear = CDate(oReaderTmp("display_date")).Year
+                        End While
+                        oReaderTmp.Close()
+                        oReaderTmp = Nothing
+
+                        Dim n As Integer
+                        Dim sMonth As String = ""
+                        Dim nCurrMonth As Integer = Now.AddHours(nTimeOffset).Month
+                        Dim nCurrYear As Integer = Now.AddHours(nTimeOffset).Year
+                        For n = 1 To 12
+                            If (nFirstPostMonth = 0) Then Exit For
+                            If oPlaceholder.ID = "placeholderLeft" Then
+                                If bContentLeftUseParent Then
+                                    sMonth += "<div><a href=""" & sParentFileName & "?d=" & nCurrYear & "-" & nCurrMonth & """>" & MonthName(nCurrMonth) & " " & nCurrYear & "</a></div>"
+                                Else
+                                    sMonth += "<div><a href=""" & HttpContext.Current.Items("_page") & "?d=" & nCurrYear & "-" & nCurrMonth & """>" & MonthName(nCurrMonth) & " " & nCurrYear & "</a></div>"
+                                End If
+                            Else 'placeholderRight
+                                If bContentRightUseParent Then
+                                    sMonth += "<div><a href=""" & sParentFileName & "?d=" & nCurrYear & "-" & nCurrMonth & """>" & MonthName(nCurrMonth) & " " & nCurrYear & "</a></div>"
+                                Else
+                                    sMonth += "<div><a href=""" & HttpContext.Current.Items("_page") & "?d=" & nCurrYear & "-" & nCurrMonth & """>" & MonthName(nCurrMonth) & " " & nCurrYear & "</a></div>"
+                                End If
+                            End If
+                            If nFirstPostYear = nCurrYear And nFirstPostMonth = nCurrMonth Then
+                                Exit For
+                            End If
+                            nCurrMonth = nCurrMonth - 1
+                            If nCurrMonth = 0 Then
+                                nCurrMonth = 12
+                                nCurrYear = nCurrYear - 1
+                            End If
+                        Next
+                        oPlaceholder.Controls.Add(New LiteralControl(sMonth))
+                    End If
+                Case "CATEGORYLIST"
+                    If bNeedCategory Then
+                        Dim oUC As Control = LoadControl("systems/news_categories.ascx")
+                        Dim oUCType As Type = oUC.GetType
+                        If oPlaceholder.ID = "placeholderLeft" Then
+                            If bContentLeftUseParent Then
+                                oUCType.GetProperty("NewsPage").SetValue(oUC, sParentFileName, Nothing)
+                                oUCType.GetProperty("NewsPageId").SetValue(oUC, nParentId, Nothing)
+                            Else
+                                oUCType.GetProperty("NewsPage").SetValue(oUC, HttpContext.Current.Items("_page"), Nothing)
+                                oUCType.GetProperty("NewsPageId").SetValue(oUC, nPageId, Nothing)
+                            End If
+                        Else 'placeholderRight
+                            If bContentRightUseParent Then
+                                oUCType.GetProperty("NewsPage").SetValue(oUC, sParentFileName, Nothing)
+                                oUCType.GetProperty("NewsPageId").SetValue(oUC, nParentId, Nothing)
+                            Else
+                                oUCType.GetProperty("NewsPage").SetValue(oUC, HttpContext.Current.Items("_page"), Nothing)
+                                oUCType.GetProperty("NewsPageId").SetValue(oUC, nPageId, Nothing)
+                            End If
+                        End If
+                        oUCType.GetProperty("RootID").SetValue(oUC, nRootId, Nothing)
+                        oUCType.GetProperty("RootFile").SetValue(oUC, sRootFile, Nothing)
+                        oUCType.GetProperty("PageID").SetValue(oUC, nPageId, Nothing)
+                        oUCType.GetProperty("ParentID").SetValue(oUC, nParentId, Nothing)
+                        oUCType.GetProperty("ParentFileName").SetValue(oUC, sParentFileName, Nothing)
+                        oUCType.GetProperty("TemplateID").SetValue(oUC, nTemplateId, Nothing)
+                        oUCType.GetProperty("TemplateFolderName").SetValue(oUC, sTemplateFolderName, Nothing)
+                        oUCType.GetProperty("IsPublisher").SetValue(oUC, bIsPublisher, Nothing)
+                        oUCType.GetProperty("IsSubscriber").SetValue(oUC, bIsSubscriber, Nothing)
+                        oUCType.GetProperty("IsAuthor").SetValue(oUC, bIsAuthor, Nothing)
+                        oUCType.GetProperty("IsEditor").SetValue(oUC, bIsEditor, Nothing)
+                        oUCType.GetProperty("IsResourceManager").SetValue(oUC, bIsResourceManager, Nothing)
+                        oUCType.GetProperty("IsAdministrator").SetValue(oUC, bIsAdministrator, Nothing)
+                        oUCType.GetProperty("IsReader").SetValue(oUC, bIsReader, Nothing)
+                        oUCType.GetProperty("IsOwner").SetValue(oUC, bIsOwner, Nothing)
+                        oUCType.GetProperty("IsUserLoggedIn").SetValue(oUC, bUserLoggedIn, Nothing)
+                        oUCType.GetProperty("UserName").SetValue(oUC, sUserName, Nothing)
+                        oPlaceholder.Controls.Add(oUC)
+
+                        Dim sHTML As String = ""
+                        If lnkEdit.Visible Then
+                            If oPlaceholder.ID = "placeholderLeft" Then
+                                If bContentLeftUseParent Then
+                                    Session(nParentId.ToString) = True
+                                    sHTML += "<div style=""margin-top:20px""><a href=""javascript:modalDialog('" & sAppPath & "dialogs/page_categories.aspx?c=" & sCulture & "&pg=" & nParentId & "',450,400)"">" & GetLocalResourceObject("ManageCategories") & "</a></div>"
+                                Else
+                                    Session(nPageId.ToString) = True
+                                    sHTML += "<div style=""margin-top:20px""><a href=""javascript:modalDialog('" & sAppPath & "dialogs/page_categories.aspx?c=" & sCulture & "&pg=" & nPageId & "',450,400)"">" & GetLocalResourceObject("ManageCategories") & "</a></div>"
+                                End If
+                            Else 'placeholderRight
+                                If bContentRightUseParent Then
+                                    Session(nParentId.ToString) = True
+                                    sHTML += "<div style=""margin-top:20px""><a href=""javascript:modalDialog('" & sAppPath & "dialogs/page_categories.aspx?c=" & sCulture & "&pg=" & nParentId & "',450,400)"">" & GetLocalResourceObject("ManageCategories") & "</a></div>"
+                                Else
+                                    Session(nPageId.ToString) = True
+                                    sHTML += "<div style=""margin-top:20px""><a href=""javascript:modalDialog('" & sAppPath & "dialogs/page_categories.aspx?c=" & sCulture & "&pg=" & nPageId & "',450,400)"">" & GetLocalResourceObject("ManageCategories") & "</a></div>"
+                                End If
+                            End If
+
+                        End If
+
+                        oPlaceholder.Controls.Add(New LiteralControl(sHTML))
+                    End If
+                Case "RSS"
+                    Dim sRss As String
+                    If oPlaceholder.ID = "placeholderLeft" Then
+                        If bContentLeftUseParent Then
+                            sRss = "<a href=""" & sAppPath & "systems/rss.aspx?pg=" & nParentId & "&c=" & sCulture & """ target=""_blank""><img src=""" & sAppPath & "systems/images/rss.gif"" style=""border:none"" alt=""""/></a>&nbsp;"
+                        Else
+                            sRss = "<a href=""" & sAppPath & "systems/rss.aspx?pg=" & nPageId & "&c=" & sCulture & """ target=""_blank""><img src=""" & sAppPath & "systems/images/rss.gif"" style=""border:none"" alt=""""/></a>&nbsp;"
+                        End If
+                    Else 'placeholderRight
+                        If bContentRightUseParent Then
+                            sRss = "<a href=""" & sAppPath & "systems/rss.aspx?pg=" & nParentId & "&c=" & sCulture & """ target=""_blank""><img src=""" & sAppPath & "systems/images/rss.gif"" style=""border:none"" alt=""""/></a>&nbsp;"
+                        Else
+                            sRss = "<a href=""" & sAppPath & "systems/rss.aspx?pg=" & nPageId & "&c=" & sCulture & """ target=""_blank""><img src=""" & sAppPath & "systems/images/rss.gif"" style=""border:none"" alt=""""/></a>&nbsp;"
+                        End If
+                    End If
+                    oPlaceholder.Controls.Add(New LiteralControl(sRss))
+
+                Case "PODCAST"
+                    Dim sPodcast As String
+                    If oPlaceholder.ID = "placeholderLeft" Then
+                        If bContentLeftUseParent Then
+                            sPodcast = "<a href=""" & sAppPath & "systems/listing_podcast.aspx?pg=" & nParentId & "&c=" & sCulture & """ target=""_blank""><img src=""" & sAppPath & "systems/images/pod.gif"" style=""border:none"" alt=""""/></a>&nbsp;"
+                        Else
+                            sPodcast = "<a href=""" & sAppPath & "systems/listing_podcast.aspx?pg=" & nPageId & "&c=" & sCulture & """ target=""_blank""><img src=""" & sAppPath & "systems/images/pod.gif"" style=""border:none"" alt=""""/></a>&nbsp;"
+                        End If
+                    Else 'placeholderRight
+                        If bContentRightUseParent Then
+                            sPodcast = "<a href=""" & sAppPath & "systems/listing_podcast.aspx?pg=" & nParentId & "&c=" & sCulture & """ target=""_blank""><img src=""" & sAppPath & "systems/images/pod.gif"" style=""border:none"" alt=""""/></a>&nbsp;"
+                        Else
+                            sPodcast = "<a href=""" & sAppPath & "systems/listing_podcast.aspx?pg=" & nPageId & "&c=" & sCulture & """ target=""_blank""><img src=""" & sAppPath & "systems/images/pod.gif"" style=""border:none"" alt=""""/></a>&nbsp;"
+                        End If
+                    End If
+                    oPlaceholder.Controls.Add(New LiteralControl(sPodcast))
+
+                Case "MOST_RECENT"
+                    Dim oUC As Control = LoadControl("systems/listing_most_recent.ascx")
+                    Dim oUCType As Type = oUC.GetType
+                    If oPlaceholder.ID = "placeholderLeft" Then
+                        If bContentLeftUseParent Then
+                            oUCType.GetProperty("ListingPageId").SetValue(oUC, nParentId, Nothing)
+                        Else
+                            oUCType.GetProperty("ListingPageId").SetValue(oUC, nPageId, Nothing)
+                        End If
+                    Else 'placeholderRight
+                        If bContentRightUseParent Then
+                            oUCType.GetProperty("ListingPageId").SetValue(oUC, nParentId, Nothing)
+                        Else
+                            oUCType.GetProperty("ListingPageId").SetValue(oUC, nPageId, Nothing)
+                        End If
+                    End If
+                    'oUCType.GetProperty("NumRecords").SetValue(oUC, 7, Nothing) '7 hardcoded
+                    oPlaceholder.Controls.Add(oUC)
+
+                Case "MOST_POPULAR"
+                    Dim oUC As Control = LoadControl("systems/listing_most_popular.ascx")
+                    Dim oUCType As Type = oUC.GetType
+                    If oPlaceholder.ID = "placeholderLeft" Then
+                        If bContentLeftUseParent Then
+                            oUCType.GetProperty("ListingPageId").SetValue(oUC, nParentId, Nothing)
+                        Else
+                            oUCType.GetProperty("ListingPageId").SetValue(oUC, nPageId, Nothing)
+                        End If
+                    Else 'placeholderRight
+                        If bContentRightUseParent Then
+                            oUCType.GetProperty("ListingPageId").SetValue(oUC, nParentId, Nothing)
+                        Else
+                            oUCType.GetProperty("ListingPageId").SetValue(oUC, nPageId, Nothing)
+                        End If
+                    End If
+                    'oUCType.GetProperty("NumRecords").SetValue(oUC, 7, Nothing) '7 hardcoded
+                    oPlaceholder.Controls.Add(oUC)
+
+                Case "TOP_DOWNLOADS"
+                    Dim oUC As Control = LoadControl("systems/listing_top_downloads.ascx")
+                    Dim oUCType As Type = oUC.GetType
+                    If oPlaceholder.ID = "placeholderLeft" Then
+                        If bContentLeftUseParent Then
+                            oUCType.GetProperty("ListingPageId").SetValue(oUC, nParentId, Nothing)
+                        Else
+                            oUCType.GetProperty("ListingPageId").SetValue(oUC, nPageId, Nothing)
+                        End If
+                    Else 'placeholderRight
+                        If bContentRightUseParent Then
+                            oUCType.GetProperty("ListingPageId").SetValue(oUC, nParentId, Nothing)
+                        Else
+                            oUCType.GetProperty("ListingPageId").SetValue(oUC, nPageId, Nothing)
+                        End If
+                    End If
+                    'oUCType.GetProperty("NumRecords").SetValue(oUC, 7, Nothing) '7 hardcoded
+                    oPlaceholder.Controls.Add(oUC)
+
+                Case Else 'Normal Text
+                    oPlaceholder.Controls.Add(New LiteralControl(arrText(i).ToString))
+            End Select
+        Next
+    End Sub
+
     Protected Sub PlaceListing(ByVal sContent As String)
         Dim sC1 As String = Split(sContent, "[%LISTING%]")(0)
         Dim sC2 As String = Split(sContent, "[%LISTING%]")(1)
         panelBody.Controls.Add(New LiteralControl(sC1))
-        panelBody.Controls.Add(idListing)
+
+        If bIsListing Then
+            Dim oUC1 As Control = LoadControl("systems/listing.ascx")
+            Dim oUC1Type As Type = oUC1.GetType
+            oUC1Type.GetProperty("RootID").SetValue(oUC1, nRootId, Nothing)
+            oUC1Type.GetProperty("RootFile").SetValue(oUC1, sRootFile, Nothing)
+            oUC1Type.GetProperty("PageID").SetValue(oUC1, nPageId, Nothing)
+            oUC1Type.GetProperty("ParentID").SetValue(oUC1, nParentId, Nothing)
+            oUC1Type.GetProperty("ParentFileName").SetValue(oUC1, sParentFileName, Nothing)
+            oUC1Type.GetProperty("TemplateID").SetValue(oUC1, nTemplateId, Nothing)
+            oUC1Type.GetProperty("TemplateFolderName").SetValue(oUC1, sTemplateFolderName, Nothing)
+            oUC1Type.GetProperty("IsPublisher").SetValue(oUC1, bIsPublisher, Nothing)
+            oUC1Type.GetProperty("IsSubscriber").SetValue(oUC1, bIsSubscriber, Nothing)
+            oUC1Type.GetProperty("IsAuthor").SetValue(oUC1, bIsAuthor, Nothing)
+            oUC1Type.GetProperty("IsEditor").SetValue(oUC1, bIsEditor, Nothing)
+            oUC1Type.GetProperty("IsResourceManager").SetValue(oUC1, bIsResourceManager, Nothing)
+            oUC1Type.GetProperty("IsAdministrator").SetValue(oUC1, bIsAdministrator, Nothing)
+            oUC1Type.GetProperty("IsReader").SetValue(oUC1, bIsReader, Nothing)
+            oUC1Type.GetProperty("IsOwner").SetValue(oUC1, bIsOwner, Nothing)
+            oUC1Type.GetProperty("IsUserLoggedIn").SetValue(oUC1, bUserLoggedIn, Nothing)
+            oUC1Type.GetProperty("UserName").SetValue(oUC1, sUserName, Nothing)
+            oUC1Type.GetProperty("ChannelPermission").SetValue(oUC1, nChannelPermission, Nothing)
+            oUC1Type.GetProperty("ListingTemplateId").SetValue(oUC1, nListingTemplateId, Nothing)
+            oUC1Type.GetProperty("ListingColumns").SetValue(oUC1, nListingColumns, Nothing)
+            oUC1Type.GetProperty("ListingPageSize").SetValue(oUC1, nListingPageSize, Nothing)
+            oUC1Type.GetProperty("ListingType").SetValue(oUC1, nListingType, Nothing)
+            oUC1Type.GetProperty("ListingProperty").SetValue(oUC1, nListingProperty, Nothing)
+            oUC1Type.GetProperty("ListingDefaultOrder").SetValue(oUC1, sListingDefaultOrder, Nothing)
+            oUC1Type.GetProperty("ListingTemplateHeader").SetValue(oUC1, sListingTemplateHeader, Nothing)
+            oUC1Type.GetProperty("ListingTemplateFooter").SetValue(oUC1, sListingTemplateFooter, Nothing)
+            oUC1Type.GetProperty("ListingScript").SetValue(oUC1, sListingScript, Nothing)
+            oUC1Type.GetProperty("Elements").SetValue(oUC1, sElements, Nothing)
+            oUC1Type.GetProperty("ParentElements").SetValue(oUC1, sParentElements, Nothing)
+            oUC1Type.GetProperty("TimeOffset").SetValue(oUC1, nTimeOffset, Nothing)
+            panelBody.Controls.Add(oUC1)
+        End If
+
         panelBody.Controls.Add(New LiteralControl(sC2))
     End Sub
 
@@ -3286,10 +3651,8 @@ Partial Class _Default
         '************************************************
         '   Show / Hide Status & Authoring Links
         '************************************************
-        placeholderPageInfo.Visible = False
+        panelPageInfo.Visible = False
         panelAuthoringLinks.Visible = False
-        idAddNewTop.Visible = False
-        idAddNewBottom.Visible = False
         lnkNewPage.Visible = False
         lnkEdit.Visible = False
         lnkRename.Visible = False
@@ -3331,41 +3694,41 @@ Partial Class _Default
                 lblPageStatus.Text = GetLocalResourceObject("PageBeingEdited") & " " & sLastUpdatedBy & "."
             End If
             If sStatus.Contains("unlocked") Then
-                lblPageStatus.Text = GetLocalResourceObject("PageAvailableForEditing") & " " & sLastUpdatedBy & " - " & dtLastUpdatedDate
+                lblPageStatus.Text = GetLocalResourceObject("PageAvailableForEditing") & " " & sLastUpdatedBy & " - " & dtLastUpdatedDate.AddHours(nTimeOffset)
             End If
             If sStatus.Contains("published") Then
-                lblPageStatus.Text = GetLocalResourceObject("PagePublished") & " " & sLastUpdatedBy & " - " & dtLastUpdatedDate
+                lblPageStatus.Text = GetLocalResourceObject("PagePublished") & " " & sLastUpdatedBy & " - " & dtLastUpdatedDate.AddHours(nTimeOffset)
 
                 'Check Schedule
                 If bUseStartDate Then
                     If Now < dStartDate Then
-                        lblPageStatus.Text = GetLocalResourceObject("PageScheduled") & " " & sLastUpdatedBy & " - " & dtLastUpdatedDate
+                        lblPageStatus.Text = GetLocalResourceObject("PageScheduled") & " " & sLastUpdatedBy & " - " & dtLastUpdatedDate.AddHours(nTimeOffset)
                     End If
                 End If
                 If bUseEndDate Then
                     If Now > dEndDate Then
-                        lblPageStatus.Text = GetLocalResourceObject("PageExpired") & " " & sLastUpdatedBy & " - " & dtLastUpdatedDate
+                        lblPageStatus.Text = GetLocalResourceObject("PageExpired") & " " & sLastUpdatedBy & " - " & dtLastUpdatedDate.AddHours(nTimeOffset)
                     End If
                 End If
 
             End If
             If sStatus = "waiting_for_editor_approval" Then
-                lblPageStatus.Text = GetLocalResourceObject("PageWaitingForEditorApproval") & " " & sLastUpdatedBy & " - " & dtLastUpdatedDate
+                lblPageStatus.Text = GetLocalResourceObject("PageWaitingForEditorApproval") & " " & sLastUpdatedBy & " - " & dtLastUpdatedDate.AddHours(nTimeOffset)
                 If bMarkedForArchival Then
-                    lblPageStatus.Text = GetLocalResourceObject("PageMarkedForDeletion_WaitingForEditorApproval") & " " & sLastUpdatedBy & " - " & dtLastUpdatedDate
+                    lblPageStatus.Text = GetLocalResourceObject("PageMarkedForDeletion_WaitingForEditorApproval") & " " & sLastUpdatedBy & " - " & dtLastUpdatedDate.AddHours(nTimeOffset)
                 End If
             End If
             If sStatus = "waiting_for_publisher_approval" Then
-                lblPageStatus.Text = GetLocalResourceObject("PageWaitingForPublisherApproval") & " " & sLastUpdatedBy & " - " & dtLastUpdatedDate
+                lblPageStatus.Text = GetLocalResourceObject("PageWaitingForPublisherApproval") & " " & sLastUpdatedBy & " - " & dtLastUpdatedDate.AddHours(nTimeOffset)
                 If bMarkedForArchival Then
-                    lblPageStatus.Text = GetLocalResourceObject("PageMarkedForDeletion_WaitingForPublisherApproval") & " " & sLastUpdatedBy & " - " & dtLastUpdatedDate
+                    lblPageStatus.Text = GetLocalResourceObject("PageMarkedForDeletion_WaitingForPublisherApproval") & " " & sLastUpdatedBy & " - " & dtLastUpdatedDate.AddHours(nTimeOffset)
                 End If
             End If
             If sStatus = "need_content_revision_unlocked" Then
-                lblPageStatus.Text = GetLocalResourceObject("PageDeclinedByEditor") & " " & sLastUpdatedBy & " - " & dtLastUpdatedDate
+                lblPageStatus.Text = GetLocalResourceObject("PageDeclinedByEditor") & " " & sLastUpdatedBy & " - " & dtLastUpdatedDate.AddHours(nTimeOffset)
             End If
             If sStatus = "need_property_revision_unlocked" Then
-                lblPageStatus.Text = GetLocalResourceObject("PageDeclinedByPublisher") & " " & sLastUpdatedBy & " - " & dtLastUpdatedDate
+                lblPageStatus.Text = GetLocalResourceObject("PageDeclinedByPublisher") & " " & sLastUpdatedBy & " - " & dtLastUpdatedDate.AddHours(nTimeOffset)
             End If
 
 
@@ -3412,9 +3775,9 @@ Partial Class _Default
                     End If
                 End If
 
-                '~~~ placeholderPageInfo ~~~
+                '~~~ panelPageInfo ~~~
                 If Not bIsSystem And Not sRawUrl.Contains("print=Y") Then
-                    placeholderPageInfo.Visible = True
+                    panelPageInfo.Visible = True
                 End If
 
             Else
@@ -3437,9 +3800,9 @@ Partial Class _Default
                     '        "until you unlock this page.</div>"
                     sMoreInfo += "<div>" & GetLocalResourceObject("Info_YouCanStillEdit") & "</div>"
 
-                    '~~~ placeholderPageInfo ~~~
+                    '~~~ panelPageInfo ~~~
                     If Not bIsSystem And Not sRawUrl.Contains("print=Y") Then
-                        placeholderPageInfo.Visible = True
+                        panelPageInfo.Visible = True
                     End If
                 End If
             End If
@@ -3451,9 +3814,9 @@ Partial Class _Default
                     panelEditorApproval.Visible = True
                 End If
 
-                '~~~ placeholderPageInfo ~~~
+                '~~~ panelPageInfo ~~~
                 If Not bIsSystem And Not sRawUrl.Contains("print=Y") Then
-                    placeholderPageInfo.Visible = True
+                    panelPageInfo.Visible = True
                 End If
             End If
 
@@ -3465,9 +3828,9 @@ Partial Class _Default
                     panelPublisherApproval.Visible = True
                 End If
 
-                '~~~ placeholderPageInfo ~~~
+                '~~~ panelPageInfo ~~~
                 If Not bIsSystem And Not sRawUrl.Contains("print=Y") Then
-                    placeholderPageInfo.Visible = True
+                    panelPageInfo.Visible = True
                 End If
             End If
 
@@ -3538,9 +3901,9 @@ Partial Class _Default
                     panelPublisherApproval.Visible = True
                 End If
 
-                '~~~ placeholderPageInfo ~~~
+                '~~~ panelPageInfo ~~~
                 If Not bIsSystem And Not sRawUrl.Contains("print=Y") Then
-                    placeholderPageInfo.Visible = True
+                    panelPageInfo.Visible = True
                 End If
             End If
 
@@ -3551,14 +3914,14 @@ Partial Class _Default
                 If bInitialPage Then
                     lnkNewPage.Visible = True
 
-                    placeholderPageInfo.Visible = True
+                    panelPageInfo.Visible = True
                     panelApprovalInfo.Visible = False
                     pannelChannelInfo.Visible = False
                     pannelVersionAndMoreInfo.Visible = False
                 Else
                     lnkNewPage.Visible = False
 
-                    placeholderPageInfo.Visible = False
+                    panelPageInfo.Visible = False
                 End If
 
                 lnkEdit.Visible = False
@@ -3588,7 +3951,7 @@ Partial Class _Default
 
                 sMoreInfo += "<div>" & GetLocalResourceObject("Info_YouCanStillEdit") & "</div>"
 
-                placeholderPageInfo.Visible = True
+                panelPageInfo.Visible = True
             End If
             '********************************
 
@@ -3602,15 +3965,23 @@ Partial Class _Default
                 lnkMove.Visible = False
             End If
 
-            lblMoreInfo.Text = sMoreInfo & "<div style=""margin-top:3px;"">Page Id: <b>" & nPageId & "</b></div>"
+            Dim sPageVisibilityInfo As String = ""
+            If bIsHidden Then
+                sPageVisibilityInfo = " - " & GetLocalResourceObject("PageVisibilityInfo")
+            End If
+            Dim sOnlineStatus As String = ""
+            If bHasPublished Then
+                sOnlineStatus = " (" & GetLocalResourceObject("online") & ")"
+            End If
+            lblMoreInfo.Text = sMoreInfo & "<div style=""margin-top:3px;"">Page Id: <b>" & nPageId & "</b>" & sOnlineStatus & sPageVisibilityInfo & "</div>"
             lnkMoreInfo.OnClientClick = "_showMoreInfo(document.getElementById('" & lnkMoreInfo.ClientID & "'),document.getElementById('" & lnkMoreInfoHide.ClientID & "'));return false"
             lnkMoreInfoHide.OnClientClick = "_hideMoreInfo(document.getElementById('" & lnkMoreInfo.ClientID & "'),document.getElementById('" & lnkMoreInfoHide.ClientID & "'));return false"
             lnkMoreInfoHide.Attributes.Add("style", "display:none")
 
             'Khusus utk Add New Top/Bottom links
             If bIsAdministrator Then
-                idAddNewTop.Visible = True
-                idAddNewBottom.Visible = True
+                bShowAddNewTop = True
+                bShowAddNewBottom = True
             End If
             Dim sChannelRoot As String
             Dim oContentManager As ContentManager = New ContentManager
@@ -3621,8 +3992,8 @@ Partial Class _Default
                 Dim sItem As String
                 For Each sItem In arrUserRoles
                     If sItem = sChannelRoot & " Authors" Then
-                        idAddNewTop.Visible = True
-                        idAddNewBottom.Visible = True
+                        bShowAddNewTop = True
+                        bShowAddNewBottom = True
                     End If
                 Next
             End If
@@ -3888,9 +4259,9 @@ Partial Class _Default
             Else
                 'Show Published (Title/Link Text)
                 vRetVal = 2
-                If bIsHdn Then
-                    vRetVal = 0
-                End If
+                'If bIsHdn Then
+                '    vRetVal = 0
+                'End If
             End If
         ElseIf nCPermission = 3 Then
             If bUserCanManage Then
@@ -3899,9 +4270,9 @@ Partial Class _Default
             ElseIf bUserIsSubscriber Then
                 'Show Published (Title/Link Text)
                 vRetVal = 2
-                If bIsHdn Then
-                    vRetVal = 0
-                End If
+                'If bIsHdn Then
+                '    vRetVal = 0
+                'End If
             Else
                 vRetVal = 0
             End If
@@ -4049,7 +4420,7 @@ Partial Class _Default
             oDataReader.Close()
             oList = New ListItem
             oList.Value = "new"
-            oList.Text = ">> New Page Menu Here <<"
+            oList.Text = ">> " & GetLocalResourceObject("NewPageMenuHere") & " <<"
             lstOrdering.Items.Insert(lstOrdering.Items.Count, oList)
             lstOrdering.SelectedValue = "new"
 
@@ -4070,9 +4441,9 @@ Partial Class _Default
         txtTitle.Text = ""
         txtSummary.Text = ""
         txtSummary2.Text = ""
-        dropNewsMonth.SelectedValue = Month(Now)
-        dropNewsDay.SelectedValue = Day(Now)
-        dropNewsYear.SelectedValue = Year(Now)
+        dropNewsMonth.SelectedValue = Month(Now.AddHours(nTimeOffset))
+        dropNewsDay.SelectedValue = Day(Now.AddHours(nTimeOffset))
+        dropNewsYear.SelectedValue = Year(Now.AddHours(nTimeOffset))
     End Sub
 
     Protected Sub lnkEdit_Click(ByVal sender As Object, ByVal e As System.Web.UI.ImageClickEventArgs) Handles lnkEdit.Click
@@ -4091,9 +4462,9 @@ Partial Class _Default
             txtSummary.Text = .Summary.ToString
             txtSummary2.Text = .Summary.ToString
 
-            dropNewsMonth.SelectedValue = Month(.DisplayDate)
-            dropNewsDay.SelectedValue = Day(.DisplayDate)
-            dropNewsYear.SelectedValue = Year(.DisplayDate)
+            dropNewsMonth.SelectedValue = Month(.DisplayDate.AddHours(nTimeOffset))
+            dropNewsDay.SelectedValue = Day(.DisplayDate.AddHours(nTimeOffset))
+            dropNewsYear.SelectedValue = Year(.DisplayDate.AddHours(nTimeOffset))
             txtBody.Text = .ContentBody
             txtBody2.Text = .ContentBody
             If .IsLink Then
@@ -4576,7 +4947,7 @@ Partial Class _Default
     Private Sub PrepareNewPage()
         PreparePlaceholdersForEdit()
 
-        litTitle.Text = "<div class=""title"">" & GetLocalResourceObject("Title_AddNew") & "</div>"
+        litTitle.Text = "<h1 class=""title"">" & GetLocalResourceObject("Title_AddNew") & "</h1>"
         litTitle.Visible = True
 
         If InStr(HttpContext.Current.Request.Browser.Type, "IE") Or InStr(HttpContext.Current.Request.Browser.Type, "IE7") Then
@@ -4599,11 +4970,11 @@ Partial Class _Default
         panelAuthoring.Visible = True
 
         'Inside panelAuthoring :
-        lnkInsertPageLinks.OnClientClick = "modalDialog('" & sAppPath & "dialogs/page_links.aspx?c=" & sCulture & "&root=" & nRootId & "',500,500);return false;"
-        lnkInsertResources.OnClientClick = "modalDialog('" & sAppPath & "dialogs/page_resources.aspx?c=" & sCulture & "&pg=" & nPageId & "',650,570);return false;"
+        lnkInsertPageLinks.OnClientClick = "modalDialog2('" & sAppPath & "dialogs/page_links.aspx?c=" & sCulture & "&root=" & nRootId & "',500,500);return false;"
+        lnkInsertResources.OnClientClick = "modalDialog2('" & sAppPath & "dialogs/page_resources.aspx?c=" & sCulture & "&pg=" & nPageId & "',650,520);return false;"
 
-        lnkInsertPageLinks2.OnClientClick = "modalDialog('" & sAppPath & "dialogs/page_links.aspx?c=" & sCulture & "&root=" & nRootId & "',500,500);return false;"
-        lnkInsertResources2.OnClientClick = "modalDialog('" & sAppPath & "dialogs/page_resources.aspx?c=" & sCulture & "&pg=" & nPageId & "',650,570);return false;"
+        lnkInsertPageLinks2.OnClientClick = "modalDialog2('" & sAppPath & "dialogs/page_links.aspx?c=" & sCulture & "&root=" & nRootId & "',500,500);return false;"
+        lnkInsertResources2.OnClientClick = "modalDialog2('" & sAppPath & "dialogs/page_resources.aspx?c=" & sCulture & "&pg=" & nPageId & "',650,520);return false;"
 
         'Specific
         lblFileName3.Visible = False
@@ -4705,7 +5076,7 @@ Partial Class _Default
         txtBody.InternalLink = sAppPath & "dialogs/page_links.aspx?c=" & sCulture & "&root=" & nRootId
 
         txtBody.CustomObjectWidth = 650
-        txtBody.CustomObjectHeight = 570
+        txtBody.CustomObjectHeight = 520
         txtBody.CustomObject = sAppPath & "dialogs/page_resources.aspx?c=" & sCulture & "&pg=" & nPageId
 
         txtBody.CustomTags.Add(New InnovaStudio.Param("&nbsp;&nbsp;File Download&nbsp;&nbsp;", "[%FILE_DOWNLOAD%]"))
@@ -4737,7 +5108,7 @@ Partial Class _Default
         txtSummary.InternalLink = sAppPath & "dialogs/page_links.aspx?c=" & sCulture & "&root=" & nRootId
 
         txtSummary.CustomObjectWidth = 650
-        txtSummary.CustomObjectHeight = 570
+        txtSummary.CustomObjectHeight = 520
         txtSummary.CustomObject = sAppPath & "dialogs/page_resources.aspx?c=" & sCulture & "&pg=" & nPageId
         '~~~~~~~~~~~~ txtSummary ~~~~~~~~~~~
 
@@ -4767,7 +5138,7 @@ Partial Class _Default
             "// -->" & vbCrLf & _
             "</script>"
 
-        placeholderAuthoring.Controls.Add(New LiteralControl(sPageTypeScript))
+        panelManagement.Controls.Add(New LiteralControl(sPageTypeScript))
 
         'Buttons
         If Profile.UseAdvancedSaveOptions And Not bDisableCollaboration Then
@@ -4869,8 +5240,8 @@ Partial Class _Default
 
         divTime.Style.Add("display", "none")
         chkTime.Attributes.Add("onclick", "if(this.checked){document.getElementById('" & divTime.ClientID & "').style.display=''}else{document.getElementById('" & divTime.ClientID & "').style.display='none'}")
-        dropHour.SelectedValue = Now.Hour
-        If Now.Minute > 30 Then dropMinute.SelectedValue = 30
+        dropHour.SelectedValue = Now.AddHours(nTimeOffset).Hour
+        If Now.AddHours(nTimeOffset).Minute > 30 Then dropMinute.SelectedValue = 30
 
         chkAddFile.Attributes.Add("onclick", "if(this.checked){document.getElementById('" & tblAddFile.ClientID & "').style.display='block'}else{document.getElementById('" & tblAddFile.ClientID & "').style.display='none'}")
     End Sub
@@ -4878,7 +5249,11 @@ Partial Class _Default
     Private Sub PrepareEditPage()
         PreparePlaceholdersForEdit()
 
-        litTitle.Text = "<div class=""title"">" & GetLocalResourceObject("Title_EditPage") & "</div>"
+        If Not nPrice = 0 Then
+            bForceShowSummaryEditor = True
+        End If
+
+        litTitle.Text = "<h1 class=""title"">" & GetLocalResourceObject("Title_EditPage") & "</h1>"
         litTitle.Visible = True
 
         If InStr(HttpContext.Current.Request.Browser.Type, "IE") Or InStr(HttpContext.Current.Request.Browser.Type, "IE7") Then
@@ -4901,11 +5276,11 @@ Partial Class _Default
         panelAuthoring.Visible = True
 
         'Inside panelAuthoring :
-        lnkInsertPageLinks.OnClientClick = "modalDialog('" & sAppPath & "dialogs/page_links.aspx?c=" & sCulture & "&root=" & nRootId & "',500,500);return false;"
-        lnkInsertResources.OnClientClick = "modalDialog('" & sAppPath & "dialogs/page_resources.aspx?c=" & sCulture & "&pg=" & nPageId & "',600,570);return false;"
+        lnkInsertPageLinks.OnClientClick = "modalDialog2('" & sAppPath & "dialogs/page_links.aspx?c=" & sCulture & "&root=" & nRootId & "',500,500);return false;"
+        lnkInsertResources.OnClientClick = "modalDialog2('" & sAppPath & "dialogs/page_resources.aspx?c=" & sCulture & "&pg=" & nPageId & "',650,520);return false;"
 
-        lnkInsertPageLinks2.OnClientClick = "modalDialog('" & sAppPath & "dialogs/page_links.aspx?c=" & sCulture & "&root=" & nRootId & "',500,500);return false;"
-        lnkInsertResources2.OnClientClick = "modalDialog('" & sAppPath & "dialogs/page_resources.aspx?c=" & sCulture & "&pg=" & nPageId & "',600,570);return false;"
+        lnkInsertPageLinks2.OnClientClick = "modalDialog2('" & sAppPath & "dialogs/page_links.aspx?c=" & sCulture & "&root=" & nRootId & "',500,500);return false;"
+        lnkInsertResources2.OnClientClick = "modalDialog2('" & sAppPath & "dialogs/page_resources.aspx?c=" & sCulture & "&pg=" & nPageId & "',650,520);return false;"
 
         'Specific
         lblFileName3.Visible = True
@@ -5005,7 +5380,7 @@ Partial Class _Default
         txtBody.InternalLink = sAppPath & "dialogs/page_links.aspx?c=" & sCulture & "&root=" & nRootId
 
         txtBody.CustomObjectWidth = 650
-        txtBody.CustomObjectHeight = 570
+        txtBody.CustomObjectHeight = 520
         txtBody.CustomObject = sAppPath & "dialogs/page_resources.aspx?c=" & sCulture & "&pg=" & nPageId
 
         txtBody.CustomTags.Add(New InnovaStudio.Param("&nbsp;&nbsp;File Download&nbsp;&nbsp;", "[%FILE_DOWNLOAD%]"))
@@ -5034,7 +5409,7 @@ Partial Class _Default
         txtSummary.InternalLink = sAppPath & "dialogs/page_links.aspx?c=" & sCulture & "&root=" & nRootId
 
         txtSummary.CustomObjectWidth = 650
-        txtSummary.CustomObjectHeight = 570
+        txtSummary.CustomObjectHeight = 520
         txtSummary.CustomObject = sAppPath & "dialogs/page_resources.aspx?c=" & sCulture & "&pg=" & nPageId
         '~~~~~~~~~~~~ /txtSummary ~~~~~~~~~~~
 
@@ -5045,7 +5420,7 @@ Partial Class _Default
             lnkAdditionalContent.OnClientClick = "modalDialog('" & sAppPath & "dialogs/page_addcontent.aspx?c=" & sCulture & "&pg=" & nPageId & "&root=" & nRootId & "&area=left',745,515);return false;"
         ElseIf nLayoutType = 2 Then
             lnkAdditionalContent.OnClientClick = "modalDialog('" & sAppPath & "dialogs/page_addcontent.aspx?c=" & sCulture & "&pg=" & nPageId & "&root=" & nRootId & "&area=right',745,515);return false;"
-        Else
+        ElseIf nLayoutType = 3 Then
             lnkAdditionalContent.OnClientClick = "modalDialog('" & sAppPath & "dialogs/page_addcontent.aspx?c=" & sCulture & "&pg=" & nPageId & "&root=" & nRootId & "&area=leftright',745,515);return false;"
         End If
         lnkPageProperties.OnClientClick = "modalDialog('" & sAppPath & "dialogs/page_properties.aspx?c=" & sCulture & "&pg=" & nPageId & "',540,380);return false;"
@@ -5211,7 +5586,7 @@ Partial Class _Default
 
         If bParentIsListing Then
             If nParentListingType = 2 Then 'News/Journal
-                If dDisplayDate.Hour = 0 Then
+                If dDisplayDate.AddHours(nTimeOffset).Hour = 0 And dDisplayDate.AddHours(nTimeOffset).Minute = 0 Then
                     divTime.Style.Add("display", "none")
                     chkTime.Checked = False
                 Else
@@ -5220,45 +5595,45 @@ Partial Class _Default
                 End If
 
                 chkTime.Attributes.Add("onclick", "if(this.checked){document.getElementById('" & divTime.ClientID & "').style.display=''}else{document.getElementById('" & divTime.ClientID & "').style.display='none'}")
-                dropHour.SelectedValue = dDisplayDate.Hour
-                If Not IsNothing(dropMinute.Items.FindByValue(dDisplayDate.Minute.ToString)) Then
-                    dropMinute.SelectedValue = dDisplayDate.Minute
+                dropHour.SelectedValue = dDisplayDate.AddHours(nTimeOffset).Hour
+                If Not IsNothing(dropMinute.Items.FindByValue(dDisplayDate.AddHours(nTimeOffset).Minute.ToString)) Then
+                    dropMinute.SelectedValue = dDisplayDate.AddHours(nTimeOffset).Minute
                 Else
                     Dim oItem As ListItem = New ListItem
-                    If dDisplayDate.Minute.ToString.Length = 1 Then
-                        oItem.Text = "0" & dDisplayDate.Minute.ToString
+                    If dDisplayDate.AddHours(nTimeOffset).Minute.ToString.Length = 1 Then
+                        oItem.Text = "0" & dDisplayDate.AddHours(nTimeOffset).Minute.ToString
                     Else
-                        oItem.Text = dDisplayDate.Minute.ToString
+                        oItem.Text = dDisplayDate.AddHours(nTimeOffset).Minute.ToString
                     End If
-                    oItem.Value = dDisplayDate.Minute.ToString
+                    oItem.Value = dDisplayDate.AddHours(nTimeOffset).Minute.ToString
 
-                    If Now.Minute > 0 And Now.Minute <= 5 Then
+                    If Now.AddHours(nTimeOffset).Minute > 0 And Now.AddHours(nTimeOffset).Minute <= 5 Then
                         dropMinute.Items.Insert(1, oItem)
-                    ElseIf Now.Minute > 5 And Now.Minute <= 10 Then
+                    ElseIf Now.AddHours(nTimeOffset).Minute > 5 And Now.AddHours(nTimeOffset).Minute <= 10 Then
                         dropMinute.Items.Insert(2, oItem)
-                    ElseIf Now.Minute > 10 And Now.Minute <= 15 Then
+                    ElseIf Now.AddHours(nTimeOffset).Minute > 10 And Now.AddHours(nTimeOffset).Minute <= 15 Then
                         dropMinute.Items.Insert(3, oItem)
-                    ElseIf Now.Minute > 15 And Now.Minute <= 20 Then
+                    ElseIf Now.AddHours(nTimeOffset).Minute > 15 And Now.AddHours(nTimeOffset).Minute <= 20 Then
                         dropMinute.Items.Insert(4, oItem)
-                    ElseIf Now.Minute > 20 And Now.Minute <= 25 Then
+                    ElseIf Now.AddHours(nTimeOffset).Minute > 20 And Now.AddHours(nTimeOffset).Minute <= 25 Then
                         dropMinute.Items.Insert(5, oItem)
-                    ElseIf Now.Minute > 25 And Now.Minute <= 30 Then
+                    ElseIf Now.AddHours(nTimeOffset).Minute > 25 And Now.AddHours(nTimeOffset).Minute <= 30 Then
                         dropMinute.Items.Insert(6, oItem)
-                    ElseIf Now.Minute > 30 And Now.Minute <= 35 Then
+                    ElseIf Now.AddHours(nTimeOffset).Minute > 30 And Now.AddHours(nTimeOffset).Minute <= 35 Then
                         dropMinute.Items.Insert(7, oItem)
-                    ElseIf Now.Minute > 35 And Now.Minute <= 40 Then
+                    ElseIf Now.AddHours(nTimeOffset).Minute > 35 And Now.AddHours(nTimeOffset).Minute <= 40 Then
                         dropMinute.Items.Insert(8, oItem)
-                    ElseIf Now.Minute > 40 And Now.Minute <= 45 Then
+                    ElseIf Now.AddHours(nTimeOffset).Minute > 40 And Now.AddHours(nTimeOffset).Minute <= 45 Then
                         dropMinute.Items.Insert(9, oItem)
-                    ElseIf Now.Minute > 45 And Now.Minute <= 50 Then
+                    ElseIf Now.AddHours(nTimeOffset).Minute > 45 And Now.AddHours(nTimeOffset).Minute <= 50 Then
                         dropMinute.Items.Insert(10, oItem)
-                    ElseIf Now.Minute > 50 And Now.Minute <= 55 Then
+                    ElseIf Now.AddHours(nTimeOffset).Minute > 50 And Now.AddHours(nTimeOffset).Minute <= 55 Then
                         dropMinute.Items.Insert(11, oItem)
-                    ElseIf Now.Minute > 55 And Now.Minute <= 60 Then
+                    ElseIf Now.AddHours(nTimeOffset).Minute > 55 And Now.AddHours(nTimeOffset).Minute <= 60 Then
                         dropMinute.Items.Insert(12, oItem)
                     End If
 
-                    dropMinute.SelectedValue = dDisplayDate.Minute
+                    dropMinute.SelectedValue = dDisplayDate.AddHours(nTimeOffset).Minute
                 End If
             End If
         End If
@@ -5272,7 +5647,8 @@ Partial Class _Default
     Private Sub PrepareRenamePage()
         PreparePlaceholdersForEdit()
 
-        litTitle.Text = "<div class=""title"">" & GetLocalResourceObject("Title_RenamePage") & "</div>"
+        litTitle.Text = "<h1 class=""title"">" & GetLocalResourceObject("Title_RenamePage") & "</h1>"
+        litTitle.Visible = True
 
         panelDelete.Visible = False
         panelDeleteNotAllowed.Visible = False
@@ -5285,7 +5661,8 @@ Partial Class _Default
     Private Sub PrepareDeletePage()
         PreparePlaceholdersForEdit()
 
-        litTitle.Text = "<div class=""title"">" & GetLocalResourceObject("Title_DeletePage") & "</div>"
+        litTitle.Text = "<h1 class=""title"">" & GetLocalResourceObject("Title_DeletePage") & "</h1>"
+        litTitle.Visible = True
 
         Dim oContentManager As ContentManager = New ContentManager
         If oContentManager.IsSubContentExist(nPageId) Then
@@ -5305,7 +5682,8 @@ Partial Class _Default
     Private Sub PrepareMovePage()
         PreparePlaceholdersForEdit()
 
-        litTitle.Text = "<div class=""title"">" & GetLocalResourceObject("Title_MovePage") & "</div>"
+        litTitle.Text = "<h1 class=""title"">" & GetLocalResourceObject("Title_MovePage") & "</h1>"
+        litTitle.Visible = True
 
         panelDelete.Visible = False
         panelDeleteNotAllowed.Visible = False
@@ -5318,7 +5696,8 @@ Partial Class _Default
     Private Sub PrepareMovePage2(ByVal Placement As String)
         PreparePlaceholdersForEdit()
 
-        litTitle.Text = "<div class=""title"">" & GetLocalResourceObject("Title_MovePage") & "</div>"
+        litTitle.Text = "<h1 class=""title"">" & GetLocalResourceObject("Title_MovePage") & "</h1>"
+        litTitle.Visible = True
 
         panelDelete.Visible = False
         panelDeleteNotAllowed.Visible = False
@@ -5513,7 +5892,8 @@ Partial Class _Default
     Private Sub PrepareMovePage3()
         PreparePlaceholdersForEdit()
 
-        litTitle.Text = "<div class=""title"">" & GetLocalResourceObject("Title_MovePage") & "</div>"
+        litTitle.Text = "<h1 class=""title"">" & GetLocalResourceObject("Title_MovePage") & "</h1>"
+        litTitle.Visible = True
 
         panelDelete.Visible = False
         panelDeleteNotAllowed.Visible = False
@@ -5529,11 +5909,21 @@ Partial Class _Default
     '   COMMON
     '************************************
     Private Sub PreparePlaceholdersForEdit()
-        placeholderAuthoring.Visible = True
-        placeholderPageInfo.Visible = False
-        placeholderBody.Visible = False
-        placeholderBodyTop.Visible = False
-        placeholderBodyBottom.Visible = False
+        panelQuickAdd.Visible = False
+
+        panelPageInfo.Visible = False
+
+        panelManagement.Visible = True
+        panelModuleTop.Visible = False
+        panelBody.Visible = False
+        panelModuleBottom.Visible = False
+
+        If Not IsNothing(placeholderBodyTop) Then
+            placeholderBodyTop.Visible = False
+        End If
+        If Not IsNothing(placeholderBodyBottom) Then
+            placeholderBodyBottom.Visible = False
+        End If
 
         'Tdk di set visible=false spy tdk mempengaruhi nLayoutType
         'placeholderLeft.Visible = False
@@ -5542,16 +5932,24 @@ Partial Class _Default
         'placeholderRight.Visible = False
         'placeholderRightTop.Visible = False
         'placeholderRightBottom.Visible = False
-        placeholderLeft.Controls.Clear()
-        placeholderLeftTop.Controls.Clear()
-        placeholderLeftBottom.Controls.Clear()
-        placeholderRight.Controls.Clear()
-        placeholderRightTop.Controls.Clear()
-        placeholderRightBottom.Controls.Clear()
-
-        placeholderFileView.Visible = False
-        placeholderFileDownload.Visible = False
-        placeholderListing.Visible = False
+        If Not IsNothing(placeholderLeft) Then
+            placeholderLeft.Controls.Clear()
+        End If
+        If Not IsNothing(placeholderLeftTop) Then
+            placeholderLeftTop.Controls.Clear()
+        End If
+        If Not IsNothing(placeholderLeftBottom) Then
+            placeholderLeftBottom.Controls.Clear()
+        End If
+        If Not IsNothing(placeholderRight) Then
+            placeholderRight.Controls.Clear()
+        End If
+        If Not IsNothing(placeholderRightTop) Then
+            placeholderRightTop.Controls.Clear()
+        End If
+        If Not IsNothing(placeholderRightBottom) Then
+            placeholderRightBottom.Controls.Clear()
+        End If
 
         If Not IsNothing(placeholderContentRating) Then
             placeholderContentRating.Visible = False
@@ -5577,12 +5975,6 @@ Partial Class _Default
         End If
         If Not IsNothing(placeholderSameLevelPages) Then
             placeholderSameLevelPages.Visible = False
-        End If
-        If Not IsNothing(placeholderPublishingInfo) Then
-            placeholderPublishingInfo.Visible = False
-        End If
-        If Not IsNothing(placeholderCategoryInfo) Then
-            placeholderCategoryInfo.Visible = False
         End If
         If Not IsNothing(placeholderOrderNow) Then
             placeholderOrderNow.Visible = False
@@ -5684,6 +6076,35 @@ Partial Class _Default
         Dim oContentNew As CMSContent = New CMSContent
         Dim oContent As CMSContent = New CMSContent
         With oContent
+            .Elements = "<root>" & _
+                "<title>True</title>" & _
+                "<file_view>True</file_view>" & _
+                "<file_download>True</file_download>" & _
+                "<statistic_info>False</statistic_info>" & _
+                "<category_info>False</category_info>" & _
+                "<rating>" & bListingContentEnableRating.ToString & "</rating>" & _
+                "<comments>" & bListingContentEnableComment.ToString & "</comments>" & _
+                "<comments_anonymous>" & bListingContentEnableCommentAnonymous.ToString & "</comments_anonymous>" & _
+                "<listing_ordering>False</listing_ordering>" & _
+                "<listing_ordering_by_title>False</listing_ordering_by_title>" & _
+                "<listing_ordering_by_author>False</listing_ordering_by_author>" & _
+                "<listing_ordering_by_person_last_updating>False</listing_ordering_by_person_last_updating>" & _
+                "<listing_ordering_by_display_date>False</listing_ordering_by_display_date>" & _
+                "<listing_ordering_by_publish_date>False</listing_ordering_by_publish_date>" & _
+                "<listing_ordering_by_last_updated_date>False</listing_ordering_by_last_updated_date>" & _
+                "<listing_ordering_by_size>False</listing_ordering_by_size>" & _
+                "<listing_ordering_by_total_downloads>False</listing_ordering_by_total_downloads>" & _
+                "<listing_ordering_by_downloads_today>False</listing_ordering_by_downloads_today>" & _
+                "<listing_ordering_by_rating>False</listing_ordering_by_rating>" & _
+                "<listing_ordering_by_comments>False</listing_ordering_by_comments>" & _
+                "<listing_ordering_by_total_hits>False</listing_ordering_by_total_hits>" & _
+                "<listing_ordering_by_hits_today>False</listing_ordering_by_hits_today>" & _
+                "<listing_ordering_by_price>False</listing_ordering_by_price>" & _
+                "<calendar>True</calendar>" & _
+                "<month_list>True</month_list>" & _
+                "<category_list>True</category_list>" & _
+                "<subscribe>True</subscribe>" & _
+                "</root>"
             .ChannelId = nChannelId
             .FileName = sNewFileName
             .Title = txtTitle.Text
@@ -5714,14 +6135,18 @@ Partial Class _Default
                 .ContentBody = txtBody2.Text
             End If
 
-            If rdoDateAuto.Checked Then
-                .DisplayDate = Now
-            Else
-                If chkTime.Checked Then
-                    .DisplayDate = New DateTime(dropNewsYear.SelectedValue, dropNewsMonth.SelectedValue, dropNewsDay.SelectedValue, dropHour.SelectedValue, dropMinute.SelectedValue, 0)
+            If rdoDateAuto.Visible Then
+                If rdoDateAuto.Checked Then
+                    .DisplayDate = Now.AddHours(-nTimeOffset)
                 Else
-                    .DisplayDate = New DateTime(dropNewsYear.SelectedValue, dropNewsMonth.SelectedValue, dropNewsDay.SelectedValue, 0, 0, 0)
+                    If chkTime.Checked Then
+                        .DisplayDate = New DateTime(dropNewsYear.SelectedValue, dropNewsMonth.SelectedValue, dropNewsDay.SelectedValue, dropHour.SelectedValue, dropMinute.SelectedValue, 0).AddHours(-nTimeOffset)
+                    Else
+                        .DisplayDate = New DateTime(dropNewsYear.SelectedValue, dropNewsMonth.SelectedValue, dropNewsDay.SelectedValue, 0, 0, 0).AddHours(-nTimeOffset)
+                    End If
                 End If
+            Else
+                .DisplayDate = Now.AddHours(-nTimeOffset)
             End If
 
             .PageType = 1
@@ -5734,6 +6159,15 @@ Partial Class _Default
 
             .IsListing = chkIsListing.Checked
             .ListingTemplateId = CInt(dropListingTemplates.SelectedValue)
+
+            'MsgBox(sContentLeft)
+            'If chkIsListing.Checked And GetListingType(CInt(dropListingTemplates.SelectedValue)) = 2 Then
+            '    If nLayoutType = 2 Then
+            '        .ContentRight = sSideTemplate
+            '    Else
+            '        .ContentLeft = sSideTemplate
+            '    End If
+            'End If
 
             .IsLink = rdoLinkedPage.Checked
             If rdoLinkedPage.Checked Then
@@ -6166,8 +6600,9 @@ Partial Class _Default
         'Update page_modules
         oConn = New SqlConnection(sConn)
         oConn.Open()
-        sSQL = "UPDATE page_modules SET embed_in='" & txtFileName2.Text & ".aspx' WHERE embed_in=(Select file_name from pages where page_id=" & nPageId & " AND version=" & contentLatest.Version & ")"
+        sSQL = "UPDATE page_modules SET embed_in=@embed_in WHERE embed_in=(Select file_name from pages where page_id=" & nPageId & " AND version=" & contentLatest.Version & ")"
         oCommand = New SqlCommand(sSQL, oConn)
+        oCommand.Parameters.Add("@embed_in", SqlDbType.NVarChar).Value = txtFileName2.Text & ".aspx"
         oCommand.ExecuteNonQuery()
         oCommand.Dispose()
         oConn.Close()
@@ -6176,8 +6611,9 @@ Partial Class _Default
         'Update pages
         oConn = New SqlConnection(sConn)
         oConn.Open()
-        sSQL = "UPDATE pages SET file_name='" & txtFileName2.Text & ".aspx' WHERE page_id=" & nPageId & " AND version=" & contentLatest.Version
+        sSQL = "UPDATE pages SET file_name=@file_name WHERE page_id=" & nPageId & " AND version=" & contentLatest.Version
         oCommand = New SqlCommand(sSQL, oConn)
+        oCommand.Parameters.Add("@file_name", SqlDbType.NVarChar).Value = txtFileName2.Text & ".aspx"
         oCommand.ExecuteNonQuery()
         oCommand.Dispose()
         oConn.Close()
@@ -6590,12 +7026,12 @@ Partial Class _Default
         End If
 
         If rdoDateAuto.Checked Then
-            content.DisplayDate = Now
+            content.DisplayDate = Now.AddHours(-nTimeOffset)
         Else
             If chkTime.Checked Then
-                content.DisplayDate = New DateTime(dropNewsYear.SelectedValue, dropNewsMonth.SelectedValue, dropNewsDay.SelectedValue, dropHour.SelectedValue, dropMinute.SelectedValue, 0)
+                content.DisplayDate = New DateTime(dropNewsYear.SelectedValue, dropNewsMonth.SelectedValue, dropNewsDay.SelectedValue, dropHour.SelectedValue, dropMinute.SelectedValue, 0).AddHours(-nTimeOffset)
             Else
-                content.DisplayDate = New DateTime(dropNewsYear.SelectedValue, dropNewsMonth.SelectedValue, dropNewsDay.SelectedValue, 0, 0, 0)
+                content.DisplayDate = New DateTime(dropNewsYear.SelectedValue, dropNewsMonth.SelectedValue, dropNewsDay.SelectedValue, 0, 0, 0).AddHours(-nTimeOffset)
             End If
         End If
 
@@ -6642,6 +7078,19 @@ Partial Class _Default
                 content.LinkTarget = "_self"
             End If
         End If
+
+        'MsgBox(sContentLeft)
+        'If chkIsListing.Checked And GetListingType(CInt(dropListingTemplates.SelectedValue)) = 2 Then
+        '    If nLayoutType = 2 Then
+        '        If sContentRight = "" Or (sContentRight <> "" And bContentRightUseParent) Then
+        '            content.ContentRight = sSideTemplate
+        '        End If
+        '    Else
+        '        If sContentLeft = "" Or (sContentLeft <> "" And bContentLeftUseParent) Then
+        '            content.ContentLeft = sSideTemplate
+        '        End If
+        '    End If
+        'End If
 
         Select Case rdoSavingOptions.SelectedValue
             Case "1" 'Save and Continue Edit
@@ -6776,12 +7225,12 @@ Partial Class _Default
         End If
 
         If rdoDateAuto.Checked Then
-            content.DisplayDate = Now
+            content.DisplayDate = Now.AddHours(-nTimeOffset)
         Else
             If chkTime.Checked Then
-                content.DisplayDate = New DateTime(dropNewsYear.SelectedValue, dropNewsMonth.SelectedValue, dropNewsDay.SelectedValue, dropHour.SelectedValue, dropMinute.SelectedValue, 0)
+                content.DisplayDate = New DateTime(dropNewsYear.SelectedValue, dropNewsMonth.SelectedValue, dropNewsDay.SelectedValue, dropHour.SelectedValue, dropMinute.SelectedValue, 0).AddHours(-nTimeOffset)
             Else
-                content.DisplayDate = New DateTime(dropNewsYear.SelectedValue, dropNewsMonth.SelectedValue, dropNewsDay.SelectedValue, 0, 0, 0)
+                content.DisplayDate = New DateTime(dropNewsYear.SelectedValue, dropNewsMonth.SelectedValue, dropNewsDay.SelectedValue, 0, 0, 0).AddHours(-nTimeOffset)
             End If
         End If
 
@@ -6828,6 +7277,19 @@ Partial Class _Default
                 content.LinkTarget = "_self"
             End If
         End If
+
+        'MsgBox(sContentLeft)
+        'If chkIsListing.Checked And GetListingType(CInt(dropListingTemplates.SelectedValue)) = 2 Then
+        '    If nLayoutType = 2 Then
+        '        If sContentRight = "" Or (sContentRight <> "" And bContentRightUseParent) Then
+        '            content.ContentRight = sSideTemplate
+        '        End If
+        '    Else
+        '        If sContentLeft = "" Or (sContentLeft <> "" And bContentLeftUseParent) Then
+        '            content.ContentLeft = sSideTemplate
+        '        End If
+        '    End If
+        'End If
 
         'Save and Continue Edit
         'PrepareEditPage() 'Ditaruh sblm save utk mempertahankan viewstate
@@ -6937,12 +7399,12 @@ Partial Class _Default
         End If
 
         If rdoDateAuto.Checked Then
-            content.DisplayDate = Now
+            content.DisplayDate = Now.AddHours(-nTimeOffset)
         Else
             If chkTime.Checked Then
-                content.DisplayDate = New DateTime(dropNewsYear.SelectedValue, dropNewsMonth.SelectedValue, dropNewsDay.SelectedValue, dropHour.SelectedValue, dropMinute.SelectedValue, 0)
+                content.DisplayDate = New DateTime(dropNewsYear.SelectedValue, dropNewsMonth.SelectedValue, dropNewsDay.SelectedValue, dropHour.SelectedValue, dropMinute.SelectedValue, 0).AddHours(-nTimeOffset)
             Else
-                content.DisplayDate = New DateTime(dropNewsYear.SelectedValue, dropNewsMonth.SelectedValue, dropNewsDay.SelectedValue, 0, 0, 0)
+                content.DisplayDate = New DateTime(dropNewsYear.SelectedValue, dropNewsMonth.SelectedValue, dropNewsDay.SelectedValue, 0, 0, 0).AddHours(-nTimeOffset)
             End If
         End If
 
@@ -6989,6 +7451,19 @@ Partial Class _Default
                 content.LinkTarget = "_self"
             End If
         End If
+
+        'MsgBox(sContentLeft)
+        'If chkIsListing.Checked And GetListingType(CInt(dropListingTemplates.SelectedValue)) = 2 Then
+        '    If nLayoutType = 2 Then
+        '        If sContentRight = "" Or (sContentRight <> "" And bContentRightUseParent) Then
+        '            content.ContentRight = sSideTemplate
+        '        End If
+        '    Else
+        '        If sContentLeft = "" Or (sContentLeft <> "" And bContentLeftUseParent) Then
+        '            content.ContentLeft = sSideTemplate
+        '        End If
+        '    End If
+        'End If
 
         'Finish and Unlock (back to page view)
         oContentManager.SaveContent(content, True)
@@ -7051,12 +7526,12 @@ Partial Class _Default
         End If
 
         If rdoDateAuto.Checked Then
-            content.DisplayDate = Now
+            content.DisplayDate = Now.AddHours(-nTimeOffset)
         Else
             If chkTime.Checked Then
-                content.DisplayDate = New DateTime(dropNewsYear.SelectedValue, dropNewsMonth.SelectedValue, dropNewsDay.SelectedValue, dropHour.SelectedValue, dropMinute.SelectedValue, 0)
+                content.DisplayDate = New DateTime(dropNewsYear.SelectedValue, dropNewsMonth.SelectedValue, dropNewsDay.SelectedValue, dropHour.SelectedValue, dropMinute.SelectedValue, 0).AddHours(-nTimeOffset)
             Else
-                content.DisplayDate = New DateTime(dropNewsYear.SelectedValue, dropNewsMonth.SelectedValue, dropNewsDay.SelectedValue, 0, 0, 0)
+                content.DisplayDate = New DateTime(dropNewsYear.SelectedValue, dropNewsMonth.SelectedValue, dropNewsDay.SelectedValue, 0, 0, 0).AddHours(-nTimeOffset)
             End If
         End If
 
@@ -7104,6 +7579,19 @@ Partial Class _Default
             End If
         End If
 
+        'MsgBox(sContentLeft)
+        'If chkIsListing.Checked And GetListingType(CInt(dropListingTemplates.SelectedValue)) = 2 Then
+        '    If nLayoutType = 2 Then
+        '        If sContentRight = "" Or (sContentRight <> "" And bContentRightUseParent) Then
+        '            content.ContentRight = sSideTemplate
+        '        End If
+        '    Else
+        '        If sContentLeft = "" Or (sContentLeft <> "" And bContentLeftUseParent) Then
+        '            content.ContentLeft = sSideTemplate
+        '        End If
+        '    End If
+        'End If
+
         'Publish
         oContentManager.SaveContent(content)
         'oContentManager.SubmitContent(nPageId, contentLatest.Version, True)
@@ -7126,24 +7614,24 @@ Partial Class _Default
 
     End Sub
 
-
-    Protected Sub btnSearch_Click(ByVal sender As Object, ByVal e As System.EventArgs)
-        Dim sSearch As String = ""
-        sSearch = Server.UrlEncode(txtSearch.Text)
-        Response.Redirect("~/" & sLinkSearch & "?q=" & sSearch)
-    End Sub
-
-
-    '************************************
-    '   Used For Login
-    '************************************
-    Protected Sub Login1_LoggedIn(ByVal sender As Object, ByVal e As System.EventArgs) Handles Login1.LoggedIn
-        Response.Redirect(HttpContext.Current.Items("_path"))
-    End Sub
-    Protected Sub Login1_PreRender(ByVal sender As Object, ByVal e As System.EventArgs)
-        Login1.PasswordRecoveryUrl = sLinkPassword & "?ReturnUrl=" & HttpContext.Current.Items("_path")
-    End Sub
-
+    'Protected Function GetListingType(ByVal id As Integer) As Integer
+    '    Dim nListingType As Integer
+    '    Dim oCommand As SqlCommand
+    '    Dim oDataReader As SqlDataReader
+    '    oConn = New SqlConnection(sConn)
+    '    oConn.Open()
+    '    oCommand = New SqlCommand("SELECT * FROM listing_templates WHERE id=@id")
+    '    oCommand.CommandType = CommandType.Text
+    '    oCommand.Parameters.Add("@id", SqlDbType.Int).Value = CInt(dropListingTemplates.SelectedValue)
+    '    oCommand.Connection = oConn
+    '    oDataReader = oCommand.ExecuteReader()
+    '    If oDataReader.Read() Then
+    '        nListingType = CInt(oDataReader("listing_type"))
+    '    End If
+    '    oDataReader.Close()
+    '    oConn.Close()
+    '    Return nListingType
+    'End Function
 
     Protected Sub btnModulePosition_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles btnModulePosition.Click
         Dim sPlaceholder As String = hidPlaceHolder.Value
@@ -7227,9 +7715,9 @@ Partial Class _Default
         If bUserLoggedIn Then
             'Float Scripts
             If bIsAdministrator Then
-                placeholderScript.Controls.Add(New LiteralControl("<script language=""javascript"">var float=new ICFloat();float.add(""popWorkspace"");float.add(""popAdmin"");</script>"))
+                panelScript.Controls.Add(New LiteralControl("<script language=""javascript"">var float=new ICFloat();float.add(""popWorkspace"");float.add(""popAdmin"");</script>"))
             Else
-                placeholderScript.Controls.Add(New LiteralControl("<script language=""javascript"">var float=new ICFloat();float.add(""popWorkspace"");</script>"))
+                panelScript.Controls.Add(New LiteralControl("<script language=""javascript"">var float=new ICFloat();float.add(""popWorkspace"");</script>"))
             End If
 
             panelPopWorkspace.Visible = True
@@ -7412,19 +7900,11 @@ Partial Class _Default
         lnkLocalization.NavigateUrl = sLinkAdminLocalization
     End Sub
 
-    Protected Sub lnkAddNewTop_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles lnkAddNewTop.Click
-        Response.Redirect(sRootFile & "?action=top")
-    End Sub
-
-    Protected Sub lnkAddNewBottom_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles lnkAddNewBottom.Click
-        Response.Redirect(sRootFile & "?action=bottom")
-    End Sub
-
     Protected Sub Page_LoadComplete(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.LoadComplete
         If Not Page.IsPostBack Then
             If Request.QueryString("action") = "top" Then
                 RedirectForLogin()
-                If idAddNewTop.Visible = True Then
+                If bShowAddNewTop = True Then
                     PrepareNewPage()
                     hidLinkPlacement.Value = "top" 'Create under Home, but use 'top' (not 'main')
                     PrepareNewPageData("top")
@@ -7434,7 +7914,7 @@ Partial Class _Default
 
             If Request.QueryString("action") = "bottom" Then
                 RedirectForLogin()
-                If idAddNewBottom.Visible = True Then
+                If bShowAddNewBottom = True Then
                     PrepareNewPage()
                     hidLinkPlacement.Value = "bottom" 'Create under Home, but use 'bottom' (not 'main')
                     PrepareNewPageData("bottom")
@@ -7442,233 +7922,6 @@ Partial Class _Default
                 End If
             End If
         End If
-    End Sub
-
-    '*** LISTING ***
-    Protected Sub ShowListing(ByVal nPageIndex As Integer)
-        Dim oPds As PagedDataSource = New PagedDataSource
-        Dim oContent As Content = New Content
-
-        If Not Page.IsPostBack Then
-            If Not sListingDefaultOrder = "" Then
-                dropListingOrdering.SelectedValue = sListingDefaultOrder
-            End If
-        End If
-
-        Dim sSortType As String = "DESC"
-        If nListingType = 1 Then
-            'General
-            If Not Page.IsPostBack Then
-                'First load berdasarkan default order
-                If sListingDefaultOrder = "title" Or sListingDefaultOrder = "last_updated_by" Or sListingDefaultOrder = "owner" Then
-                    sSortType = "ASC"
-                End If
-                oContent.SortingBy = sListingDefaultOrder
-                oContent.SortingType = sSortType
-            Else
-
-                If dropListingOrdering.Visible = True Then
-                    'Postback dari dropdown
-                    If dropListingOrdering.SelectedValue = "title" Or dropListingOrdering.SelectedValue = "last_updated_by" Or dropListingOrdering.SelectedValue = "owner" Then
-                        sSortType = "ASC"
-                    End If
-                    oContent.SortingBy = dropListingOrdering.SelectedValue
-                    oContent.SortingType = sSortType
-                Else
-                    'Postback dari paging
-                    If sListingDefaultOrder = "title" Or sListingDefaultOrder = "last_updated_by" Or sListingDefaultOrder = "owner" Then
-                        sSortType = "ASC"
-                    End If
-                    oContent.SortingBy = sListingDefaultOrder
-                    oContent.SortingType = sSortType
-                End If
-
-            End If
-
-            If nListingProperty = 1 Or nListingProperty = 3 Then
-                oContent.ManualOrder = True
-            End If
-
-        Else
-            'News
-            'If Not Page.IsPostBack Then
-            '    'First load berdasarkan "display_date DESC"
-            '    oContent.SortingBy = "display_date"
-            '    oContent.SortingType = "DESC"
-            'Else
-            '    'Postback dari dropdown
-            '    If dropListingOrdering.SelectedValue = "last_updated_date" Or dropListingOrdering.SelectedValue = "file_size" Then
-            '        sSortType = "DESC"
-            '    End If
-            '    oContent.SortingBy = dropListingOrdering.SelectedValue
-            '    oContent.SortingType = sSortType
-            'End If
-            oContent.SortingBy = "display_date"
-            oContent.SortingType = "DESC"
-        End If
-
-        Dim bNoSelection As Boolean = False
-        Dim nYear As Integer
-        Dim nMonth As Integer
-        Dim nDay As Integer
-        If Not IsNothing(Request.QueryString("d")) Then
-            nYear = Request.QueryString("d").Split("-")(0)
-            nMonth = Request.QueryString("d").Split("-")(1)
-            If Request.QueryString("d").Split("-").Length = 3 Then
-                'Date Selection
-                nDay = Request.QueryString("d").Split("-")(2)
-                oPds.DataSource = oContent.GetPagesWithin(nPageId, 0, 3, New Date(nYear, nMonth, nDay), False).DefaultView 'Get all posts on the specified date.
-            Else
-                'Month Selection
-                oPds.DataSource = oContent.GetPagesWithin(nPageId, 0, 5, Nothing, False, nYear, nMonth).DefaultView 'Get all posts on the specified month.
-            End If
-            litTitle.Text = litTitle.Text & "<div class=""recent_entries""><a class=""recent_entries"" href=""" & HttpContext.Current.Items("_page") & """>Recent Entries</a></div>"
-        ElseIf Not IsNothing(Request.QueryString("w")) Then
-            'Week Selection
-            nYear = Request.QueryString("w").Split("-")(0)
-            nMonth = Request.QueryString("w").Split("-")(1)
-            nDay = Request.QueryString("w").Split("-")(2)
-            oPds.DataSource = oContent.GetPagesWithin(nPageId, 0, 6, New Date(nYear, nMonth, nDay), False).DefaultView 'Get all posts on the specified week.
-            litTitle.Text = litTitle.Text & "<div class=""recent_entries""><a class=""recent_entries"" href=""" & HttpContext.Current.Items("_page") & """>Recent Entries</a></div>"
-        ElseIf Not IsNothing(Request.QueryString("cat")) Then
-            'Get latest posts on the specified category.
-            oPds.DataSource = oContent.GetPagesWithin(nPageId, 0, 7, , , , , Request.QueryString("cat")).DefaultView
-
-            Dim sSQL As String
-            Dim oConn As SqlConnection
-            Dim oCommand As SqlCommand
-            Dim oDataReader As SqlDataReader
-            oConn = New SqlConnection(sConn)
-            oConn.Open()
-            sSQL = "SELECT * FROM listing_categories WHERE listing_category_id=@listing_category_id"
-            oCommand = New SqlCommand(sSQL)
-            oCommand.CommandType = CommandType.Text
-            oCommand.Parameters.Add("@listing_category_id", SqlDbType.Int).Value = Request.QueryString("cat")
-            oCommand.Connection = oConn
-            oDataReader = oCommand.ExecuteReader()
-            While oDataReader.Read()
-                litTitle.Text = litTitle.Text & "<div class=""category_name"">" & oDataReader("listing_category_name").ToString & " &nbsp;&nbsp;<a class=""all_categories"" href=""" & HttpContext.Current.Items("_page") & """>All Categories</a></div>"
-            End While
-            oDataReader.Close()
-            oConn.Close()
-            oConn = Nothing
-        Else
-            'No Selection
-            bNoSelection = True
-
-            nYear = Now.Year
-            nMonth = Now.Month
-            If nListingType = 1 Then
-                'General Listing
-                oPds.DataSource = oContent.GetPagesWithin(nPageId, 0, 1, Nothing, False).DefaultView 'Get all posts
-            Else
-                'News/Journal
-                oPds.DataSource = oContent.GetPagesWithin(nPageId, 500, 2, Nothing, False).DefaultView 'Get 500 latest posts
-            End If
-
-        End If
-
-        'Formatting
-        panelDataList.Visible = True
-        dlDataList.RepeatDirection = RepeatDirection.Horizontal
-        dlDataList.ItemStyle.VerticalAlign = VerticalAlign.Top
-        dlDataList.CellPadding = 0
-        dlDataList.CellSpacing = 0
-        dlDataList.GridLines = GridLines.None
-        dlDataList.RepeatColumns = nListingColumns
-
-        litDataListHeader.Text = sListingTemplateHeader
-        litDataListFooter.Text = sListingTemplateFooter
-
-        'dlDataList.HeaderTemplate = New TemplateListing(ListItemType.Header, nListingTemplateId, nRootId, bIsReader)
-        dlDataList.ItemTemplate = New TemplateListing(ListItemType.Item, nListingTemplateId, nRootId, bIsReader)
-        'dlDataList.FooterTemplate = New TemplateListing(ListItemType.Footer, nListingTemplateId, nRootId, bIsReader)
-
-        'TODO: Paging & Binding
-        oPds.AllowPaging = True
-        oPds.PageSize = nListingPageSize
-        oPds.CurrentPageIndex = nPageIndex
-        lblDataListPagingInfo.Text = GetLocalResourceObject("PAGE") & " " & (oPds.CurrentPageIndex + 1) & " " & GetLocalResourceObject("of") & " " & oPds.PageCount
-        lblDataListPagingInfo2.Text = GetLocalResourceObject("PAGE") & " " & (oPds.CurrentPageIndex + 1) & " " & GetLocalResourceObject("of") & " " & oPds.PageCount
-        If oPds.IsFirstPage Then
-            pgDataListFirst.Enabled = False
-            pgDataListPrevious.Enabled = False
-            pgDataListFirst2.Enabled = False
-            pgDataListPrevious2.Enabled = False
-        Else
-            pgDataListFirst.Enabled = True
-            pgDataListPrevious.Enabled = True
-            pgDataListFirst2.Enabled = True
-            pgDataListPrevious2.Enabled = True
-        End If
-        If oPds.IsLastPage Then
-            pgDataListLast.Enabled = False
-            pgDataListNext.Enabled = False
-            pgDataListLast2.Enabled = False
-            pgDataListNext2.Enabled = False
-        Else
-            pgDataListLast.Enabled = True
-            pgDataListNext.Enabled = True
-            pgDataListLast2.Enabled = True
-            pgDataListNext2.Enabled = True
-        End If
-
-        dlDataList.DataSource = oPds
-        dlDataList.DataBind()
-
-        hidPageCount.Value = oPds.PageCount
-        hidPageIndex.Value = oPds.CurrentPageIndex
-
-        If oPds.Count = 0 Then
-            idDataListHeader.Visible = False
-            idDataListFooter.Visible = False
-            If dropListingOrdering.Visible = False Then
-                idDataListHeaderContainer.Visible = False
-            End If
-        End If
-
-        If oPds.PageCount < 2 Then
-            idDataListHeader.Visible = False
-            idDataListFooter.Visible = False
-            If dropListingOrdering.Visible = False Then
-                idDataListHeaderContainer.Visible = False
-            End If
-        End If
-
-        oContent = Nothing
-        oPds = Nothing
-    End Sub
-    Protected Sub pgDataListFirst_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles pgDataListFirst.Click
-        ShowListing(0)
-    End Sub
-    Protected Sub pgDataListLast_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles pgDataListLast.Click
-        ShowListing(CInt(hidPageCount.Value) - 1)
-    End Sub
-    Protected Sub pgDataListNext_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles pgDataListNext.Click
-        hidPageIndex.Value = CInt(hidPageIndex.Value) + 1
-        ShowListing(CInt(hidPageIndex.Value))
-    End Sub
-    Protected Sub pgDataListPrevious_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles pgDataListPrevious.Click
-        hidPageIndex.Value = CInt(hidPageIndex.Value) - 1
-        ShowListing(CInt(hidPageIndex.Value))
-    End Sub
-    Protected Sub pgDataListFirst2_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles pgDataListFirst2.Click
-        ShowListing(0)
-    End Sub
-    Protected Sub pgDataListLast2_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles pgDataListLast2.Click
-        ShowListing(CInt(hidPageCount.Value) - 1)
-    End Sub
-    Protected Sub pgDataListNext2_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles pgDataListNext2.Click
-        hidPageIndex.Value = CInt(hidPageIndex.Value) + 1
-        ShowListing(CInt(hidPageIndex.Value))
-    End Sub
-    Protected Sub pgDataListPrevious2_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles pgDataListPrevious2.Click
-        hidPageIndex.Value = CInt(hidPageIndex.Value) - 1
-        ShowListing(CInt(hidPageIndex.Value))
-    End Sub
-
-    Protected Sub dropListingOrdering_SelectedIndexChanged(ByVal sender As Object, ByVal e As System.EventArgs) Handles dropListingOrdering.SelectedIndexChanged
-        ShowListing(0)
     End Sub
 
     Protected Sub btnQuickAdd_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles btnQuickAdd.Click
@@ -7694,6 +7947,35 @@ Partial Class _Default
         Dim oContentNew As CMSContent = New CMSContent
         Dim oContent As CMSContent = New CMSContent
         With oContent
+            .Elements = "<root>" & _
+                "<title>True</title>" & _
+                "<file_view>True</file_view>" & _
+                "<file_download>True</file_download>" & _
+                "<statistic_info>False</statistic_info>" & _
+                "<category_info>False</category_info>" & _
+                "<rating>" & bListingContentEnableRating.ToString & "</rating>" & _
+                "<comments>" & bListingContentEnableComment.ToString & "</comments>" & _
+                "<comments_anonymous>" & bListingContentEnableCommentAnonymous.ToString & "</comments_anonymous>" & _
+                "<listing_ordering>False</listing_ordering>" & _
+                "<listing_ordering_by_title>False</listing_ordering_by_title>" & _
+                "<listing_ordering_by_author>False</listing_ordering_by_author>" & _
+                "<listing_ordering_by_person_last_updating>False</listing_ordering_by_person_last_updating>" & _
+                "<listing_ordering_by_display_date>False</listing_ordering_by_display_date>" & _
+                "<listing_ordering_by_publish_date>False</listing_ordering_by_publish_date>" & _
+                "<listing_ordering_by_last_updated_date>False</listing_ordering_by_last_updated_date>" & _
+                "<listing_ordering_by_size>False</listing_ordering_by_size>" & _
+                "<listing_ordering_by_total_downloads>False</listing_ordering_by_total_downloads>" & _
+                "<listing_ordering_by_downloads_today>False</listing_ordering_by_downloads_today>" & _
+                "<listing_ordering_by_rating>False</listing_ordering_by_rating>" & _
+                "<listing_ordering_by_comments>False</listing_ordering_by_comments>" & _
+                "<listing_ordering_by_total_hits>False</listing_ordering_by_total_hits>" & _
+                "<listing_ordering_by_hits_today>False</listing_ordering_by_hits_today>" & _
+                "<listing_ordering_by_price>False</listing_ordering_by_price>" & _
+                "<calendar>True</calendar>" & _
+                "<month_list>True</month_list>" & _
+                "<category_list>True</category_list>" & _
+                "<subscribe>True</subscribe>" & _
+                "</root>"
             .ChannelId = nChannelId
             .FileName = sNewFileName
             .Title = txtQuickTitle.Text
@@ -7721,7 +8003,7 @@ Partial Class _Default
             End If
 
             .ContentBody = ""
-            .DisplayDate = New DateTime(Now.Year, Now.Month, Now.Day, 0, 0, 0)
+            .DisplayDate = Now.AddHours(-nTimeOffset) 'New DateTime(Now.AddHours(-nTimeOffset).Year, Now.AddHours(-nTimeOffset).Month, Now.AddHours(-nTimeOffset).Day, Now.AddHours(-nTimeOffset).Hour, Now.AddHours(-nTimeOffset).Minute, Now.AddHours(-nTimeOffset).Second)
             .PageType = 1
             .Owner = sUserName
             .LastUpdatedBy = sUserName
@@ -7789,7 +8071,4 @@ Partial Class _Default
         Response.Redirect(GetFileName())
     End Sub
 
-    Protected Sub btnSearch_Click1(ByVal sender As Object, ByVal e As System.EventArgs) Handles btnSearch.Click
-
-    End Sub
 End Class

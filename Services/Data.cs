@@ -203,6 +203,11 @@ namespace Services
 			return response;
 		}
 
+		/// <summary>
+		/// Gets the XML elements.
+		/// </summary>
+		/// <param name="path">The path.</param>
+		/// <returns>Returns list of parent elements</returns>
 		public static List<string> GetXmlElements(string path)
 		{
 			XDocument xmlFile = XDocument.Load(path);
@@ -211,12 +216,22 @@ namespace Services
 			return list;
 		}
 
+		/// <summary>
+		/// Gets the XML child elements.
+		/// </summary>
+		/// <param name="path">The path.</param>
+		/// <param name="parent">The parent.</param>
+		/// <returns>Returns list of child elements</returns>
 		public static List<string> GetXmlChildElements(string path, string parent)
 		{
 		    XDocument xmlFile = XDocument.Load(path);
-			List<string> list = (from e in xmlFile.Descendants("city")
-								 where e.Attribute("name").Value == parent
-								 select e.Element("region").Attribute("name").Value).ToList<string>();
+			List<string> list = new List<string>();
+			List<XAttribute> regions = xmlFile.Descendants("city").Where(e => e.Attribute("name").
+				Value == parent).Elements("region").Attributes("name").ToList<XAttribute>();
+			foreach (XAttribute atribut in regions)
+			{
+				list.Add(atribut.Value);
+			}
 			return list;
 		}
 	}

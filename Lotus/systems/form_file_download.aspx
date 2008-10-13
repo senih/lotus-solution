@@ -26,7 +26,10 @@
             Response.AddHeader("content-disposition", "attachment;filename=" & Request.QueryString("file"))
             Response.AddHeader("Content-Length", infoFile.Length.ToString)
             Response.ContentType = "application/octet-stream"
-            Response.WriteFile(sFile)
+            'Response.WriteFile(sFile)
+            'fix to allow big files    
+            Response.TransmitFile(sFile)
+
             Response.End()
         Else
             Response.Write("File Not Found.")

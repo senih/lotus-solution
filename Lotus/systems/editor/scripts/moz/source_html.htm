@@ -14,7 +14,7 @@
 
 var iconOffsetTop = -75;
 
-function init() 
+function init()
   {
   var idSource = document.getElementById("idSource").contentWindow;
   var doc = idSource.document;
@@ -22,13 +22,13 @@ function init()
   doc.write("<html><head><head><body></body></html>");
   doc.close();
   }
-  
+
 function doCmd(sCmd,sOption)
     {
     var idSource = document.getElementById("idSource").contentWindow;
     idSource.document.execCommand(sCmd, false, sOption);
     }
-    
+
 function jsReplace(sText, sFind, sReplace)
     {
     var arrTmp = sText.split(sFind);
@@ -50,14 +50,15 @@ function bodyOnLoad()
     sHTML = sHTML.replace(/>\s+</gi, "><"); //replace space between tag
     sHTML = sHTML.replace(/\r/gi, ""); //replace space between tag
     sHTML = sHTML.replace(/(<br>)\s+/gi, "$1"); //replace space between BR and text
-    
+    sHTML = sHTML.replace(/<br class="innova">/gi, "");
+
     var idSource = document.getElementById("idSource").contentWindow;
     var sourceDocBody = idSource.document.body;
-    
+
     //remove all child
     sourceDocBody.innerHTML = "";
     sourceDocBody.appendChild(idSource.document.createTextNode(sHTML));
-    
+
     sourceDocBody.style.cssText="overflow-x:scroll;overflow-y:scroll;white-space:nowrap";
     sourceDocBody.clearAttributes;
     sourceDocBody.style.marginTop='4';
@@ -94,19 +95,19 @@ function doKeyPress(evt)
         if(evt.keyCode==65)doCmd("SelectAll");
         }*/
     }
-    
+
 function doUpdate()
     {
     window.opener.oUtil.obj.saveForUndo();
     var obj = window.opener.oUtil.obj;
-  
+
     var oEditor=window.opener.oUtil.oEditor;
-    
+
     var idSource = document.getElementById("idSource").contentWindow;
     var range = idSource.document.body.ownerDocument.createRange();
     range.selectNodeContents(idSource.document.body);
     oEditor.document.body.innerHTML = obj.docType +  range.toString();
-    
+
     obj.cleanDeprecated();
     }
 
@@ -123,7 +124,7 @@ function doWrap()
         idSource.document.body.style.whiteSpace="nowrap";
         }
     }
-    
+
 //*******************
 function setupToolbar()
   {
@@ -133,19 +134,19 @@ function setupToolbar()
   tb.iconPath="../"+obj.iconPath;
   tb.btnWidth=obj.iconWidth;
   tb.btnHeight=obj.iconHeight;
-  
+
   //tb.addButton("btnCut","btnCut.gif",getTxt("Cut"));
   //tb.addButton("btnCopy","btnCopy.gif",getTxt("Copy"));
   //tb.addButton("btnPaste","btnPaste.gif",getTxt("Paste"));
-  //tb.addSeparator();  
+  //tb.addSeparator();
   tb.addButton("btnUndo","btnUndo.gif",getTxt("Uedo"));
   tb.addButton("btnRedo","btnRedo.gif",getTxt("Redo"));
-  tb.addSeparator();  
+  tb.addSeparator();
   tb.addButton("btnSearch","btnSearch.gif",getTxt("Search"));
-  idToolbar.innerHTML=tb.render();
+  document.getElementById("idToolbar").innerHTML=tb.render();
   }
-  
-function tbAction(tb, id) 
+
+function tbAction(tb, id)
   {
   switch(id)
     {
@@ -156,7 +157,7 @@ function tbAction(tb, id)
     case "btnRedo": doCmd('Redo'); break;
     case "btnSearch": modelessDialogShow('search2.htm',375,163); break;
     }
-  
+
   }
 //*******************
 function modelessDialogShow(url,width,height)
@@ -164,7 +165,7 @@ function modelessDialogShow(url,width,height)
     window.showModelessDialog(url,window,
         "dialogWidth:"+width+"px;dialogHeight:"+height+"px;edge:Raised;center:1;help:0;resizable:1;");
     }
-    
+
 function modelessDialogShow(url,width,height)
     {
     var left = screen.availWidth/2 - width/2;

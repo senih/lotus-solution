@@ -14,7 +14,10 @@
         txtPage.Attributes.Add("onkeyup", "if(this.value!='')document.getElementById('" & dropTemplates.ClientID & "').value=''")
 
         If IsNothing(GetUser) Then
-            Panel_Login.Visible = True
+            panelLogin.Visible = True
+            Dim oUC1 As Control = LoadControl("login.ascx")
+            panelLogin.Controls.Add(oUC1)
+            panelPolls.Visible = False
         Else
             If (Roles.IsUserInRole(GetUser.UserName.ToString(), "Administrators") Or _
                Roles.IsUserInRole(GetUser.UserName.ToString(), "Polls Managers")) Then
@@ -34,10 +37,10 @@
                 If reader.Read() Then
                     sQue = reader("question")
                     If sQue = "" Then
-                        Panel_Polls.Visible = False
+                        panelPolls.Visible = False
                     Else
                         litPollInfo.Text = "<strong>" & sQue & "</strong>"
-                        Panel_Polls.Visible = True
+                        panelPolls.Visible = True
                         sdsModules.ConnectionString = sConn
                         sdsModules.DeleteCommand = "DELETE FROM [page_modules] WHERE [page_module_id] = @original_page_module_id"
                         sdsModules.SelectParameters(0).DefaultValue = sModuleFile
@@ -84,7 +87,7 @@
     End Sub
 
     Protected Sub btnEmbed_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles btnEmbed.Click
-        If Not Me.IsUserLoggedIn Then Exit Sub
+        If Not Me.IsUserLoggedIn Then Response.Redirect(HttpContext.Current.Items("_path"))
         
         If dropTemplates.SelectedValue = "" And txtPage.Text = "" Then
             Response.Redirect(Me.LinkWorkspacePollPages & "?PollID=" & sPollID)
@@ -110,7 +113,8 @@
         oCmd.Connection = oConn
         oCmd.ExecuteNonQuery()
         oConn.Close()
-        Response.Redirect(Me.LinkWorkspacePollPages & "?PollID=" & sPollID)
+        
+        grvModules.DataBind()
     End Sub
 
     Protected Sub btnCancel_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles btnCancel.Click
@@ -124,24 +128,12 @@
             CType(grvModules.Rows(i).Cells(3).Controls(0), LinkButton).Attributes.Add("onclick", sScript)
         Next
     End Sub
-    
-    Protected Sub Login1_LoggedIn(ByVal sender As Object, ByVal e As System.EventArgs) Handles Login1.LoggedIn
-        Response.Redirect(HttpContext.Current.Items("_path"))
-    End Sub
-
-    Protected Sub Login1_PreRender(ByVal sender As Object, ByVal e As System.EventArgs)
-        Login1.PasswordRecoveryUrl = "~/" & Me.LinkPassword & "?ReturnUrl=" & HttpContext.Current.Items("_path")
-    End Sub
 </script>
 
-<asp:Panel ID="Panel_Login" runat="server" Visible="False">
-   <asp:Login ID="Login1" meta:resourcekey="Login1" runat="server"  PasswordRecoveryText="Password Recovery" TitleText="" OnLoggedIn="Login1_LoggedIn" OnPreRender="Login1_PreRender">
-        <LabelStyle HorizontalAlign="Left" Wrap="False" />
-    </asp:Login>
-    <br />
+<asp:Panel ID="panelLogin" runat="server" Visible="False">
 </asp:Panel>
 
-<asp:Panel ID="Panel_Polls" runat="server" Visible="false" >
+<asp:Panel ID="panelPolls" runat="server" Visible="false" >
 
 <table cellpadding=0 cellspacing=0 >
 <tr>

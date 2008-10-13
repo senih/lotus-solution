@@ -1,4 +1,5 @@
 <%@ Page Language="VB" ClassName="systems_newsletters_report" %>
+<%@ OutputCache Duration="1" VaryByParam="none"%>
 <%@ Import Namespace="System.Web.Security.Membership"%>
 <%@ Import Namespace="System.Threading" %>
 <%@ Import Namespace="System.Globalization" %>

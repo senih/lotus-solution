@@ -13,6 +13,8 @@
     Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs)
         If IsNothing(GetUser) Then
             panelLogin.Visible = True
+            Dim oUC1 As Control = LoadControl("login.ascx")
+            panelLogin.Controls.Add(oUC1)
             panelOrders.Visible = False
         Else
             If Roles.IsUserInRole(GetUser.UserName.ToString(), "Administrators") Then
@@ -30,9 +32,10 @@
                     sqlDS.SelectCommand = "SELECT * FROM orders WHERE order_date>=@date_from AND order_date<=@date_to order by order_date desc"
                     sqlDS.SelectParameters.Add("date_from", SqlDbType.DateTime)
                     Dim dTmp As DateTime = Now.Subtract(New TimeSpan(72, 0, 0))
-                    sqlDS.SelectParameters(0).DefaultValue = dTmp.Year & "/" & dTmp.Month & "/" & dTmp.Day 'Now 'Now.Subtract(New TimeSpan(72, 0, 0))
+                    sqlDS.SelectParameters(0).DefaultValue = New DateTime(dTmp.Year, dTmp.Month, dTmp.Day, 0, 0, 0).AddHours(-Me.TimeOffset) 'Now 'Now.Subtract(New TimeSpan(72, 0, 0))
                     sqlDS.SelectParameters.Add("date_to", SqlDbType.DateTime)
-                    sqlDS.SelectParameters(1).DefaultValue = Now.Year & "/" & Now.Month & "/" & Now.Day 'Now
+                    Dim dTmp2 As DateTime = Now
+                    sqlDS.SelectParameters(1).DefaultValue = New DateTime(dTmp2.Year, dTmp2.Month, dTmp2.Day, 23, 59, 59).AddHours(-Me.TimeOffset) 'Now
  
                     GridView1.DataSource = sqlDS
                     GridView1.DataBind()
@@ -41,31 +44,34 @@
         End If
     End Sub
 
-    Protected Sub Login1_LoggedIn(ByVal sender As Object, ByVal e As System.EventArgs)
-        Response.Redirect(HttpContext.Current.Items("_path"))
-    End Sub
-
-    Protected Sub Login1_PreRender(ByVal sender As Object, ByVal e As System.EventArgs)
-        Login1.PasswordRecoveryUrl = "~/" & Me.LinkPassword & "?ReturnUrl=" & HttpContext.Current.Items("_path")
-    End Sub
-
     Protected Sub btnOrdersByStatus_Click(ByVal sender As Object, ByVal e As System.EventArgs)
+        Dim dTmp As DateTime
+        Dim dTmp2 As DateTime
+        
         Dim sqlDS As SqlDataSource = New SqlDataSource
         sqlDS.ConnectionString = sConn
         If dropOrderStatus.SelectedValue = "" Then
-            sqlDS.SelectCommand = "SELECT * FROM orders WHERE order_date>=@date_from AND order_date<@date_to order by order_date desc"
+            sqlDS.SelectCommand = "SELECT * FROM orders WHERE order_date>=@date_from AND order_date<=@date_to order by order_date desc"
             sqlDS.SelectParameters.Add("date_from", SqlDbType.DateTime)
-            sqlDS.SelectParameters(0).DefaultValue = txtFromDate.Text 'Convert.ToDateTime(txtFromDate.Text)
+            dTmp = Convert.ToDateTime(txtFromDate.Text)
+            sqlDS.SelectParameters(0).DefaultValue = New DateTime(dTmp.Year, dTmp.Month, dTmp.Day, 0, 0, 0).AddHours(-Me.TimeOffset)
             sqlDS.SelectParameters.Add("date_to", SqlDbType.DateTime)
-            sqlDS.SelectParameters(1).DefaultValue = txtToDate.Text 'Convert.ToDateTime(txtToDate.Text).AddDays(1)
+            dTmp2 = Convert.ToDateTime(txtToDate.Text)
+            sqlDS.SelectParameters(1).DefaultValue = New DateTime(dTmp2.Year, dTmp2.Month, dTmp2.Day, 23, 59, 59).AddHours(-Me.TimeOffset)
         Else
-            sqlDS.SelectCommand = "SELECT * FROM orders WHERE status=@status AND order_date>=@date_from AND order_date<@date_to order by order_date desc"
-            sqlDS.SelectParameters.Add("status", SqlDbType.NVarChar)
-            sqlDS.SelectParameters(0).DefaultValue = dropOrderStatus.SelectedValue
+            If dropOrderStatus.SelectedValue = "WAITING" Then
+                sqlDS.SelectCommand = "SELECT * FROM orders WHERE (status='WAITING_FOR_PAYMENT' OR status='CONFIRMED') AND order_date>=@date_from AND order_date<@date_to order by order_date desc"
+            ElseIf dropOrderStatus.SelectedValue = "CONFIRMED" Then
+                'Combined with Waiting
+            ElseIf dropOrderStatus.SelectedValue = "VERIFIED" Then
+                sqlDS.SelectCommand = "SELECT * FROM orders WHERE status='VERIFIED' AND order_date>=@date_from AND order_date<=@date_to order by order_date desc"
+            End If
             sqlDS.SelectParameters.Add("date_from", SqlDbType.DateTime)
-            sqlDS.SelectParameters(1).DefaultValue = txtFromDate.Text 'Convert.ToDateTime(txtFromDate.Text)
+            dTmp = Convert.ToDateTime(txtFromDate.Text)
+            sqlDS.SelectParameters(0).DefaultValue = New DateTime(dTmp.Year, dTmp.Month, dTmp.Day, 0, 0, 0).AddHours(-Me.TimeOffset)
             sqlDS.SelectParameters.Add("date_to", SqlDbType.DateTime)
-            sqlDS.SelectParameters(2).DefaultValue = txtToDate.Text 'Convert.ToDateTime(txtToDate.Text).AddDays(1)
+            dTmp2 = Convert.ToDateTime(txtToDate.Text)
+            sqlDS.SelectParameters(1).DefaultValue = New DateTime(dTmp2.Year, dTmp2.Month, dTmp2.Day, 23, 59, 59).AddHours(-Me.TimeOffset)
         End If
         GridView1.DataSource = sqlDS
         GridView1.DataBind()
@@ -105,14 +111,23 @@
         Return sOrderBy & "<br />" & user.Email
     End Function
     
-    Function ShowStatus(ByVal sStatus As String) As String
-        If sStatus = "WAITING_FOR_PAYMENT" Then
-            Return GetLocalResourceObject("WaitingForPayment")
-        ElseIf sStatus = "CONFIRMED" Then
-            Return GetLocalResourceObject("Confirmed")
-        Else
-            Return GetLocalResourceObject("Verified")
+    Function ShowStatus(ByVal sStatus As String, ByVal sMethod As String) As String
+        Dim sReturn As String = ""
+        
+        If sMethod = "PAYPAL" Then
+            sReturn = "Paypal"
+        ElseIf sMethod = "CASH_ON_DELIVERY" Then
+            sReturn = GetLocalResourceObject("COD")
         End If
+        
+        If sStatus = "WAITING_FOR_PAYMENT" Then
+            sReturn += " (" & GetLocalResourceObject("WaitingForPayment") & ")"
+        ElseIf sStatus = "CONFIRMED" Then
+            sReturn += " (" & GetLocalResourceObject("Confirmed") & ")"
+        Else
+            sReturn += " (" & GetLocalResourceObject("Verified") & ")"
+        End If
+        Return sReturn
     End Function
     
     Function ShowTotal(ByVal nSubTotal As Decimal, ByVal nShipping As Decimal, ByVal nTax As Decimal) As String
@@ -189,10 +204,6 @@
 </script>
 
 <asp:Panel ID="panelLogin" runat="server" Visible="False">
-<asp:Login ID="Login1" meta:resourcekey="Login1" runat="server"  PasswordRecoveryText="Password Recovery" TitleText="" OnLoggedIn="Login1_LoggedIn" OnPreRender="Login1_PreRender">
-      <LabelStyle HorizontalAlign="Left" Wrap="False" />
-  </asp:Login>
-  <br />
 </asp:Panel>
 
 <asp:Panel ID="panelOrders" runat="server">
@@ -206,8 +217,8 @@
     <td>
         <asp:DropDownList ID="dropOrderStatus" runat="server">
         <asp:ListItem Text="All Status" Value=""></asp:ListItem>
-        <asp:ListItem meta:resourcekey="optWaitingForPayment" Text="Waiting for payment" Value="WAITING_FOR_PAYMENT"></asp:ListItem>
-        <asp:ListItem meta:resourcekey="optConfirmed" Text="Confirmed" Value="CONFIRMED"></asp:ListItem>
+        <asp:ListItem meta:resourcekey="optWaitingForPayment" Text="Waiting for payment" Value="WAITING"></asp:ListItem>
+<%--        <asp:ListItem meta:resourcekey="optConfirmed" Text="Confirmed" Value="CONFIRMED"></asp:ListItem>--%>
         <asp:ListItem meta:resourcekey="optVerified" Text="Verified" Value="VERIFIED"></asp:ListItem>
         </asp:DropDownList>
     </td>
@@ -236,7 +247,7 @@
 </tr>
 </table>
 
-<asp:GridView ID="GridView1" AutoGenerateColumns="false" runat="server">
+<asp:GridView ID="GridView1" CellPadding="7" AutoGenerateColumns="false" runat="server">
 <Columns>
 <asp:TemplateField HeaderText="ID" meta:resourcekey="colID" ItemStyle-VerticalAlign="Top">
     <ItemTemplate>
@@ -245,7 +256,7 @@
 </asp:TemplateField>
 <asp:TemplateField HeaderText="Date" meta:resourcekey="colDate" ItemStyle-VerticalAlign="Top">
     <ItemTemplate>
-    <%#FormatDateTime(Eval("order_date"), DateFormat.ShortDate) & " " & FormatDateTime(Eval("order_date"), DateFormat.ShortTime)%> 
+    <%#FormatDateTime(CDate(Eval("order_date")).AddHours(Me.TimeOffset), DateFormat.GeneralDate)%> 
     </ItemTemplate>
 </asp:TemplateField>
 <asp:TemplateField HeaderText="Customer" meta:resourcekey="colCustomer" ItemStyle-VerticalAlign="Top">
@@ -253,7 +264,7 @@
     <%#ShowCustomer(Eval("order_by"))%><br />    
     </ItemTemplate>
 </asp:TemplateField>
-<asp:TemplateField HeaderText="Items" meta:resourcekey="colItems" ItemStyle-VerticalAlign="Top">
+<asp:TemplateField HeaderText="Items" Visible="false" meta:resourcekey="colItems" ItemStyle-VerticalAlign="Top">
     <ItemTemplate>
     <%#ShowItems(Eval("order_id"))%>
     </ItemTemplate>
@@ -263,9 +274,9 @@
     <%#ShowTotal(Eval("sub_total"), Eval("shipping"), Eval("tax"))%>
     </ItemTemplate>
 </asp:TemplateField>
-<asp:TemplateField HeaderText="Status" meta:resourcekey="colStatus" ItemStyle-VerticalAlign="Top">
+<asp:TemplateField HeaderText="Payment" meta:resourcekey="colStatus" ItemStyle-Wrap="false" ItemStyle-VerticalAlign="Top">
     <ItemTemplate>
-    <%#ShowStatus(Eval("status")) %>
+    <%#ShowStatus(Eval("status"), Eval("payment_method"))%>
     </ItemTemplate>
 </asp:TemplateField>
 <asp:TemplateField HeaderText="Shipment" meta:resourcekey="colShipment" ItemStyle-VerticalAlign="Top">

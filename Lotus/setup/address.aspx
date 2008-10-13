@@ -9,13 +9,18 @@
 <body>
     <form id="form1" runat="server">
     <div>
-    
-        <asp:DropDownList ID="DropDownList1" runat="server" AutoPostBack="True" 
-            onselectedindexchanged="DropDownList1_SelectedIndexChanged" Width="150px">
-        </asp:DropDownList><br /><br />
-        <asp:DropDownList ID="DropDownList2" runat="server" Enabled="False" 
-            Width="150px">
-        </asp:DropDownList>    
+        <asp:ScriptManager ID="ScriptManager1" runat="server">
+        </asp:ScriptManager>
+        <asp:UpdatePanel ID="UpdatePanel1" runat="server">
+        <ContentTemplate>
+            <asp:DropDownList ID="DropDownList1" runat="server" AutoPostBack="True" 
+                onselectedindexchanged="DropDownList1_SelectedIndexChanged" Width="150px">
+            </asp:DropDownList><br /><br />
+            <asp:DropDownList ID="DropDownList2" runat="server" Enabled="False" 
+                Width="150px">
+            </asp:DropDownList>  
+        </ContentTemplate>
+        </asp:UpdatePanel>  
     </div>
     </form>
 </body>

@@ -5,7 +5,8 @@
 <script runat="server">   
     Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs)
         Dim oContent As Content = New Content
- 
+        oContent.TimeOffset = Me.TimeOffset
+        
         Dim dt As DataTable
         dt = oContent.GetPage(Me.ModuleData, True)
         If dt.Rows.Count > 0 Then
@@ -72,7 +73,7 @@
         <asp:Repeater ID="dlPagesWithin" runat="server">
         <ItemTemplate>  
             <div style="height:100%;margin-bottom:8px;"> 
-                <div><%#FormatDateTime(Eval("display_date"), DateFormat.LongDate)%></div>
+                <div><%#FormatDateTime(CDate(Eval("display_date")).AddHours(Me.TimeOffset), DateFormat.LongDate)%></div>
                 <b><%#HttpUtility.HtmlEncode(Eval("title"))%></b>
                 <div><%#Eval("summary") %></div>
                 <div><a target="<%#Eval("link_target")%>" href="<%#Eval("file_name")%>">

@@ -1,11 +1,11 @@
 function getHTMLBody(idIframe)
-	{
-	var oEditor=eval(idIframe);
+  {
+  var oEditor=eval(idIframe);
 
-	sHTML=oEditor.document.body.innerHTML;
-	sHTML=String(sHTML).replace(/\<PARAM NAME=\"Play\" VALUE=\"0\">/ig,"<PARAM NAME=\"Play\" VALUE=\"-1\">");
-	return sHTML;
-	}
+  sHTML=oEditor.document.body.innerHTML;
+  sHTML=String(sHTML).replace(/\<PARAM NAME=\"Play\" VALUE=\"0\">/ig,"<PARAM NAME=\"Play\" VALUE=\"-1\">");
+  return sHTML;
+  }
 
 /*Insert custom HTML function*/
 function insertHTML(wndIframe, sHTML)
@@ -48,14 +48,14 @@ function insertHTML(wndIframe, sHTML)
   }
 
 function doCmd(idIframe,sCmd,sOption)
-	{
-	var oEditor=eval(idIframe);
-	var oSel=oEditor.document.selection.createRange();
-	var sType=oEditor.document.selection.type;
-	var oTarget=(sType=="None"?oEditor.document:oSel);
-	oTarget.execCommand(sCmd,false,sOption);
-	}
-	
+  {
+  var oEditor=eval(idIframe);
+  var oSel=oEditor.document.selection.createRange();
+  var sType=oEditor.document.selection.type;
+  var oTarget=(sType=="None"?oEditor.document:oSel);
+  oTarget.execCommand(sCmd,false,sOption);
+  }
+  
 function toggleViewSource(chk, idIframe) {
     if (chk.checked) {
         //view souce
@@ -94,4 +94,8 @@ function applySource(idIframe) {
     oEditor.document.execCommand("MultipleSelection", true, true);
     oEditor.document.execCommand("LiveResize", true, true);
     oEditor.document.body.onmouseup=function() { oUtil.oEditor = oEditor } ;
-}	
+} 
+
+function encodeHTMLCode(sHTML) {
+  return sHTML.replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/&/g,"&amp;");
+}

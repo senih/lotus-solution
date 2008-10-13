@@ -1,3 +1,35 @@
+
+if not exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[content_templates]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
+	BEGIN
+	    CREATE TABLE [dbo].[content_templates] (
+		    [content_template_id] [int] IDENTITY NOT NULL ,
+		    [content_template_name] [nvarchar] (50) NOT NULL ,
+		    [content_template_desc] [ntext] NULL,
+		    [content_template] [ntext] NULL
+	    ) ON [PRIMARY]
+	    ALTER TABLE [dbo].[content_templates] WITH NOCHECK ADD 
+		    CONSTRAINT [PK_content_templates] PRIMARY KEY  CLUSTERED 
+		    (
+			    [content_template_id]
+		    )  ON [PRIMARY] 
+    		
+	    INSERT INTO content_templates (content_template_name, content_template_desc, content_template) 
+	    VALUES ('General Content','Default Content (Title, Content)','<h1 style="font:14px arial;font-weight:bold;text-transform:uppercase;">[%TITLE%]</h1><div>[%CONTENT_BODY%]</div><div>[%FILE_VIEW%]</div><div>[%FILE_DOWNLOAD%]</div><div>[%LISTING%]</div>')
+	    INSERT INTO content_templates (content_template_name, content_template_desc, content_template) 
+	    VALUES ('Article Content','Default Content with Author Info & Time Stamp (Last Updated Date)','<h1 style="font:14px arial;font-weight:bold;text-transform:uppercase;">[%TITLE%]</h1><div class="publishing_info">[%LAST_UPDATED_DATE%] - [%LAST_UPDATED_BY%]</div><div>[%CONTENT_BODY%]</div><div>[%FILE_VIEW%]</div><div>[%FILE_DOWNLOAD%]</div><div>[%LISTING%]</div>')
+	    INSERT INTO content_templates (content_template_name, content_template_desc, content_template) 
+	    VALUES ('News Content','Default Content with Author Info, Category Info & Time Stamp (Display Date)','<h1 style="font:14px arial;font-weight:bold;text-transform:uppercase;">[%TITLE%]</h1><div class="publishing_info">[%DISPLAY_DATE%] - [%LAST_UPDATED_BY%]</div><div>[%CONTENT_BODY%]</div><div>[%FILE_VIEW%]</div><div>[%FILE_DOWNLOAD%]</div><div>[%LISTING%]</div><div class="category_info">Filed Under: [%CATEGORY_INFO%]</div>')
+	    INSERT INTO content_templates (content_template_name, content_template_desc, content_template) 
+	    VALUES ('BLOG Content','Default Content with Author Info, Category Info & Time Stamp (Display Date)','<br />'+CHAR(13)+'<div style="width:42px;height:48px;float:left;background:url(''resources/1/blog_date.gif'');margin-right:10px;margin-bottom:3px">'+CHAR(13)+'<div style="width:42px;height:20px;padding-top:5px;text-align:center;color:white;font-size:11px">[%DISPLAY_MONTH%]</div>'+CHAR(13)+'<div style="width:38px;text-align:center;color:#333333;font-size:18px;line-height:15px">[%DISPLAY_DAY%]</div></div>'+CHAR(13)+'<h1 style="line-height:15px;font-family:arial;font-weight:bold;font-size:14px;color:#333333;text-transform: uppercase;margin:0px;padding-top:5px;padding-bottom:4px">[%TITLE%]</h1>'+CHAR(13)+'<div style="padding-left:8px;height:4px;border-top:#cccccc 1px dotted"></div>'+CHAR(13)+'<img src="resources/1/blog_category.gif" alt="" style="float:left" />'+CHAR(13)+'<div style=";font-size:10px;color:#a0a0a0;margin-top:2px">&nbsp;[%CATEGORY_INFO%]</div>'+CHAR(13)+'<br /><br />'+CHAR(13)+'<div>[%CONTENT_BODY%]</div><div>[%FILE_VIEW%]</div><div>[%FILE_DOWNLOAD%]</div><div>[%LISTING%]</div>')
+	    INSERT INTO content_templates (content_template_name, content_template_desc, content_template) 
+	    VALUES ('Product Content','Default Content with Category Info','<h1 style="font:14px arial;font-weight:bold;text-transform:uppercase;">[%TITLE%]</h1><div>[%CONTENT_BODY%]</div><div>[%FILE_VIEW%]</div><div>[%FILE_DOWNLOAD%]</div><div>[%LISTING%]</div><div class="category_info">Category: [%CATEGORY_INFO%]</div>')
+	    INSERT INTO content_templates (content_template_name, content_template_desc, content_template) 
+	    VALUES ('Directory Content','Default Content with Category Info','<h1 style="font:14px arial;font-weight:bold;text-transform:uppercase;">[%TITLE%]</h1><div>[%CONTENT_BODY%]</div><div>[%FILE_VIEW%]</div><div>[%FILE_DOWNLOAD%]</div><div>[%LISTING%]</div><div class="category_info">Filed Under: [%CATEGORY_INFO%]</div>')
+	    INSERT INTO content_templates (content_template_name, content_template_desc, content_template) 
+	    VALUES ('Photo Content','Default Content with Category Info','<h1 style="font:14px arial;font-weight:bold;text-transform:uppercase;">[%TITLE%]</h1><div>[%CONTENT_BODY%]</div><div>[%FILE_VIEW%]</div><div>[%FILE_DOWNLOAD%]</div><div>[%LISTING%]</div><div class="category_info">Filed Under: [%CATEGORY_INFO%]</div>')
+	END
+GO
+
 if not exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[listing_templates]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
 	CREATE TABLE [dbo].[listing_templates] (
@@ -25,6 +57,20 @@ BEGIN
 	INSERT INTO listing_templates (template_name,template) VALUES ('Photo Gallery - Community Style','<div style="margin-top:15px;margin-right:40px;height:170px;"><div style="padding-top:5px;border:#E0E0E0 1px solid;height:100px;text-align:center;"><a style="[%HIDE_FILE_VIEW_LISTING%]" target="[%LINK_TARGET%]" href="[%FILE_NAME%]"><img onmouseover="float.imgSet(''[%FILE_VIEW_LISTING_MORE_URL%]'');float.doShow(event, ''popImage'')" onmouseout="float.doHide(''popImage'');float.imgClear()" alt="" title="" src="[%FILE_VIEW_LISTING_URL%]&sz=90" border="0" /></a></div><div style="font-size:9px">[%TITLE%]&nbsp;<i style="color:#888888">- [%LAST_UPDATED_BY%]</i></div><div style="font-size:9px">[%SUMMARY%]</div><div>[%RATING%]</div><div style="font-size:9px">Downloads: [%TOTAL_DOWNLOADS%]</div><div style="font-size:9px;"><span style="[%HIDE_FILE_DOWNLOAD%]"><a href="[%FILE_DOWNLOAD_URL%]">Download</a>&nbsp;<span style="color:#c0c0c0">|</span></span><a target="[%LINK_TARGET%]" href="[%FILE_NAME%]">Details</a></div></div>')
 	INSERT INTO listing_templates (template_name,template) VALUES ('Photo Gallery - Corporate Style','<table style="margin-top:10px;margin-bottom:10px;background:#efefef;width:100%;height:80px;" cellpadding="0" cellspacing="0"><tr><td style="padding:7px;padding-top:4px;height:18px;border-top:#b7b7b7 0px solid;background:url(''resources/1/boxheaderbg1.gif'') #e0e0e0;"><table cellpadding="0" cellspacing="0" style="width:100%"><tr><td><a style="color:#333333;font-family:arial;font-weight:bold;font-size:11px;white-space:nowrap" target="[%LINK_TARGET%]" href="[%FILE_NAME%]">[%TITLE%]</a></td><td style="text-align:right;font-size:10px;white-space:nowrap">[%LAST_UPDATED_BY%]</td></tr></table></td></tr><tr><td style="background:#f7f7f7"><table cellpadding="0" cellspacing="0" style="width:100%"><tr><td valign="top"><div style="height:100px;width:100px"><img style="margin:5px" onmouseover="float.imgSet(''[%FILE_VIEW_LISTING_MORE_URL%]'');float.doShow(event, ''popImage'')" onmouseout="float.doHide(''popImage'');float.imgClear()" alt="" title="" src="[%FILE_VIEW_LISTING_URL%]&sz=90" border="0" align="left" /></div></td><td style="width:100%;padding:7px;height:100%" valign="top">[%SUMMARY%]<div>Downloads: [%TOTAL_DOWNLOADS%]</div><div>File Size: [%FILE_SIZE%]</div><div><span style="[%HIDE_FILE_DOWNLOAD%]"><a href="[%FILE_DOWNLOAD_URL%]">Download</a>&nbsp;<span style="color:#c0c0c0">|</span></span><a target="[%LINK_TARGET%]" href="[%FILE_NAME%]">Details</a></div></td></tr></table></td></tr><tr><td style="border-bottom:#DDDDDD 2px solid;padding:7px"><table cellpadding="0" cellspacing="0" style="width:100%"><tr><td style="font-size:10px;">&nbsp;</td><td style="font-size:10px;text-align:right">[%COMMENTS%] comments &nbsp;[%RATING%]</td></tr></table></td></tr></table>')
 END
+GO
+
+If not exists(select sysobjects.name, syscolumns.name from sysobjects left join syscolumns on sysobjects.id=syscolumns.id where sysobjects.name='listing_templates' and sysobjects.type='U' and syscolumns.name='content_template_id')
+  alter table listing_templates add content_template_id int NULL
+GO
+
+If not exists(select sysobjects.name, syscolumns.name from sysobjects left join syscolumns on sysobjects.id=syscolumns.id where sysobjects.name='listing_templates' and sysobjects.type='U' and syscolumns.name='content_enable_comment')
+  alter table listing_templates add content_enable_comment bit DEFAULT 0 WITH VALUES
+GO
+If not exists(select sysobjects.name, syscolumns.name from sysobjects left join syscolumns on sysobjects.id=syscolumns.id where sysobjects.name='listing_templates' and sysobjects.type='U' and syscolumns.name='content_enable_comment_anonymous')
+  alter table listing_templates add content_enable_comment_anonymous bit DEFAULT 0 WITH VALUES
+GO
+If not exists(select sysobjects.name, syscolumns.name from sysobjects left join syscolumns on sysobjects.id=syscolumns.id where sysobjects.name='listing_templates' and sysobjects.type='U' and syscolumns.name='content_enable_rating')
+  alter table listing_templates add content_enable_rating bit DEFAULT 0 WITH VALUES
 GO
 
 If not exists(select sysobjects.name, syscolumns.name from sysobjects left join syscolumns on sysobjects.id=syscolumns.id where sysobjects.name='listing_templates' and sysobjects.type='U' and syscolumns.name='listing_type')
@@ -239,6 +285,10 @@ if not exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[templa
 			[template_id]
 		)  ON [PRIMARY] 
 	END
+GO
+
+If not exists(select sysobjects.name, syscolumns.name from sysobjects left join syscolumns on sysobjects.id=syscolumns.id where sysobjects.name='templates' and sysobjects.type='U' and syscolumns.name='content_template_id')
+  alter table templates add content_template_id int NULL
 GO
 
 IF NOT EXISTS (SELECT * FROM templates WHERE folder_name='community_001')
@@ -901,10 +951,11 @@ GO
 
 CREATE PROCEDURE dbo.advcms_CreateTemplate
     @template_name nvarchar(50),
-    @folder_name nvarchar(50)
+    @folder_name nvarchar(50),
+    @content_template_id int
 AS
-INSERT INTO templates (template_name, folder_name) 
-VALUES (@template_name, @folder_name)
+INSERT INTO templates (template_name, folder_name, content_template_id) 
+VALUES (@template_name, @folder_name, @content_template_id)
 SELECT * FROM templates WHERE template_id=SCOPE_IDENTITY()
 GO
 
@@ -992,7 +1043,10 @@ select top 100 percent
 	listing_templates.listing_columns as listing_columns,
 	listing_templates.listing_page_size as listing_page_size,
 	listing_templates.listing_use_categories as listing_use_categories,
-	listing_templates.listing_default_order as listing_default_order
+	listing_templates.listing_default_order as listing_default_order,
+	listing_templates.content_enable_comment as content_enable_comment,		
+	listing_templates.content_enable_rating as content_enable_rating,
+	listing_templates.content_enable_comment_anonymous as content_enable_comment_anonymous
 from (
 select pages.*, template_id as page_template_id from pages where use_default_template=0 and status='published'
 union all
@@ -1109,6 +1163,10 @@ select top 100 percent
 	listing_templates.listing_page_size as listing_page_size,
 	listing_templates.listing_use_categories as listing_use_categories,
 	listing_templates.listing_default_order as listing_default_order,
+	listing_templates.content_enable_comment as content_enable_comment,		
+	listing_templates.content_enable_rating as content_enable_rating,	
+	listing_templates.content_enable_comment_anonymous as content_enable_comment_anonymous,
+	pages_published.is_hidden as is_hidden2,
     pages_published.title as title2,
     pages_published.file_name as file_name2,
     pages_published.link_text as link_text2,
@@ -1521,7 +1579,7 @@ drop table #stack
 
 select  
     t2.page_id, t2.parent_id, t2.sorting, t2.listing_property, t2.file_name, t2.title, t2.link_text, 
-    t2.published_start_date, t2.published_end_date, t2.is_hidden, t2.is_system, t2.channel_name, 
+    t2.published_start_date, t2.published_end_date, t2.is_hidden, t2.is_hidden2, t2.is_system, t2.channel_name, 
     t2.channel_permission, t2.disable_collaboration, t2.last_updated_date, t2.status, t2.owner, 
     t2.title2, t2.link_text2, t2.is_link, t2.link_target, t2.link_target2, 
     t1.level as lvl
@@ -1636,68 +1694,6 @@ update pages set sorting=6 where file_name='admin_templates.aspx';
 update pages set sorting=8 where file_name='admin_modules.aspx';
 GO
 
---*******************************
---Events
---*******************************
-
-if not exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[events]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
-BEGIN
-    CREATE TABLE [dbo].[events] (
-	    [event_id] [int] IDENTITY (1, 1) NOT NULL ,
-	    [title] [nvarchar] (50) NOT NULL ,
-	    [description] [nvarchar] (255) NULL ,
-	    [is_allday] [bit] NOT NULL ,
-	    [from_date] [datetime] NOT NULL ,
-	    [to_date] [datetime] NOT NULL ,
-	    [repeat] [int] NOT NULL ,
-	    [until] [smalldatetime] NOT NULL ,
-	    [reminder] [int] NULL ,
-	    [reminder_id] [int] NULL ,
-	    [page] [nvarchar] (50) NULL ,
-	    [type] [int] NULL ,
-	    [author] [nvarchar] (50) NULL ,
-	    [parent_id] [int] NOT NULL
-    ) ON [PRIMARY]
-END
-
-GO
-
-DECLARE @nPageIdTmp int
-DECLARE @nPageId int
-DECLARE @nSortingMax int
-
-IF NOT EXISTS (SELECT file_name FROM pages 
-    WHERE file_name='events.aspx' OR file_name='event_new.aspx' OR file_name='event_edit.aspx')
-BEGIN
-    SET @nPageIdTmp = (SELECT MAX(page_id) FROM pages) + 1
-    insert into pages (page_id,version,parent_id,sorting,channel_id,use_default_template,template_id,page_type,file_name,title,summary,link_text,link_placement,content_left,content_body,content_right,file_attachment,file_size,owner,created_date,last_updated_date,last_updated_by,published_start_date,published_end_date,meta_keywords,meta_description,status,is_hidden,is_system,page_module,use_discussion,use_rating,allow_links_crawled,allow_page_indexed,is_marked_for_archival,editor_review_by,publisher_review_by,notes,display_date) values (
-    @nPageIdTmp,1,8,2,1,1,1,1,'events.aspx','Events','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/events.ascx',0,0,0,0,0,'','','',getdate()
-    )
-
-    SET @nPageId = (SELECT MAX(page_id) FROM pages) + 1
-    insert into pages (page_id,version,parent_id,sorting,channel_id,use_default_template,template_id,page_type,file_name,title,summary,link_text,link_placement,content_left,content_body,content_right,file_attachment,file_size,owner,created_date,last_updated_date,last_updated_by,published_start_date,published_end_date,meta_keywords,meta_description,status,is_hidden,is_system,page_module,use_discussion,use_rating,allow_links_crawled,allow_page_indexed,is_marked_for_archival,editor_review_by,publisher_review_by,notes,display_date) values (
-    @nPageId,1,@nPageIdTmp,2,1,1,1,1,'event_new.aspx','New Event','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/event_new.ascx',0,0,0,0,0,'','','',getdate()
-    )
-
-    SET @nPageId = (SELECT MAX(page_id) FROM pages) + 1
-    insert into pages (page_id,version,parent_id,sorting,channel_id,use_default_template,template_id,page_type,file_name,title,summary,link_text,link_placement,content_left,content_body,content_right,file_attachment,file_size,owner,created_date,last_updated_date,last_updated_by,published_start_date,published_end_date,meta_keywords,meta_description,status,is_hidden,is_system,page_module,use_discussion,use_rating,allow_links_crawled,allow_page_indexed,is_marked_for_archival,editor_review_by,publisher_review_by,notes,display_date) values (
-    @nPageId,1,@nPageIdTmp,4,1,1,1,1,'event_edit.aspx','Edit Event','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/event_edit.ascx',0,0,0,0,0,'','','',getdate()
-    )
-    
-    SET @nPageId = (SELECT MAX(page_id) FROM pages) + 1
-    insert into pages (page_id,version,parent_id,sorting,channel_id,use_default_template,template_id,page_type,file_name,title,summary,link_text,link_placement,content_left,content_body,content_right,file_attachment,file_size,owner,created_date,last_updated_date,last_updated_by,published_start_date,published_end_date,meta_keywords,meta_description,status,is_hidden,is_system,page_module,use_discussion,use_rating,allow_links_crawled,allow_page_indexed,is_marked_for_archival,editor_review_by,publisher_review_by,notes,display_date) values (
-    @nPageId,1,@nPageIdTmp,6,1,1,1,1,'event_embed.aspx','Embed Upcoming Event List','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/event_embed.ascx',0,0,0,0,0,'','','',getdate()
-    )
-
-    SET @nSortingMax = (SELECT MAX(sorting) FROM pages WHERE parent_id=8) + 2
-    update pages set sorting=@nSortingMax where file_name='events.aspx';
-END
-
-GO
-
-ALTER TABLE events ALTER COLUMN [description] NVARCHAR(255) NULL
-
-GO
 
 --*******************************
 --Polls
@@ -1787,7 +1783,7 @@ if @link_placement<>'main'
 
 select  
     t2.page_id, t2.parent_id, t2.sorting, t2.listing_property, t2.file_name, t2.title, t2.link_text, 
-    t2.published_start_date, t2.published_end_date, t2.is_hidden, t2.is_system, t2.channel_name, 
+    t2.published_start_date, t2.published_end_date, t2.is_hidden, t2.is_hidden2, t2.is_system, t2.channel_name, 
     t2.channel_permission, t2.disable_collaboration, t2.last_updated_date, t2.status, t2.owner, 
     t2.title2, t2.link_text2, t2.is_link, t2.link_target, t2.link_target2,
     t1.level as lvl
@@ -1916,6 +1912,15 @@ If not exists(select sysobjects.name, syscolumns.name from sysobjects left join 
   alter table locales add site_email nvarchar(50) DEFAULT '' WITH VALUES
 Go
 
+If not exists(select sysobjects.name, syscolumns.name from sysobjects left join syscolumns on sysobjects.id=syscolumns.id where sysobjects.name='locales' and sysobjects.type='U' and syscolumns.name='uiculture')
+  alter table locales add uiculture nvarchar(50) NULL
+Go
+If not exists(select sysobjects.name, syscolumns.name from sysobjects left join syscolumns on sysobjects.id=syscolumns.id where sysobjects.name='locales' and sysobjects.type='U' and syscolumns.name='time_offset')
+  alter table locales add time_offset decimal(5,2) DEFAULT 0
+Go
+Update locales set time_offset=0 WHERE time_offset is NULL
+Go
+
 If not exists(select sysobjects.name, syscolumns.name from sysobjects left join syscolumns on sysobjects.id=syscolumns.id where sysobjects.name='locales' and sysobjects.type='U' and syscolumns.name='culture')
   ALTER TABLE locales ADD [culture] [nvarchar] (50)
 Go
@@ -1996,12 +2001,12 @@ IF EXISTS (SELECT name FROM sysobjects
    DROP PROCEDURE advcms_InsertLocale
 GO
 CREATE PROCEDURE dbo.advcms_InsertLocale 
-	@home_page nvarchar(50), @description nvarchar(255), @instruction_text nvarchar(255), @culture nvarchar(50), @channel_id int, @active bit, @site_name nvarchar(50), @site_address nvarchar(255), @site_city nvarchar(100), @site_state nvarchar(50), @site_country nvarchar(50), @site_zip nvarchar(50), @site_phone nvarchar(50), @site_fax nvarchar(50), @site_email nvarchar(50)
+	@home_page nvarchar(50), @description nvarchar(255), @instruction_text nvarchar(255), @culture nvarchar(50), @channel_id int, @active bit, @site_name nvarchar(50), @site_address nvarchar(255), @site_city nvarchar(100), @site_state nvarchar(50), @site_country nvarchar(50), @site_zip nvarchar(50), @site_phone nvarchar(50), @site_fax nvarchar(50), @site_email nvarchar(50), @time_offset decimal(5,2)
 AS
 BEGIN
 	DECLARE @nPageId int
 
-	insert into locales (home_page, description, instruction_text, culture, active, site_name, site_address, site_city, site_state, site_country, site_zip, site_phone, site_fax, site_email) values (@home_page,@description,@instruction_text, @culture, @active, @site_name, @site_address, @site_city, @site_state, @site_country, @site_zip, @site_phone, @site_fax, @site_email)
+	insert into locales (home_page, description, instruction_text, culture, active, site_name, site_address, site_city, site_state, site_country, site_zip, site_phone, site_fax, site_email, time_offset) values (@home_page,@description,@instruction_text, @culture, @active, @site_name, @site_address, @site_city, @site_state, @site_country, @site_zip, @site_phone, @site_fax, @site_email, @time_offset)
 
 	IF NOT EXISTS (SELECT *  FROM pages_working  WHERE file_name=@home_page)
 	BEGIN
@@ -2024,15 +2029,15 @@ BEGIN
 			)
 			
     	insert into pages (page_id,version,parent_id,sorting,channel_id,use_default_template,template_id,page_type,file_name,title,summary,link_text,link_placement,content_left,content_body,content_right,file_attachment,file_size,owner,created_date,last_updated_date,last_updated_by,published_start_date,published_end_date,meta_keywords,meta_description,status,is_hidden,is_system,page_module,use_discussion,use_rating,allow_links_crawled,allow_page_indexed,is_marked_for_archival,editor_review_by,publisher_review_by,notes,display_date, properties,root_id) values (
-    		@nPageId+4,1,@nPageId,10,@channel_id,1,1,1,'shop_downloads'+CAST(@nPageId AS VARCHAR(20))+'.aspx','Downloads','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/shop_downloads.ascx',0,0,0,0,0,'','','',getdate(),'',@nPageId
+    		@nPageId+4,1,@nPageId,10,@channel_id,1,1,1,'shop_downloads_'+CAST(@nPageId AS VARCHAR(20))+'.aspx','Downloads','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/shop_downloads.ascx',0,0,0,0,0,'','','',getdate(),'',@nPageId
 			)
 			
     	insert into pages (page_id,version,parent_id,sorting,channel_id,use_default_template,template_id,page_type,file_name,title,summary,link_text,link_placement,content_left,content_body,content_right,file_attachment,file_size,owner,created_date,last_updated_date,last_updated_by,published_start_date,published_end_date,meta_keywords,meta_description,status,is_hidden,is_system,page_module,use_discussion,use_rating,allow_links_crawled,allow_page_indexed,is_marked_for_archival,editor_review_by,publisher_review_by,notes,display_date, properties,root_id) values (
-    		@nPageId+5,1,@nPageId,10,@channel_id,1,1,1,'shop_pcart'+CAST(@nPageId AS VARCHAR(20))+'.aspx','Shopping Cart','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/shop_pcart.ascx',0,0,0,0,0,'','','',getdate(),'',@nPageId
+    		@nPageId+5,1,@nPageId,10,@channel_id,1,1,1,'shop_pcart_'+CAST(@nPageId AS VARCHAR(20))+'.aspx','Shopping Cart','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/shop_pcart.ascx',0,0,0,0,0,'','','',getdate(),'',@nPageId
 			)
 			
     	insert into pages (page_id,version,parent_id,sorting,channel_id,use_default_template,template_id,page_type,file_name,title,summary,link_text,link_placement,content_left,content_body,content_right,file_attachment,file_size,owner,created_date,last_updated_date,last_updated_by,published_start_date,published_end_date,meta_keywords,meta_description,status,is_hidden,is_system,page_module,use_discussion,use_rating,allow_links_crawled,allow_page_indexed,is_marked_for_archival,editor_review_by,publisher_review_by,notes,display_date, properties,root_id) values (
-    		@nPageId+6,1,@nPageId,10,@channel_id,1,1,1,'shop_pcompleted'+CAST(@nPageId AS VARCHAR(20))+'.aspx','Order Completed','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/shop_pcompleted.ascx',0,0,0,0,0,'','','',getdate(),'',@nPageId
+    		@nPageId+6,1,@nPageId,10,@channel_id,1,1,1,'shop_pcompleted_'+CAST(@nPageId AS VARCHAR(20))+'.aspx','Order Completed','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/shop_pcompleted.ascx',0,0,0,0,0,'','','',getdate(),'',@nPageId
 			)
 			
         DECLARE @nTempId int
@@ -2057,200 +2062,165 @@ BEGIN
         SET @nTempId = (SELECT page_id FROM pages WHERE file_name='admin_users_'+CAST(@nPageId AS VARCHAR(20))+'.aspx')
 
         insert into pages (page_id,version,parent_id,sorting,channel_id,use_default_template,template_id,page_type,file_name,title,summary,link_text,link_placement,content_left,content_body,content_right,file_attachment,file_size,owner,created_date,last_updated_date,last_updated_by,published_start_date,published_end_date,meta_keywords,meta_description,status,is_hidden,is_system,page_module,use_discussion,use_rating,allow_links_crawled,allow_page_indexed,is_marked_for_archival,editor_review_by,publisher_review_by,notes,display_date, properties,root_id) values (
-	        @nPageId+10,1,@nTempId,2,@channel_id,1,1,1,'admin_user_new_'+CAST(@nPageId AS VARCHAR(20))+'.aspx','New User','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/admin_user_new.ascx',0,0,0,0,0,'','','',getdate(),'',@nPageId
-	        )
-        insert into pages (page_id,version,parent_id,sorting,channel_id,use_default_template,template_id,page_type,file_name,title,summary,link_text,link_placement,content_left,content_body,content_right,file_attachment,file_size,owner,created_date,last_updated_date,last_updated_by,published_start_date,published_end_date,meta_keywords,meta_description,status,is_hidden,is_system,page_module,use_discussion,use_rating,allow_links_crawled,allow_page_indexed,is_marked_for_archival,editor_review_by,publisher_review_by,notes,display_date, properties,root_id) values (
-	        @nPageId+11,1,@nTempId,4,@channel_id,1,1,1,'admin_user_info_'+CAST(@nPageId AS VARCHAR(20))+'.aspx','Edit User','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/admin_user_info.ascx',0,0,0,0,0,'','','',getdate(),'',@nPageId
+	        @nPageId+10,1,@nTempId,4,@channel_id,1,1,1,'admin_user_info_'+CAST(@nPageId AS VARCHAR(20))+'.aspx','Edit User','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/admin_user_info.ascx',0,0,0,0,0,'','','',getdate(),'',@nPageId
 	        )
 	        
 		insert into pages (page_id,version,parent_id,sorting,channel_id,use_default_template,template_id,page_type,file_name,title,summary,link_text,link_placement,content_left,content_body,content_right,file_attachment,file_size,owner,created_date,last_updated_date,last_updated_by,published_start_date,published_end_date,meta_keywords,meta_description,status,is_hidden,is_system,page_module,use_discussion,use_rating,allow_links_crawled,allow_page_indexed,is_marked_for_archival,editor_review_by,publisher_review_by,notes,display_date, properties,root_id) values (
-			@nPageId+12,1,@nTempId,6,@channel_id,1,1,1,'admin_users_import_'+CAST(@nPageId AS VARCHAR(20))+'.aspx','Import Users','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/admin_users_import.ascx',0,0,0,0,0,'','','',getdate(),'',@nPageId
+			@nPageId+11,1,@nTempId,6,@channel_id,1,1,1,'admin_users_import_'+CAST(@nPageId AS VARCHAR(20))+'.aspx','Import Users','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/admin_users_import.ascx',0,0,0,0,0,'','','',getdate(),'',@nPageId
 			)
 
         insert into pages (page_id,version,parent_id,sorting,channel_id,use_default_template,template_id,page_type,file_name,title,summary,link_text,link_placement,content_left,content_body,content_right,file_attachment,file_size,owner,created_date,last_updated_date,last_updated_by,published_start_date,published_end_date,meta_keywords,meta_description,status,is_hidden,is_system,page_module,use_discussion,use_rating,allow_links_crawled,allow_page_indexed,is_marked_for_archival,editor_review_by,publisher_review_by,notes,display_date, properties,root_id) values (
-	        @nPageId+13,1,@nAdminId,4,@channel_id,1,1,1,'admin_channels_'+CAST(@nPageId AS VARCHAR(20))+'.aspx','Channels','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/admin_channels.ascx',0,0,0,0,0,'','','',getdate(),'',@nPageId
-	        )
-        SET @nTempId = (SELECT page_id FROM pages WHERE file_name='admin_channels_'+CAST(@nPageId AS VARCHAR(20))+'.aspx')
-
-        insert into pages (page_id,version,parent_id,sorting,channel_id,use_default_template,template_id,page_type,file_name,title,summary,link_text,link_placement,content_left,content_body,content_right,file_attachment,file_size,owner,created_date,last_updated_date,last_updated_by,published_start_date,published_end_date,meta_keywords,meta_description,status,is_hidden,is_system,page_module,use_discussion,use_rating,allow_links_crawled,allow_page_indexed,is_marked_for_archival,editor_review_by,publisher_review_by,notes,display_date, properties,root_id) values (
-	        @nPageId+14,1,@nTempId,2,@channel_id,1,1,1,'admin_channel_new_'+CAST(@nPageId AS VARCHAR(20))+'.aspx','New Channel','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/admin_channel_new.ascx',0,0,0,0,0,'','','',getdate(),'',@nPageId
-	        )
-        insert into pages (page_id,version,parent_id,sorting,channel_id,use_default_template,template_id,page_type,file_name,title,summary,link_text,link_placement,content_left,content_body,content_right,file_attachment,file_size,owner,created_date,last_updated_date,last_updated_by,published_start_date,published_end_date,meta_keywords,meta_description,status,is_hidden,is_system,page_module,use_discussion,use_rating,allow_links_crawled,allow_page_indexed,is_marked_for_archival,editor_review_by,publisher_review_by,notes,display_date, properties,root_id) values (
-	        @nPageId+15,1,@nTempId,4,@channel_id,1,1,1,'admin_channel_info_'+CAST(@nPageId AS VARCHAR(20))+'.aspx','Edit Channel','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/admin_channel_info.ascx',0,0,0,0,0,'','','',getdate(),'',@nPageId
+	        @nPageId+12,1,@nAdminId,4,@channel_id,1,1,1,'admin_channels_'+CAST(@nPageId AS VARCHAR(20))+'.aspx','Channels','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/admin_channels.ascx',0,0,0,0,0,'','','',getdate(),'',@nPageId
 	        )
 
         insert into pages (page_id,version,parent_id,sorting,channel_id,use_default_template,template_id,page_type,file_name,title,summary,link_text,link_placement,content_left,content_body,content_right,file_attachment,file_size,owner,created_date,last_updated_date,last_updated_by,published_start_date,published_end_date,meta_keywords,meta_description,status,is_hidden,is_system,page_module,use_discussion,use_rating,allow_links_crawled,allow_page_indexed,is_marked_for_archival,editor_review_by,publisher_review_by,notes,display_date, properties,root_id) values (
-	        @nPageId+16,1,@nAdminId,6,@channel_id,1,1,1,'approval_'+CAST(@nPageId AS VARCHAR(20))+'.aspx','Approval Assistant','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/approval.ascx',0,0,0,0,0,'','','',getdate(),'',@nPageId
+	        @nPageId+13,1,@nAdminId,6,@channel_id,1,1,1,'approval_'+CAST(@nPageId AS VARCHAR(20))+'.aspx','Approval Assistant','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/approval.ascx',0,0,0,0,0,'','','',getdate(),'',@nPageId
 	        )
 
         insert into pages (page_id,version,parent_id,sorting,channel_id,use_default_template,template_id,page_type,file_name,title,summary,link_text,link_placement,content_left,content_body,content_right,file_attachment,file_size,owner,created_date,last_updated_date,last_updated_by,published_start_date,published_end_date,meta_keywords,meta_description,status,is_hidden,is_system,page_module,use_discussion,use_rating,allow_links_crawled,allow_page_indexed,is_marked_for_archival,editor_review_by,publisher_review_by,notes,display_date, properties,root_id) values (
-	        @nPageId+17,1,@nAdminId,8,@channel_id,1,1,1,'admin_templates_'+CAST(@nPageId AS VARCHAR(20))+'.aspx','Templates','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/admin_templates.ascx',0,0,0,0,0,'','','',getdate(),'',@nPageId
+	        @nPageId+14,1,@nAdminId,8,@channel_id,1,1,1,'admin_templates_'+CAST(@nPageId AS VARCHAR(20))+'.aspx','Templates','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/admin_templates.ascx',0,0,0,0,0,'','','',getdate(),'',@nPageId
 	        )
         SET @nTempId = (SELECT page_id FROM pages WHERE file_name='admin_templates_'+CAST(@nPageId AS VARCHAR(20))+'.aspx')
 
         insert into pages (page_id,version,parent_id,sorting,channel_id,use_default_template,template_id,page_type,file_name,title,summary,link_text,link_placement,content_left,content_body,content_right,file_attachment,file_size,owner,created_date,last_updated_date,last_updated_by,published_start_date,published_end_date,meta_keywords,meta_description,status,is_hidden,is_system,page_module,use_discussion,use_rating,allow_links_crawled,allow_page_indexed,is_marked_for_archival,editor_review_by,publisher_review_by,notes,display_date, properties,root_id) values (
-	        @nPageId+18,1,@nAdminId,10,@channel_id,1,1,1,'admin_modules_'+CAST(@nPageId AS VARCHAR(20))+'.aspx','Modules','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/admin_modules.ascx',0,0,0,0,0,'','','',getdate(),'',@nPageId
+	        @nPageId+15,1,@nAdminId,10,@channel_id,1,1,1,'admin_modules_'+CAST(@nPageId AS VARCHAR(20))+'.aspx','Modules','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/admin_modules.ascx',0,0,0,0,0,'','','',getdate(),'',@nPageId
 	        )
         SET @nTempId = (SELECT page_id FROM pages WHERE file_name='admin_modules_'+CAST(@nPageId AS VARCHAR(20))+'.aspx')
 
         insert into pages (page_id,version,parent_id,sorting,channel_id,use_default_template,template_id,page_type,file_name,title,summary,link_text,link_placement,content_left,content_body,content_right,file_attachment,file_size,owner,created_date,last_updated_date,last_updated_by,published_start_date,published_end_date,meta_keywords,meta_description,status,is_hidden,is_system,page_module,use_discussion,use_rating,allow_links_crawled,allow_page_indexed,is_marked_for_archival,editor_review_by,publisher_review_by,notes,display_date, properties,root_id) values (
-	        @nPageId+19,1,@nTempId,2,@channel_id,1,1,1,'admin_module_new_'+CAST(@nPageId AS VARCHAR(20))+'.aspx','New Module','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/admin_module_new.ascx',0,0,0,0,0,'','','',getdate(),'',@nPageId
-	        )
-        insert into pages (page_id,version,parent_id,sorting,channel_id,use_default_template,template_id,page_type,file_name,title,summary,link_text,link_placement,content_left,content_body,content_right,file_attachment,file_size,owner,created_date,last_updated_date,last_updated_by,published_start_date,published_end_date,meta_keywords,meta_description,status,is_hidden,is_system,page_module,use_discussion,use_rating,allow_links_crawled,allow_page_indexed,is_marked_for_archival,editor_review_by,publisher_review_by,notes,display_date, properties,root_id) values (
-	        @nPageId+20,1,@nTempId,4,@channel_id,1,1,1,'admin_module_pages_'+CAST(@nPageId AS VARCHAR(20))+'.aspx','Embed Module','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/admin_module_pages.ascx',0,0,0,0,0,'','','',getdate(),'',@nPageId
-	        )
-        --
-        insert into pages (page_id,version,parent_id,sorting,channel_id,use_default_template,template_id,page_type,file_name,title,summary,link_text,link_placement,content_left,content_body,content_right,file_attachment,file_size,owner,created_date,last_updated_date,last_updated_by,published_start_date,published_end_date,meta_keywords,meta_description,status,is_hidden,is_system,page_module,use_discussion,use_rating,allow_links_crawled,allow_page_indexed,is_marked_for_archival,editor_review_by,publisher_review_by,notes,display_date, properties,root_id) values (
-	        @nPageId+21,1,@nWorkspaceId,2,@channel_id,1,1,1,'pages_'+CAST(@nPageId AS VARCHAR(20))+'.aspx','Pages','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/pages.ascx',0,0,0,0,0,'','','',getdate(),'',@nPageId
-	        )
-        insert into pages (page_id,version,parent_id,sorting,channel_id,use_default_template,template_id,page_type,file_name,title,summary,link_text,link_placement,content_left,content_body,content_right,file_attachment,file_size,owner,created_date,last_updated_date,last_updated_by,published_start_date,published_end_date,meta_keywords,meta_description,status,is_hidden,is_system,page_module,use_discussion,use_rating,allow_links_crawled,allow_page_indexed,is_marked_for_archival,editor_review_by,publisher_review_by,notes,display_date, properties,root_id) values (
-	        @nPageId+22,1,@nWorkspaceId,4,@channel_id,1,1,1,'resources_'+CAST(@nPageId AS VARCHAR(20))+'.aspx','Resources','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/resources.ascx',0,0,0,0,0,'','','',getdate(),'',@nPageId
-	        )
-        insert into pages (page_id,version,parent_id,sorting,channel_id,use_default_template,template_id,page_type,file_name,title,summary,link_text,link_placement,content_left,content_body,content_right,file_attachment,file_size,owner,created_date,last_updated_date,last_updated_by,published_start_date,published_end_date,meta_keywords,meta_description,status,is_hidden,is_system,page_module,use_discussion,use_rating,allow_links_crawled,allow_page_indexed,is_marked_for_archival,editor_review_by,publisher_review_by,notes,display_date, properties,root_id) values (
-	        @nPageId+23,1,@nWorkspaceId,6,@channel_id,1,1,1,'account_'+CAST(@nPageId AS VARCHAR(20))+'.aspx','Account','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/account.ascx',0,0,0,0,0,'','','',getdate(),'',@nPageId
-	        )
-        insert into pages (page_id,version,parent_id,sorting,channel_id,use_default_template,template_id,page_type,file_name,title,summary,link_text,link_placement,content_left,content_body,content_right,file_attachment,file_size,owner,created_date,last_updated_date,last_updated_by,published_start_date,published_end_date,meta_keywords,meta_description,status,is_hidden,is_system,page_module,use_discussion,use_rating,allow_links_crawled,allow_page_indexed,is_marked_for_archival,editor_review_by,publisher_review_by,notes,display_date, properties,root_id) values (
-	        @nPageId+24,1,@nWorkspaceId,8,@channel_id,1,1,1,'preferences_'+CAST(@nPageId AS VARCHAR(20))+'.aspx','Preferences','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/preferences.ascx',0,0,0,0,0,'','','',getdate(),'',@nPageId
-	        )
-        insert into pages (page_id,version,parent_id,sorting,channel_id,use_default_template,template_id,page_type,file_name,title,summary,link_text,link_placement,content_left,content_body,content_right,file_attachment,file_size,owner,created_date,last_updated_date,last_updated_by,published_start_date,published_end_date,meta_keywords,meta_description,status,is_hidden,is_system,page_module,use_discussion,use_rating,allow_links_crawled,allow_page_indexed,is_marked_for_archival,editor_review_by,publisher_review_by,notes,display_date, properties,root_id) values (
-	        @nPageId+25,1,@nWorkspaceId,10,@channel_id,1,1,1,'events_'+CAST(@nPageId AS VARCHAR(20))+'.aspx','Events','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/events.ascx',0,0,0,0,0,'','','',getdate(),'',@nPageId
-	        )
-        SET @nTempId = (SELECT page_id FROM pages WHERE file_name='events_'+CAST(@nPageId AS VARCHAR(20))+'.aspx')
-
-        insert into pages (page_id,version,parent_id,sorting,channel_id,use_default_template,template_id,page_type,file_name,title,summary,link_text,link_placement,content_left,content_body,content_right,file_attachment,file_size,owner,created_date,last_updated_date,last_updated_by,published_start_date,published_end_date,meta_keywords,meta_description,status,is_hidden,is_system,page_module,use_discussion,use_rating,allow_links_crawled,allow_page_indexed,is_marked_for_archival,editor_review_by,publisher_review_by,notes,display_date, properties,root_id) values (
-	        @nPageId+26,1,@nTempId,2,@channel_id,1,1,1,'event_new_'+CAST(@nPageId AS VARCHAR(20))+'.aspx','New Event','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/event_new.ascx',0,0,0,0,0,'','','',getdate(),'',@nPageId
-	        )
-        insert into pages (page_id,version,parent_id,sorting,channel_id,use_default_template,template_id,page_type,file_name,title,summary,link_text,link_placement,content_left,content_body,content_right,file_attachment,file_size,owner,created_date,last_updated_date,last_updated_by,published_start_date,published_end_date,meta_keywords,meta_description,status,is_hidden,is_system,page_module,use_discussion,use_rating,allow_links_crawled,allow_page_indexed,is_marked_for_archival,editor_review_by,publisher_review_by,notes,display_date, properties,root_id) values (
-	        @nPageId+27,1,@nTempId,4,@channel_id,1,1,1,'event_edit_'+CAST(@nPageId AS VARCHAR(20))+'.aspx','Edit Event','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/event_edit.ascx',0,0,0,0,0,'','','',getdate(),'',@nPageId
-	        )
-        insert into pages (page_id,version,parent_id,sorting,channel_id,use_default_template,template_id,page_type,file_name,title,summary,link_text,link_placement,content_left,content_body,content_right,file_attachment,file_size,owner,created_date,last_updated_date,last_updated_by,published_start_date,published_end_date,meta_keywords,meta_description,status,is_hidden,is_system,page_module,use_discussion,use_rating,allow_links_crawled,allow_page_indexed,is_marked_for_archival,editor_review_by,publisher_review_by,notes,display_date, properties,root_id) values (
-	        @nPageId+28,1,@nTempId,6,@channel_id,1,1,1,'event_embed_'+CAST(@nPageId AS VARCHAR(20))+'.aspx','Embed Upcoming Event List','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/event_embed.ascx',0,0,0,0,0,'','','',getdate(),'',@nPageId
+	        @nPageId+16,1,@nTempId,4,@channel_id,1,1,1,'admin_module_pages_'+CAST(@nPageId AS VARCHAR(20))+'.aspx','Embed Module','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/admin_module_pages.ascx',0,0,0,0,0,'','','',getdate(),'',@nPageId
 	        )
 
         insert into pages (page_id,version,parent_id,sorting,channel_id,use_default_template,template_id,page_type,file_name,title,summary,link_text,link_placement,content_left,content_body,content_right,file_attachment,file_size,owner,created_date,last_updated_date,last_updated_by,published_start_date,published_end_date,meta_keywords,meta_description,status,is_hidden,is_system,page_module,use_discussion,use_rating,allow_links_crawled,allow_page_indexed,is_marked_for_archival,editor_review_by,publisher_review_by,notes,display_date, properties,root_id) values (
-	        @nPageId+29,1,@nWorkspaceId,12,@channel_id,1,1,1,'polls_'+CAST(@nPageId AS VARCHAR(20))+'.aspx','Polls','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/polls.ascx',0,0,0,0,0,'','','',getdate(),'',@nPageId
+	        @nPageId+17,1,@nWorkspaceId,2,@channel_id,1,1,1,'pages_'+CAST(@nPageId AS VARCHAR(20))+'.aspx','Pages','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/pages.ascx',0,0,0,0,0,'','','',getdate(),'',@nPageId
+	        )
+        insert into pages (page_id,version,parent_id,sorting,channel_id,use_default_template,template_id,page_type,file_name,title,summary,link_text,link_placement,content_left,content_body,content_right,file_attachment,file_size,owner,created_date,last_updated_date,last_updated_by,published_start_date,published_end_date,meta_keywords,meta_description,status,is_hidden,is_system,page_module,use_discussion,use_rating,allow_links_crawled,allow_page_indexed,is_marked_for_archival,editor_review_by,publisher_review_by,notes,display_date, properties,root_id) values (
+	        @nPageId+18,1,@nWorkspaceId,4,@channel_id,1,1,1,'resources_'+CAST(@nPageId AS VARCHAR(20))+'.aspx','Resources','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/resources.ascx',0,0,0,0,0,'','','',getdate(),'',@nPageId
+	        )
+        insert into pages (page_id,version,parent_id,sorting,channel_id,use_default_template,template_id,page_type,file_name,title,summary,link_text,link_placement,content_left,content_body,content_right,file_attachment,file_size,owner,created_date,last_updated_date,last_updated_by,published_start_date,published_end_date,meta_keywords,meta_description,status,is_hidden,is_system,page_module,use_discussion,use_rating,allow_links_crawled,allow_page_indexed,is_marked_for_archival,editor_review_by,publisher_review_by,notes,display_date, properties,root_id) values (
+	        @nPageId+19,1,@nWorkspaceId,6,@channel_id,1,1,1,'account_'+CAST(@nPageId AS VARCHAR(20))+'.aspx','Account','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/account.ascx',0,0,0,0,0,'','','',getdate(),'',@nPageId
+	        )
+        insert into pages (page_id,version,parent_id,sorting,channel_id,use_default_template,template_id,page_type,file_name,title,summary,link_text,link_placement,content_left,content_body,content_right,file_attachment,file_size,owner,created_date,last_updated_date,last_updated_by,published_start_date,published_end_date,meta_keywords,meta_description,status,is_hidden,is_system,page_module,use_discussion,use_rating,allow_links_crawled,allow_page_indexed,is_marked_for_archival,editor_review_by,publisher_review_by,notes,display_date, properties,root_id) values (
+	        @nPageId+20,1,@nWorkspaceId,8,@channel_id,1,1,1,'preferences_'+CAST(@nPageId AS VARCHAR(20))+'.aspx','Preferences','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/preferences.ascx',0,0,0,0,0,'','','',getdate(),'',@nPageId
+	        )
+
+        insert into pages (page_id,version,parent_id,sorting,channel_id,use_default_template,template_id,page_type,file_name,title,summary,link_text,link_placement,content_left,content_body,content_right,file_attachment,file_size,owner,created_date,last_updated_date,last_updated_by,published_start_date,published_end_date,meta_keywords,meta_description,status,is_hidden,is_system,page_module,use_discussion,use_rating,allow_links_crawled,allow_page_indexed,is_marked_for_archival,editor_review_by,publisher_review_by,notes,display_date, properties,root_id) values (
+	        @nPageId+21,1,@nWorkspaceId,12,@channel_id,1,1,1,'polls_'+CAST(@nPageId AS VARCHAR(20))+'.aspx','Polls','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/polls.ascx',0,0,0,0,0,'','','',getdate(),'',@nPageId
 	        )
         SET @nTempId = (SELECT page_id FROM pages WHERE file_name='polls_'+CAST(@nPageId AS VARCHAR(20))+'.aspx')
 
         insert into pages (page_id,version,parent_id,sorting,channel_id,use_default_template,template_id,page_type,file_name,title,summary,link_text,link_placement,content_left,content_body,content_right,file_attachment,file_size,owner,created_date,last_updated_date,last_updated_by,published_start_date,published_end_date,meta_keywords,meta_description,status,is_hidden,is_system,page_module,use_discussion,use_rating,allow_links_crawled,allow_page_indexed,is_marked_for_archival,editor_review_by,publisher_review_by,notes,display_date, properties,root_id) values (
-	        @nPageId+30,1,@nTempId,2,@channel_id,1,1,1,'poll_info_'+CAST(@nPageId AS VARCHAR(20))+'.aspx','Poll Info','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/poll_info.ascx',0,0,0,0,0,'','','',getdate(),'',@nPageId
-	        )
-        insert into pages (page_id,version,parent_id,sorting,channel_id,use_default_template,template_id,page_type,file_name,title,summary,link_text,link_placement,content_left,content_body,content_right,file_attachment,file_size,owner,created_date,last_updated_date,last_updated_by,published_start_date,published_end_date,meta_keywords,meta_description,status,is_hidden,is_system,page_module,use_discussion,use_rating,allow_links_crawled,allow_page_indexed,is_marked_for_archival,editor_review_by,publisher_review_by,notes,display_date, properties,root_id) values (
-	        @nPageId+31,1,@nTempId,4,@channel_id,1,1,1,'poll_new_'+CAST(@nPageId AS VARCHAR(20))+'.aspx','New Poll','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/poll_new.ascx',0,0,0,0,0,'','','',getdate(),'',@nPageId
-	        )
-        insert into pages (page_id,version,parent_id,sorting,channel_id,use_default_template,template_id,page_type,file_name,title,summary,link_text,link_placement,content_left,content_body,content_right,file_attachment,file_size,owner,created_date,last_updated_date,last_updated_by,published_start_date,published_end_date,meta_keywords,meta_description,status,is_hidden,is_system,page_module,use_discussion,use_rating,allow_links_crawled,allow_page_indexed,is_marked_for_archival,editor_review_by,publisher_review_by,notes,display_date, properties,root_id) values (
-	        @nPageId+32,1,@nTempId,6,@channel_id,1,1,1,'poll_pages_'+CAST(@nPageId AS VARCHAR(20))+'.aspx','Embed Poll','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/poll_pages.ascx',0,0,0,0,0,'','','',getdate(),'',@nPageId
+	        @nPageId+22,1,@nTempId,6,@channel_id,1,1,1,'poll_pages_'+CAST(@nPageId AS VARCHAR(20))+'.aspx','Embed Poll','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/poll_pages.ascx',0,0,0,0,0,'','','',getdate(),'',@nPageId
 	        )
 
         insert into pages (page_id,version,parent_id,sorting,channel_id,use_default_template,template_id,page_type,file_name,title,summary,link_text,link_placement,content_left,content_body,content_right,file_attachment,file_size,owner,created_date,last_updated_date,last_updated_by,published_start_date,published_end_date,meta_keywords,meta_description,status,is_hidden,is_system,page_module,use_discussion,use_rating,allow_links_crawled,allow_page_indexed,is_marked_for_archival,editor_review_by,publisher_review_by,notes,display_date, properties,root_id) values (
-	        @nPageId+33,1,@nAdminId,14,@channel_id,1,1,1,'admin_localization_'+CAST(@nPageId AS VARCHAR(20))+'.aspx','Localization','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/localization.ascx',0,0,0,0,0,'','','',getdate(),'',@nPageId
+	        @nPageId+23,1,@nAdminId,14,@channel_id,1,1,1,'admin_localization_'+CAST(@nPageId AS VARCHAR(20))+'.aspx','Localization','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/localization.ascx',0,0,0,0,0,'','','',getdate(),'',@nPageId
 	        )
-	    SET @nTempId = (SELECT page_id FROM pages WHERE file_name='admin_localization_'+CAST(@nPageId AS VARCHAR(20))+'.aspx')
-
-        insert into pages (page_id,version,parent_id,sorting,channel_id,use_default_template,template_id,page_type,file_name,title,summary,link_text,link_placement,content_left,content_body,content_right,file_attachment,file_size,owner,created_date,last_updated_date,last_updated_by,published_start_date,published_end_date,meta_keywords,meta_description,status,is_hidden,is_system,page_module,use_discussion,use_rating,allow_links_crawled,allow_page_indexed,is_marked_for_archival,editor_review_by,publisher_review_by,notes,display_date, properties,root_id) values (
-	        @nPageId+34,1,@nTempId,2,@channel_id,1,1,1,'admin_site_'+CAST(@nPageId AS VARCHAR(20))+'.aspx','Site Info','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/admin_site.ascx',0,0,0,0,0,'','','',getdate(),'',@nPageId
-	        )
+	        
 		DECLARE @nNewslettersId int
         insert into pages (page_id,version,parent_id,sorting,channel_id,use_default_template,template_id,page_type,file_name,title,summary,link_text,link_placement,content_left,content_body,content_right,file_attachment,file_size,owner,created_date,last_updated_date,last_updated_by,published_start_date,published_end_date,meta_keywords,meta_description,status,is_hidden,is_system,page_module,use_discussion,use_rating,allow_links_crawled,allow_page_indexed,is_marked_for_archival,editor_review_by,publisher_review_by,notes,display_date, properties,root_id) values (
-	        @nPageId+35,1,@nWorkspaceId,16,@channel_id,1,1,1,'newsletters_'+CAST(@nPageId AS VARCHAR(20))+'.aspx','Newsletters','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/newsletters.ascx',0,0,0,0,0,'','','',getdate(),'',@nPageId
+	        @nPageId+24,1,@nWorkspaceId,16,@channel_id,1,1,1,'newsletters_'+CAST(@nPageId AS VARCHAR(20))+'.aspx','Newsletters','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/newsletters.ascx',0,0,0,0,0,'','','',getdate(),'',@nPageId
 	        )
         SET @nNewslettersId = (SELECT page_id FROM pages WHERE file_name='newsletters_'+CAST(@nPageId AS VARCHAR(20))+'.aspx')
 
         insert into pages (page_id,version,parent_id,sorting,channel_id,use_default_template,template_id,page_type,file_name,title,summary,link_text,link_placement,content_left,content_body,content_right,file_attachment,file_size,owner,created_date,last_updated_date,last_updated_by,published_start_date,published_end_date,meta_keywords,meta_description,status,is_hidden,is_system,page_module,use_discussion,use_rating,allow_links_crawled,allow_page_indexed,is_marked_for_archival,editor_review_by,publisher_review_by,notes,display_date, properties,root_id) values (
-	        @nPageId+36,1,@nNewslettersId,2,@channel_id,1,1,1,'newsletters_configure_'+CAST(@nPageId AS VARCHAR(20))+'.aspx','Configure Newsletter','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/newsletters_configure.ascx',0,0,0,0,0,'','','',getdate(),'',@nPageId
+	        @nPageId+25,1,@nNewslettersId,2,@channel_id,1,1,1,'newsletters_add_'+CAST(@nPageId AS VARCHAR(20))+'.aspx','Add Newsletter','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/newsletters_add.ascx',0,0,0,0,0,'','','',getdate(),'',@nPageId
 	        )
         insert into pages (page_id,version,parent_id,sorting,channel_id,use_default_template,template_id,page_type,file_name,title,summary,link_text,link_placement,content_left,content_body,content_right,file_attachment,file_size,owner,created_date,last_updated_date,last_updated_by,published_start_date,published_end_date,meta_keywords,meta_description,status,is_hidden,is_system,page_module,use_discussion,use_rating,allow_links_crawled,allow_page_indexed,is_marked_for_archival,editor_review_by,publisher_review_by,notes,display_date, properties,root_id) values (
-	        @nPageId+37,1,@nNewslettersId,4,@channel_id,1,1,1,'newsletters_send_'+CAST(@nPageId AS VARCHAR(20))+'.aspx','Send Newsletter','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/newsletters_send.ascx',0,0,0,0,0,'','','',getdate(),'',@nPageId
+	        @nPageId+26,1,@nNewslettersId,2,@channel_id,1,1,1,'newsletters_edit_'+CAST(@nPageId AS VARCHAR(20))+'.aspx','Edit Newsletter','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/newsletters_edit.ascx',0,0,0,0,0,'','','',getdate(),'',@nPageId
+	        )
+
+        insert into pages (page_id,version,parent_id,sorting,channel_id,use_default_template,template_id,page_type,file_name,title,summary,link_text,link_placement,content_left,content_body,content_right,file_attachment,file_size,owner,created_date,last_updated_date,last_updated_by,published_start_date,published_end_date,meta_keywords,meta_description,status,is_hidden,is_system,page_module,use_discussion,use_rating,allow_links_crawled,allow_page_indexed,is_marked_for_archival,editor_review_by,publisher_review_by,notes,display_date, properties,root_id) values (
+	        @nPageId+27,1,@nNewslettersId,2,@channel_id,1,1,1,'newsletters_configure_'+CAST(@nPageId AS VARCHAR(20))+'.aspx','Configure Newsletter','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/newsletters_configure.ascx',0,0,0,0,0,'','','',getdate(),'',@nPageId
+	        )
+        insert into pages (page_id,version,parent_id,sorting,channel_id,use_default_template,template_id,page_type,file_name,title,summary,link_text,link_placement,content_left,content_body,content_right,file_attachment,file_size,owner,created_date,last_updated_date,last_updated_by,published_start_date,published_end_date,meta_keywords,meta_description,status,is_hidden,is_system,page_module,use_discussion,use_rating,allow_links_crawled,allow_page_indexed,is_marked_for_archival,editor_review_by,publisher_review_by,notes,display_date, properties,root_id) values (
+	        @nPageId+28,1,@nNewslettersId,4,@channel_id,1,1,1,'newsletters_send_'+CAST(@nPageId AS VARCHAR(20))+'.aspx','Send Newsletter','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/newsletters_send.ascx',0,0,0,0,0,'','','',getdate(),'',@nPageId
+	        )
+	        
+	    insert into pages (page_id,version,parent_id,sorting,channel_id,use_default_template,template_id,page_type,file_name,title,summary,link_text,link_placement,content_left,content_body,content_right,file_attachment,file_size,owner,created_date,last_updated_date,last_updated_by,published_start_date,published_end_date,meta_keywords,meta_description,status,is_hidden,is_system,page_module,use_discussion,use_rating,allow_links_crawled,allow_page_indexed,is_marked_for_archival,editor_review_by,publisher_review_by,notes,display_date, properties,root_id) values (
+	        @nPageId+29,1,@nPageId,24,@channel_id,1,1,1,'pagenotfound_'+CAST(@nPageId AS VARCHAR(20))+'.aspx','We''re sorry','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/pagenotfound.ascx',0,0,0,0,0,'','','',getdate(),'',@nPageId
 	        )
 	    insert into pages (page_id,version,parent_id,sorting,channel_id,use_default_template,template_id,page_type,file_name,title,summary,link_text,link_placement,content_left,content_body,content_right,file_attachment,file_size,owner,created_date,last_updated_date,last_updated_by,published_start_date,published_end_date,meta_keywords,meta_description,status,is_hidden,is_system,page_module,use_discussion,use_rating,allow_links_crawled,allow_page_indexed,is_marked_for_archival,editor_review_by,publisher_review_by,notes,display_date, properties,root_id) values (
-	        @nPageId+38,1,@nPageId,24,@channel_id,1,1,1,'pagenotfound_'+CAST(@nPageId AS VARCHAR(20))+'.aspx','We''re sorry','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/pagenotfound.ascx',0,0,0,0,0,'','','',getdate(),'',@nPageId
-	        )
-	    insert into pages (page_id,version,parent_id,sorting,channel_id,use_default_template,template_id,page_type,file_name,title,summary,link_text,link_placement,content_left,content_body,content_right,file_attachment,file_size,owner,created_date,last_updated_date,last_updated_by,published_start_date,published_end_date,meta_keywords,meta_description,status,is_hidden,is_system,page_module,use_discussion,use_rating,allow_links_crawled,allow_page_indexed,is_marked_for_archival,editor_review_by,publisher_review_by,notes,display_date, properties,root_id) values (
-	        @nPageId+39,1,@nPageId,26,@channel_id,1,1,1,'password_'+CAST(@nPageId AS VARCHAR(20))+'.aspx','Password Recovery','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/password.ascx',0,0,0,0,0,'','','',getdate(),'',@nPageId
+	        @nPageId+30,1,@nPageId,26,@channel_id,1,1,1,'password_'+CAST(@nPageId AS VARCHAR(20))+'.aspx','Password Recovery','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/password.ascx',0,0,0,0,0,'','','',getdate(),'',@nPageId
 	        )
 	
-
 		Declare @nShopId int
 		
 		insert into pages (page_id,version,parent_id,sorting,channel_id,use_default_template,template_id,page_type,file_name,title,summary,link_text,link_placement,content_left,content_body,content_right,file_attachment,file_size,owner,created_date,last_updated_date,last_updated_by,published_start_date,published_end_date,meta_keywords,meta_description,status,is_hidden,is_system,page_module,use_discussion,use_rating,allow_links_crawled,allow_page_indexed,is_marked_for_archival,editor_review_by,publisher_review_by,notes,display_date, properties,root_id) values (
-			@nPageId+40,1,@nWorkspaceId,18,@channel_id,1,1,1,'shop_'+CAST(@nPageId AS VARCHAR(20))+'.aspx','Shop','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/shop.ascx',0,0,0,0,0,'','','',getdate(),'',@nPageId
+			@nPageId+31,1,@nWorkspaceId,18,@channel_id,1,1,1,'shop_'+CAST(@nPageId AS VARCHAR(20))+'.aspx','Shop','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/shop.ascx',0,0,0,0,0,'','','',getdate(),'',@nPageId
 			)
         SET @nShopId = (SELECT page_id FROM pages WHERE file_name='shop_'+CAST(@nPageId AS VARCHAR(20))+'.aspx')
 
 		insert into pages (page_id,version,parent_id,sorting,channel_id,use_default_template,template_id,page_type,file_name,title,summary,link_text,link_placement,content_left,content_body,content_right,file_attachment,file_size,owner,created_date,last_updated_date,last_updated_by,published_start_date,published_end_date,meta_keywords,meta_description,status,is_hidden,is_system,page_module,use_discussion,use_rating,allow_links_crawled,allow_page_indexed,is_marked_for_archival,editor_review_by,publisher_review_by,notes,display_date, properties,root_id) values (
-			@nPageId+41,1,@nShopId,2,@channel_id,1,1,1,'shop_config_'+CAST(@nPageId AS VARCHAR(20))+'.aspx','Configuration','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/shop_config.ascx',0,0,0,0,0,'','','',getdate(),'',@nPageId
+			@nPageId+32,1,@nShopId,2,@channel_id,1,1,1,'shop_config_'+CAST(@nPageId AS VARCHAR(20))+'.aspx','Configuration','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/shop_config.ascx',0,0,0,0,0,'','','',getdate(),'',@nPageId
 			)
 
 		insert into pages (page_id,version,parent_id,sorting,channel_id,use_default_template,template_id,page_type,file_name,title,summary,link_text,link_placement,content_left,content_body,content_right,file_attachment,file_size,owner,created_date,last_updated_date,last_updated_by,published_start_date,published_end_date,meta_keywords,meta_description,status,is_hidden,is_system,page_module,use_discussion,use_rating,allow_links_crawled,allow_page_indexed,is_marked_for_archival,editor_review_by,publisher_review_by,notes,display_date, properties,root_id) values (
-			@nPageId+42,1,@nShopId,4,@channel_id,1,1,1,'shop_product_types_'+CAST(@nPageId AS VARCHAR(20))+'.aspx','Product Types','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/shop_product_types.ascx',0,0,0,0,0,'','','',getdate(),'',@nPageId
+			@nPageId+33,1,@nShopId,4,@channel_id,1,1,1,'shop_product_types_'+CAST(@nPageId AS VARCHAR(20))+'.aspx','Product Types','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/shop_product_types.ascx',0,0,0,0,0,'','','',getdate(),'',@nPageId
 			)
 
 		insert into pages (page_id,version,parent_id,sorting,channel_id,use_default_template,template_id,page_type,file_name,title,summary,link_text,link_placement,content_left,content_body,content_right,file_attachment,file_size,owner,created_date,last_updated_date,last_updated_by,published_start_date,published_end_date,meta_keywords,meta_description,status,is_hidden,is_system,page_module,use_discussion,use_rating,allow_links_crawled,allow_page_indexed,is_marked_for_archival,editor_review_by,publisher_review_by,notes,display_date, properties,root_id) values (
-			@nPageId+43,1,@nShopId,6,@channel_id,1,1,1,'shop_product_type_lookup_'+CAST(@nPageId AS VARCHAR(20))+'.aspx','Lookup','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/shop_product_type_lookup.ascx',0,0,0,0,0,'','','',getdate(),'',@nPageId
+			@nPageId+34,1,@nShopId,6,@channel_id,1,1,1,'shop_product_type_lookup_'+CAST(@nPageId AS VARCHAR(20))+'.aspx','Lookup','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/shop_product_type_lookup.ascx',0,0,0,0,0,'','','',getdate(),'',@nPageId
 			)	
 
 		insert into pages (page_id,version,parent_id,sorting,channel_id,use_default_template,template_id,page_type,file_name,title,summary,link_text,link_placement,content_left,content_body,content_right,file_attachment,file_size,owner,created_date,last_updated_date,last_updated_by,published_start_date,published_end_date,meta_keywords,meta_description,status,is_hidden,is_system,page_module,use_discussion,use_rating,allow_links_crawled,allow_page_indexed,is_marked_for_archival,editor_review_by,publisher_review_by,notes,display_date, properties,root_id) values (
-			@nPageId+44,1,@nShopId,8,@channel_id,1,1,1,'shop_shipments_'+CAST(@nPageId AS VARCHAR(20))+'.aspx','Shipments','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/shop_shipments.ascx',0,0,0,0,0,'','','',getdate(),'',@nPageId
+			@nPageId+35,1,@nShopId,8,@channel_id,1,1,1,'shop_shipments_'+CAST(@nPageId AS VARCHAR(20))+'.aspx','Shipments','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/shop_shipments.ascx',0,0,0,0,0,'','','',getdate(),'',@nPageId
 			)
 
 		insert into pages (page_id,version,parent_id,sorting,channel_id,use_default_template,template_id,page_type,file_name,title,summary,link_text,link_placement,content_left,content_body,content_right,file_attachment,file_size,owner,created_date,last_updated_date,last_updated_by,published_start_date,published_end_date,meta_keywords,meta_description,status,is_hidden,is_system,page_module,use_discussion,use_rating,allow_links_crawled,allow_page_indexed,is_marked_for_archival,editor_review_by,publisher_review_by,notes,display_date, properties,root_id) values (
-			@nPageId+45,1,@nShopId,10,@channel_id,1,1,1,'shop_coupons_'+CAST(@nPageId AS VARCHAR(20))+'.aspx','Coupons','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/shop_coupons.ascx',0,0,0,0,0,'','','',getdate(),'',@nPageId
+			@nPageId+36,1,@nShopId,10,@channel_id,1,1,1,'shop_coupons_'+CAST(@nPageId AS VARCHAR(20))+'.aspx','Coupons','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/shop_coupons.ascx',0,0,0,0,0,'','','',getdate(),'',@nPageId
 			)
 			
 		insert into pages (page_id,version,parent_id,sorting,channel_id,use_default_template,template_id,page_type,file_name,title,summary,link_text,link_placement,content_left,content_body,content_right,file_attachment,file_size,owner,created_date,last_updated_date,last_updated_by,published_start_date,published_end_date,meta_keywords,meta_description,status,is_hidden,is_system,page_module,use_discussion,use_rating,allow_links_crawled,allow_page_indexed,is_marked_for_archival,editor_review_by,publisher_review_by,notes,display_date, properties,root_id) values (
-			@nPageId+46,1,@nShopId,12,@channel_id,1,1,1,'shop_taxes_'+CAST(@nPageId AS VARCHAR(20))+'.aspx','Taxes','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/shop_taxes.ascx',0,0,0,0,0,'','','',getdate(),'',@nPageId
+			@nPageId+37,1,@nShopId,12,@channel_id,1,1,1,'shop_taxes_'+CAST(@nPageId AS VARCHAR(20))+'.aspx','Taxes','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/shop_taxes.ascx',0,0,0,0,0,'','','',getdate(),'',@nPageId
 			)
 			
    		insert into pages (page_id,version,parent_id,sorting,channel_id,use_default_template,template_id,page_type,file_name,title,summary,link_text,link_placement,content_left,content_body,content_right,file_attachment,file_size,owner,created_date,last_updated_date,last_updated_by,published_start_date,published_end_date,meta_keywords,meta_description,status,is_hidden,is_system,page_module,use_discussion,use_rating,allow_links_crawled,allow_page_indexed,is_marked_for_archival,editor_review_by,publisher_review_by,notes,display_date, properties,root_id) values (
-    		@nPageId+47,1,@nShopId,14,@channel_id,1,1,1,'shop_orders_'+CAST(@nPageId AS VARCHAR(20))+'.aspx','Orders','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/shop_orders.ascx',0,0,0,0,0,'','','',getdate(),'',@nPageId
+    		@nPageId+38,1,@nShopId,14,@channel_id,1,1,1,'shop_orders_'+CAST(@nPageId AS VARCHAR(20))+'.aspx','Orders','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/shop_orders.ascx',0,0,0,0,0,'','','',getdate(),'',@nPageId
 			)
 
 		insert into pages (page_id,version,parent_id,sorting,channel_id,use_default_template,template_id,page_type,file_name,title,summary,link_text,link_placement,content_left,content_body,content_right,file_attachment,file_size,owner,created_date,last_updated_date,last_updated_by,published_start_date,published_end_date,meta_keywords,meta_description,status,is_hidden,is_system,page_module,use_discussion,use_rating,allow_links_crawled,allow_page_indexed,is_marked_for_archival,editor_review_by,publisher_review_by,notes,display_date, properties,root_id) values (
-			@nPageId+48,1,@nTempId,12,@channel_id,1,1,1,'poll_results_'+CAST(@nPageId AS VARCHAR(20))+'.aspx','Poll Results','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/poll_results.ascx',0,0,0,0,0,'','','',getdate(),'',@nPageId
+			@nPageId+39,1,@nPageId,12,@channel_id,1,1,1,'poll_results_'+CAST(@nPageId AS VARCHAR(20))+'.aspx','Poll Results','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/poll_results.ascx',0,0,0,0,0,'','','',getdate(),'',@nPageId
 			)
 			
 		insert into pages (page_id,version,parent_id,sorting,channel_id,use_default_template,template_id,page_type,file_name,title,summary,link_text,link_placement,content_left,content_body,content_right,file_attachment,file_size,owner,created_date,last_updated_date,last_updated_by,published_start_date,published_end_date,meta_keywords,meta_description,status,is_hidden,is_system,page_module,use_discussion,use_rating,allow_links_crawled,allow_page_indexed,is_marked_for_archival,editor_review_by,publisher_review_by,notes,display_date, properties,root_id) values (
-			@nPageId+49,1,@nTempId,14,@channel_id,1,1,1,'event_view_'+CAST(@nPageId AS VARCHAR(20))+'.aspx','Events','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/event_view.ascx',0,0,0,0,0,'','','',getdate(),'',@nPageId
+			@nPageId+40,1,@nPageId,38,@channel_id,1,1,1,'activate_'+CAST(@nPageId AS VARCHAR(20))+'.aspx','User Registration','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/activate.ascx',0,0,0,0,0,'','','',getdate(),'',@nPageId
 			)
 			
 		insert into pages (page_id,version,parent_id,sorting,channel_id,use_default_template,template_id,page_type,file_name,title,summary,link_text,link_placement,content_left,content_body,content_right,file_attachment,file_size,owner,created_date,last_updated_date,last_updated_by,published_start_date,published_end_date,meta_keywords,meta_description,status,is_hidden,is_system,page_module,use_discussion,use_rating,allow_links_crawled,allow_page_indexed,is_marked_for_archival,editor_review_by,publisher_review_by,notes,display_date, properties,root_id) values (
-			@nPageId+50,1,@nPageId,38,@channel_id,1,1,1,'activate_'+CAST(@nPageId AS VARCHAR(20))+'.aspx','User Registration','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/activate.ascx',0,0,0,0,0,'','','',getdate(),'',@nPageId
+			@nPageId+41,1,@nPageId,42,@channel_id,1,1,1,'subscription_update_'+CAST(@nPageId AS VARCHAR(20))+'.aspx','Update Subscription','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/subscription_update.ascx',0,0,0,0,0,'','','',getdate(),'',@nPageId
 			)
 			
 		insert into pages (page_id,version,parent_id,sorting,channel_id,use_default_template,template_id,page_type,file_name,title,summary,link_text,link_placement,content_left,content_body,content_right,file_attachment,file_size,owner,created_date,last_updated_date,last_updated_by,published_start_date,published_end_date,meta_keywords,meta_description,status,is_hidden,is_system,page_module,use_discussion,use_rating,allow_links_crawled,allow_page_indexed,is_marked_for_archival,editor_review_by,publisher_review_by,notes,display_date, properties,root_id) values (
-			@nPageId+51,1,@nPageId,42,@channel_id,1,1,1,'subscription_update_'+CAST(@nPageId AS VARCHAR(20))+'.aspx','Update Subscription','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/subscription_update.ascx',0,0,0,0,0,'','','',getdate(),'',@nPageId
+			@nPageId+42,1,@nPageId,44,@channel_id,1,1,1,'news_list_'+CAST(@nPageId AS VARCHAR(20))+'.aspx','News List','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/news_list.ascx',0,0,0,0,0,'','','',getdate(),'',@nPageId
 			)
 			
 		insert into pages (page_id,version,parent_id,sorting,channel_id,use_default_template,template_id,page_type,file_name,title,summary,link_text,link_placement,content_left,content_body,content_right,file_attachment,file_size,owner,created_date,last_updated_date,last_updated_by,published_start_date,published_end_date,meta_keywords,meta_description,status,is_hidden,is_system,page_module,use_discussion,use_rating,allow_links_crawled,allow_page_indexed,is_marked_for_archival,editor_review_by,publisher_review_by,notes,display_date, properties,root_id) values (
-			@nPageId+52,1,@nPageId,44,@channel_id,1,1,1,'news_list_'+CAST(@nPageId AS VARCHAR(20))+'.aspx','News List','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/news_list.ascx',0,0,0,0,0,'','','',getdate(),'',@nPageId
+			@nPageId+43,1,@nNewslettersId,46,@channel_id,1,1,1,'mailing_lists_'+CAST(@nPageId AS VARCHAR(20))+'.aspx','Mailing Lists','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/mailing_lists.ascx',0,0,0,0,0,'','','',getdate(),'',@nPageId
 			)
 			
 		insert into pages (page_id,version,parent_id,sorting,channel_id,use_default_template,template_id,page_type,file_name,title,summary,link_text,link_placement,content_left,content_body,content_right,file_attachment,file_size,owner,created_date,last_updated_date,last_updated_by,published_start_date,published_end_date,meta_keywords,meta_description,status,is_hidden,is_system,page_module,use_discussion,use_rating,allow_links_crawled,allow_page_indexed,is_marked_for_archival,editor_review_by,publisher_review_by,notes,display_date, properties,root_id) values (
-			@nPageId+53,1,@nNewslettersId,46,@channel_id,1,1,1,'mailing_lists_'+CAST(@nPageId AS VARCHAR(20))+'.aspx','Mailing Lists','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/mailing_lists.ascx',0,0,0,0,0,'','','',getdate(),'',@nPageId
+			@nPageId+44,1,@nNewslettersId,48,@channel_id,1,1,1,'subscription_settings_'+CAST(@nPageId AS VARCHAR(20))+'.aspx','Settings','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/subscription_settings.ascx',0,0,0,0,0,'','','',getdate(),'',@nPageId
 			)
 			
 		insert into pages (page_id,version,parent_id,sorting,channel_id,use_default_template,template_id,page_type,file_name,title,summary,link_text,link_placement,content_left,content_body,content_right,file_attachment,file_size,owner,created_date,last_updated_date,last_updated_by,published_start_date,published_end_date,meta_keywords,meta_description,status,is_hidden,is_system,page_module,use_discussion,use_rating,allow_links_crawled,allow_page_indexed,is_marked_for_archival,editor_review_by,publisher_review_by,notes,display_date, properties,root_id) values (
-			@nPageId+54,1,@nNewslettersId,48,@channel_id,1,1,1,'subscription_settings_'+CAST(@nPageId AS VARCHAR(20))+'.aspx','Settings','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/subscription_settings.ascx',0,0,0,0,0,'','','',getdate(),'',@nPageId
-			)
-			
-		insert into pages (page_id,version,parent_id,sorting,channel_id,use_default_template,template_id,page_type,file_name,title,summary,link_text,link_placement,content_left,content_body,content_right,file_attachment,file_size,owner,created_date,last_updated_date,last_updated_by,published_start_date,published_end_date,meta_keywords,meta_description,status,is_hidden,is_system,page_module,use_discussion,use_rating,allow_links_crawled,allow_page_indexed,is_marked_for_archival,editor_review_by,publisher_review_by,notes,display_date, properties,root_id) values (
-			@nPageId+55,1,@nNewslettersId,50,@channel_id,1,1,1,'subscribers_'+CAST(@nPageId AS VARCHAR(20))+'.aspx','Subscribers','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/subscribers.ascx',0,0,0,0,0,'','','',getdate(),'',@nPageId
+			@nPageId+45,1,@nNewslettersId,50,@channel_id,1,1,1,'subscribers_'+CAST(@nPageId AS VARCHAR(20))+'.aspx','Subscribers','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/subscribers.ascx',0,0,0,0,0,'','','',getdate(),'',@nPageId
 			)
 			
         insert into pages (page_id,version,parent_id,sorting,channel_id,use_default_template,template_id,page_type,file_name,title,summary,link_text,link_placement,content_left,content_body,content_right,file_attachment,file_size,owner,created_date,last_updated_date,last_updated_by,published_start_date,published_end_date,meta_keywords,meta_description,status,is_hidden,is_system,page_module,use_discussion,use_rating,allow_links_crawled,allow_page_indexed,is_marked_for_archival,editor_review_by,publisher_review_by,notes,display_date, properties,root_id) values (
-	        @nPageId+56,1,@nAdminId,12,@channel_id,1,1,1,'registration_settings_'+CAST(@nPageId AS VARCHAR(20))+'.aspx','Registration Settings','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/registration_settings.ascx',0,0,0,0,0,'','','',getdate(),'',@nPageId
+	        @nPageId+46,1,@nAdminId,12,@channel_id,1,1,1,'registration_settings_'+CAST(@nPageId AS VARCHAR(20))+'.aspx','Registration Settings','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/registration_settings.ascx',0,0,0,0,0,'','','',getdate(),'',@nPageId
 	        )
 	        
 	    insert into pages (page_id,version,parent_id,sorting,channel_id,use_default_template,template_id,page_type,file_name,title,summary,link_text,link_placement,content_left,content_body,content_right,file_attachment,file_size,owner,created_date,last_updated_date,last_updated_by,published_start_date,published_end_date,meta_keywords,meta_description,status,is_hidden,is_system,page_module,use_discussion,use_rating,allow_links_crawled,allow_page_indexed,is_marked_for_archival,editor_review_by,publisher_review_by,notes,display_date, properties,root_id) values (
-	        @nPageId+57,1,@nWorkspaceId,20,@channel_id,1,1,1,'custom_listing_'+CAST(@nPageId AS VARCHAR(20))+'.aspx','Custom Listing','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/custom_listing.ascx',0,0,0,0,0,'','','',getdate(),'',@nPageId
+	        @nPageId+47,1,@nWorkspaceId,20,@channel_id,1,1,1,'custom_listing_'+CAST(@nPageId AS VARCHAR(20))+'.aspx','Custom Listing','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/custom_listing.ascx',0,0,0,0,0,'','','',getdate(),'',@nPageId
 	        )
 	        
     	insert into pages (page_id,version,parent_id,sorting,channel_id,use_default_template,template_id,page_type,file_name,title,summary,link_text,link_placement,content_left,content_body,content_right,file_attachment,file_size,owner,created_date,last_updated_date,last_updated_by,published_start_date,published_end_date,meta_keywords,meta_description,status,is_hidden,is_system,page_module,use_discussion,use_rating,allow_links_crawled,allow_page_indexed,is_marked_for_archival,editor_review_by,publisher_review_by,notes,display_date, properties,root_id) values (
-    		@nPageId+58,1,@nPageId,46,@channel_id,1,1,1,'tell_a_friend_'+CAST(@nPageId AS VARCHAR(20))+'.aspx','Search','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/tell_a_friend.ascx',0,0,0,0,0,'','','',getdate(),'',@nPageId
+    		@nPageId+48,1,@nPageId,46,@channel_id,1,1,1,'tell_a_friend_'+CAST(@nPageId AS VARCHAR(20))+'.aspx','Search','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/tell_a_friend.ascx',0,0,0,0,0,'','','',getdate(),'',@nPageId
 			)
 			
     	insert into pages (page_id,version,parent_id,sorting,channel_id,use_default_template,template_id,page_type,file_name,title,summary,link_text,link_placement,content_left,content_body,content_right,file_attachment,file_size,owner,created_date,last_updated_date,last_updated_by,published_start_date,published_end_date,meta_keywords,meta_description,status,is_hidden,is_system,page_module,use_discussion,use_rating,allow_links_crawled,allow_page_indexed,is_marked_for_archival,editor_review_by,publisher_review_by,notes,display_date, properties,root_id) values (
-    		@nPageId+59,1,@nPageId,48,@channel_id,1,1,1,'site_rss_'+CAST(@nPageId AS VARCHAR(20))+'.aspx','Search','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/site_rss.ascx',0,0,0,0,0,'','','',getdate(),'',@nPageId
+    		@nPageId+49,1,@nPageId,48,@channel_id,1,1,1,'site_rss_'+CAST(@nPageId AS VARCHAR(20))+'.aspx','Search','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/site_rss.ascx',0,0,0,0,0,'','','',getdate(),'',@nPageId
 			)
 	
 	END
@@ -2297,34 +2267,6 @@ IF NOT EXISTS (SELECT name FROM sysindexes
    CREATE NONCLUSTERED INDEX IX_newsletters_receipients ON newsletters_receipients (newsletters_id)
 GO
 
-/*
-DECLARE @nPageIdTmp int
-DECLARE @nPageId int
-DECLARE @nSortingMax int
-
-IF NOT EXISTS (SELECT file_name FROM pages 
-    WHERE file_name='newsletters.aspx' OR file_name='newsletters_configure.aspx' OR file_name='newsletters_send.aspx')
-BEGIN
-    SET @nPageIdTmp = (SELECT MAX(page_id) FROM pages) + 1
-    insert into pages (page_id,version,parent_id,sorting,channel_id,use_default_template,template_id,page_type,file_name,title,summary,link_text,link_placement,content_left,content_body,content_right,file_attachment,file_size,owner,created_date,last_updated_date,last_updated_by,published_start_date,published_end_date,meta_keywords,meta_description,status,is_hidden,is_system,page_module,use_discussion,use_rating,allow_links_crawled,allow_page_indexed,is_marked_for_archival,editor_review_by,publisher_review_by,notes,display_date) values (
-    @nPageIdTmp,1,8,2,1,1,1,1,'newsletters.aspx','Newsletters','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/newsletters.ascx',0,0,0,0,0,'','','',getdate()
-    )
-
-    SET @nPageId = (SELECT MAX(page_id) FROM pages) + 1
-    insert into pages (page_id,version,parent_id,sorting,channel_id,use_default_template,template_id,page_type,file_name,title,summary,link_text,link_placement,content_left,content_body,content_right,file_attachment,file_size,owner,created_date,last_updated_date,last_updated_by,published_start_date,published_end_date,meta_keywords,meta_description,status,is_hidden,is_system,page_module,use_discussion,use_rating,allow_links_crawled,allow_page_indexed,is_marked_for_archival,editor_review_by,publisher_review_by,notes,display_date) values (
-    @nPageId,1,@nPageIdTmp,2,1,1,1,1,'newsletters_configure.aspx','Configure Newsletter','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/newsletters_configure.ascx',0,0,0,0,0,'','','',getdate()
-    )
-
-    SET @nPageId = (SELECT MAX(page_id) FROM pages) + 1
-    insert into pages (page_id,version,parent_id,sorting,channel_id,use_default_template,template_id,page_type,file_name,title,summary,link_text,link_placement,content_left,content_body,content_right,file_attachment,file_size,owner,created_date,last_updated_date,last_updated_by,published_start_date,published_end_date,meta_keywords,meta_description,status,is_hidden,is_system,page_module,use_discussion,use_rating,allow_links_crawled,allow_page_indexed,is_marked_for_archival,editor_review_by,publisher_review_by,notes,display_date) values (
-    @nPageId,1,@nPageIdTmp,4,1,1,1,1,'newsletters_send.aspx','Send Newsletter','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/newsletters_send.ascx',0,0,0,0,0,'','','',getdate()
-    )
-
-    SET @nSortingMax = (SELECT MAX(sorting) FROM pages WHERE parent_id=8) + 2
-    update pages set sorting=@nSortingMax where file_name='newsletters.aspx';
-END
-
-GO*/
 
 IF NOT EXISTS (SELECT module_file FROM modules 
          WHERE module_file='subscribe.ascx')
@@ -2351,7 +2293,7 @@ OPEN pagesTmp
 FETCH NEXT FROM pagesTmp INTO @home_page
 WHILE @@FETCH_STATUS=0
 BEGIN
-    	SET @root_id = (select page_id from pages_working where file_name=@home_page)
+    SET @root_id = (select page_id from pages_working where file_name=@home_page)
 	SET @channel_id = (select channel_id from pages_working where file_name=@home_page)
 
 	SET @nPageId = (SELECT MAX(page_id) FROM pages) + 1
@@ -2383,8 +2325,8 @@ BEGIN
 	else
 		SET @file='search_'+CAST(@root_id AS VARCHAR(20))+'.aspx'
 	IF NOT EXISTS (SELECT * FROM pages WHERE file_name=@file)
-    		insert into pages (page_id,version,parent_id,sorting,channel_id,use_default_template,template_id,page_type,file_name,title,summary,link_text,link_placement,content_left,content_body,content_right,file_attachment,file_size,owner,created_date,last_updated_date,last_updated_by,published_start_date,published_end_date,meta_keywords,meta_description,status,is_hidden,is_system,page_module,use_discussion,use_rating,allow_links_crawled,allow_page_indexed,is_marked_for_archival,editor_review_by,publisher_review_by,notes,display_date, properties) values (
-    		@nPageId+2,1,@root_id,10,@channel_id,1,1,1,@file,'Search','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/search.ascx',0,0,0,0,0,'','','',getdate(),''
+    	insert into pages (page_id,version,parent_id,sorting,channel_id,use_default_template,template_id,page_type,file_name,title,summary,link_text,link_placement,content_left,content_body,content_right,file_attachment,file_size,owner,created_date,last_updated_date,last_updated_by,published_start_date,published_end_date,meta_keywords,meta_description,status,is_hidden,is_system,page_module,use_discussion,use_rating,allow_links_crawled,allow_page_indexed,is_marked_for_archival,editor_review_by,publisher_review_by,notes,display_date, properties) values (
+    	@nPageId+2,1,@root_id,10,@channel_id,1,1,1,@file,'Search','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/search.ascx',0,0,0,0,0,'','','',getdate(),''
 		)
 	ELSE
 		UPDATE pages set parent_id=@root_id, channel_id=@channel_id, use_default_template=1, page_module='systems/search.ascx', is_hidden=1, is_system=1 WHERE file_name=@file
@@ -2394,8 +2336,8 @@ BEGIN
 	else
 		SET @file='shop_downloads_'+CAST(@root_id AS VARCHAR(20))+'.aspx'
 	IF NOT EXISTS (SELECT * FROM pages WHERE file_name=@file)
-    		insert into pages (page_id,version,parent_id,sorting,channel_id,use_default_template,template_id,page_type,file_name,title,summary,link_text,link_placement,content_left,content_body,content_right,file_attachment,file_size,owner,created_date,last_updated_date,last_updated_by,published_start_date,published_end_date,meta_keywords,meta_description,status,is_hidden,is_system,page_module,use_discussion,use_rating,allow_links_crawled,allow_page_indexed,is_marked_for_archival,editor_review_by,publisher_review_by,notes,display_date, properties) values (
-    		@nPageId+3,1,@root_id,10,@channel_id,1,1,1,@file,'Downloads','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/shop_downloads.ascx',0,0,0,0,0,'','','',getdate(),''
+    	insert into pages (page_id,version,parent_id,sorting,channel_id,use_default_template,template_id,page_type,file_name,title,summary,link_text,link_placement,content_left,content_body,content_right,file_attachment,file_size,owner,created_date,last_updated_date,last_updated_by,published_start_date,published_end_date,meta_keywords,meta_description,status,is_hidden,is_system,page_module,use_discussion,use_rating,allow_links_crawled,allow_page_indexed,is_marked_for_archival,editor_review_by,publisher_review_by,notes,display_date, properties) values (
+    	@nPageId+3,1,@root_id,10,@channel_id,1,1,1,@file,'Downloads','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/shop_downloads.ascx',0,0,0,0,0,'','','',getdate(),''
 		)
 	ELSE
 		UPDATE pages set parent_id=@root_id, channel_id=@channel_id, use_default_template=1, page_module='systems/shop_downloads.ascx', is_hidden=1, is_system=1 WHERE file_name=@file
@@ -2405,8 +2347,8 @@ BEGIN
 	else
 		SET @file='shop_pcart_'+CAST(@root_id AS VARCHAR(20))+'.aspx'
 	IF NOT EXISTS (SELECT * FROM pages WHERE file_name=@file)
-    		insert into pages (page_id,version,parent_id,sorting,channel_id,use_default_template,template_id,page_type,file_name,title,summary,link_text,link_placement,content_left,content_body,content_right,file_attachment,file_size,owner,created_date,last_updated_date,last_updated_by,published_start_date,published_end_date,meta_keywords,meta_description,status,is_hidden,is_system,page_module,use_discussion,use_rating,allow_links_crawled,allow_page_indexed,is_marked_for_archival,editor_review_by,publisher_review_by,notes,display_date, properties) values (
-    		@nPageId+4,1,@root_id,10,@channel_id,1,1,1,@file,'Shopping Cart','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/shop_pcart.ascx',0,0,0,0,0,'','','',getdate(),''
+    	insert into pages (page_id,version,parent_id,sorting,channel_id,use_default_template,template_id,page_type,file_name,title,summary,link_text,link_placement,content_left,content_body,content_right,file_attachment,file_size,owner,created_date,last_updated_date,last_updated_by,published_start_date,published_end_date,meta_keywords,meta_description,status,is_hidden,is_system,page_module,use_discussion,use_rating,allow_links_crawled,allow_page_indexed,is_marked_for_archival,editor_review_by,publisher_review_by,notes,display_date, properties) values (
+    	@nPageId+4,1,@root_id,10,@channel_id,1,1,1,@file,'Shopping Cart','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/shop_pcart.ascx',0,0,0,0,0,'','','',getdate(),''
 		)
 	ELSE
 		UPDATE pages set parent_id=@root_id, channel_id=@channel_id, use_default_template=1, page_module='systems/shop_pcart.ascx', is_hidden=1, is_system=1 WHERE file_name=@file
@@ -2416,8 +2358,8 @@ BEGIN
 	else
 		SET @file='shop_pcompleted_'+CAST(@root_id AS VARCHAR(20))+'.aspx'
 	IF NOT EXISTS (SELECT * FROM pages WHERE file_name=@file)
-    		insert into pages (page_id,version,parent_id,sorting,channel_id,use_default_template,template_id,page_type,file_name,title,summary,link_text,link_placement,content_left,content_body,content_right,file_attachment,file_size,owner,created_date,last_updated_date,last_updated_by,published_start_date,published_end_date,meta_keywords,meta_description,status,is_hidden,is_system,page_module,use_discussion,use_rating,allow_links_crawled,allow_page_indexed,is_marked_for_archival,editor_review_by,publisher_review_by,notes,display_date, properties) values (
-    		@nPageId+5,1,@root_id,10,@channel_id,1,1,1,@file,'Order Completed','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/shop_pcompleted.ascx',0,0,0,0,0,'','','',getdate(),''
+    	insert into pages (page_id,version,parent_id,sorting,channel_id,use_default_template,template_id,page_type,file_name,title,summary,link_text,link_placement,content_left,content_body,content_right,file_attachment,file_size,owner,created_date,last_updated_date,last_updated_by,published_start_date,published_end_date,meta_keywords,meta_description,status,is_hidden,is_system,page_module,use_discussion,use_rating,allow_links_crawled,allow_page_indexed,is_marked_for_archival,editor_review_by,publisher_review_by,notes,display_date, properties) values (
+    	@nPageId+5,1,@root_id,10,@channel_id,1,1,1,@file,'Order Completed','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/shop_pcompleted.ascx',0,0,0,0,0,'','','',getdate(),''
 		)
 	ELSE
 		UPDATE pages set parent_id=@root_id, channel_id=@channel_id, use_default_template=1, page_module='systems/shop_pcompleted.ascx', is_hidden=1, is_system=1 WHERE file_name=@file
@@ -2430,9 +2372,9 @@ BEGIN
 	else
 		SET @file='admin_'+CAST(@root_id AS VARCHAR(20))+'.aspx'
 	IF NOT EXISTS (SELECT * FROM pages WHERE file_name=@file)
-        	insert into pages (page_id,version,parent_id,sorting,channel_id,use_default_template,template_id,page_type,file_name,title,summary,link_text,link_placement,content_left,content_body,content_right,file_attachment,file_size,owner,created_date,last_updated_date,last_updated_by,published_start_date,published_end_date,meta_keywords,meta_description,status,is_hidden,is_system,page_module,use_discussion,use_rating,allow_links_crawled,allow_page_indexed,is_marked_for_archival,editor_review_by,publisher_review_by,notes,display_date, properties) values (
-	        @nPageId+6,1,@root_id,20,@channel_id,1,1,1,@file,'Admin','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/admin.ascx',0,0,0,0,0,'','','',getdate(),''
-	        )
+        insert into pages (page_id,version,parent_id,sorting,channel_id,use_default_template,template_id,page_type,file_name,title,summary,link_text,link_placement,content_left,content_body,content_right,file_attachment,file_size,owner,created_date,last_updated_date,last_updated_by,published_start_date,published_end_date,meta_keywords,meta_description,status,is_hidden,is_system,page_module,use_discussion,use_rating,allow_links_crawled,allow_page_indexed,is_marked_for_archival,editor_review_by,publisher_review_by,notes,display_date, properties) values (
+	    @nPageId+6,1,@root_id,20,@channel_id,1,1,1,@file,'Admin','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/admin.ascx',0,0,0,0,0,'','','',getdate(),''
+	    )
 	ELSE
 		UPDATE pages set parent_id=@root_id, channel_id=@channel_id, use_default_template=1, page_module='systems/admin.ascx', is_hidden=1, is_system=1 WHERE file_name=@file
 
@@ -2444,9 +2386,9 @@ BEGIN
 	else
 		SET @file='workspace_'+CAST(@root_id AS VARCHAR(20))+'.aspx'
 	IF NOT EXISTS (SELECT * FROM pages WHERE file_name=@file)
-        	insert into pages (page_id,version,parent_id,sorting,channel_id,use_default_template,template_id,page_type,file_name,title,summary,link_text,link_placement,content_left,content_body,content_right,file_attachment,file_size,owner,created_date,last_updated_date,last_updated_by,published_start_date,published_end_date,meta_keywords,meta_description,status,is_hidden,is_system,page_module,use_discussion,use_rating,allow_links_crawled,allow_page_indexed,is_marked_for_archival,editor_review_by,publisher_review_by,notes,display_date, properties) values (
-	        @nPageId+7,1,@root_id,22,@channel_id,1,1,1,@file,'My Workspace','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/workspace.ascx',0,0,0,0,0,'','','',getdate(),''
-	        )
+        insert into pages (page_id,version,parent_id,sorting,channel_id,use_default_template,template_id,page_type,file_name,title,summary,link_text,link_placement,content_left,content_body,content_right,file_attachment,file_size,owner,created_date,last_updated_date,last_updated_by,published_start_date,published_end_date,meta_keywords,meta_description,status,is_hidden,is_system,page_module,use_discussion,use_rating,allow_links_crawled,allow_page_indexed,is_marked_for_archival,editor_review_by,publisher_review_by,notes,display_date, properties) values (
+	    @nPageId+7,1,@root_id,22,@channel_id,1,1,1,@file,'My Workspace','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/workspace.ascx',0,0,0,0,0,'','','',getdate(),''
+	    )
 	ELSE
 		UPDATE pages set parent_id=@root_id, channel_id=@channel_id, use_default_template=1, page_module='systems/workspace.ascx', is_hidden=1, is_system=1 WHERE file_name=@file
 
@@ -2458,33 +2400,22 @@ BEGIN
 	else
 		SET @file='admin_users_'+CAST(@root_id AS VARCHAR(20))+'.aspx'
 	IF NOT EXISTS (SELECT * FROM pages WHERE file_name=@file)
-        	insert into pages (page_id,version,parent_id,sorting,channel_id,use_default_template,template_id,page_type,file_name,title,summary,link_text,link_placement,content_left,content_body,content_right,file_attachment,file_size,owner,created_date,last_updated_date,last_updated_by,published_start_date,published_end_date,meta_keywords,meta_description,status,is_hidden,is_system,page_module,use_discussion,use_rating,allow_links_crawled,allow_page_indexed,is_marked_for_archival,editor_review_by,publisher_review_by,notes,display_date, properties) values (
-	        @nPageId+8,1,@nAdminId,2,@channel_id,1,1,1,@file,'Users','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/admin_users.ascx',0,0,0,0,0,'','','',getdate(),''
-	        )
+        insert into pages (page_id,version,parent_id,sorting,channel_id,use_default_template,template_id,page_type,file_name,title,summary,link_text,link_placement,content_left,content_body,content_right,file_attachment,file_size,owner,created_date,last_updated_date,last_updated_by,published_start_date,published_end_date,meta_keywords,meta_description,status,is_hidden,is_system,page_module,use_discussion,use_rating,allow_links_crawled,allow_page_indexed,is_marked_for_archival,editor_review_by,publisher_review_by,notes,display_date, properties) values (
+	    @nPageId+8,1,@nAdminId,2,@channel_id,1,1,1,@file,'Users','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/admin_users.ascx',0,0,0,0,0,'','','',getdate(),''
+	    )
 	ELSE
 		UPDATE pages set parent_id=@nAdminId, channel_id=@channel_id, use_default_template=1, page_module='systems/admin_users.ascx', is_hidden=1, is_system=1 WHERE file_name=@file
 
     SET @nTempId = (SELECT page_id FROM pages WHERE file_name=@file)
 
 	if @root_id=1
-		SET @file='admin_user_new.aspx'
-	else
-		SET @file='admin_user_new_'+CAST(@root_id AS VARCHAR(20))+'.aspx'
-	IF NOT EXISTS (SELECT * FROM pages WHERE file_name=@file)
-        	insert into pages (page_id,version,parent_id,sorting,channel_id,use_default_template,template_id,page_type,file_name,title,summary,link_text,link_placement,content_left,content_body,content_right,file_attachment,file_size,owner,created_date,last_updated_date,last_updated_by,published_start_date,published_end_date,meta_keywords,meta_description,status,is_hidden,is_system,page_module,use_discussion,use_rating,allow_links_crawled,allow_page_indexed,is_marked_for_archival,editor_review_by,publisher_review_by,notes,display_date, properties) values (
-	        @nPageId+9,1,@nTempId,2,@channel_id,1,1,1,@file,'New User','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/admin_user_new.ascx',0,0,0,0,0,'','','',getdate(),''
-	        )
-	ELSE
-		UPDATE pages set parent_id=@nTempId, channel_id=@channel_id, use_default_template=1, page_module='systems/admin_user_new.ascx', is_hidden=1, is_system=1 WHERE file_name=@file
-
-	if @root_id=1
 		SET @file='admin_user_info.aspx'
 	else
 		SET @file='admin_user_info_'+CAST(@root_id AS VARCHAR(20))+'.aspx'
 	IF NOT EXISTS (SELECT * FROM pages WHERE file_name=@file)
-        	insert into pages (page_id,version,parent_id,sorting,channel_id,use_default_template,template_id,page_type,file_name,title,summary,link_text,link_placement,content_left,content_body,content_right,file_attachment,file_size,owner,created_date,last_updated_date,last_updated_by,published_start_date,published_end_date,meta_keywords,meta_description,status,is_hidden,is_system,page_module,use_discussion,use_rating,allow_links_crawled,allow_page_indexed,is_marked_for_archival,editor_review_by,publisher_review_by,notes,display_date, properties) values (
-	        @nPageId+10,1,@nTempId,4,@channel_id,1,1,1,@file,'Edit User','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/admin_user_info.ascx',0,0,0,0,0,'','','',getdate(),''
-	        )
+        insert into pages (page_id,version,parent_id,sorting,channel_id,use_default_template,template_id,page_type,file_name,title,summary,link_text,link_placement,content_left,content_body,content_right,file_attachment,file_size,owner,created_date,last_updated_date,last_updated_by,published_start_date,published_end_date,meta_keywords,meta_description,status,is_hidden,is_system,page_module,use_discussion,use_rating,allow_links_crawled,allow_page_indexed,is_marked_for_archival,editor_review_by,publisher_review_by,notes,display_date, properties) values (
+	    @nPageId+9,1,@nTempId,4,@channel_id,1,1,1,@file,'Edit User','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/admin_user_info.ascx',0,0,0,0,0,'','','',getdate(),''
+	    )
 	ELSE
 		UPDATE pages set parent_id=@nTempId, channel_id=@channel_id, use_default_template=1, page_module='systems/admin_user_info.ascx', is_hidden=1, is_system=1 WHERE file_name=@file
 
@@ -2495,8 +2426,8 @@ BEGIN
 		SET @file='admin_users_import_'+CAST(@root_id AS VARCHAR(20))+'.aspx'
 	IF NOT EXISTS (SELECT * FROM pages WHERE file_name=@file)
 		insert into pages (page_id,version,parent_id,sorting,channel_id,use_default_template,template_id,page_type,file_name,title,summary,link_text,link_placement,content_left,content_body,content_right,file_attachment,file_size,owner,created_date,last_updated_date,last_updated_by,published_start_date,published_end_date,meta_keywords,meta_description,status,is_hidden,is_system,page_module,use_discussion,use_rating,allow_links_crawled,allow_page_indexed,is_marked_for_archival,editor_review_by,publisher_review_by,notes,display_date, properties) values (
-			@nPageId+11,1,@nTempId,6,@channel_id,1,1,1,@file,'Import Users','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/admin_users_import.ascx',0,0,0,0,0,'','','',getdate(),''
-			)
+		@nPageId+10,1,@nTempId,6,@channel_id,1,1,1,@file,'Import Users','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/admin_users_import.ascx',0,0,0,0,0,'','','',getdate(),''
+		)
 	ELSE
 		UPDATE pages set parent_id=@nTempId, channel_id=@channel_id, use_default_template=1, page_module='systems/admin_users_import.ascx', is_hidden=1, is_system=1 WHERE file_name=@file
 
@@ -2506,44 +2437,21 @@ BEGIN
 	else
 		SET @file='admin_channels_'+CAST(@root_id AS VARCHAR(20))+'.aspx'
 	IF NOT EXISTS (SELECT * FROM pages WHERE file_name=@file)
-        	insert into pages (page_id,version,parent_id,sorting,channel_id,use_default_template,template_id,page_type,file_name,title,summary,link_text,link_placement,content_left,content_body,content_right,file_attachment,file_size,owner,created_date,last_updated_date,last_updated_by,published_start_date,published_end_date,meta_keywords,meta_description,status,is_hidden,is_system,page_module,use_discussion,use_rating,allow_links_crawled,allow_page_indexed,is_marked_for_archival,editor_review_by,publisher_review_by,notes,display_date, properties) values (
-	        @nPageId+12,1,@nAdminId,4,@channel_id,1,1,1,@file,'Channels','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/admin_channels.ascx',0,0,0,0,0,'','','',getdate(),''
-	        )
+        insert into pages (page_id,version,parent_id,sorting,channel_id,use_default_template,template_id,page_type,file_name,title,summary,link_text,link_placement,content_left,content_body,content_right,file_attachment,file_size,owner,created_date,last_updated_date,last_updated_by,published_start_date,published_end_date,meta_keywords,meta_description,status,is_hidden,is_system,page_module,use_discussion,use_rating,allow_links_crawled,allow_page_indexed,is_marked_for_archival,editor_review_by,publisher_review_by,notes,display_date, properties) values (
+	    @nPageId+11,1,@nAdminId,4,@channel_id,1,1,1,@file,'Channels','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/admin_channels.ascx',0,0,0,0,0,'','','',getdate(),''
+	    )
 	ELSE
 		UPDATE pages set parent_id=@nAdminId, channel_id=@channel_id, use_default_template=1, page_module='systems/admin_channels.ascx', is_hidden=1, is_system=1 WHERE file_name=@file
 
-    SET @nTempId = (SELECT page_id FROM pages WHERE file_name=@file)
-
-	if @root_id=1
-		SET @file='admin_channel_new.aspx'
-	else
-		SET @file='admin_channel_new_'+CAST(@root_id AS VARCHAR(20))+'.aspx'
-	IF NOT EXISTS (SELECT * FROM pages WHERE file_name=@file)
-        	insert into pages (page_id,version,parent_id,sorting,channel_id,use_default_template,template_id,page_type,file_name,title,summary,link_text,link_placement,content_left,content_body,content_right,file_attachment,file_size,owner,created_date,last_updated_date,last_updated_by,published_start_date,published_end_date,meta_keywords,meta_description,status,is_hidden,is_system,page_module,use_discussion,use_rating,allow_links_crawled,allow_page_indexed,is_marked_for_archival,editor_review_by,publisher_review_by,notes,display_date, properties) values (
-	        @nPageId+13,1,@nTempId,2,@channel_id,1,1,1,@file,'New Channel','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/admin_channel_new.ascx',0,0,0,0,0,'','','',getdate(),''
-	        )
-	ELSE
-		UPDATE pages set parent_id=@nTempId, channel_id=@channel_id, use_default_template=1, page_module='systems/admin_channel_new.ascx', is_hidden=1, is_system=1 WHERE file_name=@file
-
-	if @root_id=1
-		SET @file='admin_channel_info.aspx'
-	else
-		SET @file='admin_channel_info_'+CAST(@root_id AS VARCHAR(20))+'.aspx'
-	IF NOT EXISTS (SELECT * FROM pages WHERE file_name=@file)
-        	insert into pages (page_id,version,parent_id,sorting,channel_id,use_default_template,template_id,page_type,file_name,title,summary,link_text,link_placement,content_left,content_body,content_right,file_attachment,file_size,owner,created_date,last_updated_date,last_updated_by,published_start_date,published_end_date,meta_keywords,meta_description,status,is_hidden,is_system,page_module,use_discussion,use_rating,allow_links_crawled,allow_page_indexed,is_marked_for_archival,editor_review_by,publisher_review_by,notes,display_date, properties) values (
-	        @nPageId+14,1,@nTempId,4,@channel_id,1,1,1,@file,'Edit Channel','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/admin_channel_info.ascx',0,0,0,0,0,'','','',getdate(),''
-	        )
-	ELSE
-		UPDATE pages set parent_id=@nTempId, channel_id=@channel_id, use_default_template=1, page_module='systems/admin_channel_info.ascx', is_hidden=1, is_system=1 WHERE file_name=@file
 
 	if @root_id=1
 		SET @file='approval.aspx'
 	else
 		SET @file='approval_'+CAST(@root_id AS VARCHAR(20))+'.aspx'
 	IF NOT EXISTS (SELECT * FROM pages WHERE file_name=@file)
-        	insert into pages (page_id,version,parent_id,sorting,channel_id,use_default_template,template_id,page_type,file_name,title,summary,link_text,link_placement,content_left,content_body,content_right,file_attachment,file_size,owner,created_date,last_updated_date,last_updated_by,published_start_date,published_end_date,meta_keywords,meta_description,status,is_hidden,is_system,page_module,use_discussion,use_rating,allow_links_crawled,allow_page_indexed,is_marked_for_archival,editor_review_by,publisher_review_by,notes,display_date, properties) values (
-	        @nPageId+15,1,@nWorkspaceId,6,@channel_id,1,1,1,@file,'Approval Assistant','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/approval.ascx',0,0,0,0,0,'','','',getdate(),''
-	        )
+        insert into pages (page_id,version,parent_id,sorting,channel_id,use_default_template,template_id,page_type,file_name,title,summary,link_text,link_placement,content_left,content_body,content_right,file_attachment,file_size,owner,created_date,last_updated_date,last_updated_by,published_start_date,published_end_date,meta_keywords,meta_description,status,is_hidden,is_system,page_module,use_discussion,use_rating,allow_links_crawled,allow_page_indexed,is_marked_for_archival,editor_review_by,publisher_review_by,notes,display_date, properties) values (
+	    @nPageId+12,1,@nWorkspaceId,6,@channel_id,1,1,1,@file,'Approval Assistant','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/approval.ascx',0,0,0,0,0,'','','',getdate(),''
+	    )
 	ELSE
 		UPDATE pages set parent_id=@nWorkspaceId, channel_id=@channel_id, use_default_template=1, page_module='systems/approval.ascx', is_hidden=1, is_system=1 WHERE file_name=@file
 
@@ -2552,46 +2460,33 @@ BEGIN
 	else
 		SET @file='admin_templates_'+CAST(@root_id AS VARCHAR(20))+'.aspx'
 	IF NOT EXISTS (SELECT * FROM pages WHERE file_name=@file)
-        	insert into pages (page_id,version,parent_id,sorting,channel_id,use_default_template,template_id,page_type,file_name,title,summary,link_text,link_placement,content_left,content_body,content_right,file_attachment,file_size,owner,created_date,last_updated_date,last_updated_by,published_start_date,published_end_date,meta_keywords,meta_description,status,is_hidden,is_system,page_module,use_discussion,use_rating,allow_links_crawled,allow_page_indexed,is_marked_for_archival,editor_review_by,publisher_review_by,notes,display_date, properties) values (
-	        @nPageId+16,1,@nAdminId,8,@channel_id,1,1,1,@file,'Templates','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/admin_templates.ascx',0,0,0,0,0,'','','',getdate(),''
-	        )
+        insert into pages (page_id,version,parent_id,sorting,channel_id,use_default_template,template_id,page_type,file_name,title,summary,link_text,link_placement,content_left,content_body,content_right,file_attachment,file_size,owner,created_date,last_updated_date,last_updated_by,published_start_date,published_end_date,meta_keywords,meta_description,status,is_hidden,is_system,page_module,use_discussion,use_rating,allow_links_crawled,allow_page_indexed,is_marked_for_archival,editor_review_by,publisher_review_by,notes,display_date, properties) values (
+	    @nPageId+13,1,@nAdminId,8,@channel_id,1,1,1,@file,'Templates','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/admin_templates.ascx',0,0,0,0,0,'','','',getdate(),''
+	    )
 	ELSE
 		UPDATE pages set parent_id=@nAdminId, channel_id=@channel_id, use_default_template=1, page_module='systems/admin_templates.ascx', is_hidden=1, is_system=1 WHERE file_name=@file
-
-    SET @nTempId = (SELECT page_id FROM pages WHERE file_name=@file)
 
 	if @root_id=1
 		SET @file='admin_modules.aspx'
 	else
 		SET @file='admin_modules_'+CAST(@root_id AS VARCHAR(20))+'.aspx'
 	IF NOT EXISTS (SELECT * FROM pages WHERE file_name=@file)
-        	insert into pages (page_id,version,parent_id,sorting,channel_id,use_default_template,template_id,page_type,file_name,title,summary,link_text,link_placement,content_left,content_body,content_right,file_attachment,file_size,owner,created_date,last_updated_date,last_updated_by,published_start_date,published_end_date,meta_keywords,meta_description,status,is_hidden,is_system,page_module,use_discussion,use_rating,allow_links_crawled,allow_page_indexed,is_marked_for_archival,editor_review_by,publisher_review_by,notes,display_date, properties) values (
-	        @nPageId+17,1,@nAdminId,10,@channel_id,1,1,1,@file,'Modules','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/admin_modules.ascx',0,0,0,0,0,'','','',getdate(),''
-	        )
+        insert into pages (page_id,version,parent_id,sorting,channel_id,use_default_template,template_id,page_type,file_name,title,summary,link_text,link_placement,content_left,content_body,content_right,file_attachment,file_size,owner,created_date,last_updated_date,last_updated_by,published_start_date,published_end_date,meta_keywords,meta_description,status,is_hidden,is_system,page_module,use_discussion,use_rating,allow_links_crawled,allow_page_indexed,is_marked_for_archival,editor_review_by,publisher_review_by,notes,display_date, properties) values (
+	    @nPageId+14,1,@nAdminId,10,@channel_id,1,1,1,@file,'Modules','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/admin_modules.ascx',0,0,0,0,0,'','','',getdate(),''
+	    )
 	ELSE
 		UPDATE pages set parent_id=@nAdminId, channel_id=@channel_id, use_default_template=1, page_module='systems/admin_modules.ascx', is_hidden=1, is_system=1 WHERE file_name=@file
 
     SET @nTempId = (SELECT page_id FROM pages WHERE file_name=@file)
 
 	if @root_id=1
-		SET @file='admin_module_new.aspx'
-	else
-		SET @file='admin_module_new_'+CAST(@root_id AS VARCHAR(20))+'.aspx'
-	IF NOT EXISTS (SELECT * FROM pages WHERE file_name=@file)
-        	insert into pages (page_id,version,parent_id,sorting,channel_id,use_default_template,template_id,page_type,file_name,title,summary,link_text,link_placement,content_left,content_body,content_right,file_attachment,file_size,owner,created_date,last_updated_date,last_updated_by,published_start_date,published_end_date,meta_keywords,meta_description,status,is_hidden,is_system,page_module,use_discussion,use_rating,allow_links_crawled,allow_page_indexed,is_marked_for_archival,editor_review_by,publisher_review_by,notes,display_date, properties) values (
-	        @nPageId+18,1,@nTempId,2,@channel_id,1,1,1,@file,'New Module','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/admin_module_new.ascx',0,0,0,0,0,'','','',getdate(),''
-	        )
-	ELSE
-		UPDATE pages set parent_id=@nTempId, channel_id=@channel_id, use_default_template=1, page_module='systems/admin_module_new.ascx', is_hidden=1, is_system=1 WHERE file_name=@file
-
-	if @root_id=1
 		SET @file='admin_module_pages.aspx'
 	else
 		SET @file='admin_module_pages_'+CAST(@root_id AS VARCHAR(20))+'.aspx'
 	IF NOT EXISTS (SELECT * FROM pages WHERE file_name=@file)
-        	insert into pages (page_id,version,parent_id,sorting,channel_id,use_default_template,template_id,page_type,file_name,title,summary,link_text,link_placement,content_left,content_body,content_right,file_attachment,file_size,owner,created_date,last_updated_date,last_updated_by,published_start_date,published_end_date,meta_keywords,meta_description,status,is_hidden,is_system,page_module,use_discussion,use_rating,allow_links_crawled,allow_page_indexed,is_marked_for_archival,editor_review_by,publisher_review_by,notes,display_date, properties) values (
-	        @nPageId+19,1,@nTempId,4,@channel_id,1,1,1,@file,'Embed Module','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/admin_module_pages.ascx',0,0,0,0,0,'','','',getdate(),''
-	        )
+        insert into pages (page_id,version,parent_id,sorting,channel_id,use_default_template,template_id,page_type,file_name,title,summary,link_text,link_placement,content_left,content_body,content_right,file_attachment,file_size,owner,created_date,last_updated_date,last_updated_by,published_start_date,published_end_date,meta_keywords,meta_description,status,is_hidden,is_system,page_module,use_discussion,use_rating,allow_links_crawled,allow_page_indexed,is_marked_for_archival,editor_review_by,publisher_review_by,notes,display_date, properties) values (
+	    @nPageId+15,1,@nTempId,4,@channel_id,1,1,1,@file,'Embed Module','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/admin_module_pages.ascx',0,0,0,0,0,'','','',getdate(),''
+	    )
 	ELSE
 		UPDATE pages set parent_id=@nTempId, channel_id=@channel_id, use_default_template=1, page_module='systems/admin_module_pages.ascx', is_hidden=1, is_system=1 WHERE file_name=@file
 
@@ -2600,9 +2495,9 @@ BEGIN
 	else
 		SET @file='pages_'+CAST(@root_id AS VARCHAR(20))+'.aspx'
 	IF NOT EXISTS (SELECT * FROM pages WHERE file_name=@file)
-        	insert into pages (page_id,version,parent_id,sorting,channel_id,use_default_template,template_id,page_type,file_name,title,summary,link_text,link_placement,content_left,content_body,content_right,file_attachment,file_size,owner,created_date,last_updated_date,last_updated_by,published_start_date,published_end_date,meta_keywords,meta_description,status,is_hidden,is_system,page_module,use_discussion,use_rating,allow_links_crawled,allow_page_indexed,is_marked_for_archival,editor_review_by,publisher_review_by,notes,display_date, properties) values (
-	        @nPageId+20,1,@nWorkspaceId,2,@channel_id,1,1,1,@file,'Pages','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/pages.ascx',0,0,0,0,0,'','','',getdate(),''
-	        )
+        insert into pages (page_id,version,parent_id,sorting,channel_id,use_default_template,template_id,page_type,file_name,title,summary,link_text,link_placement,content_left,content_body,content_right,file_attachment,file_size,owner,created_date,last_updated_date,last_updated_by,published_start_date,published_end_date,meta_keywords,meta_description,status,is_hidden,is_system,page_module,use_discussion,use_rating,allow_links_crawled,allow_page_indexed,is_marked_for_archival,editor_review_by,publisher_review_by,notes,display_date, properties) values (
+	    @nPageId+16,1,@nWorkspaceId,2,@channel_id,1,1,1,@file,'Pages','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/pages.ascx',0,0,0,0,0,'','','',getdate(),''
+	    )
 	ELSE
 		UPDATE pages set parent_id=@nWorkspaceId, channel_id=@channel_id, use_default_template=1, page_module='systems/pages.ascx', is_hidden=1, is_system=1 WHERE file_name=@file
 
@@ -2611,9 +2506,9 @@ BEGIN
 	else
 		SET @file='resources_'+CAST(@root_id AS VARCHAR(20))+'.aspx'
 	IF NOT EXISTS (SELECT * FROM pages WHERE file_name=@file)
-        	insert into pages (page_id,version,parent_id,sorting,channel_id,use_default_template,template_id,page_type,file_name,title,summary,link_text,link_placement,content_left,content_body,content_right,file_attachment,file_size,owner,created_date,last_updated_date,last_updated_by,published_start_date,published_end_date,meta_keywords,meta_description,status,is_hidden,is_system,page_module,use_discussion,use_rating,allow_links_crawled,allow_page_indexed,is_marked_for_archival,editor_review_by,publisher_review_by,notes,display_date, properties) values (
-	        @nPageId+21,1,@nWorkspaceId,4,@channel_id,1,1,1,@file,'Resources','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/resources.ascx',0,0,0,0,0,'','','',getdate(),''
-	        )
+        insert into pages (page_id,version,parent_id,sorting,channel_id,use_default_template,template_id,page_type,file_name,title,summary,link_text,link_placement,content_left,content_body,content_right,file_attachment,file_size,owner,created_date,last_updated_date,last_updated_by,published_start_date,published_end_date,meta_keywords,meta_description,status,is_hidden,is_system,page_module,use_discussion,use_rating,allow_links_crawled,allow_page_indexed,is_marked_for_archival,editor_review_by,publisher_review_by,notes,display_date, properties) values (
+	    @nPageId+17,1,@nWorkspaceId,4,@channel_id,1,1,1,@file,'Resources','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/resources.ascx',0,0,0,0,0,'','','',getdate(),''
+	    )
 	ELSE
 		UPDATE pages set parent_id=@nWorkspaceId, channel_id=@channel_id, use_default_template=1, page_module='systems/resources.ascx', is_hidden=1, is_system=1 WHERE file_name=@file
 
@@ -2622,9 +2517,9 @@ BEGIN
 	else
 		SET @file='account_'+CAST(@root_id AS VARCHAR(20))+'.aspx'
 	IF NOT EXISTS (SELECT * FROM pages WHERE file_name=@file)
-        	insert into pages (page_id,version,parent_id,sorting,channel_id,use_default_template,template_id,page_type,file_name,title,summary,link_text,link_placement,content_left,content_body,content_right,file_attachment,file_size,owner,created_date,last_updated_date,last_updated_by,published_start_date,published_end_date,meta_keywords,meta_description,status,is_hidden,is_system,page_module,use_discussion,use_rating,allow_links_crawled,allow_page_indexed,is_marked_for_archival,editor_review_by,publisher_review_by,notes,display_date, properties) values (
-	        @nPageId+22,1,@nWorkspaceId,6,@channel_id,1,1,1,@file,'Account','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/account.ascx',0,0,0,0,0,'','','',getdate(),''
-	        )
+        insert into pages (page_id,version,parent_id,sorting,channel_id,use_default_template,template_id,page_type,file_name,title,summary,link_text,link_placement,content_left,content_body,content_right,file_attachment,file_size,owner,created_date,last_updated_date,last_updated_by,published_start_date,published_end_date,meta_keywords,meta_description,status,is_hidden,is_system,page_module,use_discussion,use_rating,allow_links_crawled,allow_page_indexed,is_marked_for_archival,editor_review_by,publisher_review_by,notes,display_date, properties) values (
+	    @nPageId+18,1,@nWorkspaceId,6,@channel_id,1,1,1,@file,'Account','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/account.ascx',0,0,0,0,0,'','','',getdate(),''
+	    )
 	ELSE
 		UPDATE pages set parent_id=@nWorkspaceId, channel_id=@channel_id, use_default_template=1, page_module='systems/account.ascx', is_hidden=1, is_system=1 WHERE file_name=@file
 
@@ -2633,101 +2528,33 @@ BEGIN
 	else
 		SET @file='preferences_'+CAST(@root_id AS VARCHAR(20))+'.aspx'
 	IF NOT EXISTS (SELECT * FROM pages WHERE file_name=@file)
-        	insert into pages (page_id,version,parent_id,sorting,channel_id,use_default_template,template_id,page_type,file_name,title,summary,link_text,link_placement,content_left,content_body,content_right,file_attachment,file_size,owner,created_date,last_updated_date,last_updated_by,published_start_date,published_end_date,meta_keywords,meta_description,status,is_hidden,is_system,page_module,use_discussion,use_rating,allow_links_crawled,allow_page_indexed,is_marked_for_archival,editor_review_by,publisher_review_by,notes,display_date, properties) values (
-	        @nPageId+23,1,@nWorkspaceId,8,@channel_id,1,1,1,@file,'Preferences','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/preferences.ascx',0,0,0,0,0,'','','',getdate(),''
-	        )
+        insert into pages (page_id,version,parent_id,sorting,channel_id,use_default_template,template_id,page_type,file_name,title,summary,link_text,link_placement,content_left,content_body,content_right,file_attachment,file_size,owner,created_date,last_updated_date,last_updated_by,published_start_date,published_end_date,meta_keywords,meta_description,status,is_hidden,is_system,page_module,use_discussion,use_rating,allow_links_crawled,allow_page_indexed,is_marked_for_archival,editor_review_by,publisher_review_by,notes,display_date, properties) values (
+	    @nPageId+19,1,@nWorkspaceId,8,@channel_id,1,1,1,@file,'Preferences','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/preferences.ascx',0,0,0,0,0,'','','',getdate(),''
+	    )
 	ELSE
 		UPDATE pages set parent_id=@nWorkspaceId, channel_id=@channel_id, use_default_template=1, page_module='systems/preferences.ascx', is_hidden=1, is_system=1 WHERE file_name=@file
-
-	if @root_id=1
-		SET @file='events.aspx'
-	else
-		SET @file='events_'+CAST(@root_id AS VARCHAR(20))+'.aspx'
-	IF NOT EXISTS (SELECT * FROM pages WHERE file_name=@file)
-        	insert into pages (page_id,version,parent_id,sorting,channel_id,use_default_template,template_id,page_type,file_name,title,summary,link_text,link_placement,content_left,content_body,content_right,file_attachment,file_size,owner,created_date,last_updated_date,last_updated_by,published_start_date,published_end_date,meta_keywords,meta_description,status,is_hidden,is_system,page_module,use_discussion,use_rating,allow_links_crawled,allow_page_indexed,is_marked_for_archival,editor_review_by,publisher_review_by,notes,display_date, properties) values (
-	        @nPageId+24,1,@nWorkspaceId,10,@channel_id,1,1,1,@file,'Events','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/events.ascx',0,0,0,0,0,'','','',getdate(),''
-	        )
-	ELSE
-		UPDATE pages set parent_id=@nWorkspaceId, channel_id=@channel_id, use_default_template=1, page_module='systems/events.ascx', is_hidden=1, is_system=1 WHERE file_name=@file
-
-    SET @nTempId = (SELECT page_id FROM pages WHERE file_name=@file)
-
-	if @root_id=1
-		SET @file='event_new.aspx'
-	else
-		SET @file='event_new_'+CAST(@root_id AS VARCHAR(20))+'.aspx'
-	IF NOT EXISTS (SELECT * FROM pages WHERE file_name=@file)
-        	insert into pages (page_id,version,parent_id,sorting,channel_id,use_default_template,template_id,page_type,file_name,title,summary,link_text,link_placement,content_left,content_body,content_right,file_attachment,file_size,owner,created_date,last_updated_date,last_updated_by,published_start_date,published_end_date,meta_keywords,meta_description,status,is_hidden,is_system,page_module,use_discussion,use_rating,allow_links_crawled,allow_page_indexed,is_marked_for_archival,editor_review_by,publisher_review_by,notes,display_date, properties) values (
-	        @nPageId+25,1,@nTempId,2,@channel_id,1,1,1,@file,'New Event','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/event_new.ascx',0,0,0,0,0,'','','',getdate(),''
-	        )
-	ELSE
-		UPDATE pages set parent_id=@nTempId, channel_id=@channel_id, use_default_template=1, page_module='systems/event_new.ascx', is_hidden=1, is_system=1 WHERE file_name=@file
-
-	if @root_id=1
-		SET @file='event_edit.aspx'
-	else
-		SET @file='event_edit_'+CAST(@root_id AS VARCHAR(20))+'.aspx'
-	IF NOT EXISTS (SELECT * FROM pages WHERE file_name=@file)
-        	insert into pages (page_id,version,parent_id,sorting,channel_id,use_default_template,template_id,page_type,file_name,title,summary,link_text,link_placement,content_left,content_body,content_right,file_attachment,file_size,owner,created_date,last_updated_date,last_updated_by,published_start_date,published_end_date,meta_keywords,meta_description,status,is_hidden,is_system,page_module,use_discussion,use_rating,allow_links_crawled,allow_page_indexed,is_marked_for_archival,editor_review_by,publisher_review_by,notes,display_date, properties) values (
-	        @nPageId+26,1,@nTempId,4,@channel_id,1,1,1,@file,'Edit Event','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/event_edit.ascx',0,0,0,0,0,'','','',getdate(),''
-	        )
-	ELSE
-		UPDATE pages set parent_id=@nTempId, channel_id=@channel_id, use_default_template=1, page_module='systems/event_edit.ascx', is_hidden=1, is_system=1 WHERE file_name=@file
-
-	if @root_id=1
-		SET @file='event_embed.aspx'
-	else
-		SET @file='event_embed_'+CAST(@root_id AS VARCHAR(20))+'.aspx'
-	IF NOT EXISTS (SELECT * FROM pages WHERE file_name=@file)
-       		insert into pages (page_id,version,parent_id,sorting,channel_id,use_default_template,template_id,page_type,file_name,title,summary,link_text,link_placement,content_left,content_body,content_right,file_attachment,file_size,owner,created_date,last_updated_date,last_updated_by,published_start_date,published_end_date,meta_keywords,meta_description,status,is_hidden,is_system,page_module,use_discussion,use_rating,allow_links_crawled,allow_page_indexed,is_marked_for_archival,editor_review_by,publisher_review_by,notes,display_date, properties) values (
-	        @nPageId+27,1,@nTempId,6,@channel_id,1,1,1,@file,'Embed Upcoming Event List','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/event_embed.ascx',0,0,0,0,0,'','','',getdate(),''
-	        )
-	ELSE
-		UPDATE pages set parent_id=@nTempId, channel_id=@channel_id, use_default_template=1, page_module='systems/event_embed.ascx', is_hidden=1, is_system=1, title='Embed Upcoming Event List' WHERE file_name=@file
 
 	if @root_id=1
 		SET @file='polls.aspx'
 	else
 		SET @file='polls_'+CAST(@root_id AS VARCHAR(20))+'.aspx'
 	IF NOT EXISTS (SELECT * FROM pages WHERE file_name=@file)
-       		insert into pages (page_id,version,parent_id,sorting,channel_id,use_default_template,template_id,page_type,file_name,title,summary,link_text,link_placement,content_left,content_body,content_right,file_attachment,file_size,owner,created_date,last_updated_date,last_updated_by,published_start_date,published_end_date,meta_keywords,meta_description,status,is_hidden,is_system,page_module,use_discussion,use_rating,allow_links_crawled,allow_page_indexed,is_marked_for_archival,editor_review_by,publisher_review_by,notes,display_date, properties) values (
-	        @nPageId+28,1,@nWorkspaceId,12,@channel_id,1,1,1,@file,'Polls','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/polls.ascx',0,0,0,0,0,'','','',getdate(),''
-	        )
+       	insert into pages (page_id,version,parent_id,sorting,channel_id,use_default_template,template_id,page_type,file_name,title,summary,link_text,link_placement,content_left,content_body,content_right,file_attachment,file_size,owner,created_date,last_updated_date,last_updated_by,published_start_date,published_end_date,meta_keywords,meta_description,status,is_hidden,is_system,page_module,use_discussion,use_rating,allow_links_crawled,allow_page_indexed,is_marked_for_archival,editor_review_by,publisher_review_by,notes,display_date, properties) values (
+	    @nPageId+20,1,@nWorkspaceId,12,@channel_id,1,1,1,@file,'Polls','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/polls.ascx',0,0,0,0,0,'','','',getdate(),''
+	    )
 	ELSE
 		UPDATE pages set parent_id=@nWorkspaceId, channel_id=@channel_id, use_default_template=1, page_module='systems/polls.ascx', is_hidden=1, is_system=1 WHERE file_name=@file
 
     SET @nTempId = (SELECT page_id FROM pages WHERE file_name=@file)
 
 	if @root_id=1
-		SET @file='poll_info.aspx'
-	else
-		SET @file='poll_info_'+CAST(@root_id AS VARCHAR(20))+'.aspx'
-	IF NOT EXISTS (SELECT * FROM pages WHERE file_name=@file)
-        	insert into pages (page_id,version,parent_id,sorting,channel_id,use_default_template,template_id,page_type,file_name,title,summary,link_text,link_placement,content_left,content_body,content_right,file_attachment,file_size,owner,created_date,last_updated_date,last_updated_by,published_start_date,published_end_date,meta_keywords,meta_description,status,is_hidden,is_system,page_module,use_discussion,use_rating,allow_links_crawled,allow_page_indexed,is_marked_for_archival,editor_review_by,publisher_review_by,notes,display_date, properties) values (
-	        @nPageId+29,1,@nTempId,2,@channel_id,1,1,1,@file,'Poll Info','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/poll_info.ascx',0,0,0,0,0,'','','',getdate(),''
-	        )
-	ELSE
-		UPDATE pages set parent_id=@nTempId, channel_id=@channel_id, use_default_template=1, page_module='systems/poll_info.ascx', is_hidden=1, is_system=1 WHERE file_name=@file
-
-	if @root_id=1
-		SET @file='poll_new.aspx'
-	else
-		SET @file='poll_new_'+CAST(@root_id AS VARCHAR(20))+'.aspx'
-	IF NOT EXISTS (SELECT * FROM pages WHERE file_name=@file)
-        	insert into pages (page_id,version,parent_id,sorting,channel_id,use_default_template,template_id,page_type,file_name,title,summary,link_text,link_placement,content_left,content_body,content_right,file_attachment,file_size,owner,created_date,last_updated_date,last_updated_by,published_start_date,published_end_date,meta_keywords,meta_description,status,is_hidden,is_system,page_module,use_discussion,use_rating,allow_links_crawled,allow_page_indexed,is_marked_for_archival,editor_review_by,publisher_review_by,notes,display_date, properties) values (
-	        @nPageId+30,1,@nTempId,4,@channel_id,1,1,1,@file,'New Poll','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/poll_new.ascx',0,0,0,0,0,'','','',getdate(),''
-	        )
-	ELSE
-		UPDATE pages set parent_id=@nTempId, channel_id=@channel_id, use_default_template=1, page_module='systems/poll_new.ascx', is_hidden=1, is_system=1 WHERE file_name=@file
-
-	if @root_id=1
 		SET @file='poll_pages.aspx'
 	else
 		SET @file='poll_pages_'+CAST(@root_id AS VARCHAR(20))+'.aspx'
 	IF NOT EXISTS (SELECT * FROM pages WHERE file_name=@file)
-        	insert into pages (page_id,version,parent_id,sorting,channel_id,use_default_template,template_id,page_type,file_name,title,summary,link_text,link_placement,content_left,content_body,content_right,file_attachment,file_size,owner,created_date,last_updated_date,last_updated_by,published_start_date,published_end_date,meta_keywords,meta_description,status,is_hidden,is_system,page_module,use_discussion,use_rating,allow_links_crawled,allow_page_indexed,is_marked_for_archival,editor_review_by,publisher_review_by,notes,display_date, properties) values (
-	        @nPageId+31,1,@nTempId,6,@channel_id,1,1,1,@file,'Embed Poll','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/poll_pages.ascx',0,0,0,0,0,'','','',getdate(),''
-	        )
+        insert into pages (page_id,version,parent_id,sorting,channel_id,use_default_template,template_id,page_type,file_name,title,summary,link_text,link_placement,content_left,content_body,content_right,file_attachment,file_size,owner,created_date,last_updated_date,last_updated_by,published_start_date,published_end_date,meta_keywords,meta_description,status,is_hidden,is_system,page_module,use_discussion,use_rating,allow_links_crawled,allow_page_indexed,is_marked_for_archival,editor_review_by,publisher_review_by,notes,display_date, properties) values (
+	    @nPageId+21,1,@nTempId,6,@channel_id,1,1,1,@file,'Embed Poll','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/poll_pages.ascx',0,0,0,0,0,'','','',getdate(),''
+	    )
 	ELSE
 		UPDATE pages set parent_id=@nTempId, channel_id=@channel_id, use_default_template=1, page_module='systems/poll_pages.ascx', is_hidden=1, is_system=1 WHERE file_name=@file
 
@@ -2736,24 +2563,11 @@ BEGIN
 	else
 		SET @file='admin_localization_'+CAST(@root_id AS VARCHAR(20))+'.aspx'
 	IF NOT EXISTS (SELECT * FROM pages WHERE file_name=@file)
-        	insert into pages (page_id,version,parent_id,sorting,channel_id,use_default_template,template_id,page_type,file_name,title,summary,link_text,link_placement,content_left,content_body,content_right,file_attachment,file_size,owner,created_date,last_updated_date,last_updated_by,published_start_date,published_end_date,meta_keywords,meta_description,status,is_hidden,is_system,page_module,use_discussion,use_rating,allow_links_crawled,allow_page_indexed,is_marked_for_archival,editor_review_by,publisher_review_by,notes,display_date, properties) values (
-	        @nPageId+32,1,@nAdminId,14,@channel_id,1,1,1,@file,'Localization','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/localization.ascx',0,0,0,0,0,'','','',getdate(),''
-	        )
+        insert into pages (page_id,version,parent_id,sorting,channel_id,use_default_template,template_id,page_type,file_name,title,summary,link_text,link_placement,content_left,content_body,content_right,file_attachment,file_size,owner,created_date,last_updated_date,last_updated_by,published_start_date,published_end_date,meta_keywords,meta_description,status,is_hidden,is_system,page_module,use_discussion,use_rating,allow_links_crawled,allow_page_indexed,is_marked_for_archival,editor_review_by,publisher_review_by,notes,display_date, properties) values (
+	    @nPageId+22,1,@nAdminId,14,@channel_id,1,1,1,@file,'Localization','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/localization.ascx',0,0,0,0,0,'','','',getdate(),''
+	    )
 	ELSE
 		UPDATE pages set parent_id=@nAdminId, channel_id=@channel_id, use_default_template=1, page_module='systems/localization.ascx', is_hidden=1, is_system=1 WHERE file_name=@file
-
-	SET @nTempId = (SELECT page_id FROM pages WHERE file_name=@file)
-
-	if @root_id=1
-		SET @file='admin_site.aspx'
-	else
-		SET @file='admin_site_'+CAST(@root_id AS VARCHAR(20))+'.aspx'
-	IF NOT EXISTS (SELECT * FROM pages WHERE file_name=@file)
-        	insert into pages (page_id,version,parent_id,sorting,channel_id,use_default_template,template_id,page_type,file_name,title,summary,link_text,link_placement,content_left,content_body,content_right,file_attachment,file_size,owner,created_date,last_updated_date,last_updated_by,published_start_date,published_end_date,meta_keywords,meta_description,status,is_hidden,is_system,page_module,use_discussion,use_rating,allow_links_crawled,allow_page_indexed,is_marked_for_archival,editor_review_by,publisher_review_by,notes,display_date, properties) values (
-	        @nPageId+33,1,@nTempId,2,@channel_id,1,1,1,@file,'Site Info','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/admin_site.ascx',0,0,0,0,0,'','','',getdate(),''
-	        )
-	ELSE
-		UPDATE pages set parent_id=@nTempId, channel_id=@channel_id, use_default_template=1, page_module='systems/admin_site.ascx', is_hidden=1, is_system=1 WHERE file_name=@file
 
 	DECLARE @nNewslettersId int
 
@@ -2762,22 +2576,46 @@ BEGIN
 	else
 		SET @file='newsletters_'+CAST(@root_id AS VARCHAR(20))+'.aspx'
 	IF NOT EXISTS (SELECT * FROM pages WHERE file_name=@file)
-        	insert into pages (page_id,version,parent_id,sorting,channel_id,use_default_template,template_id,page_type,file_name,title,summary,link_text,link_placement,content_left,content_body,content_right,file_attachment,file_size,owner,created_date,last_updated_date,last_updated_by,published_start_date,published_end_date,meta_keywords,meta_description,status,is_hidden,is_system,page_module,use_discussion,use_rating,allow_links_crawled,allow_page_indexed,is_marked_for_archival,editor_review_by,publisher_review_by,notes,display_date, properties) values (
-	        @nPageId+34,1,@nWorkspaceId,16,@channel_id,1,1,1,@file,'Newsletters','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/newsletters.ascx',0,0,0,0,0,'','','',getdate(),''
-	        )
+        insert into pages (page_id,version,parent_id,sorting,channel_id,use_default_template,template_id,page_type,file_name,title,summary,link_text,link_placement,content_left,content_body,content_right,file_attachment,file_size,owner,created_date,last_updated_date,last_updated_by,published_start_date,published_end_date,meta_keywords,meta_description,status,is_hidden,is_system,page_module,use_discussion,use_rating,allow_links_crawled,allow_page_indexed,is_marked_for_archival,editor_review_by,publisher_review_by,notes,display_date, properties) values (
+	    @nPageId+23,1,@nWorkspaceId,16,@channel_id,1,1,1,@file,'Newsletters','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/newsletters.ascx',0,0,0,0,0,'','','',getdate(),''
+	    )
 	ELSE
 		UPDATE pages set parent_id=@nWorkspaceId, channel_id=@channel_id, use_default_template=1, page_module='systems/newsletters.ascx', is_hidden=1, is_system=1 WHERE file_name=@file
 
     SET @nNewslettersId = (SELECT page_id FROM pages WHERE file_name=@file)
+
+
+	if @root_id=1
+		SET @file='newsletters_add.aspx'
+	else
+		SET @file='newsletters_add_'+CAST(@root_id AS VARCHAR(20))+'.aspx'
+	IF NOT EXISTS (SELECT * FROM pages WHERE file_name=@file)
+        insert into pages (page_id,version,parent_id,sorting,channel_id,use_default_template,template_id,page_type,file_name,title,summary,link_text,link_placement,content_left,content_body,content_right,file_attachment,file_size,owner,created_date,last_updated_date,last_updated_by,published_start_date,published_end_date,meta_keywords,meta_description,status,is_hidden,is_system,page_module,use_discussion,use_rating,allow_links_crawled,allow_page_indexed,is_marked_for_archival,editor_review_by,publisher_review_by,notes,display_date, properties) values (
+	    @nPageId+24,1,@nNewslettersId,2,@channel_id,1,1,1,@file,'Add Newsletter','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/newsletters_add.ascx',0,0,0,0,0,'','','',getdate(),''
+	    )
+	ELSE
+		UPDATE pages set parent_id=@nNewslettersId, channel_id=@channel_id, use_default_template=1, page_module='systems/newsletters_add.ascx', is_hidden=1, is_system=1, title='Add Newsletter' WHERE file_name=@file
+
+	if @root_id=1
+		SET @file='newsletters_edit.aspx'
+	else
+		SET @file='newsletters_edit_'+CAST(@root_id AS VARCHAR(20))+'.aspx'
+	IF NOT EXISTS (SELECT * FROM pages WHERE file_name=@file)
+        insert into pages (page_id,version,parent_id,sorting,channel_id,use_default_template,template_id,page_type,file_name,title,summary,link_text,link_placement,content_left,content_body,content_right,file_attachment,file_size,owner,created_date,last_updated_date,last_updated_by,published_start_date,published_end_date,meta_keywords,meta_description,status,is_hidden,is_system,page_module,use_discussion,use_rating,allow_links_crawled,allow_page_indexed,is_marked_for_archival,editor_review_by,publisher_review_by,notes,display_date, properties) values (
+	    @nPageId+25,1,@nNewslettersId,2,@channel_id,1,1,1,@file,'Edit Newsletter','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/newsletters_edit.ascx',0,0,0,0,0,'','','',getdate(),''
+	    )
+	ELSE
+		UPDATE pages set parent_id=@nNewslettersId, channel_id=@channel_id, use_default_template=1, page_module='systems/newsletters_edit.ascx', is_hidden=1, is_system=1, title='Edit Newsletter' WHERE file_name=@file
+
 
 	if @root_id=1
 		SET @file='newsletters_configure.aspx'
 	else
 		SET @file='newsletters_configure_'+CAST(@root_id AS VARCHAR(20))+'.aspx'
 	IF NOT EXISTS (SELECT * FROM pages WHERE file_name=@file)
-        	insert into pages (page_id,version,parent_id,sorting,channel_id,use_default_template,template_id,page_type,file_name,title,summary,link_text,link_placement,content_left,content_body,content_right,file_attachment,file_size,owner,created_date,last_updated_date,last_updated_by,published_start_date,published_end_date,meta_keywords,meta_description,status,is_hidden,is_system,page_module,use_discussion,use_rating,allow_links_crawled,allow_page_indexed,is_marked_for_archival,editor_review_by,publisher_review_by,notes,display_date, properties) values (
-	        @nPageId+35,1,@nNewslettersId,2,@channel_id,1,1,1,@file,'Configure Newsletter','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/newsletters_configure.ascx',0,0,0,0,0,'','','',getdate(),''
-	        )
+        insert into pages (page_id,version,parent_id,sorting,channel_id,use_default_template,template_id,page_type,file_name,title,summary,link_text,link_placement,content_left,content_body,content_right,file_attachment,file_size,owner,created_date,last_updated_date,last_updated_by,published_start_date,published_end_date,meta_keywords,meta_description,status,is_hidden,is_system,page_module,use_discussion,use_rating,allow_links_crawled,allow_page_indexed,is_marked_for_archival,editor_review_by,publisher_review_by,notes,display_date, properties) values (
+	    @nPageId+26,1,@nNewslettersId,2,@channel_id,1,1,1,@file,'Configure Newsletter','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/newsletters_configure.ascx',0,0,0,0,0,'','','',getdate(),''
+	    )
 	ELSE
 		UPDATE pages set parent_id=@nNewslettersId, channel_id=@channel_id, use_default_template=1, page_module='systems/newsletters_configure.ascx', is_hidden=1, is_system=1, title='Configure Newsletter' WHERE file_name=@file
 
@@ -2786,9 +2624,9 @@ BEGIN
 	else
 		SET @file='newsletters_send_'+CAST(@root_id AS VARCHAR(20))+'.aspx'
 	IF NOT EXISTS (SELECT * FROM pages WHERE file_name=@file)
-        	insert into pages (page_id,version,parent_id,sorting,channel_id,use_default_template,template_id,page_type,file_name,title,summary,link_text,link_placement,content_left,content_body,content_right,file_attachment,file_size,owner,created_date,last_updated_date,last_updated_by,published_start_date,published_end_date,meta_keywords,meta_description,status,is_hidden,is_system,page_module,use_discussion,use_rating,allow_links_crawled,allow_page_indexed,is_marked_for_archival,editor_review_by,publisher_review_by,notes,display_date, properties) values (
-	        @nPageId+36,1,@nNewslettersId,4,@channel_id,1,1,1,@file,'Send Newsletter','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/newsletters_send.ascx',0,0,0,0,0,'','','',getdate(),''
-	        )
+        insert into pages (page_id,version,parent_id,sorting,channel_id,use_default_template,template_id,page_type,file_name,title,summary,link_text,link_placement,content_left,content_body,content_right,file_attachment,file_size,owner,created_date,last_updated_date,last_updated_by,published_start_date,published_end_date,meta_keywords,meta_description,status,is_hidden,is_system,page_module,use_discussion,use_rating,allow_links_crawled,allow_page_indexed,is_marked_for_archival,editor_review_by,publisher_review_by,notes,display_date, properties) values (
+	    @nPageId+27,1,@nNewslettersId,4,@channel_id,1,1,1,@file,'Send Newsletter','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/newsletters_send.ascx',0,0,0,0,0,'','','',getdate(),''
+	    )
 	ELSE
 		UPDATE pages set parent_id=@nNewslettersId, channel_id=@channel_id, use_default_template=1, page_module='systems/newsletters_send.ascx', is_hidden=1, is_system=1, title='Send Newsletter' WHERE file_name=@file
 
@@ -2798,8 +2636,8 @@ BEGIN
 		SET @file='pagenotfound_'+CAST(@root_id AS VARCHAR(20))+'.aspx'
 	IF NOT EXISTS (SELECT * FROM pages WHERE file_name=@file)
 		insert into pages (page_id,version,parent_id,sorting,channel_id,use_default_template,template_id,page_type,file_name,title,summary,link_text,link_placement,content_left,content_body,content_right,file_attachment,file_size,owner,created_date,last_updated_date,last_updated_by,published_start_date,published_end_date,meta_keywords,meta_description,status,is_hidden,is_system,page_module,use_discussion,use_rating,allow_links_crawled,allow_page_indexed,is_marked_for_archival,editor_review_by,publisher_review_by,notes,display_date, properties) values (
-	        @nPageId+37,1,@root_id,24,@channel_id,1,1,1,@file,'We''re sorry','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/pagenotfound.ascx',0,0,0,0,0,'','','',getdate(),''
-	        )
+	    @nPageId+28,1,@root_id,24,@channel_id,1,1,1,@file,'We''re sorry','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/pagenotfound.ascx',0,0,0,0,0,'','','',getdate(),''
+	    )
 	ELSE
 		UPDATE pages set parent_id=@root_id, channel_id=@channel_id, use_default_template=1, page_module='systems/pagenotfound.ascx', is_hidden=1, is_system=1, content_body='' WHERE file_name=@file
 
@@ -2809,8 +2647,8 @@ BEGIN
 		SET @file='password_'+CAST(@root_id AS VARCHAR(20))+'.aspx'
 	IF NOT EXISTS (SELECT * FROM pages WHERE file_name=@file)
 		insert into pages (page_id,version,parent_id,sorting,channel_id,use_default_template,template_id,page_type,file_name,title,summary,link_text,link_placement,content_left,content_body,content_right,file_attachment,file_size,owner,created_date,last_updated_date,last_updated_by,published_start_date,published_end_date,meta_keywords,meta_description,status,is_hidden,is_system,page_module,use_discussion,use_rating,allow_links_crawled,allow_page_indexed,is_marked_for_archival,editor_review_by,publisher_review_by,notes,display_date, properties) values (
-	        @nPageId+38,1,@root_id,26,@channel_id,1,1,1,@file,'Password Recovery','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/password.ascx',0,0,0,0,0,'','','',getdate(),''
-	        )
+	    @nPageId+29,1,@root_id,26,@channel_id,1,1,1,@file,'Password Recovery','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/password.ascx',0,0,0,0,0,'','','',getdate(),''
+	    )
 	ELSE
 		UPDATE pages set parent_id=@root_id, channel_id=@channel_id, use_default_template=1, page_module='systems/password.ascx', is_hidden=1, is_system=1 WHERE file_name=@file
 
@@ -2822,8 +2660,8 @@ BEGIN
 		SET @file='shop_'+CAST(@root_id AS VARCHAR(20))+'.aspx'
 	IF NOT EXISTS (SELECT * FROM pages WHERE file_name=@file)
 		insert into pages (page_id,version,parent_id,sorting,channel_id,use_default_template,template_id,page_type,file_name,title,summary,link_text,link_placement,content_left,content_body,content_right,file_attachment,file_size,owner,created_date,last_updated_date,last_updated_by,published_start_date,published_end_date,meta_keywords,meta_description,status,is_hidden,is_system,page_module,use_discussion,use_rating,allow_links_crawled,allow_page_indexed,is_marked_for_archival,editor_review_by,publisher_review_by,notes,display_date, properties) values (
-			@nPageId+39,1,@nWorkspaceId,18,@channel_id,1,1,1,@file,'Shop','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/shop.ascx',0,0,0,0,0,'','','',getdate(),''
-			)
+		@nPageId+30,1,@nWorkspaceId,18,@channel_id,1,1,1,@file,'Shop','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/shop.ascx',0,0,0,0,0,'','','',getdate(),''
+		)
 	ELSE
 		UPDATE pages set parent_id=@nWorkspaceId, channel_id=@channel_id, use_default_template=1, page_module='systems/shop.ascx', is_hidden=1, is_system=1, title='Shop' WHERE file_name=@file
 
@@ -2835,8 +2673,8 @@ BEGIN
 		SET @file='shop_config_'+CAST(@root_id AS VARCHAR(20))+'.aspx'
 	IF NOT EXISTS (SELECT * FROM pages WHERE file_name=@file)
 		insert into pages (page_id,version,parent_id,sorting,channel_id,use_default_template,template_id,page_type,file_name,title,summary,link_text,link_placement,content_left,content_body,content_right,file_attachment,file_size,owner,created_date,last_updated_date,last_updated_by,published_start_date,published_end_date,meta_keywords,meta_description,status,is_hidden,is_system,page_module,use_discussion,use_rating,allow_links_crawled,allow_page_indexed,is_marked_for_archival,editor_review_by,publisher_review_by,notes,display_date, properties) values (
-	        @nPageId+40,1,@nShopId,2,@channel_id,1,1,1,@file,'Configuration','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/shop_config.ascx',0,0,0,0,0,'','','',getdate(),''
-	        )
+	    @nPageId+31,1,@nShopId,2,@channel_id,1,1,1,@file,'Configuration','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/shop_config.ascx',0,0,0,0,0,'','','',getdate(),''
+	    )
 	ELSE
 		UPDATE pages set parent_id=@nShopId, channel_id=@channel_id, use_default_template=1, page_module='systems/shop_config.ascx', is_hidden=1, is_system=1 WHERE file_name=@file
 
@@ -2847,8 +2685,8 @@ BEGIN
 		SET @file='shop_product_types_'+CAST(@root_id AS VARCHAR(20))+'.aspx'
 	IF NOT EXISTS (SELECT * FROM pages WHERE file_name=@file)
 		insert into pages (page_id,version,parent_id,sorting,channel_id,use_default_template,template_id,page_type,file_name,title,summary,link_text,link_placement,content_left,content_body,content_right,file_attachment,file_size,owner,created_date,last_updated_date,last_updated_by,published_start_date,published_end_date,meta_keywords,meta_description,status,is_hidden,is_system,page_module,use_discussion,use_rating,allow_links_crawled,allow_page_indexed,is_marked_for_archival,editor_review_by,publisher_review_by,notes,display_date, properties) values (
-	        @nPageId+41,1,@nShopId,4,@channel_id,1,1,1,@file,'Product Types','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/shop_product_types.ascx',0,0,0,0,0,'','','',getdate(),''
-	        )
+	    @nPageId+32,1,@nShopId,4,@channel_id,1,1,1,@file,'Product Types','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/shop_product_types.ascx',0,0,0,0,0,'','','',getdate(),''
+	    )
 	ELSE
 		UPDATE pages set parent_id=@nShopId, channel_id=@channel_id, use_default_template=1, page_module='systems/shop_product_types.ascx', is_hidden=1, is_system=1 WHERE file_name=@file
 
@@ -2858,8 +2696,8 @@ BEGIN
 		SET @file='shop_product_type_lookup_'+CAST(@root_id AS VARCHAR(20))+'.aspx'
 	IF NOT EXISTS (SELECT * FROM pages WHERE file_name=@file)
 		insert into pages (page_id,version,parent_id,sorting,channel_id,use_default_template,template_id,page_type,file_name,title,summary,link_text,link_placement,content_left,content_body,content_right,file_attachment,file_size,owner,created_date,last_updated_date,last_updated_by,published_start_date,published_end_date,meta_keywords,meta_description,status,is_hidden,is_system,page_module,use_discussion,use_rating,allow_links_crawled,allow_page_indexed,is_marked_for_archival,editor_review_by,publisher_review_by,notes,display_date, properties) values (
-			@nPageId+42,1,@nShopId,6,@channel_id,1,1,1,@file,'Lookup','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/shop_product_type_lookup.ascx',0,0,0,0,0,'','','',getdate(),''
-			)
+		@nPageId+33,1,@nShopId,6,@channel_id,1,1,1,@file,'Lookup','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/shop_product_type_lookup.ascx',0,0,0,0,0,'','','',getdate(),''
+		)
 	ELSE
 		UPDATE pages set parent_id=@nShopId, channel_id=@channel_id, use_default_template=1, page_module='systems/shop_product_type_lookup.ascx', is_hidden=1, is_system=1, title='Lookup' WHERE file_name=@file
 	
@@ -2869,8 +2707,8 @@ BEGIN
 		SET @file='shop_shipments_'+CAST(@root_id AS VARCHAR(20))+'.aspx'
 	IF NOT EXISTS (SELECT * FROM pages WHERE file_name=@file)
 		insert into pages (page_id,version,parent_id,sorting,channel_id,use_default_template,template_id,page_type,file_name,title,summary,link_text,link_placement,content_left,content_body,content_right,file_attachment,file_size,owner,created_date,last_updated_date,last_updated_by,published_start_date,published_end_date,meta_keywords,meta_description,status,is_hidden,is_system,page_module,use_discussion,use_rating,allow_links_crawled,allow_page_indexed,is_marked_for_archival,editor_review_by,publisher_review_by,notes,display_date, properties) values (
-	        @nPageId+43,1,@nShopId,8,@channel_id,1,1,1,@file,'Shipments','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/shop_shipments.ascx',0,0,0,0,0,'','','',getdate(),''
-	        )
+	    @nPageId+34,1,@nShopId,8,@channel_id,1,1,1,@file,'Shipments','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/shop_shipments.ascx',0,0,0,0,0,'','','',getdate(),''
+	    )
 	ELSE
 		UPDATE pages set parent_id=@nShopId, channel_id=@channel_id, use_default_template=1, page_module='systems/shop_shipments.ascx', is_hidden=1, is_system=1 WHERE file_name=@file
 
@@ -2880,7 +2718,7 @@ BEGIN
 		SET @file='shop_coupons_'+CAST(@root_id AS VARCHAR(20))+'.aspx'
 	IF NOT EXISTS (SELECT * FROM pages WHERE file_name=@file)
 		insert into pages (page_id,version,parent_id,sorting,channel_id,use_default_template,template_id,page_type,file_name,title,summary,link_text,link_placement,content_left,content_body,content_right,file_attachment,file_size,owner,created_date,last_updated_date,last_updated_by,published_start_date,published_end_date,meta_keywords,meta_description,status,is_hidden,is_system,page_module,use_discussion,use_rating,allow_links_crawled,allow_page_indexed,is_marked_for_archival,editor_review_by,publisher_review_by,notes,display_date, properties) values (
-		@nPageId+44,1,@nShopId,10,@channel_id,1,1,1,@file,'Coupons','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/shop_coupons.ascx',0,0,0,0,0,'','','',getdate(),''
+		@nPageId+35,1,@nShopId,10,@channel_id,1,1,1,@file,'Coupons','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/shop_coupons.ascx',0,0,0,0,0,'','','',getdate(),''
 		)
 	ELSE
 		UPDATE pages set parent_id=@nShopId, channel_id=@channel_id, use_default_template=1, page_module='systems/shop_coupons.ascx', is_hidden=1, is_system=1, title='Coupons' WHERE file_name=@file
@@ -2891,7 +2729,7 @@ BEGIN
 		SET @file='shop_orders_'+CAST(@root_id AS VARCHAR(20))+'.aspx'
 	IF NOT EXISTS (SELECT * FROM pages WHERE file_name=@file)
    		insert into pages (page_id,version,parent_id,sorting,channel_id,use_default_template,template_id,page_type,file_name,title,summary,link_text,link_placement,content_left,content_body,content_right,file_attachment,file_size,owner,created_date,last_updated_date,last_updated_by,published_start_date,published_end_date,meta_keywords,meta_description,status,is_hidden,is_system,page_module,use_discussion,use_rating,allow_links_crawled,allow_page_indexed,is_marked_for_archival,editor_review_by,publisher_review_by,notes,display_date, properties) values (
-    		@nPageId+45,1,@nShopId,12,@channel_id,1,1,1,@file,'Orders','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/shop_orders.ascx',0,0,0,0,0,'','','',getdate(),''
+    	@nPageId+36,1,@nShopId,12,@channel_id,1,1,1,@file,'Orders','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/shop_orders.ascx',0,0,0,0,0,'','','',getdate(),''
 		)
 	ELSE
 		UPDATE pages set parent_id=@nShopId, channel_id=@channel_id, use_default_template=1, page_module='systems/shop_orders.ascx', is_hidden=1, is_system=1 WHERE file_name=@file
@@ -2902,8 +2740,8 @@ BEGIN
 		SET @file='shop_taxes_'+CAST(@root_id AS VARCHAR(20))+'.aspx'
 	IF NOT EXISTS (SELECT * FROM pages WHERE file_name=@file)
 		insert into pages (page_id,version,parent_id,sorting,channel_id,use_default_template,template_id,page_type,file_name,title,summary,link_text,link_placement,content_left,content_body,content_right,file_attachment,file_size,owner,created_date,last_updated_date,last_updated_by,published_start_date,published_end_date,meta_keywords,meta_description,status,is_hidden,is_system,page_module,use_discussion,use_rating,allow_links_crawled,allow_page_indexed,is_marked_for_archival,editor_review_by,publisher_review_by,notes,display_date, properties) values (
-			@nPageId+46,1,@nShopId,8,@channel_id,1,1,1,@file,'Taxes','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/shop_taxes.ascx',0,0,0,0,0,'','','',getdate(),''
-			)
+		@nPageId+37,1,@nShopId,8,@channel_id,1,1,1,@file,'Taxes','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/shop_taxes.ascx',0,0,0,0,0,'','','',getdate(),''
+		)
 	ELSE
 		UPDATE pages set parent_id=@nShopId, channel_id=@channel_id, use_default_template=1, page_module='systems/shop_taxes.ascx', is_hidden=1, is_system=1, title='Taxes' WHERE file_name=@file
 
@@ -2913,21 +2751,10 @@ BEGIN
 		SET @file='poll_results_'+CAST(@root_id AS VARCHAR(20))+'.aspx'
 	IF NOT EXISTS (SELECT * FROM pages WHERE file_name=@file)
 		insert into pages (page_id,version,parent_id,sorting,channel_id,use_default_template,template_id,page_type,file_name,title,summary,link_text,link_placement,content_left,content_body,content_right,file_attachment,file_size,owner,created_date,last_updated_date,last_updated_by,published_start_date,published_end_date,meta_keywords,meta_description,status,is_hidden,is_system,page_module,use_discussion,use_rating,allow_links_crawled,allow_page_indexed,is_marked_for_archival,editor_review_by,publisher_review_by,notes,display_date, properties) values (
-			@nPageId+47,1,@root_id,34,@channel_id,1,1,1,@file,'Poll Results','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/poll_results.ascx',0,0,0,0,0,'','','',getdate(),''
-			)
+		@nPageId+38,1,@root_id,34,@channel_id,1,1,1,@file,'Poll Results','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/poll_results.ascx',0,0,0,0,0,'','','',getdate(),''
+		)
 	ELSE
 		UPDATE pages set parent_id=@root_id, channel_id=@channel_id, use_default_template=1, page_module='systems/poll_results.ascx', is_hidden=1, is_system=1, title='Poll Results' WHERE file_name=@file
-
-	if @root_id=1
-		SET @file='event_view.aspx'
-	else
-		SET @file='event_view_'+CAST(@root_id AS VARCHAR(20))+'.aspx'
-	IF NOT EXISTS (SELECT * FROM pages WHERE file_name=@file)
-		insert into pages (page_id,version,parent_id,sorting,channel_id,use_default_template,template_id,page_type,file_name,title,summary,link_text,link_placement,content_left,content_body,content_right,file_attachment,file_size,owner,created_date,last_updated_date,last_updated_by,published_start_date,published_end_date,meta_keywords,meta_description,status,is_hidden,is_system,page_module,use_discussion,use_rating,allow_links_crawled,allow_page_indexed,is_marked_for_archival,editor_review_by,publisher_review_by,notes,display_date, properties) values (
-			@nPageId+48,1,@root_id,36,@channel_id,1,1,1,@file,'Events','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/event_view.ascx',0,0,0,0,0,'','','',getdate(),''
-			)
-	ELSE
-		UPDATE pages set parent_id=@root_id, channel_id=@channel_id, use_default_template=1, page_module='systems/event_view.ascx', is_hidden=1, is_system=1, title='Events' WHERE file_name=@file
 
 	if @root_id=1
 		SET @file='activate.aspx'
@@ -2935,8 +2762,8 @@ BEGIN
 		SET @file='activate_'+CAST(@root_id AS VARCHAR(20))+'.aspx'
 	IF NOT EXISTS (SELECT * FROM pages WHERE file_name=@file)
 		insert into pages (page_id,version,parent_id,sorting,channel_id,use_default_template,template_id,page_type,file_name,title,summary,link_text,link_placement,content_left,content_body,content_right,file_attachment,file_size,owner,created_date,last_updated_date,last_updated_by,published_start_date,published_end_date,meta_keywords,meta_description,status,is_hidden,is_system,page_module,use_discussion,use_rating,allow_links_crawled,allow_page_indexed,is_marked_for_archival,editor_review_by,publisher_review_by,notes,display_date, properties) values (
-			@nPageId+49,1,@root_id,38,@channel_id,1,1,1,@file,'User Registration','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/activate.ascx',0,0,0,0,0,'','','',getdate(),''
-			)
+		@nPageId+39,1,@root_id,38,@channel_id,1,1,1,@file,'User Registration','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/activate.ascx',0,0,0,0,0,'','','',getdate(),''
+		)
 	ELSE
 		UPDATE pages set parent_id=@root_id, channel_id=@channel_id, use_default_template=1, page_module='systems/activate.ascx', is_hidden=1, is_system=1, title='User Registration' WHERE file_name=@file
 
@@ -2946,8 +2773,8 @@ BEGIN
 		SET @file='subscription_update_'+CAST(@root_id AS VARCHAR(20))+'.aspx'
 	IF NOT EXISTS (SELECT * FROM pages WHERE file_name=@file)
 		insert into pages (page_id,version,parent_id,sorting,channel_id,use_default_template,template_id,page_type,file_name,title,summary,link_text,link_placement,content_left,content_body,content_right,file_attachment,file_size,owner,created_date,last_updated_date,last_updated_by,published_start_date,published_end_date,meta_keywords,meta_description,status,is_hidden,is_system,page_module,use_discussion,use_rating,allow_links_crawled,allow_page_indexed,is_marked_for_archival,editor_review_by,publisher_review_by,notes,display_date, properties) values (
-			@nPageId+50,1,@root_id,42,@channel_id,1,1,1,@file,'Update Subscription','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/subscription_update.ascx',0,0,0,0,0,'','','',getdate(),''
-			)
+		@nPageId+40,1,@root_id,42,@channel_id,1,1,1,@file,'Update Subscription','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/subscription_update.ascx',0,0,0,0,0,'','','',getdate(),''
+		)
 	ELSE
 		UPDATE pages set parent_id=@root_id, channel_id=@channel_id, use_default_template=1, page_module='systems/subscription_update.ascx', is_hidden=1, is_system=1, title='Update Subscription' WHERE file_name=@file
 
@@ -2957,8 +2784,8 @@ BEGIN
 		SET @file='news_list_'+CAST(@root_id AS VARCHAR(20))+'.aspx'
 	IF NOT EXISTS (SELECT * FROM pages WHERE file_name=@file)
 		insert into pages (page_id,version,parent_id,sorting,channel_id,use_default_template,template_id,page_type,file_name,title,summary,link_text,link_placement,content_left,content_body,content_right,file_attachment,file_size,owner,created_date,last_updated_date,last_updated_by,published_start_date,published_end_date,meta_keywords,meta_description,status,is_hidden,is_system,page_module,use_discussion,use_rating,allow_links_crawled,allow_page_indexed,is_marked_for_archival,editor_review_by,publisher_review_by,notes,display_date, properties) values (
-			@nPageId+51,1,@root_id,44,@channel_id,1,1,1,@file,'News List','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/news_list.ascx',0,0,0,0,0,'','','',getdate(),''
-			)
+		@nPageId+41,1,@root_id,44,@channel_id,1,1,1,@file,'News List','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/news_list.ascx',0,0,0,0,0,'','','',getdate(),''
+		)
 	ELSE
 		UPDATE pages set parent_id=@root_id, channel_id=@channel_id, use_default_template=1, page_module='systems/news_list.ascx', is_hidden=1, is_system=1, title='News List' WHERE file_name=@file
 
@@ -2968,8 +2795,8 @@ BEGIN
 		SET @file='mailing_lists_'+CAST(@root_id AS VARCHAR(20))+'.aspx'
 	IF NOT EXISTS (SELECT * FROM pages WHERE file_name=@file)
 		insert into pages (page_id,version,parent_id,sorting,channel_id,use_default_template,template_id,page_type,file_name,title,summary,link_text,link_placement,content_left,content_body,content_right,file_attachment,file_size,owner,created_date,last_updated_date,last_updated_by,published_start_date,published_end_date,meta_keywords,meta_description,status,is_hidden,is_system,page_module,use_discussion,use_rating,allow_links_crawled,allow_page_indexed,is_marked_for_archival,editor_review_by,publisher_review_by,notes,display_date, properties) values (
-			@nPageId+52,1,@nNewslettersId,46,@channel_id,1,1,1,@file,'Mailing Lists','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/mailing_lists.ascx',0,0,0,0,0,'','','',getdate(),''
-			)
+		@nPageId+42,1,@nNewslettersId,46,@channel_id,1,1,1,@file,'Mailing Lists','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/mailing_lists.ascx',0,0,0,0,0,'','','',getdate(),''
+		)
 	ELSE
 		UPDATE pages set parent_id=@nNewslettersId, channel_id=@channel_id, use_default_template=1, page_module='systems/mailing_lists.ascx', is_hidden=1, is_system=1 WHERE file_name=@file
 
@@ -2979,8 +2806,8 @@ BEGIN
 		SET @file='subscription_settings_'+CAST(@root_id AS VARCHAR(20))+'.aspx'
 	IF NOT EXISTS (SELECT * FROM pages WHERE file_name=@file)
 		insert into pages (page_id,version,parent_id,sorting,channel_id,use_default_template,template_id,page_type,file_name,title,summary,link_text,link_placement,content_left,content_body,content_right,file_attachment,file_size,owner,created_date,last_updated_date,last_updated_by,published_start_date,published_end_date,meta_keywords,meta_description,status,is_hidden,is_system,page_module,use_discussion,use_rating,allow_links_crawled,allow_page_indexed,is_marked_for_archival,editor_review_by,publisher_review_by,notes,display_date, properties) values (
-			@nPageId+53,1,@nNewslettersId,48,@channel_id,1,1,1,@file,'Settings','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/subscription_settings.ascx',0,0,0,0,0,'','','',getdate(),''
-			)
+		@nPageId+43,1,@nNewslettersId,48,@channel_id,1,1,1,@file,'Settings','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/subscription_settings.ascx',0,0,0,0,0,'','','',getdate(),''
+		)
 	ELSE
 		UPDATE pages set parent_id=@nNewslettersId, channel_id=@channel_id, use_default_template=1, page_module='systems/subscription_settings.ascx', is_hidden=1, is_system=1 WHERE file_name=@file
 
@@ -2990,8 +2817,8 @@ BEGIN
 		SET @file='subscribers_'+CAST(@root_id AS VARCHAR(20))+'.aspx'
 	IF NOT EXISTS (SELECT * FROM pages WHERE file_name=@file)
 		insert into pages (page_id,version,parent_id,sorting,channel_id,use_default_template,template_id,page_type,file_name,title,summary,link_text,link_placement,content_left,content_body,content_right,file_attachment,file_size,owner,created_date,last_updated_date,last_updated_by,published_start_date,published_end_date,meta_keywords,meta_description,status,is_hidden,is_system,page_module,use_discussion,use_rating,allow_links_crawled,allow_page_indexed,is_marked_for_archival,editor_review_by,publisher_review_by,notes,display_date, properties) values (
-			@nPageId+54,1,@nNewslettersId,50,@channel_id,1,1,1,@file,'Subscribers','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/subscribers.ascx',0,0,0,0,0,'','','',getdate(),''
-			)
+		@nPageId+44,1,@nNewslettersId,50,@channel_id,1,1,1,@file,'Subscribers','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/subscribers.ascx',0,0,0,0,0,'','','',getdate(),''
+		)
 	ELSE
 		UPDATE pages set parent_id=@nNewslettersId, channel_id=@channel_id, use_default_template=1, page_module='systems/subscribers.ascx', is_hidden=1, is_system=1 WHERE file_name=@file
 
@@ -3002,8 +2829,8 @@ BEGIN
 		SET @file='registration_settings_'+CAST(@root_id AS VARCHAR(20))+'.aspx'
 	IF NOT EXISTS (SELECT * FROM pages WHERE file_name=@file)
 		insert into pages (page_id,version,parent_id,sorting,channel_id,use_default_template,template_id,page_type,file_name,title,summary,link_text,link_placement,content_left,content_body,content_right,file_attachment,file_size,owner,created_date,last_updated_date,last_updated_by,published_start_date,published_end_date,meta_keywords,meta_description,status,is_hidden,is_system,page_module,use_discussion,use_rating,allow_links_crawled,allow_page_indexed,is_marked_for_archival,editor_review_by,publisher_review_by,notes,display_date, properties) values (
-			@nPageId+55,1,@nAdminId,18,@channel_id,1,1,1,@file,'Registration Settings','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/registration_settings.ascx',0,0,0,0,0,'','','',getdate(),''
-			)
+		@nPageId+45,1,@nAdminId,18,@channel_id,1,1,1,@file,'Registration Settings','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/registration_settings.ascx',0,0,0,0,0,'','','',getdate(),''
+		)
 	ELSE
 		UPDATE pages set parent_id=@nAdminId, channel_id=@channel_id, use_default_template=1, page_module='systems/registration_settings.ascx', is_hidden=1, is_system=1 WHERE file_name=@file
   
@@ -3013,10 +2840,10 @@ BEGIN
 		SET @file='custom_listing_'+CAST(@root_id AS VARCHAR(20))+'.aspx'
 	IF NOT EXISTS (SELECT * FROM pages WHERE file_name=@file)
 		insert into pages (page_id,version,parent_id,sorting,channel_id,use_default_template,template_id,page_type,file_name,title,summary,link_text,link_placement,content_left,content_body,content_right,file_attachment,file_size,owner,created_date,last_updated_date,last_updated_by,published_start_date,published_end_date,meta_keywords,meta_description,status,is_hidden,is_system,page_module,use_discussion,use_rating,allow_links_crawled,allow_page_indexed,is_marked_for_archival,editor_review_by,publisher_review_by,notes,display_date, properties) values (
-			@nPageId+56,1,@nWorkspaceId,20,@channel_id,1,1,1,@file,'Custom Listing','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/custom_listing.ascx',0,0,0,0,0,'','','',getdate(),''
-			)
+		@nPageId+46,1,@nWorkspaceId,20,@channel_id,1,1,1,@file,'Custom Listing','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/custom_listing.ascx',0,0,0,0,0,'','','',getdate(),''
+		)
 	ELSE
-		UPDATE pages set parent_id=@nAdminId, channel_id=@channel_id, use_default_template=1, page_module='systems/custom_listing.ascx', is_hidden=1, is_system=1 WHERE file_name=@file
+		UPDATE pages set parent_id=@nWorkspaceId, channel_id=@channel_id, use_default_template=1, page_module='systems/custom_listing.ascx', is_hidden=1, is_system=1 WHERE file_name=@file
        
        
 	if @root_id=1
@@ -3025,8 +2852,8 @@ BEGIN
 		SET @file='tell_a_friend_'+CAST(@root_id AS VARCHAR(20))+'.aspx'
 	IF NOT EXISTS (SELECT * FROM pages WHERE file_name=@file)
 		insert into pages (page_id,version,parent_id,sorting,channel_id,use_default_template,template_id,page_type,file_name,title,summary,link_text,link_placement,content_left,content_body,content_right,file_attachment,file_size,owner,created_date,last_updated_date,last_updated_by,published_start_date,published_end_date,meta_keywords,meta_description,status,is_hidden,is_system,page_module,use_discussion,use_rating,allow_links_crawled,allow_page_indexed,is_marked_for_archival,editor_review_by,publisher_review_by,notes,display_date, properties) values (
-			@nPageId+58,1,@root_id,46,@channel_id,1,1,1,@file,'Tell A Friend','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/tell_a_friend.ascx',0,0,0,0,0,'','','',getdate(),''
-			)
+		@nPageId+47,1,@root_id,46,@channel_id,1,1,1,@file,'Tell A Friend','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/tell_a_friend.ascx',0,0,0,0,0,'','','',getdate(),''
+		)
 	ELSE
 		UPDATE pages set parent_id=@root_id, channel_id=@channel_id, use_default_template=1, page_module='systems/tell_a_friend.ascx', is_hidden=1, is_system=1 WHERE file_name=@file
 
@@ -3036,8 +2863,8 @@ BEGIN
 		SET @file='site_rss_'+CAST(@root_id AS VARCHAR(20))+'.aspx'
 	IF NOT EXISTS (SELECT * FROM pages WHERE file_name=@file)
 		insert into pages (page_id,version,parent_id,sorting,channel_id,use_default_template,template_id,page_type,file_name,title,summary,link_text,link_placement,content_left,content_body,content_right,file_attachment,file_size,owner,created_date,last_updated_date,last_updated_by,published_start_date,published_end_date,meta_keywords,meta_description,status,is_hidden,is_system,page_module,use_discussion,use_rating,allow_links_crawled,allow_page_indexed,is_marked_for_archival,editor_review_by,publisher_review_by,notes,display_date, properties) values (
-			@nPageId+59,1,@root_id,48,@channel_id,1,1,1,@file,'Site Rss','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/site_rss.ascx',0,0,0,0,0,'','','',getdate(),''
-			)
+		@nPageId+48,1,@root_id,48,@channel_id,1,1,1,@file,'Site Rss','','','main','','','','',0,'admin',getdate(),getdate(),'admin',NULL,NULL,'','','published',1,1,'systems/site_rss.ascx',0,0,0,0,0,'','','',getdate(),''
+		)
 	ELSE
 		UPDATE pages set parent_id=@root_id, channel_id=@channel_id, use_default_template=1, page_module='systems/site_rss.ascx', is_hidden=1, is_system=1 WHERE file_name=@file
        
@@ -3188,10 +3015,6 @@ ALTER TABLE newsletters_receipients ALTER COLUMN [status] NVARCHAR(255) NULL
 
 If not exists(select sysobjects.name, syscolumns.name from sysobjects left join syscolumns on sysobjects.id=syscolumns.id where sysobjects.name='newsletters' and sysobjects.type='U' and syscolumns.name='root_id')
   alter table newsletters add root_id int NULL
-Go
-
-If not exists(select sysobjects.name, syscolumns.name from sysobjects left join syscolumns on sysobjects.id=syscolumns.id where sysobjects.name='events' and sysobjects.type='U' and syscolumns.name='root_id')
-  alter table events add root_id int NULL
 Go
 
 If not exists(select sysobjects.name, syscolumns.name from sysobjects left join syscolumns on sysobjects.id=syscolumns.id where sysobjects.name='polls' and sysobjects.type='U' and syscolumns.name='root_id')
@@ -3586,7 +3409,7 @@ select
     t2.page_id, t2.parent_id, t2.sorting, t2.listing_property, t2.file_name, t2.title, t2.link_text, 
     t2.published_start_date, t2.published_end_date, t2.is_hidden, t2.is_system, t2.channel_name, 
     t2.channel_permission, t2.disable_collaboration, t2.last_updated_date, t2.status, t2.owner, 
-    t2.title2, t2.link_text2, t2.is_link, t2.link_target, t2.link_target2,
+    t2.is_hidden2, t2.title2, t2.link_text2, t2.is_link, t2.link_target, t2.link_target2,
     t1.level as lvl
 from @tmp as t1 left join pages_working as t2 on (t1.page_id=t2.page_id) order by t1.recidx
 
@@ -3783,9 +3606,6 @@ BEGIN
     'forum.ascx','Forum','admin')
 
 END
-GO
-
-DELETE from modules WHERE module_file='events_public.ascx'
 GO
 
 IF NOT EXISTS (SELECT module_file FROM modules 
@@ -4249,10 +4069,12 @@ IF EXISTS (SELECT name FROM sysobjects
 GO
 CREATE VIEW dbo.pages_ratings_count
 AS
-	SELECT TOP 100 PERCENT page_id, SUM(rating * total) AS ratings, COUNT(total) AS total_voters
+	SELECT TOP 100 PERCENT page_id, SUM(rating * total) AS ratings, SUM(total) AS total_voters
 	FROM page_rating_summary
 	GROUP BY page_id
 GO
+
+
 
 if not exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[config_shop]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
@@ -4266,7 +4088,10 @@ BEGIN
 		[paypal_email] [nvarchar](50) NOT NULL,
 		[paypal_url] [nvarchar](255) NOT NULL,
 		[paypal_order_email_template] [ntext] NULL,
-		[order_now_template] [ntext] NULL
+		[order_now_template] [ntext] NULL,
+	    [use_cash_on_delivery] [bit] NULL,
+	    [use_paypal] [bit] NULL,
+	    [cod_order_confirm_template] [ntext] NULL
 	) ON [PRIMARY]
 
 	ALTER TABLE [dbo].[config_shop] WITH NOCHECK ADD 
@@ -4279,6 +4104,22 @@ BEGIN
 	(1,'$','','USD','Shopping Cart Total','Your Terms here...','','https://www.sandbox.paypal.com/us/cgi-bin/webscr','<html><head><title>Thank you for your order</title><style>td{font-family:Verdana;font-size:11px}</style></head><body style="font-family:Verdana;font-size:11px"><p>Dear Customer,</p><p><b>Thank you for your order!</b><p>Following is a list of items you purchased on [%ORDER_DATE%] - Order #[%ORDER_ID%]:</p>[%ORDER_DETAIL%]<p>If your order contains downloadable items, please visit:&nbsp;<a href="[%DOWNLOAD_LINK%]">[%DOWNLOAD_LINK%]</a></p><p>Sincerely,<br>Support Team<br><a href="[%WEBSITE_URL%]">[%WEBSITE_URL%]</a></p></body></html>','<table cellpadding="0" cellspacing="0" class="boxOrderNow"><tr><td class="boxHeaderOrderNow">Order Now!</td></tr><tr><td class="boxContentOrderNow"><b>[%TITLE%]</b><br />[%SUMMARY%]<br /><br /><table cellpadding="0" cellspacing="0"><tr style="[%HIDE_PRICE%]"><td style="text-align:right;padding:5px;padding-left:0px">List Price: </td><td style="font-size:14px;padding:5px"><strike>[%PRICE%]</strike></td></tr><tr><td style="text-align:right;padding:5px;padding-left:0px">Price:</td><td style="font-size:12px;font-weight:bold;padding:5px">[%CURRENT_PRICE%]</td></tr></table><br /><a href="[%PAYPAL_ADD_TO_CART_URL%]"/><img src="resources/1/btnBuyNow.jpg" alt="" border="0"/></a><br /></td></tr></table>')
 END
 GO
+
+If not exists(select sysobjects.name, syscolumns.name from sysobjects left join syscolumns on sysobjects.id=syscolumns.id where sysobjects.name='config_shop' and sysobjects.type='U' and syscolumns.name='use_cash_on_delivery')
+  alter table config_shop add use_cash_on_delivery bit NULL
+
+If not exists(select sysobjects.name, syscolumns.name from sysobjects left join syscolumns on sysobjects.id=syscolumns.id where sysobjects.name='config_shop' and sysobjects.type='U' and syscolumns.name='use_paypal')
+  alter table config_shop add use_paypal bit NULL
+
+If not exists(select sysobjects.name, syscolumns.name from sysobjects left join syscolumns on sysobjects.id=syscolumns.id where sysobjects.name='config_shop' and sysobjects.type='U' and syscolumns.name='cod_order_confirm_template')
+  alter table config_shop add cod_order_confirm_template ntext NULL
+
+GO
+
+Update config_shop set use_paypal=1 WHERE use_paypal is NULL
+Update config_shop set use_cash_on_delivery=0 WHERE use_cash_on_delivery is NULL
+Update config_shop set cod_order_confirm_template='<html><head><title>Order Confirmation (Cash On Delivery)</title><style>td{font-family:Verdana;font-size:11px}</style></head><body style="font-family:Verdana;font-size:11px"><p>Dear Customer,</p><p>Following is a list of items you ordered on [%ORDER_DATE%] - Order #[%ORDER_ID%]:</p><p>[%ORDER_DETAIL%]</p><p>Ship to:</p><p>[%SHIP_TO%]</p><p>Sincerely,<br>Support Team<br><a href="[%WEBSITE_URL%]">[%WEBSITE_URL%]</a></p></body></html>' where cod_order_confirm_template is NULL
+
 
 if not exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[orders]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
@@ -4305,7 +4146,8 @@ BEGIN
 	[shipping_status] [nvarchar](50) NULL,
 	[shipped_date] [datetime] NULL,
 	[tracking_id] [nvarchar](50) NULL,
-	[download_status] [nvarchar](50) NULL
+	[download_status] [nvarchar](50) NULL,
+	[payment_method] [nvarchar](50) NULL
 	) ON [PRIMARY]
 	
 	ALTER TABLE [dbo].[orders] WITH NOCHECK ADD 
@@ -4316,6 +4158,11 @@ BEGIN
 	
 END
 GO
+
+If not exists(select sysobjects.name, syscolumns.name from sysobjects left join syscolumns on sysobjects.id=syscolumns.id where sysobjects.name='orders' and sysobjects.type='U' and syscolumns.name='payment_method')
+  alter table orders add payment_method [nvarchar](50) NULL
+Go
+Update orders set payment_method='PAYPAL' WHERE payment_method is NULL
 
 if not exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[order_items]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
@@ -4952,22 +4799,121 @@ END
 GO
 
 IF NOT EXISTS (SELECT * FROM listing_templates 
-    WHERE template_name='Photo Gallery (AJAX Style)')
+    WHERE template_name='Photo Gallery (Lightbox)')
 BEGIN
-    INSERT INTO listing_templates (template_name,listing_type,listing_property,listing_default_order,listing_columns,listing_page_size,listing_use_categories,template,template_header,template_footer,listing_script) VALUES ('Photo Gallery (AJAX Style)',1,2,'last_updated_date',4,8,1,'<div style="margin-top:15px;margin-right:40px;height:170px;line-height:12px">'+CHAR(13)+'<div style="padding-top:5px;height:100px;border:#E0E0E0 1px solid;text-align:center;">'+CHAR(13)+'<img style="cursor:pointer" onclick="javascript:_openThis(''[%FILE_VIEW_URL%]'',''[%TITLE%]'',''idBox'')" alt="" title="" src="[%FILE_VIEW_LISTING_URL%]" border="0" />'+CHAR(13)+'</div>'+CHAR(13)+'<div style="font-size:9px">[%TITLE%] '+CHAR(13)+'<i style="color:#888888">- [%LAST_UPDATED_BY%]</i></div>'+CHAR(13)+'<div style="font-size:9px">[%SUMMARY%]</div><div>[%RATING%]</div>'+CHAR(13)+'<div style="font-size:9px">Downloads: [%TOTAL_DOWNLOADS%]</div>'+CHAR(13)+'<div style="font-size:9px;"><span style="[%HIDE_FILE_DOWNLOAD%]">'+CHAR(13)+'<a href="[%FILE_DOWNLOAD_URL%]">Download</a> <span style="color:#c0c0c0">|</span></span>'+CHAR(13)+'<a target="[%LINK_TARGET%]" href="[%FILE_NAME%]">Details</a>'+CHAR(13)+'</div>'+CHAR(13)+'</div>'+CHAR(13)+'','','','<script language="javascript" type="text/javascript">'+CHAR(13)+'     <!--'+CHAR(13)+'    var orgDim=[];'+CHAR(13)+'    var tm=null;'+CHAR(13)+'    var tm2=null;'+CHAR(13)+'    var img = new Image();'+CHAR(13)+'    var sTitle="";'+CHAR(13)+''+CHAR(13)+'    function _openImage(id)'+CHAR(13)+'        {'+CHAR(13)+'        '+CHAR(13)+'        orgDim[0]=parseInt(img.width)+24; '+CHAR(13)+'        orgDim[1]=parseInt(img.height)+28; '+CHAR(13)+'                '+CHAR(13)+'        var dv=document.getElementById(id);        '+CHAR(13)+'        dv.innerHTML="";//clean'+CHAR(13)+''+CHAR(13)+'        if(parseInt(dv.style.height)<=orgDim[1]) tm=window.setInterval(function(){animExpandHeight(dv);}, 15);//speed=30'+CHAR(13)+'        else tm=window.setInterval(function(){animCollapseHeight(dv);}, 15);'+CHAR(13)+'        }    '+CHAR(13)+'    function animExpandHeight(dv) '+CHAR(13)+'        {'+CHAR(13)+'        var h=parseInt(dv.style.height)+10;//steps=10'+CHAR(13)+'        if(h>=orgDim[1]) '+CHAR(13)+'            {'+CHAR(13)+'            h=orgDim[1];clearInterval(tm);tm=null;'+CHAR(13)+'            if(parseInt(dv.style.width)<=orgDim[0]) tm2=window.setInterval(function(){animExpandWidth(dv);}, 15);'+CHAR(13)+'            else tm2=window.setInterval(function(){animCollapseWidth(dv);}, 15);'+CHAR(13)+'            }'+CHAR(13)+'        dv.style.height=h+"px";'+CHAR(13)+'        '+CHAR(13)+'        dv.style.top=parseInt(dv.style.top)-5 + "px";'+CHAR(13)+'        }'+CHAR(13)+'    function animCollapseHeight(dv) '+CHAR(13)+'        {'+CHAR(13)+'        var h=parseInt(dv.style.height)-10;'+CHAR(13)+'        if(h<orgDim[1]) '+CHAR(13)+'            {'+CHAR(13)+'            h=orgDim[1];clearInterval(tm);tm=null;'+CHAR(13)+'            if(parseInt(dv.style.width)<=orgDim[0]) tm2=window.setInterval(function(){animExpandWidth(dv);}, 15);'+CHAR(13)+'            else tm2=window.setInterval(function(){animCollapseWidth(dv);}, 15);'+CHAR(13)+'            }'+CHAR(13)+'        dv.style.height=h+"px";'+CHAR(13)+'        '+CHAR(13)+'        dv.style.top=parseInt(dv.style.top)+5 + "px";'+CHAR(13)+'        }'+CHAR(13)+'    function animExpandWidth(dv) '+CHAR(13)+'        {'+CHAR(13)+'        var w=parseInt(dv.style.width)+10;'+CHAR(13)+'        if(w>=orgDim[0]) '+CHAR(13)+'            {'+CHAR(13)+'            w=orgDim[0];clearInterval(tm2);tm2=null;'+CHAR(13)+'            '+CHAR(13)+'            var oImg = document.createElement("img");'+CHAR(13)+'            oImg.src=img.src;'+CHAR(13)+'            dv.appendChild(oImg);'+CHAR(13)+'            '+CHAR(13)+'            var oDiv = document.createElement("DIV");'+CHAR(13)+'            oDiv.style.paddingTop="3px";'+CHAR(13)+'            oDiv.innerHTML="<table style=\"width:100%;\" cellpadding=\"0\" cellspacing=\"0\"><tr><td style=\"padding-left:12px;text-align:left;font-weight:bold;font-family:arial;font-size:8pt;color:#333333\">"+sTitle+"</td><td style=\"text-align:right;padding-right:12px;\"><a href=\"javascript:_closeThis()\" style=\"font-family:arial;font-size:16px;font-weight:bold;color:#a0a0a0\">Close</a></td></tr></table>"'+CHAR(13)+'            dv.appendChild(oDiv);'+CHAR(13)+'            }'+CHAR(13)+'        dv.style.width=w+"px";'+CHAR(13)+'        '+CHAR(13)+'        dv.style.left=parseInt(dv.style.left)-5 + "px";'+CHAR(13)+'        }'+CHAR(13)+'    function animCollapseWidth(dv)'+CHAR(13)+'        {'+CHAR(13)+'        var w=parseInt(dv.style.width)-10;'+CHAR(13)+'        if(w<orgDim[0]) '+CHAR(13)+'            {'+CHAR(13)+'            w=orgDim[0];clearInterval(tm2);tm2=null;'+CHAR(13)+''+CHAR(13)+'            var oImg = document.createElement("img");'+CHAR(13)+'            oImg.src=img.src;'+CHAR(13)+'            dv.appendChild(oImg);'+CHAR(13)+'            '+CHAR(13)+'            var oDiv = document.createElement("DIV");'+CHAR(13)+'            oDiv.innerHTML="<table style=\"width:100%;\" cellpadding=\"0\" cellspacing=\"0\"><tr><td style=\"padding-left:12px;text-align:left;font-weight:bold;font-family:arial;font-size:8pt;color:#333333\">"+sTitle+"</td><td style=\"text-align:right;padding-right:12px;\"><a href=\"javascript:_closeThis()\" style=\"font-family:arial;font-size:16px;font-weight:bold;color:#a0a0a0\">Close</a></td></tr></table>"'+CHAR(13)+'            oDiv.style.paddingTop="3px";'+CHAR(13)+'            dv.appendChild(oDiv);'+CHAR(13)+'            }'+CHAR(13)+'        dv.style.width=w+"px";'+CHAR(13)+'        '+CHAR(13)+'        dv.style.left=parseInt(dv.style.left)+5 + "px";'+CHAR(13)+'        }'+CHAR(13)+'        '+CHAR(13)+'    function _closeThis()'+CHAR(13)+'        {'+CHAR(13)+'        var idTmp=document.getElementById(''idBox'');'+CHAR(13)+'        idTmp.innerHTML=""; '+CHAR(13)+'        clearInterval(tm);tm=null;'+CHAR(13)+'        clearInterval(tm2);tm2=null;'+CHAR(13)+'        idTmp.style.display="none";'+CHAR(13)+'        var idProgress=document.getElementById(''idProgress''); '+CHAR(13)+'        idProgress.style.cssText="";'+CHAR(13)+'        }'+CHAR(13)+'    function _openThis(url,title,id)'+CHAR(13)+'        {'+CHAR(13)+'        var idTmp=document.getElementById(''idBox''); '+CHAR(13)+' '+CHAR(13)+'        var idTitle=document.getElementById(''idTitle''); '+CHAR(13)+'        idTitle=title;'+CHAR(13)+'        sTitle=title;'+CHAR(13)+'         '+CHAR(13)+'        idTmp.style.width="250px";'+CHAR(13)+'        idTmp.style.height="250px";        '+CHAR(13)+'        idTmp.style.top=document.documentElement.scrollTop + (parseInt(document.documentElement.clientHeight)/2)-125 + "px";'+CHAR(13)+'        idTmp.style.left=document.documentElement.scrollLeft + (parseInt(document.documentElement.clientWidth)/2)-125 + "px";'+CHAR(13)+'        '+CHAR(13)+'        var oImg = document.createElement("img");'+CHAR(13)+'        oImg.src="systems/images/animated_progress.gif";'+CHAR(13)+'        oImg.style.cssText="margin:10px";'+CHAR(13)+'        idTmp.appendChild(oImg);'+CHAR(13)+'        idTmp.style.display="block";'+CHAR(13)+'        '+CHAR(13)+'        img.src=url;'+CHAR(13)+'        img.onload=function(){_openImage(id)}; '+CHAR(13)+'        '+CHAR(13)+'        var idProgress=document.getElementById(''idProgress''); '+CHAR(13)+'        idProgress.style.cssText="position:absolute;top:"+document.documentElement.scrollTop+"px;left:"+document.documentElement.scrollLeft+"px;width:100%;height:1000px;background-color:black;moz-opacity:0.8;khtml-opacity:.8;opacity:.8;filter:alpha(opacity=80);z-index:100;";  '+CHAR(13)+'        }'+CHAR(13)+'    // -->'+CHAR(13)+'</script>'+CHAR(13)+''+CHAR(13)+'<div id="idBox" style="padding-top:12px;position:absolute;z-index:200;background-color:white;display:none;border:#333333 1px solid;text-align:center;"></div>'+CHAR(13)+'<div id="idProgress" onclick="javascript:_closeThis()"></div>'+CHAR(13)+'<div id="idBottom" style="display:none"><span id="idTitle"></span><a href="javascript:_closeThis()">Close</a></div>'+CHAR(13)+'')
+    INSERT INTO listing_templates (template_name,listing_type,listing_property,listing_default_order,listing_columns,listing_page_size,listing_use_categories,template,template_header,template_footer,listing_script) VALUES ('Photo Gallery (Lightbox)',1,2,'last_updated_date',4,20,1,'<div style="margin-top:15px;margin-right:40px;line-height:12px">'+CHAR(13)+'<div style="border:#E0E0E0 1px solid;text-align:center">'+CHAR(13)+'<a href="[%FILE_VIEW_URL%]" rel="lightbox[mando]" id="image[%INDEX%]" title="[%TITLE%]"><img style="margin:7px" src="[%FILE_VIEW_LISTING_URL%]" border="0" alt="" /></a>'+CHAR(13)+'<div class="lightboxDesc image[%INDEX%]">[%SUMMARY%]</div>'+CHAR(13)+'</div>'+CHAR(13)+'<div style="font-size:9px">[%TITLE%]'+CHAR(13)+'<i style="color:#888888">- [%LAST_UPDATED_BY%]</i></div>'+CHAR(13)+'<div style="font-size:9px">[%SUMMARY%]</div><div>[%RATING%]</div>'+CHAR(13)+'<div style="font-size:9px">Downloads: [%TOTAL_DOWNLOADS%]</div>'+CHAR(13)+'<div style="font-size:9px;"><span style="[%HIDE_FILE_DOWNLOAD%]">'+CHAR(13)+'<a href="[%FILE_DOWNLOAD_URL%]">Download</a> <span style="color:#c0c0c0">|</span></span>'+CHAR(13)+'<a target="[%LINK_TARGET%]" href="[%FILE_NAME%]">Details</a>'+CHAR(13)+'</div>'+CHAR(13)+'</div>','','<script type="text/javascript">window.addEvent(''domready'',function(){Lightbox.init({descriptions: ''.lightboxDesc'', showControls: true});});</script>','<link href="systems/lightbox/lightbox.css" rel="stylesheet" type="text/css" />'+CHAR(13)+'<script type="text/javascript" src="systems/lightbox/mootools.js"></script>'+CHAR(13)+'<script type="text/javascript" src="systems/lightbox/lightbox.js"></script>')
 END
 GO
+
+UPDATE listing_templates set template_name='Presentation',template_footer='<div id="idBox" style="overflow:auto;width:600px;height:450px;border:#cacbcc 7px solid;margin-top:3px;"></div>'+CHAR(13)+'<script language="javascript" type="text/javascript">'+CHAR(13)+'     <!--'+CHAR(13)+'     img.src=sURL[0];'+CHAR(13)+'     img.onload=function(){_openImage(img)}; '+CHAR(13)+'     document.getElementById("idImageTitle").innerHTML=document.getElementById("title0").innerHTML;'+CHAR(13)+'     document.getElementById("idPageNum").innerHTML = "1 of " + (n+1);'+CHAR(13)+'     document.getElementById("idImageSummary").innerHTML=document.getElementById("sum0").innerHTML;'+CHAR(13)+'    // -->'+CHAR(13)+'</script>' WHERE template_name='Image Slideshow'
+GO
+IF NOT EXISTS (SELECT * FROM listing_templates 
+    WHERE template_name='Presentation')
+BEGIN
+    INSERT INTO listing_templates (template_name,listing_type,listing_property,listing_default_order,listing_columns,listing_page_size,listing_use_categories,template,template_header,template_footer,listing_script) VALUES ('Presentation',1,3,'last_updated_date',1,50,0,'<script language="javascript" type="text/javascript">'+CHAR(13)+'     <!--'+CHAR(13)+'     var n = [%INDEX%];'+CHAR(13)+'     sURL[n]="[%FILE_VIEW_URL%]";   '+CHAR(13)+'    // -->'+CHAR(13)+'</script>'+CHAR(13)+'<span style="display:none" id="title[%INDEX%]">[%TITLE%] &nbsp;<a style="[%HIDE%]" href="[%FILE_NAME%]">Detail</a></span>'+CHAR(13)+'<span style="display:none" id="sum[%INDEX%]">[%SUMMARY%]</span>'+CHAR(13)+''+CHAR(13)+'','<table style="width:610px" cellpadding="0" cellspacing="0">'+CHAR(13)+'<tr><td style="width:100%;">'+CHAR(13)+'<div id="idImageTitle" style="font-weight:bold;font-family:arial;font-size:16px"></div>'+CHAR(13)+'</td>'+CHAR(13)+'<td style="text-align:right;white-space:nowrap;color:#9a9b9c;font-family:arial;font-size:14px;font-weight:bold" valign="top">'+CHAR(13)+'<span id="idPageNum"></span>&nbsp;&nbsp;'+CHAR(13)+'<a style="color:#9a9b9c;font-family:arial;" href="javascript:_doPrev()">Prev</a>&nbsp;'+CHAR(13)+'<a style="color:#9a9b9c;font-family:arial;" href="javascript:_doNext()">Next</a>'+CHAR(13)+'</td></tr>'+CHAR(13)+'<tr><td colspan="2" style="padding-top:5px;padding-bottom:5px">'+CHAR(13)+'<div id="idImageSummary" style=""></div>'+CHAR(13)+'</td></tr>'+CHAR(13)+'</table>'+CHAR(13)+''+CHAR(13)+'','<div id="idBox" style="overflow:auto;width:600px;height:450px;border:#cacbcc 7px solid;margin-top:3px;"></div>'+CHAR(13)+'<script language="javascript" type="text/javascript">'+CHAR(13)+'     <!--'+CHAR(13)+'     img.src=sURL[0];'+CHAR(13)+'     img.onload=function(){_openImage(img)}; '+CHAR(13)+'     document.getElementById("idImageTitle").innerHTML=document.getElementById("title0").innerHTML;'+CHAR(13)+'     document.getElementById("idPageNum").innerHTML = "1 of " + (n+1);'+CHAR(13)+'     document.getElementById("idImageSummary").innerHTML=document.getElementById("sum0").innerHTML;'+CHAR(13)+'    // -->'+CHAR(13)+'</script>','<script language="javascript" type="text/javascript">'+CHAR(13)+'     <!--'+CHAR(13)+'     var img = new Image();'+CHAR(13)+'     var sURL=[]; '+CHAR(13)+'     var nCurrentImage=0;     '+CHAR(13)+''+CHAR(13)+'     function _doNext()'+CHAR(13)+'	{'+CHAR(13)+'	if(nCurrentImage<n)nCurrentImage=nCurrentImage+1;'+CHAR(13)+'	else return;'+CHAR(13)+'	_showProgress()'+CHAR(13)+''+CHAR(13)+'	var sImgUrl=sURL[nCurrentImage];'+CHAR(13)+'	img.src=sImgUrl;'+CHAR(13)+'	img.onload=function(){_openImage(img)}; '+CHAR(13)+''+CHAR(13)+'	document.getElementById("idImageTitle").innerHTML=document.getElementById("title"+nCurrentImage).innerHTML;'+CHAR(13)+'	document.getElementById("idPageNum").innerHTML = (nCurrentImage+1) + " of " + (n+1);'+CHAR(13)+'	document.getElementById("idImageSummary").innerHTML=document.getElementById("sum"+nCurrentImage).innerHTML;'+CHAR(13)+'	}'+CHAR(13)+'     function _doPrev()'+CHAR(13)+'	{'+CHAR(13)+'	if(nCurrentImage>0)nCurrentImage=nCurrentImage-1;'+CHAR(13)+'	else return;'+CHAR(13)+'	_showProgress()'+CHAR(13)+''+CHAR(13)+'	var sImgUrl=sURL[nCurrentImage];'+CHAR(13)+'	img.src=sImgUrl;'+CHAR(13)+'	img.onload=function(){_openImage(img)}; '+CHAR(13)+''+CHAR(13)+'	document.getElementById("idImageTitle").innerHTML=document.getElementById("title"+nCurrentImage).innerHTML;'+CHAR(13)+'	document.getElementById("idPageNum").innerHTML = (nCurrentImage+1) + " of " + (n+1);'+CHAR(13)+'	document.getElementById("idImageSummary").innerHTML=document.getElementById("sum"+nCurrentImage).innerHTML;'+CHAR(13)+'	}'+CHAR(13)+'     function _showProgress()'+CHAR(13)+'	{'+CHAR(13)+'	var oImg = document.createElement("img");'+CHAR(13)+'	oImg.src="systems/images/animated_progress.gif";'+CHAR(13)+'	oImg.style.cssText="margin:10px";'+CHAR(13)+'	var idBox=document.getElementById("idBox");'+CHAR(13)+'	idBox.innerHTML="";'+CHAR(13)+'	idBox.appendChild(oImg);'+CHAR(13)+'	}'+CHAR(13)+'     function _openImage(o)'+CHAR(13)+'	{'+CHAR(13)+'	var idBox=document.getElementById("idBox");'+CHAR(13)+'	idBox.innerHTML="";'+CHAR(13)+'	idBox.appendChild(o);'+CHAR(13)+'	}'+CHAR(13)+'    // -->'+CHAR(13)+'</script>'+CHAR(13)+'')
+END
+GO
+
+IF NOT EXISTS (SELECT * FROM listing_templates 
+    WHERE template_name='Accordion')
+BEGIN
+    INSERT INTO listing_templates (template_name,listing_type,listing_property,listing_default_order,listing_columns,listing_page_size,listing_use_categories,template,template_header,template_footer,listing_script) VALUES ('Accordion',1,3,'last_updated_date',1,12,1,'<div class="toggler" style="cursor: pointer;border-bottom:#c6c7c8 1px dotted;padding:10px;font-weight:bold">'+CHAR(13)+'[%TITLE%]'+CHAR(13)+'</div>'+CHAR(13)+'<div class="element" style="background:#ffffff;border-bottom:#c6c7c8 1px dotted;">'+CHAR(13)+'<div style="padding:10px;">'+CHAR(13)+'[%SUMMARY%]  <a href="[%FILE_NAME%]">More</a>'+CHAR(13)+'</div>'+CHAR(13)+'</div>','<div id="accordion" style="border-top:#c6c7c8 1px solid;background:#f5f6f7;margin-right:15px">','</div><script type="text/javascript">window.addEvent(''domready'', function() {var myAccordion = new Accordion($(''accordion''), ''div.toggler'', ''div.element'', {opacity: false,onActive: function(toggler, element){toggler.setStyle(''color'', ''#41464D'');},onBackground: function(toggler, element){toggler.setStyle(''color'', ''#528CE0'');}});});</script>','<script type="text/javascript" src="systems/accordion/mootools.js"></script>')
+END
+GO
+
+UPDATE listing_templates set template_name='Photo Gallery (Community Style)', listing_type=1,listing_property=2,listing_default_order='last_updated_date',listing_columns=4,listing_page_size=12,listing_use_categories=1, template='<div style="margin-top:15px;margin-right:35px;line-height:12px;"><div style="border:#E0E0E0 1px solid;text-align:center;"><a style="[%HIDE_FILE_VIEW_LISTING%]" target="[%LINK_TARGET%]" href="[%FILE_NAME%]"><img onmouseover="float.imgClear();float.imgSet(''[%FILE_VIEW_LISTING_MORE_URL%]'');float.doShow(event, ''popImage'')" onmouseout="float.doHide(''popImage'');" alt="" title="" src="[%FILE_VIEW_LISTING_URL%]" border="0" style="margin:7px" /></a></div><div style="font-size:9px">[%TITLE%] <i style="color:#888888">- [%LAST_UPDATED_BY%]</i></div><div style="font-size:9px">[%RATING%]</div><div style="font-size:9px">Downloads: [%TOTAL_DOWNLOADS%]</div><div style="font-size:9px"><span style="[%HIDE_FILE_DOWNLOAD%]"><a href="[%FILE_DOWNLOAD_URL%]">Download</a> <span style="color:#c0c0c0">|</span></span><a target="[%LINK_TARGET%]" href="[%FILE_NAME%]">Details</a></div></div>' WHERE template_name='Photo Gallery (Community Style)'
+UPDATE listing_templates set template_name='Product Gallery', listing_type=1,listing_property=2,listing_default_order='last_updated_date',listing_columns=4,listing_page_size=12,listing_use_categories=1, template='<div style="margin-top:15px;margin-right:35px;line-height:12px;"><div style="border:#E0E0E0 1px solid;text-align:center;"><a style="[%HIDE_FILE_VIEW_LISTING%]" target="[%LINK_TARGET%]" href="[%FILE_NAME%]"><img onmouseover="float.imgClear();float.imgSet(''[%FILE_VIEW_LISTING_MORE_URL%]'');float.doShow(event, ''popImage'')" onmouseout="float.doHide(''popImage'');" alt="" title="" src="[%FILE_VIEW_LISTING_URL%]" border="0" style="margin:7px" /></a></div><div style="font-size:9px">[%TITLE%]</div><div style="font-size:9px">[%SUMMARY%] [%PRICING_INFO%]</div><div style="font-size:9px;"><a target="[%LINK_TARGET%]" href="[%FILE_NAME%]">Details</a>&nbsp;<span style="[%HIDE_PAYPAL_ADD_TO_CART%]"><span style="color:c0c0c0">|</span>&nbsp;<a href="[%PAYPAL_ADD_TO_CART_URL%]">Buy</a></span></div></div>' WHERE template_name='Product Gallery'
+UPDATE listing_templates set template_name='Software Screenshots', listing_type=1,listing_property=3,listing_default_order='last_updated_date',listing_columns=4,listing_page_size=40,listing_use_categories=0, template='<div style="margin-top:15px;margin-right:35px;line-height:12px;"><div style="border:#E0E0E0 1px solid;text-align:center;"><a style="[%HIDE_FILE_VIEW%]" href="javascript:modalDialog(''[%FILE_VIEW_URL%]'', 800,560,''[%TITLE%]'')"><img alt="" title="" src="[%FILE_VIEW_LISTING_URL%]" border="0" style="margin:7px" /></a></div><div style="font-size:9px">[%TITLE%]</div><div style="font-size:9px">[%SUMMARY%]</div><div style="font-size:9px"><a style="[%HIDE%]" target="[%LINK_TARGET%]" href="[%FILE_NAME%]">Details</a></div></div>' WHERE template_name='Software Screenshots'
+UPDATE listing_templates set template_name='News/Journal (MP3)', listing_type=2,listing_property=2,listing_default_order='last_updated_date',listing_columns=1,listing_page_size=12,listing_use_categories=1, template='<table style="margin-top:10px;margin-bottom:10px;background:#efefef;width:100%;" cellpadding="0" cellspacing="0"><tr><td style="padding:7px;padding-top:4px;height:18px;border-top:#b7b7b7 0px solid;background:url(''resources/1/boxheaderbg1.gif'') #e0e0e0;"><table cellpadding="0" cellspacing="0" style="width:100%"><tr><td><a style="color:#333333;font-family:arial;font-weight:bold;font-size:11px;white-space:nowrap" target="[%LINK_TARGET%]" href="[%FILE_NAME%]">[%TITLE%]</a></td><td style="text-align:right;font-size:10px;white-space:nowrap">[%DISPLAY_DATE%]</td></tr></table></td></tr><tr><td style="padding:7px;background:#f7f7f7;height:100%" valign="top"><img style="margin-right:7px;margin-bottom:3px;[%HIDE_FILE_VIEW_LISTING%]" src="[%FILE_VIEW_LISTING_URL%]" align="left" alt="" /><span id="id[%PAGE_ID%]"><a href="http" & "://www.macromedia.com/go/getflashplayer">Get the Flash Player</a> to see this player.</span><script type="text/javascript">var sFile = "[%FILE_VIEW_URL%]";sFile = sFile.toLowerCase();if(sFile.indexOf(".mp3")!=-1){var s3 = new SWFObject("systems/media/mp3player.swf", "line", "240", "20", "7");s3.addVariable("file","[%FILE_VIEW_URL%]");s3.addVariable("repeat","true");s3.addVariable("showdigits","false");s3.addVariable("width","240");s3.addVariable("height","20");s3.write("id[%PAGE_ID%]");}else{document.getElementById("id[%PAGE_ID%]").style.display="none";}</script><div style="padding-top:3px">[%SUMMARY%]</div></td></tr><tr><td style="border-bottom:#DDDDDD 2px solid;padding:7px"><table cellpadding="0" cellspacing="0" style="width:100%"><tr><td style="font-size:10px;">Hits today: [%HITS_TODAY%] &nbsp;Total: [%TOTAL_HITS%]</td><td style="font-size:10px;text-align:right">Filed Under: [%CATEGORY_INFO%]</td></tr></table></td></tr></table>', listing_script='<script type="text/javascript" src="[%APP_PATH%]systems/media/swfobject.js"></script>' WHERE template_name='News/Journal (MP3)'
+
+GO
+IF NOT EXISTS (SELECT * FROM listing_templates 
+    WHERE template_name='Flash Demos')
+BEGIN
+    INSERT INTO listing_templates (template_name,listing_type,listing_property,listing_default_order,listing_columns,listing_page_size,listing_use_categories,template,template_header,template_footer,listing_script) VALUES ('Flash Demos',1,3,'last_updated_date',3,12,0,'<div style="text-align:center;margin-top:15px;margin-right:30px;"><img src="[%FILE_VIEW_LISTING_URL%]" alt=""/><br /><br /><div style="font-weight:bold">[%TITLE%]</div>[<a href="javascript:popupflash(''[%TITLE%]'',''[%FILE_VIEW_URL%]'',740,571,700,507);">View</a>] <a style="[%HIDE%]" href="[%FILE_NAME%]">Detail</a></div>','','','<script type="text/javascript">function popupflash(sTitle,sFileViewURL,nW,nH,nFlashW,nFlashH){var generator=window.open('''',''name'',''height=''+nH+'',width=''+nW);generator.document.write(''<html><head><title>'' + sTitle + ''</title>'');generator.document.write(''</head><body style="margin:0px" bgcolor="#FFFFFF">'');generator.document.write(''<div style="border:#505050 1px solid;margin:19px;">'');generator.document.write(''<OBJECT classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000"'');generator.document.write('' codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=5,0,0,0"'');generator.document.write('' WIDTH=''+nFlashW+'' HEIGHT=''+nFlashH+''>'');generator.document.write(''<PARAM NAME=movie VALUE="'' + sFileViewURL + ''">'');generator.document.write(''<PARAM NAME=quality VALUE=high><PARAM NAME=bgcolor VALUE="#FFFFFF">'');generator.document.write(''<EMBED src="'' + sFileViewURL + ''" quality=high bgcolor="#FFFFFF" WIDTH=''+nFlashW+'' HEIGHT=''+nFlashH);generator.document.write('' TYPE="application/x-shockwave-flash" PLUGINSPAGE="http://www.macromedia.com/shockwave/download/index.cgi?P1_Prod_Version=ShockwaveFlash"></EMBED>'');generator.document.write(''</OBJECT>''); generator.document.write(''</div>''); generator.document.write(''</body></html>''); generator.document.close();}</script>')
+END
+GO
+
+IF NOT EXISTS (SELECT * FROM listing_templates 
+    WHERE template_name='BLOG')
+BEGIN
+    INSERT INTO listing_templates (template_name,listing_type,listing_property,listing_default_order,listing_columns,listing_page_size,listing_use_categories,template,content_template_id, content_enable_comment, content_enable_comment_anonymous, content_enable_rating) 
+    VALUES ('BLOG',2,2,'display_date',2,12,1,'<div style="margin-bottom:3px;margin-right:10px">'+CHAR(13)+'<a style="color:#333333;font-family:trebuchet ms,arial,verdana;font-size:12pt;font-weight:normal;white-space:nowrap" target="[%LINK_TARGET%]" href="[%FILE_NAME%]">[%TITLE%]</a>'+CHAR(13)+'</div>'+CHAR(13)+'<div style="margin-bottom:7px;margin-right:10px;color:#aaaaaa">'+CHAR(13)+'[%DISPLAY_DATE%] by [%LAST_UPDATED_BY%] | '+CHAR(13)+'<a href="[%FILE_NAME%]#ic_comments" target="[%LINK_TARGET%]">[%COMMENTS%] comments</a>'+CHAR(13)+'</div>'+CHAR(13)+'<div style="margin-bottom:18px;margin-right:10px">'+CHAR(13)+'<img style="float:left;margin: 0 10px 0 0;[%HIDE_FILE_VIEW_LISTING%]" src="[%FILE_VIEW_LISTING_URL%]" alt="" />[%SUMMARY%]'+CHAR(13)+'</div>',4,1,1,0)
+END
+GO
+
+update listing_templates set content_template_id=3 where template_name='News/Journal (Community Style)' and content_template_id is null
+update listing_templates set content_template_id=2 where template_name='Article List (Community Style)' and content_template_id is null
+update listing_templates set content_template_id=2 where template_name='Article List (Corporate Style)' and content_template_id is null
+update listing_templates set content_template_id=6 where template_name='Directory (Community Style)' and content_template_id is null
+update listing_templates set content_template_id=6 where template_name='Directory (Corporate Style)' and content_template_id is null
+update listing_templates set content_template_id=5 where template_name='Product Gallery' and content_template_id is null
+update listing_templates set content_template_id=5 where template_name='Product List' and content_template_id is null
+update listing_templates set content_template_id=7 where template_name='Photo Gallery (Community Style)' and content_template_id is null
+update listing_templates set content_template_id=7 where template_name='Photo Gallery (Corporate Style)' and content_template_id is null
+update listing_templates set content_template_id=3 where template_name='News/Journal (Basic Style)' and content_template_id is null
+update listing_templates set content_template_id=3 where template_name='News/Journal (MP3)' and content_template_id is null
+update listing_templates set content_template_id=3 where template_name='News/Journal (Box)' and content_template_id is null
+update listing_templates set content_template_id=7 where template_name='Photo Gallery (Lightbox)' and content_template_id is null
+update listing_templates set content_template_id=4 where template_name='BLOG' and content_template_id is null
+update listing_templates set content_template_id=1 where content_template_id is null
+GO
+
+IF EXISTS (SELECT name FROM sysindexes 
+      WHERE name = 'IX_pcomments_page_id')
+   DROP INDEX page_comments.IX_pcomments_page_id
+GO
+
+CREATE NONCLUSTERED INDEX IX_pcomments_page_id ON page_comments (page_id)
+GO
+
+IF EXISTS (SELECT name FROM sysindexes 
+      WHERE name = 'IX_pdownloads_page_id')
+   DROP INDEX page_downloads.IX_pdownloads_page_id
+GO
+
+CREATE NONCLUSTERED INDEX IX_pdownloads_page_id ON page_downloads (page_id)
+GO
+
+IF EXISTS (SELECT name FROM sysindexes 
+      WHERE name = 'IX_pviews_page_id')
+   DROP INDEX page_views.IX_pviews_page_id
+GO
+
+CREATE NONCLUSTERED INDEX IX_pviews_page_id ON page_views (page_id)
+GO
+
+update templates set content_template_id=1 where content_template_id is null
+GO
+
+
+if not exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[shipping_info]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
+BEGIN
+CREATE TABLE [dbo].[shipping_info](
+	[id] [int] IDENTITY(1,1)NOT NULL,
+	[username] [nvarchar](256) NOT NULL,
+	[shipping_first_name] [nvarchar](50) NULL,
+	[shipping_last_name] [nvarchar](50) NULL,
+	[shipping_company] [nvarchar](50) NULL,
+	[shipping_address] [nvarchar](50) NULL,
+	[shipping_city] [nvarchar](50) NULL,
+	[shipping_state] [nvarchar](50) NULL,
+	[shipping_country] [nvarchar](50) NULL,
+	[shipping_zip] [nvarchar](50) NULL,
+	[shipping_phone] [nvarchar](50) NULL,
+	[shipping_fax] [nvarchar](50) NULL,
+ CONSTRAINT [PK_shipping_info] PRIMARY KEY CLUSTERED 
+(
+	[id] ASC
+)WITH (PAD_INDEX  = OFF, IGNORE_DUP_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+END
+GO
+
 IF NOT EXISTS (SELECT * FROM listing_templates 
     WHERE template_name='Image Slideshow')
 BEGIN
-    INSERT INTO listing_templates (template_name,listing_type,listing_property,listing_default_order,listing_columns,listing_page_size,listing_use_categories,template,template_header,template_footer,listing_script) VALUES ('Image Slideshow',1,3,'last_updated_date',1,50,0,'<script language="javascript" type="text/javascript">'+CHAR(13)+'     <!--'+CHAR(13)+'     var n = [%INDEX%];'+CHAR(13)+'     sURL[n]="[%FILE_VIEW_URL%]";   '+CHAR(13)+'    // -->'+CHAR(13)+'</script>'+CHAR(13)+'<span style="display:none" id="title[%INDEX%]">[%TITLE%] &nbsp;<a style="[%HIDE%]" href="[%FILE_NAME%]">Detail</a></span>'+CHAR(13)+'<span style="display:none" id="sum[%INDEX%]">[%SUMMARY%]</span>'+CHAR(13)+''+CHAR(13)+'','<table style="width:610px" cellpadding="0" cellspacing="0">'+CHAR(13)+'<tr><td style="width:100%;">'+CHAR(13)+'<div id="idImageTitle" style="font-weight:bold;font-family:arial;font-size:16px"></div>'+CHAR(13)+'</td>'+CHAR(13)+'<td style="text-align:right;white-space:nowrap;color:#9a9b9c;font-family:arial;font-size:14px;font-weight:bold" valign="top">'+CHAR(13)+'<span id="idPageNum"></span>&nbsp;&nbsp;'+CHAR(13)+'<a style="color:#9a9b9c;font-family:arial;" href="javascript:_doPrev()">Prev</a>&nbsp;'+CHAR(13)+'<a style="color:#9a9b9c;font-family:arial;" href="javascript:_doNext()">Next</a>'+CHAR(13)+'</td></tr>'+CHAR(13)+'<tr><td colspan="2" style="padding-top:5px;padding-bottom:5px">'+CHAR(13)+'<div id="idImageSummary" style=""></div>'+CHAR(13)+'</td></tr>'+CHAR(13)+'</table>'+CHAR(13)+''+CHAR(13)+'','<div id="idBox" style="overflow:auto;width:600px;height:400px;border:#cacbcc 7px solid;margin-top:3px;"></div>'+CHAR(13)+'<script language="javascript" type="text/javascript">'+CHAR(13)+'     <!--'+CHAR(13)+'     img.src=sURL[0];'+CHAR(13)+'     img.onload=function(){_openImage(img)}; '+CHAR(13)+'     document.getElementById("idImageTitle").innerHTML=document.getElementById("title0").innerHTML;'+CHAR(13)+'     document.getElementById("idPageNum").innerHTML = "1 of " + (n+1);'+CHAR(13)+'     document.getElementById("idImageSummary").innerHTML=document.getElementById("sum0").innerHTML;'+CHAR(13)+'    // -->'+CHAR(13)+'</script>','<script language="javascript" type="text/javascript">'+CHAR(13)+'     <!--'+CHAR(13)+'     var img = new Image();'+CHAR(13)+'     var sURL=[]; '+CHAR(13)+'     var nCurrentImage=0;     '+CHAR(13)+''+CHAR(13)+'     function _doNext()'+CHAR(13)+'	{'+CHAR(13)+'	if(nCurrentImage<n)nCurrentImage=nCurrentImage+1;'+CHAR(13)+'	else return;'+CHAR(13)+'	_showProgress()'+CHAR(13)+''+CHAR(13)+'	var sImgUrl=sURL[nCurrentImage];'+CHAR(13)+'	img.src=sImgUrl;'+CHAR(13)+'	img.onload=function(){_openImage(img)}; '+CHAR(13)+''+CHAR(13)+'	document.getElementById("idImageTitle").innerHTML=document.getElementById("title"+nCurrentImage).innerHTML;'+CHAR(13)+'	document.getElementById("idPageNum").innerHTML = (nCurrentImage+1) + " of " + (n+1);'+CHAR(13)+'	document.getElementById("idImageSummary").innerHTML=document.getElementById("sum"+nCurrentImage).innerHTML;'+CHAR(13)+'	}'+CHAR(13)+'     function _doPrev()'+CHAR(13)+'	{'+CHAR(13)+'	if(nCurrentImage>0)nCurrentImage=nCurrentImage-1;'+CHAR(13)+'	else return;'+CHAR(13)+'	_showProgress()'+CHAR(13)+''+CHAR(13)+'	var sImgUrl=sURL[nCurrentImage];'+CHAR(13)+'	img.src=sImgUrl;'+CHAR(13)+'	img.onload=function(){_openImage(img)}; '+CHAR(13)+''+CHAR(13)+'	document.getElementById("idImageTitle").innerHTML=document.getElementById("title"+nCurrentImage).innerHTML;'+CHAR(13)+'	document.getElementById("idPageNum").innerHTML = (nCurrentImage+1) + " of " + (n+1);'+CHAR(13)+'	document.getElementById("idImageSummary").innerHTML=document.getElementById("sum"+nCurrentImage).innerHTML;'+CHAR(13)+'	}'+CHAR(13)+'     function _showProgress()'+CHAR(13)+'	{'+CHAR(13)+'	var oImg = document.createElement("img");'+CHAR(13)+'	oImg.src="systems/images/animated_progress.gif";'+CHAR(13)+'	oImg.style.cssText="margin:10px";'+CHAR(13)+'	var idBox=document.getElementById("idBox");'+CHAR(13)+'	idBox.innerHTML="";'+CHAR(13)+'	idBox.appendChild(oImg);'+CHAR(13)+'	}'+CHAR(13)+'     function _openImage(o)'+CHAR(13)+'	{'+CHAR(13)+'	var idBox=document.getElementById("idBox");'+CHAR(13)+'	idBox.innerHTML="";'+CHAR(13)+'	idBox.appendChild(o);'+CHAR(13)+'	}'+CHAR(13)+'    // -->'+CHAR(13)+'</script>'+CHAR(13)+'')
+    INSERT INTO listing_templates (template_name,listing_type,listing_property,listing_default_order,listing_columns,listing_page_size,listing_use_categories,template,template_header,template_footer,listing_script) 
+    VALUES ('Image Slideshow',1,3,'last_updated_date',4,40,0,'<a href="[%FILE_VIEW_URL%]" class="slideshowThumbnail">'+CHAR(13)+'<img class="roundedImage" src="[%FILE_VIEW_LISTING_URL%]" border="0" /></a>'+CHAR(13)+'<div style="font-size:9px;margin-bottom:7px">'+CHAR(13)+'<span style="[%HIDE_FILE_DOWNLOAD%]">'+CHAR(13)+'<a href="[%FILE_DOWNLOAD_URL%]" style="">Download</a>&nbsp;'+CHAR(13)+'</span>'+CHAR(13)+'<a href="[%FILE_NAME%]" target="[%LINK_TARGET%]" style="">Details</a>'+CHAR(13)+'</div>'+CHAR(13)+''+CHAR(13)+''+CHAR(13)+'','<div id="slideshowContainer" class="slideshowContainer"></div>'+CHAR(13)+'<div id="thumbnails">'+CHAR(13)+'','<br />'+CHAR(13)+'<div>'+CHAR(13)+'<a href="#" onclick="show.play(); return false;" style="font-weight:bold;font-size:10px">PLAY</a>  &nbsp;|&nbsp;  '+CHAR(13)+'<a href="#" onclick="show.stop(); return false;" style="font-weight:bold;font-size:10px">STOP</a>  '+CHAR(13)+'</div>'+CHAR(13)+'<br />'+CHAR(13)+'</div>'+CHAR(13)+''+CHAR(13)+'<script language="javascript" type="text/javascript">  '+CHAR(13)+'window.addEvent(''domready'',function(){'+CHAR(13)+'var obj = {wait: 3000, effect: ''fade'',duration: 1000, loop: true, thumbnails: true,backgroundSlider: true,onClick: false};'+CHAR(13)+'show = new SlideShow(''slideshowContainer'',''slideshowThumbnail'',obj);'+CHAR(13)+'show.play();'+CHAR(13)+'});'+CHAR(13)+'</script>','<link href="systems/slideshow/slideshow.css" rel="stylesheet" type="text/css" />'+CHAR(13)+'<script type="text/javascript" src="systems/slideshow/mootools.js"></script>'+CHAR(13)+'<script type="text/javascript" src="systems/slideshow/backgroundslider.js"></script>'+CHAR(13)+'<script type="text/javascript" src="systems/slideshow/slideshow.js"></script>'+CHAR(13)+'')
 END
 GO
-IF NOT EXISTS (SELECT * FROM listing_templates 
-    WHERE template_name='FAQ')
-BEGIN
-    INSERT INTO listing_templates (template_name,listing_type,listing_property,listing_default_order,listing_columns,listing_page_size,listing_use_categories,template,template_header,template_footer,listing_script) VALUES ('FAQ',1,3,'last_updated_date',1,12,0,'<div style="padding:10px;border-bottom:#c6c7c8 1px dotted">'+CHAR(13)+'<a onfocus="this.blur()" href="javascript:icPanelClick(this, panel[%PAGE_ID%]);" style="font-weight:bold">'+CHAR(13)+'[%TITLE%]</a>'+CHAR(13)+''+CHAR(13)+'<div id="panel[%PAGE_ID%]" style="width:100%;height:70px;padding-top:10px;display:none">'+CHAR(13)+'[%SUMMARY%]  <a href="[%FILE_NAME%]">More</a>'+CHAR(13)+'</div>'+CHAR(13)+''+CHAR(13)+'<script>'+CHAR(13)+'  var panel[%PAGE_ID%]=new ICExpPanel("panel[%PAGE_ID%]");'+CHAR(13)+'</script>'+CHAR(13)+'</div>','<div style="background:#f5f6f7;border-top:#c6c7c8 1px solid;margin-right:15px">'+CHAR(13)+''+CHAR(13)+''+CHAR(13)+'','</div>','<script type="text/javascript" src="[%APP_PATH%]systems/exppanel/exppanel.js"></script>'+CHAR(13)+'')
-END
-GO
-
-

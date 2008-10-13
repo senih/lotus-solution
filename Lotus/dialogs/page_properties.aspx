@@ -75,7 +75,7 @@
             contentLatest = Nothing
             oContentManager = Nothing
 
-            btnClose.OnClientClick = "self.close()"
+            btnClose.OnClientClick = "parent.icCloseDlg();return false;" '"self.close()"
         End If
 
         dropTemplate.Attributes.Add("onchange", "alert('" & GetLocalResourceObject("ChangeTemplateWarning") & "')")
@@ -103,10 +103,10 @@
 
             If contentLatest.UseDefaultTemplate = True And dropTemplate.SelectedValue = 0 Then
                 'not changed
-                btnClose.OnClientClick = "self.close()"
+                btnClose.OnClientClick = "parent.icCloseDlg();return false;" '"self.close()"
             ElseIf contentLatest.UseDefaultTemplate = False And contentLatest.TemplateId = CInt(dropTemplate.SelectedValue) Then
                 'not changed
-                btnClose.OnClientClick = "self.close()"
+                btnClose.OnClientClick = "parent.icCloseDlg();return false;" '"self.close()"
             Else
                 'changed
                 btnClose.OnClientClick = "closeAndRefresh('" & contentLatest.FileName & "');return false"
@@ -149,8 +149,10 @@
     </style>
     <script type="text/javascript" language="javascript">
     function closeAndRefresh(sFileName)
-        {        
-        if(navigator.appName.indexOf("Microsoft")!=-1)
+        {     
+        parent.location.href="../" + sFileName;      
+        parent.icCloseDlg();   
+        /*if(navigator.appName.indexOf("Microsoft")!=-1)
             {
             dialogArguments.navigate("../" + sFileName)
             }
@@ -158,7 +160,7 @@
             {
             window.opener.location.href="../" + sFileName;
             }
-        self.close();
+        self.close();*/
         }
     function adjustHeight()
         {

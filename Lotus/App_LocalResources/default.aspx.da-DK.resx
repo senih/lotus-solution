@@ -569,9 +569,6 @@
   <data name="litNewsletters.text" xml:space="preserve">
     <value>Opret og styr e-mail nyhedsbreve.</value>
   </data>
-  <data name="litOrderBy.text" xml:space="preserve">
-    <value>Sorter efter:</value>
-  </data>
   <data name="litPageInfo.text" xml:space="preserve">
     <value>Side info</value>
   </data>
@@ -603,7 +600,7 @@
     <value>Konto</value>
   </data>
   <data name="lnkAdditionalContent.text" xml:space="preserve">
-    <value>Ekstra indhold</value>
+    <value>Side Content</value>
   </data>
   <data name="lnkAddNewBottom.text" xml:space="preserve">
     <value>Tilføj ny</value>
@@ -735,7 +732,7 @@
     <value>   Login   </value>
   </data>
   <data name="Login_PasswordLabelText" xml:space="preserve">
-    <value>Password:</value>
+    <value>Password: </value>
   </data>
   <data name="Login_PasswordRecoveryText" xml:space="preserve">
     <value>Jeg har glemt mit password</value>
@@ -744,7 +741,7 @@
     <value>Husk mig.</value>
   </data>
   <data name="Login_UserNameLabelText" xml:space="preserve">
-    <value>Brugernavn:</value>
+    <value>Email / Brugernavn: </value>
   </data>
   <data name="Login1.FailureText" xml:space="preserve">
     <value>Login mislykkes. Prøv venligst igen.</value>
@@ -753,7 +750,7 @@
     <value>   Login   </value>
   </data>
   <data name="Login1.PasswordLabelText" xml:space="preserve">
-    <value>Password:</value>
+    <value>Password: </value>
   </data>
   <data name="Login1.PasswordRecoveryText" xml:space="preserve">
     <value>Glemt password</value>
@@ -762,7 +759,7 @@
     <value> Husk mig.</value>
   </data>
   <data name="Login1.UserNameLabelText" xml:space="preserve">
-    <value>Brugernavn:</value>
+    <value>Email / Brugernavn: </value>
   </data>
   <data name="LoginLinkText" xml:space="preserve">
     <value>Login</value>
@@ -954,18 +951,6 @@
   <data name="Password Recovery" xml:space="preserve">
     <value>Jeg har glemt mit password</value>
     <comment>Title</comment>
-  </data>
-  <data name="pgDataListFirst.text" xml:space="preserve">
-    <value>første</value>
-  </data>
-  <data name="pgDataListLast.text" xml:space="preserve">
-    <value>sidste</value>
-  </data>
-  <data name="pgDataListNext.text" xml:space="preserve">
-    <value>næste</value>
-  </data>
-  <data name="pgDataListPrevious.text" xml:space="preserve">
-    <value>forrige</value>
   </data>
   <data name="Poll Info" xml:space="preserve">
     <value>Afstemnings information</value>
@@ -1167,10 +1152,21 @@
   <data name="optActualSize.text" xml:space="preserve">
     <value>Actual Size</value>
   </data>
-  <data name="litClickAddNewLink.text" xml:space="preserve">
-    <value>Click &lt;b&gt;Add New&lt;/b&gt; link to add a new entry (page).</value>
+  <data name="NewPageMenuHere" xml:space="preserve">
+    <value>New Page Menu Here</value>
   </data>
-  <data name="litListingEmpty.text" xml:space="preserve">
-    <value>Listing Empty</value>
+  <data name="Add Newsletter" xml:space="preserve">
+    <value>Add Newsletter</value>
+    <comment>Title</comment>
+  </data>
+  <data name="Edit Newsletter" xml:space="preserve">
+    <value>Edit Newsletter</value>
+    <comment>Title</comment>
+  </data>
+  <data name="online" xml:space="preserve">
+    <value>online</value>
+  </data>
+  <data name="PageVisibilityInfo" xml:space="preserve">
+    <value>This page is hidden.</value>
   </data>
 </root>

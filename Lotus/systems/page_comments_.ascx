@@ -68,7 +68,7 @@
        
     Protected Sub btnSubmit_Click(ByVal sender As Object, ByVal e As System.EventArgs)
         If Not bAllowAnonymous Then
-            If Not Me.IsUserLoggedIn Then Exit Sub
+            If Not Me.IsUserLoggedIn Then Response.Redirect(HttpContext.Current.Items("_path"))
         End If
         
         Dim sqlCmd As SqlCommand

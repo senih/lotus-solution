@@ -1,10 +1,6 @@
 <%@ Control Language="VB" AutoEventWireup="false" CodeFile="shop_product_type_lookup.ascx.vb" Inherits="systems_product_type_lookup" %>
 
 <asp:Panel ID="panelLogin" runat="server" Visible="False">
-    <asp:Login ID="Login1" meta:resourcekey="Login1" runat="server"  PasswordRecoveryText="Password Recovery" TitleText="" OnLoggedIn="Login1_LoggedIn" OnPreRender="Login1_PreRender">
-        <LabelStyle HorizontalAlign="Left" Wrap="False" />
-    </asp:Login>
-    <br />
 </asp:Panel>
 
 <asp:Panel ID="pnlProdType" runat="server">    

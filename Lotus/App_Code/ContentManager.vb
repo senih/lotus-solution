@@ -846,7 +846,7 @@ Public Class ContentManager
             .Add("@event_end_date", SqlDbType.DateTime).Value = pg.EventEndDate
             .Add("@is_listing", SqlDbType.Bit).Value = pg.IsListing
             .Add("@listing_template_id", SqlDbType.Int).Value = pg.ListingTemplateId
-            .Add("@elements", SqlDbType.NText).Value = ""
+            .Add("@elements", SqlDbType.NText).Value = pg.Elements.ToString
             .Add("@listing_elements", SqlDbType.NText).Value = ""
             .Add("@link", SqlDbType.NText).Value = pg.Link
             .Add("@link_target", SqlDbType.NVarChar, 50).Value = pg.LinkTarget
@@ -1337,10 +1337,12 @@ Public Class ContentManager
         Dim sSQL As String
         sSQL = "Select page_id,parent_id,sorting,page_type,title,link_text,file_name,link_placement,is_hidden,is_system,published_start_date,published_end_date, channel_name, channel_permission, disable_collaboration, last_updated_date, status, owner, title2, link_text2 " & _
             "From pages_working Where " & _
-            "parent_id=" & ParentId & " And " & _
-            "link_placement='" & LinkPlacement & "' And Not is_system=1 ORDER BY sorting"
+            "parent_id=@parent_id And " & _
+            "link_placement=@link_placement And Not is_system=1 ORDER BY sorting"
 
         Dim oCommand As New SqlCommand(sSQL, oConn)
+        oCommand.Parameters.Add("@parent_id", SqlDbType.Int).Value = ParentId
+        oCommand.Parameters.Add("@link_placement", SqlDbType.NVarChar).Value = LinkPlacement
         Return oCommand.ExecuteReader(CommandBehavior.CloseConnection)
     End Function
 
@@ -1350,13 +1352,14 @@ Public Class ContentManager
 
         Dim sSQL As String
         'sSQL = "SELECT * from pages_working where file_name='" & FileName & "'"
-        sSQL = "SELECT pages_working.*, pages_working_1.parent_id AS parent_parent_id, pages_working_1.is_listing AS parent_is_listing, pages_working_1.listing_property AS parent_listing_property, pages_working_1.elements AS parent_elements, pages_working_1.listing_type AS parent_listing_type, pages_working_1.listing_use_categories AS parent_listing_use_categories, pages_working_1.page_type AS parent_page_type, pages_working_1.file_name AS parent_file_name, " & _
+        sSQL = "SELECT pages_working.*, pages_working_1.parent_id AS parent_parent_id, pages_working_1.is_listing AS parent_is_listing, pages_working_1.listing_template_id AS parent_listing_template_id, pages_working_1.listing_property AS parent_listing_property, pages_working_1.elements AS parent_elements, pages_working_1.listing_type AS parent_listing_type, pages_working_1.listing_use_categories AS parent_listing_use_categories, pages_working_1.page_type AS parent_page_type, pages_working_1.file_name AS parent_file_name, " & _
             "pages_working_1.properties AS parent_properties, pages_working_1.channel_name AS parent_channel_name " & _
             "FROM pages_working LEFT OUTER JOIN " & _
             "pages_working AS pages_working_1 ON pages_working.parent_id = pages_working_1.page_id " & _
-            "WHERE pages_working.file_name = '" & FileName & "'"
+            "WHERE pages_working.file_name=@file_name"
 
         Dim oCommand As New SqlCommand(sSQL, oConn)
+        oCommand.Parameters.Add("@file_name", SqlDbType.NVarChar).Value = FileName
         Return oCommand.ExecuteReader(CommandBehavior.CloseConnection)
     End Function
 
@@ -1367,35 +1370,38 @@ Public Class ContentManager
         Dim sSQL As String
         'sSQL = "SELECT * from pages_published where file_name='" & FileName & "'"
 
-        sSQL = "SELECT pages_published.*, pages_published_1.parent_id AS parent_parent_id, pages_published_1.is_listing AS parent_is_listing, pages_published_1.listing_property AS parent_listing_property, pages_published_1.elements AS parent_elements, pages_published_1.listing_type AS parent_listing_type, pages_published_1.listing_use_categories AS parent_listing_use_categories, pages_published_1.page_type AS parent_page_type, pages_published_1.file_name AS parent_file_name, " & _
+        sSQL = "SELECT pages_published.*, pages_published_1.parent_id AS parent_parent_id, pages_published_1.is_listing AS parent_is_listing, pages_published_1.listing_template_id AS parent_listing_template_id, pages_published_1.listing_property AS parent_listing_property, pages_published_1.elements AS parent_elements, pages_published_1.listing_type AS parent_listing_type, pages_published_1.listing_use_categories AS parent_listing_use_categories, pages_published_1.page_type AS parent_page_type, pages_published_1.file_name AS parent_file_name, " & _
             "pages_published_1.properties AS parent_properties, pages_published_1.channel_name AS parent_channel_name " & _
             "FROM pages_published LEFT OUTER JOIN " & _
             "pages_published AS pages_published_1 ON pages_published.parent_id = pages_published_1.page_id " & _
-            "WHERE pages_published.file_name = '" & FileName & "'"
+            "WHERE pages_published.file_name = @file_name"
 
         Dim oCommand As New SqlCommand(sSQL, oConn)
+        oCommand.Parameters.Add("@file_name", SqlDbType.NVarChar).Value = FileName
         Return oCommand.ExecuteReader(CommandBehavior.CloseConnection)
     End Function
 
-    Public Function GetPublishedContentById(ByVal page_id As Integer) As SqlDataReader
+    Public Function GetPublishedContentById(ByVal nPageId As Integer) As SqlDataReader
         Dim oConn As New SqlConnection(sConn)
         oConn.Open()
 
         Dim sSQL As String
-        sSQL = "SELECT * from pages_published where page_id='" & page_id & "'"
+        sSQL = "SELECT * from pages_published where page_id=@page_id"
 
         Dim oCommand As New SqlCommand(sSQL, oConn)
+        oCommand.Parameters.Add("@page_id", SqlDbType.Int).Value = nPageId
         Return oCommand.ExecuteReader(CommandBehavior.CloseConnection)
     End Function
 
-    Public Function GetWorkingContentById(ByVal page_id As Integer) As SqlDataReader
+    Public Function GetWorkingContentById(ByVal nPageId As Integer) As SqlDataReader
         Dim oConn As New SqlConnection(sConn)
         oConn.Open()
 
         Dim sSQL As String
-        sSQL = "SELECT * from pages_working where page_id='" & page_id & "'"
+        sSQL = "SELECT * from pages_working where page_id=@page_id"
 
         Dim oCommand As New SqlCommand(sSQL, oConn)
+        oCommand.Parameters.Add("@page_id", SqlDbType.Int).Value = nPageId
         Return oCommand.ExecuteReader(CommandBehavior.CloseConnection)
     End Function
 
@@ -1868,14 +1874,16 @@ Public Class ContentManager
         Return True
     End Function
 
-    Public Function GetPageModules(ByVal nTemplateId As Integer, ByVal FileName As String) As SqlDataReader
+    Public Function GetPageModules(ByVal nTemplateId As Integer, ByVal sFileName As String) As SqlDataReader
         Dim oConn As New SqlConnection(sConn)
         oConn.Open()
 
         Dim sSQL As String
-        sSQL = "Select * from page_modules where template_id=" & nTemplateId & " OR embed_in='" & FileName & "' Or embed_in='*' Or CharIndex('*',embed_in,0)=1"
+        sSQL = "Select * from page_modules where template_id=@template_id OR embed_in=@embed_in Or embed_in='*' Or CharIndex('*',embed_in,0)=1"
 
         Dim oCommand As New SqlCommand(sSQL, oConn)
+        oCommand.Parameters.Add("@template_id", SqlDbType.Int).Value = nTemplateId
+        oCommand.Parameters.Add("@embed_in", SqlDbType.NVarChar).Value = sFileName
         Return oCommand.ExecuteReader(CommandBehavior.CloseConnection)
     End Function
 

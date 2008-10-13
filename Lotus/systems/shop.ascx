@@ -11,7 +11,8 @@
         
         panelShop.Visible = False
         panelLogin.Visible = True
-        panelLogin.FindControl("Login1").Focus()
+        Dim oUC1 As Control = LoadControl("login.ascx")
+        panelLogin.Controls.Add(oUC1)
 
         If Not IsNothing(GetUser) Then
             If Roles.IsUserInRole(GetUser.UserName, "Administrators") Then
@@ -32,21 +33,9 @@
         End If
 
     End Sub
-    
-    Protected Sub Login1_LoggedIn(ByVal sender As Object, ByVal e As System.EventArgs) Handles Login1.LoggedIn
-        Response.Redirect(HttpContext.Current.Items("_path"))
-    End Sub
-
-    Protected Sub Login1_PreRender(ByVal sender As Object, ByVal e As System.EventArgs)
-        Login1.PasswordRecoveryUrl = "~/" & Me.LinkPassword & "?ReturnUrl=" & HttpContext.Current.Items("_path")
-    End Sub
 </script>
 
 <asp:Panel ID="panelLogin" runat="server" Visible="False">
-    <asp:Login ID="Login1" runat="server" meta:resourcekey="Login1" PasswordRecoveryText="Password Recovery" TitleText="" OnLoggedIn="Login1_LoggedIn" OnPreRender="Login1_PreRender">
-        <LabelStyle HorizontalAlign="Left" Wrap="False" />
-    </asp:Login>
-    <br />
 </asp:Panel>
 
 <asp:Panel ID="panelShop" runat="server" Visible="False">

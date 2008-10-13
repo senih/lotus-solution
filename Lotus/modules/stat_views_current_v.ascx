@@ -100,7 +100,7 @@
         oDataReader.Close()
 
         For n = 0 To 6
-            dD(n) = New Date(Now.Year, Now.Month, Now.Day).Subtract(System.TimeSpan.FromDays(n))
+            dD(n) = New Date(Now.Year, Now.Month, Now.Day).Subtract(System.TimeSpan.FromDays(n)).AddHours(Me.TimeOffset)
         Next
 
         Dim sStatistic As String = ""
