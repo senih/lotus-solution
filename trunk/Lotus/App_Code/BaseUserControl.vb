@@ -179,7 +179,7 @@ Public Class BaseUserControl
     'Culture
     Public ReadOnly Property Culture() As String
         Get
-            Return Thread.CurrentThread.CurrentUICulture.Name
+            Return Thread.CurrentThread.CurrentCulture.Name
         End Get
     End Property
 
@@ -340,16 +340,6 @@ Public Class BaseUserControl
         End Set
     End Property
 
-    Private sLinkEvents As String = "event_view.aspx"
-    Public Property LinkEvents() As String
-        Get
-            Return sLinkEvents
-        End Get
-        Set(ByVal value As String)
-            sLinkEvents = value
-        End Set
-    End Property
-
     Private sLinkShopPaypalCart As String = "shop_pcart.aspx"
     Public Property LinkShopPaypalCart() As String
         Get
@@ -479,16 +469,6 @@ Public Class BaseUserControl
         End Set
     End Property
 
-    Private sAdminUserNew As String = "admin_user_new.aspx"
-    Public Property LinkAdminUserNew() As String
-        Get
-            Return sAdminUserNew
-        End Get
-        Set(ByVal value As String)
-            sAdminUserNew = value
-        End Set
-    End Property
-
     Private sAdminUserInfo As String = "admin_user_info.aspx"
     Public Property LinkAdminUserInfo() As String
         Get
@@ -506,26 +486,6 @@ Public Class BaseUserControl
         End Get
         Set(ByVal value As String)
             sAdminChannels = value
-        End Set
-    End Property
-
-    Private sAdminChannelNew As String = "admin_channel_new.aspx"
-    Public Property LinkAdminChannelNew() As String
-        Get
-            Return sAdminChannelNew
-        End Get
-        Set(ByVal value As String)
-            sAdminChannelNew = value
-        End Set
-    End Property
-
-    Private sAdminChannelInfo As String = "admin_channel_info.aspx"
-    Public Property LinkAdminChannelInfo() As String
-        Get
-            Return sAdminChannelInfo
-        End Get
-        Set(ByVal value As String)
-            sAdminChannelInfo = value
         End Set
     End Property
 
@@ -549,16 +509,6 @@ Public Class BaseUserControl
         End Set
     End Property
 
-    Private sAdminTemplateNew As String = "admin_template_new.aspx"
-    Public Property LinkAdminTemplateNew() As String
-        Get
-            Return sAdminTemplateNew
-        End Get
-        Set(ByVal value As String)
-            sAdminTemplateNew = value
-        End Set
-    End Property
-
     Private sAdminModules As String = "admin_modules.aspx"
     Public Property LinkAdminModules() As String
         Get
@@ -566,16 +516,6 @@ Public Class BaseUserControl
         End Get
         Set(ByVal value As String)
             sAdminModules = value
-        End Set
-    End Property
-
-    Private sAdminModuleNew As String = "admin_module_new.aspx"
-    Public Property LinkAdminModuleNew() As String
-        Get
-            Return sAdminModuleNew
-        End Get
-        Set(ByVal value As String)
-            sAdminModuleNew = value
         End Set
     End Property
 
@@ -639,46 +579,6 @@ Public Class BaseUserControl
         End Set
     End Property
 
-    Private sWorkspaceEvents As String = "events.aspx"
-    Public Property LinkWorkspaceEvents() As String
-        Get
-            Return sWorkspaceEvents
-        End Get
-        Set(ByVal value As String)
-            sWorkspaceEvents = value
-        End Set
-    End Property
-
-    Private sWorkspaceEventNew As String = "event_new.aspx"
-    Public Property LinkWorkspaceEventNew() As String
-        Get
-            Return sWorkspaceEventNew
-        End Get
-        Set(ByVal value As String)
-            sWorkspaceEventNew = value
-        End Set
-    End Property
-
-    Private sWorkspaceEventEdit As String = "event_edit.aspx"
-    Public Property LinkWorkspaceEventEdit() As String
-        Get
-            Return sWorkspaceEventEdit
-        End Get
-        Set(ByVal value As String)
-            sWorkspaceEventEdit = value
-        End Set
-    End Property
-
-    Private sWorkspaceEventEmbed As String = "event_embed.aspx"
-    Public Property LinkWorkspaceEventEmbed() As String
-        Get
-            Return sWorkspaceEventEmbed
-        End Get
-        Set(ByVal value As String)
-            sWorkspaceEventEmbed = value
-        End Set
-    End Property
-
     Private sWorkspacePolls As String = "polls.aspx"
     Public Property LinkWorkspacePolls() As String
         Get
@@ -686,26 +586,6 @@ Public Class BaseUserControl
         End Get
         Set(ByVal value As String)
             sWorkspacePolls = value
-        End Set
-    End Property
-
-    Private sWorkspacePollInfo As String = "poll_info.aspx"
-    Public Property LinkWorkspacePollInfo() As String
-        Get
-            Return sWorkspacePollInfo
-        End Get
-        Set(ByVal value As String)
-            sWorkspacePollInfo = value
-        End Set
-    End Property
-
-    Private sWorkspacePollNew As String = "poll_new.aspx"
-    Public Property LinkWorkspacePollNew() As String
-        Get
-            Return sWorkspacePollNew
-        End Get
-        Set(ByVal value As String)
-            sWorkspacePollNew = value
         End Set
     End Property
 
@@ -749,16 +629,6 @@ Public Class BaseUserControl
         End Set
     End Property
 
-    Private sAdminSite As String = "admin_site.aspx"
-    Public Property LinkAdminSite() As String
-        Get
-            Return sAdminSite
-        End Get
-        Set(ByVal value As String)
-            sAdminSite = value
-        End Set
-    End Property
-
     Private sWorkspaceNewsletters As String = "newsletters.aspx"
     Public Property LinkWorkspaceNewsletters() As String
         Get
@@ -766,6 +636,26 @@ Public Class BaseUserControl
         End Get
         Set(ByVal value As String)
             sWorkspaceNewsletters = value
+        End Set
+    End Property
+
+    Private sWorkspaceNewsAdd As String = "newsletters_add.aspx"
+    Public Property LinkWorkspaceNewsAdd() As String
+        Get
+            Return sWorkspaceNewsAdd
+        End Get
+        Set(ByVal value As String)
+            sWorkspaceNewsAdd = value
+        End Set
+    End Property
+
+    Private sWorkspaceNewsEdit As String = "newsletters_edit.aspx"
+    Public Property LinkWorkspaceNewsEdit() As String
+        Get
+            Return sWorkspaceNewsEdit
+        End Get
+        Set(ByVal value As String)
+            sWorkspaceNewsEdit = value
         End Set
     End Property
 
@@ -950,36 +840,36 @@ Public Class BaseUserControl
         End Set
     End Property
 
+    Private nTimeOffset As Double = 0
+    Public Property TimeOffset() As Double
+        Get
+            Return nTimeOffset
+        End Get
+        Set(ByVal value As Double)
+            nTimeOffset = value
+        End Set
+    End Property
+
     Private Sub Page_Init(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Init
         If Not nRootId = 1 Then sAdmin = "admin_" & nRootId & ".aspx"
         If Not nRootId = 1 Then sWorkspace = "workspace_" & nRootId & ".aspx"
         If Not nRootId = 1 Then sAdminUsers = "admin_users_" & nRootId & ".aspx"
-        If Not nRootId = 1 Then sAdminUserNew = "admin_user_new_" & nRootId & ".aspx"
         If Not nRootId = 1 Then sAdminUserInfo = "admin_user_info_" & nRootId & ".aspx"
         If Not nRootId = 1 Then sAdminChannels = "admin_channels_" & nRootId & ".aspx"
-        If Not nRootId = 1 Then sAdminChannelNew = "admin_channel_new_" & nRootId & ".aspx"
-        If Not nRootId = 1 Then sAdminChannelInfo = "admin_channel_info_" & nRootId & ".aspx"
         If Not nRootId = 1 Then sWorkspaceApproval = "approval_" & nRootId & ".aspx"
         If Not nRootId = 1 Then sAdminTemplates = "admin_templates_" & nRootId & ".aspx"
-        If Not nRootId = 1 Then sAdminTemplateNew = "admin_template_new_" & nRootId & ".aspx"
         If Not nRootId = 1 Then sAdminModules = "admin_modules_" & nRootId & ".aspx"
-        If Not nRootId = 1 Then sAdminModuleNew = "admin_module_new_" & nRootId & ".aspx"
         If Not nRootId = 1 Then sAdminModulePages = "admin_module_pages_" & nRootId & ".aspx"
         If Not nRootId = 1 Then sWorkspacePages = "pages_" & nRootId & ".aspx"
         If Not nRootId = 1 Then sWorkspaceResources = "resources_" & nRootId & ".aspx"
         If Not nRootId = 1 Then sWorkspaceAccount = "account_" & nRootId & ".aspx"
         If Not nRootId = 1 Then sWorkspacePreferences = "preferences_" & nRootId & ".aspx"
-        If Not nRootId = 1 Then sWorkspaceEvents = "events_" & nRootId & ".aspx"
-        If Not nRootId = 1 Then sWorkspaceEventNew = "event_new_" & nRootId & ".aspx"
-        If Not nRootId = 1 Then sWorkspaceEventEdit = "event_edit_" & nRootId & ".aspx"
-        If Not nRootId = 1 Then sWorkspaceEventEmbed = "event_embed_" & nRootId & ".aspx"
         If Not nRootId = 1 Then sWorkspacePolls = "polls_" & nRootId & ".aspx"
-        If Not nRootId = 1 Then sWorkspacePollInfo = "poll_info_" & nRootId & ".aspx"
-        If Not nRootId = 1 Then sWorkspacePollNew = "poll_new_" & nRootId & ".aspx"
         If Not nRootId = 1 Then sWorkspacePollPages = "poll_pages_" & nRootId & ".aspx"
         If Not nRootId = 1 Then sAdminLocalization = "admin_localization_" & nRootId & ".aspx"
-        If Not nRootId = 1 Then sAdminSite = "admin_site_" & nRootId & ".aspx"
         If Not nRootId = 1 Then sWorkspaceNewsletters = "newsletters_" & nRootId & ".aspx"
+        If Not nRootId = 1 Then sWorkspaceNewsAdd = "newsletters_add_" & nRootId & ".aspx"
+        If Not nRootId = 1 Then sWorkspaceNewsEdit = "newsletters_edit_" & nRootId & ".aspx"
         If Not nRootId = 1 Then sWorkspaceNewsConfigure = "newsletters_configure_" & nRootId & ".aspx"
         If Not nRootId = 1 Then sWorkspaceNewsSend = "newsletters_send_" & nRootId & ".aspx"
         If Not nRootId = 1 Then sLinkShopOrders = "shop_orders_" & nRootId & ".aspx"
@@ -992,7 +882,6 @@ Public Class BaseUserControl
         If Not nRootId = 1 Then sLinkShopConfig = "shop_config_" & nRootId & ".aspx"
         If Not nRootId = 1 Then sLinkPollResults = "poll_results_" & nRootId & ".aspx"
         If Not nRootId = 1 Then sLinkActivate = "activate_" & nRootId & ".aspx"
-        If Not nRootId = 1 Then sLinkEvents = "event_view_" & nRootId & ".aspx"
         If Not nRootId = 1 Then sLinkShopProductTypes = "shop_product_types_" & nRootId & ".aspx"
         If Not nRootId = 1 Then sLinkShopProductTypeLookup = "shop_product_type_lookup_" & nRootId & ".aspx"
         If Not nRootId = 1 Then sWorkspaceNewsLists = "mailing_lists_" & nRootId & ".aspx"

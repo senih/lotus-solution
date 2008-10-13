@@ -155,6 +155,9 @@
         End If
         
         lblUploadStatus.Text = ""
+        
+        btnClose.OnClientClick = "if(parent.oUtil+''=='undefined'){self.close()}else{parent.icCloseDlg()};return false;"
+        btnInsert.OnClientClick = "if(parent.oUtil+''=='undefined'){doInsert();self.close()}else{doInsert();parent.icCloseDlg()};return false;"
 
     End Sub
     
@@ -576,7 +579,26 @@
 		            "type=\"application/x-mplayer2\" "+
 		            "pluginspage=\"http://www.microsoft.com/Windows/Downloads/Contents/MediaPlayer/\" "+
 		            "src=\""+sURL+"\"></embed>"
-		                           
+ 
+	            if(navigator.appName.indexOf('Microsoft')!=-1)
+                    {
+                    //IE  
+                    var oEditor;    
+                    if(parent.oUtil+''=='undefined')oEditor=dialogArguments.oUtil.oEditor;
+                    else oEditor=parent.oUtil.oEditor;              
+                    oEditor.focus()
+                    
+                    if(parent.oUtil+''=='undefined') dialogArguments.oUtil.obj.insertHTML(sHTML);
+                    else parent.oUtil.obj.insertHTML(sHTML);                    
+	                }
+	            else
+	                {
+	                //Moz
+	                var oEditor;
+	                if(parent.oUtil+''=='undefined')window.opener.oUtil.obj.insertHTML(sHTML);
+	                else parent.oUtil.obj.insertHTML(sHTML);	                
+	                }
+		        /*                   
 	            if(navigator.appName.indexOf('Microsoft')!=-1)
                     {
                     //IE                    
@@ -589,6 +611,7 @@
 	                //Moz
 	                window.opener.oUtil.obj.insertHTML(sHTML);
 	                }
+	            */  
                 }
             if(document.getElementsByName("rdoObjectInsertType")[1].checked)
                 {//link
@@ -613,7 +636,7 @@
 		            "<embed src=\""+sURL+"\" width=\"100\" height=\"100\" play=\"true\" loop=\"true\" wmode=\"Opaque\" quality=\"high\" pluginspage=\"http://www.macromedia.com/go/getflashplayer\"></embed>\n"+
 		            "</object>";
                 	                
-		        if(navigator.appName.indexOf('Microsoft')!=-1)
+		        /*if(navigator.appName.indexOf('Microsoft')!=-1)
                     {
                     //IE                    
                     var oEditor=dialogArguments.oUtil.oEditor;
@@ -624,6 +647,24 @@
 	                {
 	                //Moz
 	                window.opener.oUtil.obj.insertHTML(sHTML);
+	                }*/
+	            if(navigator.appName.indexOf('Microsoft')!=-1)
+                    {
+                    //IE  
+                    var oEditor;    
+                    if(parent.oUtil+''=='undefined')oEditor=dialogArguments.oUtil.oEditor;
+                    else oEditor=parent.oUtil.oEditor;              
+                    oEditor.focus()
+                    
+                    if(parent.oUtil+''=='undefined') dialogArguments.oUtil.obj.insertHTML(sHTML);
+                    else parent.oUtil.obj.insertHTML(sHTML);                    
+	                }
+	            else
+	                {
+	                //Moz
+	                var oEditor;
+	                if(parent.oUtil+''=='undefined')window.opener.oUtil.obj.insertHTML(sHTML);
+	                else parent.oUtil.obj.insertHTML(sHTML);	                
 	                }
                 }
             if(document.getElementsByName("rdoObjectInsertType")[1].checked)
@@ -644,12 +685,13 @@
         if(navigator.appName.indexOf('Microsoft')!=-1)
             {
             //IE
-            var oEditor=dialogArguments.oUtil.oEditor;
+            var oEditor;
+            if(parent.oUtil+''=='undefined')oEditor=dialogArguments.oUtil.oEditor;
+            else oEditor=parent.oUtil.oEditor;
             if(!oEditor)return;
             oEditor.focus()
 	        var oSel=oEditor.document.selection.createRange();
-	        oSel.execCommand("InsertImage", false, sURL);
-	        
+	        oSel.execCommand("InsertImage", false, sURL);	        
 
             var oSel=oEditor.document.selection.createRange();
             if (oSel.parentElement)oElement=oSel.parentElement();
@@ -659,9 +701,10 @@
 	    else
 	        {
 	        //Moz
-	        var oEditor=window.opener.oUtil.oEditor;
-	        oEditor.document.execCommand("InsertImage", false, sURL);
-	        
+	        var oEditor;
+	        if(parent.oUtil+''=='undefined')oEditor=window.opener.oUtil.oEditor;
+	        else oEditor=parent.oUtil.oEditor;
+	        oEditor.document.execCommand("InsertImage", false, sURL);	        
 	        
             oSel=oEditor.getSelection();
             var range = oSel.getRangeAt(0);
@@ -683,7 +726,10 @@
         if(navigator.appName.indexOf('Microsoft')!=-1)
             {
             //IE
-            var oEditor=dialogArguments.oUtil.oEditor;
+            var oEditor;
+            if(parent.oUtil+''=='undefined')oEditor=dialogArguments.oUtil.oEditor;
+            else oEditor=parent.oUtil.oEditor;
+
             if(!oEditor)return;
             oEditor.focus();
 	        var oSel=oEditor.document.selection.createRange();
@@ -699,7 +745,10 @@
 	    else
 	        {
 	        //Moz
-	        var oEditor=window.opener.oUtil.oEditor;
+	        var oEditor;
+	        if(parent.oUtil+''=='undefined')oEditor=window.opener.oUtil.oEditor;
+	        else oEditor=parent.oUtil.oEditor;
+	        
             var oSel=oEditor.getSelection();
             var range = oSel.getRangeAt(0);
 
@@ -748,15 +797,15 @@
 
 
 <asp:DropDownList ID="dropChannels" runat="server" AutoPostBack="true"></asp:DropDownList>
-<br /><br />
+&nbsp;
 <asp:Label ID="lblFolder" meta:resourcekey="lblFolder" runat="server" Text="Folder: "></asp:Label>
 <asp:Label ID="lblPath" runat="server" Text=""></asp:Label>
-<br /><br />
+<br />
 
-<div runat="server" id="divScroll" style="height:240px;overflow:auto;background:white;padding:0px;border-bottom:#cccccc 1px solid;margin-bottom:5px">    
+<div runat="server" id="divScroll" style="height:235px;overflow:auto;background:white;padding:0px;border-bottom:#cccccc 1px solid;margin-bottom:5px;margin-top:5px">    
 <asp:GridView ID="GridView1" GridLines="None" AlternatingRowStyle-BackColor="#f6f7f8" 
 HeaderStyle-BackColor="#d6d7d8" CellPadding="7" runat="server" 
-HeaderStyle-HorizontalAlign="left" AllowPaging="True" 
+HeaderStyle-HorizontalAlign="left" AllowPaging="True" PageSize="50"
 AllowSorting="false" AutoGenerateColumns="False">
 <Columns>
    <asp:TemplateField ItemStyle-VerticalAlign="Middle" HeaderText="" ItemStyle-CssClass="padding2">
@@ -826,7 +875,7 @@ AllowSorting="false" AutoGenerateColumns="False">
         </tr>
         </table>    
         
-        <table cellpadding="0" cellspacing="0" style="margin-top:20px">
+        <table cellpadding="0" cellspacing="0" style="margin-top:10px">
         <tr>
             <td><asp:FileUpload ID="FileUpload1" runat="server"/></td>
             <td><asp:Button ID="btnUpload" meta:resourcekey="btnUpload" runat="server" Text="Upload File" /></td>
@@ -835,7 +884,7 @@ AllowSorting="false" AutoGenerateColumns="False">
             <td colspan="2"><div style="height:5px"></div></td>
         </tr>
         <tr>
-            <td colspan="2"><asp:Label ID="lblUploadStatus" runat="server" Text="" ForeColor="Red"></asp:Label></td>
+            <td colspan="2"><asp:Label ID="lblUploadStatus" runat="server" Text="" ForeColor="Red"></asp:Label>&nbsp;</td>
         </tr>
         </table>  
 
@@ -843,9 +892,7 @@ AllowSorting="false" AutoGenerateColumns="False">
     
     </asp:Panel>
     
-    <div style="margin:7px"></div>
     <hr />
-    <div style="margin:7px"></div>
  
     <input id="hidFileType" type="hidden" />
 
@@ -919,8 +966,8 @@ AllowSorting="false" AutoGenerateColumns="False">
     </table>
      
      <div style="margin:7px"></div>
-    <asp:Button ID="btnClose" meta:resourcekey="btnClose" runat="server" Text=" Close " OnClientClick="self.close();return false;" />
-    <asp:Button ID="btnInsert" meta:resourcekey="btnInsert" runat="server" Text=" Insert " OnClientClick="doInsert();self.close();return false;" />
+    <asp:Button ID="btnClose" meta:resourcekey="btnClose" runat="server" Text=" Close " />
+    <asp:Button ID="btnInsert" meta:resourcekey="btnInsert" runat="server" Text=" Insert " />
 
 </asp:Panel>  
 

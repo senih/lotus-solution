@@ -240,9 +240,6 @@
   <data name="litRegistThankYou.text" xml:space="preserve">
     <value>Tak for din registrering! Vi sætter pris på din interesse i os.</value>
   </data>
-  <data name="litWeUsePaypal.text" xml:space="preserve">
-    <value>Vi bruger Paypal til at behandle kredit kort betalingen. Klik venligst nedenfor for at fortsætte:</value>
-  </data>
   <data name="litYouMustLogin.text" xml:space="preserve">
     <value>Hvis du ønsker at købe artikler, må du først være registreret som bruger.</value>
   </data>
@@ -256,10 +253,10 @@
     <value>Dit login lykkedes ikke. Prøv venligst igen.</value>
   </data>
   <data name="Login1.LoginButtonText" xml:space="preserve">
-    <value>Login</value>
+    <value>   Login   </value>
   </data>
   <data name="Login1.PasswordLabelText" xml:space="preserve">
-    <value>Password:</value>
+    <value>Password: </value>
   </data>
   <data name="Login1.PasswordRecoveryText" xml:space="preserve">
     <value>Password genoprettelse</value>
@@ -268,9 +265,39 @@
     <value>Husk mig næste gange.</value>
   </data>
   <data name="Login1.UserNameLabelText" xml:space="preserve">
-    <value>Bruger navn:</value>
+    <value>Email / Bruger navn: </value>
   </data>
   <data name="Wizard1.StartNextButtonText" xml:space="preserve">
     <value>PROCEED TO CHECKOUT</value>
+  </data>
+  <data name="btnCashOnDelivery.text" xml:space="preserve">
+    <value>  Cash On Delivery  </value>
+  </data>
+  <data name="lblCCPaypal.text" xml:space="preserve">
+    <value>Credit Card Payment (using PayPal) :</value>
+  </data>
+  <data name="lblChoosePayment.text" xml:space="preserve">
+    <value>Please choose your preferred payment method:</value>
+  </data>
+  <data name="lblCashOnDelivery.text" xml:space="preserve">
+    <value>Cash On Delivery :</value>
+  </data>
+  <data name="lblThankYou.text" xml:space="preserve">
+    <value>Thank you for your order!</value>
+  </data>
+  <data name="lblYourOrder.text" xml:space="preserve">
+    <value>Your order is currently being processed.</value>
+  </data>
+  <data name="lnkBack.text" xml:space="preserve">
+    <value>Back to Home Page</value>
+  </data>
+  <data name="PleaseCheckTerms" xml:space="preserve">
+    <value>Please check the Terms and Conditions</value>
+  </data>
+  <data name="lblFullName.text" xml:space="preserve">
+    <value>Full Name</value>
+  </data>
+  <data name="lblMobile.text" xml:space="preserve">
+    <value>Mobile (optional)</value>
   </data>
 </root>

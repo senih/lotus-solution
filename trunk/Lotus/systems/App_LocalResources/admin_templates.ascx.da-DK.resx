@@ -192,24 +192,6 @@
   <data name="lblTemplateName.text" xml:space="preserve">
     <value>Name</value>
   </data>
-  <data name="Login1.FailureText" xml:space="preserve">
-    <value>Login mislykkes. Prøv venligst igen.</value>
-  </data>
-  <data name="Login1.LoginButtonText" xml:space="preserve">
-    <value>Login</value>
-  </data>
-  <data name="Login1.PasswordLabelText" xml:space="preserve">
-    <value>Password:</value>
-  </data>
-  <data name="Login1.PasswordRecoveryText" xml:space="preserve">
-    <value>Jeg har glemt mit password</value>
-  </data>
-  <data name="Login1.RememberMeText" xml:space="preserve">
-    <value>Husk mig.</value>
-  </data>
-  <data name="Login1.UserNameLabelText" xml:space="preserve">
-    <value>Brugernavn:</value>
-  </data>
   <data name="optAddToCartURL.text" xml:space="preserve">
     <value>Add To Cart URL</value>
   </data>
@@ -229,7 +211,7 @@
     <value>Dato senest opdateret</value>
   </data>
   <data name="optDisplayDate.text" xml:space="preserve">
-    <value>Vis dato</value>
+    <value>Vis dato - Used in Calendar-based Listing</value>
   </data>
   <data name="optDownloadSize.text" xml:space="preserve">
     <value>Download Size</value>
@@ -347,5 +329,89 @@
   </data>
   <data name="optHide.text" xml:space="preserve">
     <value>Hide</value>
+  </data>
+  <data name="btnSaveAndFinishListingTemplate.text" xml:space="preserve">
+    <value>   Save &amp; Finish   </value>
+  </data>
+  <data name="lblContentTemplate.text" xml:space="preserve">
+    <value>Content template for listing entries</value>
+  </data>
+  <data name="btnNewContentTemplate.text" xml:space="preserve">
+    <value>   Save   </value>
+  </data>
+  <data name="colContentTemplateName.HeaderText" xml:space="preserve">
+    <value>Content Templates</value>
+  </data>
+  <data name="lblContentTemplate2.text" xml:space="preserve">
+    <value>Template</value>
+  </data>
+  <data name="lblContentTemplateName.text" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="lblEditContentTemplate.text" xml:space="preserve">
+    <value>Edit Content Template</value>
+  </data>
+  <data name="lblNewContentTemplate.text" xml:space="preserve">
+    <value>Add New</value>
+  </data>
+  <data name="litContentTemplates.text" xml:space="preserve">
+    <value>Content Templates</value>
+  </data>
+  <data name="litListingTemplates.text" xml:space="preserve">
+    <value>Listing Templates</value>
+  </data>
+  <data name="litPageTemplates.text" xml:space="preserve">
+    <value>Page Templates</value>
+  </data>
+  <data name="optBreak.text" xml:space="preserve">
+    <value>-- BREAK --</value>
+  </data>
+  <data name="optDayFirstPublished.text" xml:space="preserve">
+    <value>Publish Date (Day)</value>
+  </data>
+  <data name="optDayLastUpdated.text" xml:space="preserve">
+    <value>Last Updated Date (Day)</value>
+  </data>
+  <data name="optDisplayDay.text" xml:space="preserve">
+    <value>Display Date (Day) - Used in Calendar-based Listing</value>
+  </data>
+  <data name="optDisplayMonth.text" xml:space="preserve">
+    <value>Display Date (Month) - Used in Calendar-based Listing</value>
+  </data>
+  <data name="optDisplayYear.text" xml:space="preserve">
+    <value>Display Date (Year) - Used in Calendar-based Listing</value>
+  </data>
+  <data name="optFileView.text" xml:space="preserve">
+    <value>File View</value>
+  </data>
+  <data name="optListing.text" xml:space="preserve">
+    <value>Listing</value>
+  </data>
+  <data name="optMonthFirstPublished.text" xml:space="preserve">
+    <value>Publish Date (Month)</value>
+  </data>
+  <data name="optMonthLastUpdated.text" xml:space="preserve">
+    <value>Last Updated Date (Month)</value>
+  </data>
+  <data name="optPersonFirstCreatingFull.text" xml:space="preserve">
+    <value>Author (Full Name)</value>
+  </data>
+  <data name="optPersonLastUpdatingFull.text" xml:space="preserve">
+    <value>Person Last Updating (Full Name)</value>
+  </data>
+  <data name="optYearFirstPublished.text" xml:space="preserve">
+    <value>Publish Date (Year)</value>
+  </data>
+  <data name="optYearLastUpdated.text" xml:space="preserve">
+    <value>Last Updated Date (Year)</value>
+  </data>
+  <data name="chkEnableComment.text" xml:space="preserve">
+    <value>Enable Comment Posting on listing entries</value>
+  </data>
+  <data name="chkEnableRating.text" xml:space="preserve">
+    <value>Enable Rating Selection on listing entries</value>
+  </data>
+  <data name="chkEnableCommentAnonymous.text" xml:space="preserve">
+    <value>Allow Anonymous</value>
   </data>
 </root>

@@ -123,17 +123,8 @@
   <data name="btnSave.text" xml:space="preserve">
     <value>  Save  </value>
   </data>
-  <data name="chkAuthor.text" xml:space="preserve">
-    <value>Person First Creating</value>
-  </data>
-  <data name="chkAuthorFullName.text" xml:space="preserve">
-    <value>Full Name</value>
-  </data>
   <data name="chkCalendar.text" xml:space="preserve">
     <value>Calendar</value>
-  </data>
-  <data name="chkCategoryInfo.text" xml:space="preserve">
-    <value>Category Info</value>
   </data>
   <data name="chkCategoryList.text" xml:space="preserve">
     <value>Category List</value>
@@ -144,17 +135,11 @@
   <data name="chkComments.text" xml:space="preserve">
     <value>Comment Posting</value>
   </data>
-  <data name="chkDisplayDate.text" xml:space="preserve">
-    <value>Display Date</value>
-  </data>
   <data name="chkFileDownload.text" xml:space="preserve">
     <value>File Download</value>
   </data>
   <data name="chkFileView.text" xml:space="preserve">
     <value>File Preview</value>
-  </data>
-  <data name="chkLastUpdatedDate.text" xml:space="preserve">
-    <value>Date Last Updated/Published</value>
   </data>
   <data name="chkListingOrdering.text" xml:space="preserve">
     <value>Listing Ordering</value>
@@ -167,6 +152,9 @@
   </data>
   <data name="chkOrderByComments.text" xml:space="preserve">
     <value>By Comments</value>
+  </data>
+  <data name="chkOrderByDisplayDate.text" xml:space="preserve">
+    <value>By Display Date</value>
   </data>
   <data name="chkOrderByDownloadsToday.text" xml:space="preserve">
     <value>By Downloads Today</value>
@@ -201,23 +189,8 @@
   <data name="chkOrderByTotalHits.text" xml:space="preserve">
     <value>By Total Hits</value>
   </data>
-  <data name="chkPersonLastUpdating.text" xml:space="preserve">
-    <value>Person Last Updating</value>
-  </data>
-  <data name="chkPersonLastUpdatingFullName.text" xml:space="preserve">
-    <value>Full Name</value>
-  </data>
   <data name="chkPodcast.text" xml:space="preserve">
     <value>Podcast</value>
-  </data>
-  <data name="chkPostedBy.text" xml:space="preserve">
-    <value>Posted By (Person Last Updating)</value>
-  </data>
-  <data name="chkPostedByFullName.text" xml:space="preserve">
-    <value>Full Name</value>
-  </data>
-  <data name="chkPublishDate.text" xml:space="preserve">
-    <value>Date First Published</value>
   </data>
   <data name="chkRating.text" xml:space="preserve">
     <value>Rating Selection</value>
@@ -233,9 +206,6 @@
   </data>
   <data name="idTitle.text" xml:space="preserve">
     <value>Page Elements</value>
-  </data>
-  <data name="lblVisibleOnListing.text" xml:space="preserve">
-    <value>Visible on listing entry pages</value>
   </data>
   <data name="lblVisibleOnPage.text" xml:space="preserve">
     <value>Visible on this page</value>

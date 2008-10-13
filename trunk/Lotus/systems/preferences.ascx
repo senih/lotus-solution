@@ -24,13 +24,14 @@
         Else
             panelUpdatePreferences.Visible = False
             panelLogin.Visible = True
-            panelLogin.FindControl("Login1").Focus()
+            Dim oUC1 As Control = LoadControl("login.ascx")
+            panelLogin.Controls.Add(oUC1)
         End If
         
     End Sub
 
     Protected Sub btnSave_Click(ByVal sender As Object, ByVal e As System.EventArgs)
-        If Not Me.IsUserLoggedIn Then Exit Sub
+        If Not Me.IsUserLoggedIn Then Response.Redirect(HttpContext.Current.Items("_path"))
         
         Dim muSelectedUser As MembershipUser = Membership.GetUser()
         Dim pcSelectedProfile As ProfileCommon = Profile.GetProfile(muSelectedUser.UserName)
@@ -52,27 +53,9 @@
 
         lblSucceed.Text = GetLocalResourceObject("DataUpdated")
     End Sub
-
-    Protected Sub btnCancel_Click(ByVal sender As Object, ByVal e As System.EventArgs)
-        Response.Redirect(Me.LinkWorkspace)
-    End Sub
-
-    Protected Sub Login1_LoggedIn(ByVal sender As Object, ByVal e As System.EventArgs)
-        Response.Redirect(HttpContext.Current.Items("_path"))
-    End Sub
-
-    Protected Sub Login1_PreRender(ByVal sender As Object, ByVal e As System.EventArgs)
-        Login1.PasswordRecoveryUrl = "~/" & Me.LinkPassword & "?ReturnUrl=" & HttpContext.Current.Items("_path")
-    End Sub
 </script>
 
 <asp:Panel ID="panelLogin" runat="server" Visible="False">
-    <asp:Login ID="Login1" meta:resourcekey="Login1" runat="server"  PasswordRecoveryText="Password Recovery" TitleText="" OnLoggedIn="Login1_LoggedIn" OnPreRender="Login1_PreRender">
-        <LabelStyle HorizontalAlign="Left" Wrap="False" />
-    </asp:Login>
-    <br />
-
-    <asp:Label ID="lblNote" runat="server" Text="" ForeColor=red></asp:Label>
 </asp:Panel>
 
 <asp:Panel ID="panelUpdatePreferences" runat="server" Visible=false>
@@ -95,7 +78,6 @@
 
     <br /><br />
     <asp:Button ID="btnSave" runat="server" meta:resourcekey="btnSave" Text=" Save " CausesValidation=false OnClick="btnSave_Click" />
-    <asp:Button ID="btnCancel" runat="server" meta:resourcekey="btnCancel" Text=" Cancel " CausesValidation=false OnClick="btnCancel_Click" />
     <asp:Label ID="lblSucceed" runat="server" Font-Bold=true></asp:Label>
     <br /><br />
 </asp:Panel>

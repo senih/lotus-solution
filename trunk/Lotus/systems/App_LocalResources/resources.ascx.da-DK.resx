@@ -168,28 +168,13 @@
   <data name="lblUploadFile.text" xml:space="preserve">
     <value>Upload File</value>
   </data>
-  <data name="Login1.FailureText" xml:space="preserve">
-    <value>Login mislykkes. Prøv venligst igen.</value>
-  </data>
-  <data name="Login1.LoginButtonText" xml:space="preserve">
-    <value>Login</value>
-  </data>
-  <data name="Login1.PasswordLabelText" xml:space="preserve">
-    <value>Password:</value>
-  </data>
-  <data name="Login1.PasswordRecoveryText" xml:space="preserve">
-    <value>Jeg har glemt mit password</value>
-  </data>
-  <data name="Login1.RememberMeText" xml:space="preserve">
-    <value>Husk mig.</value>
-  </data>
-  <data name="Login1.UserNameLabelText" xml:space="preserve">
-    <value>Brugernavn:</value>
-  </data>
   <data name="SelectChannel" xml:space="preserve">
     <value>Vælg Kanal.</value>
   </data>
   <data name="UploadFailed" xml:space="preserve">
     <value>Opload mislykkes. Fil type ikke tilladt.</value>
+  </data>
+  <data name="lblNewFolder.text" xml:space="preserve">
+    <value>New Folder</value>
   </data>
 </root>

@@ -8,11 +8,12 @@ for(var i=0;i<oScripts.length;i++)
   }
 
 document.write("<li"+"nk rel='stylesheet' href='"+sEditorPath+"style/istoolbar.css' type='text/css' />");
+document.write("<scr"+"ipt src='"+sEditorPath+"istoolbar.js'></scr"+"ipt>");
 
 if(navigator.appName.indexOf('Microsoft')!=-1) {
-  document.write("<scr"+"ipt src='"+sEditorPath+"istoolbar.js'></scr"+"ipt>");
   document.write("<scr"+"ipt src='"+sEditorPath+"editor.js'></scr"+"ipt>");
+} else if(navigator.userAgent.indexOf('Safari')!=-1) {
+  document.write("<scr"+"ipt src='"+sEditorPath+"saf/editor.js'></scr"+"ipt>");
 } else {
-  document.write("<scr"+"ipt src='"+sEditorPath+"istoolbar.js'></scr"+"ipt>");
   document.write("<scr"+"ipt src='"+sEditorPath+"moz/editor.js'></scr"+"ipt>");
 }  

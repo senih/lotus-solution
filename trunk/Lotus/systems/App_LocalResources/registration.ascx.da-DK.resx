@@ -139,7 +139,7 @@
     <value>Fortsæt</value>
   </data>
   <data name="CreateUserWizard.CreateUserButtonText" xml:space="preserve">
-    <value>Opret</value>
+    <value>   Opret   </value>
   </data>
   <data name="CreateUserWizard.DuplicateEmailErrorMessage" xml:space="preserve">
     <value>E-mail adressen som du intastede er allerede i brug. Indtast venligst en anden e-mail adresse.</value>
@@ -194,5 +194,14 @@
   </data>
   <data name="UserAlreadyActivated" xml:space="preserve">
     <value>Brugeren er allerede aktiveret.</value>
+  </data>
+  <data name="lblSubscribe.text" xml:space="preserve">
+    <value>Subscribe to our Newsletters</value>
+  </data>
+  <data name="lblSubscribeDesc.text" xml:space="preserve">
+    <value>Join our Newsletter! And get update right to your inbox!</value>
+  </data>
+  <data name="lblUsernameValidateInfo.text" xml:space="preserve">
+    <value>(Must be at least 4 characters, letters and numbers only)</value>
   </data>
 </root>

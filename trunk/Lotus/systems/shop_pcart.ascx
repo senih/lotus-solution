@@ -22,6 +22,9 @@
     Private sPaypalCancelPage As String
     Private sPaypalEmail As String
     Private sPaypalURL As String
+    Private bUsePaypal As Boolean
+    Private bUseCashOnDelivery As Boolean
+    Private sCODOrderConfirmTemplate As String
     '*** /Configuration ***
     
     Private dtCart As DataTable
@@ -30,6 +33,7 @@
     Private bUseShipping As Boolean = False 'if there is tangible product
     
     Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs)
+        
         GetConfigShop()
         
         If Not Me.IsUserLoggedIn Then
@@ -100,6 +104,24 @@
         End If
         
         'ddShippingState.Attributes.Add("onchange", "ddStateChange(this)")
+        
+        lnkBack.NavigateUrl = "~/" & Me.RootFile
+        If bUsePaypal And bUseCashOnDelivery Then
+            'do nothing
+        End If
+        If bUsePaypal And Not bUseCashOnDelivery Then
+            idChoosePayment.Visible = False
+            idCashOnDelivery.Visible = False
+        End If
+        If Not bUsePaypal And bUseCashOnDelivery Then
+            idChoosePayment.Visible = False
+            idPaypal.Visible = False
+        End If
+        If Not bUsePaypal And Not bUseCashOnDelivery Then
+            idChoosePayment.Visible = False
+            idCashOnDelivery.Visible = False
+            idPaypal.Visible = False
+        End If
     End Sub
     
     Protected Sub Wizard1_NextButtonClick(ByVal sender As Object, ByVal e As System.Web.UI.WebControls.WizardNavigationEventArgs)
@@ -110,16 +132,18 @@
             panelLogin.Visible = True
             Login1.PasswordRecoveryUrl = "~/password.aspx?ReturnUrl=" & Request.RawUrl.Split("?")(0)
 
-            If bUseShipping Then
+            'Note: Kalau ingin CREATE ACCOUNT (QUICK) tinggal di-enable saja, sudah di-test, tdk perlu setting lain2
+            '      Keuntungan pake CREATE ACCOUNT (STANDARD): Ada option mailing list subscription, sdgkan QUICK tdk ada
+            'If bUseShipping Then
                 'CREATE ACCOUNT (STANDARD)
                 panelCreateUser.Visible = False
                 panelRegister.Visible = True
                 linkRegister.NavigateUrl = "~/" & Me.LinkRegistration & "?returnurl=" & Me.AppPath & HttpContext.Current.Items("_page")
-            Else
-                'CREATE ACCOUNT (QUICK)
-                panelCreateUser.Visible = True
-                panelRegister.Visible = False
-            End If
+            'Else
+            '    'CREATE ACCOUNT (QUICK)
+            '    panelCreateUser.Visible = True
+            '    panelRegister.Visible = False
+            'End If
         End If
     End Sub
     
@@ -173,30 +197,60 @@
     '*** SHOW SHIPPING (FORM) ***
     Sub ShowShipping()
         dtShipping = Session("Shipping")
+        Dim drShipping As DataRow
+        
+        oConn.Open()
+        Dim oCommand As SqlCommand
+        Dim oDataReader As SqlDataReader
         
         If dtShipping.Rows.Count = 0 Then
-            ddShippingState.Style.Add("display", "none")
-            txtShippingState.Style.Add("display", "")
-            Exit Sub
+            
+            'Find previous saved Shipping Info from database
+            oCommand = New SqlCommand("SELECT * FROM shipping_info WHERE username=@username")
+            oCommand.CommandType = CommandType.Text
+            oCommand.Parameters.Add("@username", SqlDbType.NVarChar, 256).Value = Me.UserName
+            oCommand.Connection = oConn
+            oDataReader = oCommand.ExecuteReader()
+            If oDataReader.Read() Then
+                drShipping = dtShipping.NewRow
+                drShipping("shipping_first_name") = oDataReader("shipping_first_name")
+                drShipping("shipping_last_name") = oDataReader("shipping_last_name")
+                drShipping("shipping_company") = oDataReader("shipping_company")
+                drShipping("shipping_address") = oDataReader("shipping_address")
+                drShipping("shipping_city") = oDataReader("shipping_city")
+                drShipping("shipping_state") = oDataReader("shipping_state")
+                drShipping("shipping_country") = oDataReader("shipping_country")
+                drShipping("shipping_zip") = oDataReader("shipping_zip")
+                drShipping("shipping_phone") = oDataReader("shipping_phone")
+                drShipping("shipping_fax") = oDataReader("shipping_fax")
+                dtShipping.Rows.Add(drShipping)
+            Else
+                ddShippingState.Style.Add("display", "none")
+                txtShippingState.Style.Add("display", "")
+                'Clean Up
+                oDataReader.Close()
+                oConn.Close()
+                oConn = Nothing
+                Exit Sub
+            End If
+            oDataReader.Close()
         End If
         
-        Dim drShipping As DataRow
         drShipping = dtShipping.Rows(0)
         
+        'Country
         ddShippingCountry.Text = drShipping("shipping_country")
         
+        'State
         ddShippingState.Items.Clear()
-        oConn.Open()
-        Dim sql As String = "Select * from country_state_lookup where country=@country order by state_code "
-        Dim oCommand As New SqlCommand(sql)
+        oCommand = New SqlCommand("Select * from country_state_lookup where country=@country order by state_code")
         oCommand.CommandType = CommandType.Text
         oCommand.Parameters.Add("@country", SqlDbType.VarChar, 3).Value = drShipping("shipping_country")
         oCommand.Connection = oConn
-        Dim oDataReader As SqlDataReader = oCommand.ExecuteReader()
+        oDataReader = oCommand.ExecuteReader()
         While oDataReader.Read
             ddShippingState.Items.Add(New ListItem(oDataReader("state").ToString, oDataReader("state_code").ToString))
         End While
-
         If (ddShippingState.Items.Count > 0) Then
             ddShippingState.Style.Add("display", "")
             txtShippingState.Style.Add("display", "none")
@@ -210,111 +264,18 @@
         oConn.Close()
         oConn = Nothing
         
-        txtShippingFirstName.Text = drShipping("shipping_first_name")
-        txtShippingLastName.Text = drShipping("shipping_last_name")
-        txtShippingCompany.Text = drShipping("shipping_company")
-        txtShippingAddress.Text = drShipping("shipping_address")
-        txtShippingCity.Text = drShipping("shipping_city")
-        txtShippingZip.Text = drShipping("shipping_zip")
-        txtShippingPhone.Text = drShipping("shipping_phone")
-        txtShippingFax.Text = drShipping("shipping_fax")
+        'Others
+        txtShippingFirstName.Text = drShipping("shipping_first_name").ToString
+        txtShippingLastName.Text = drShipping("shipping_last_name").ToString
+        txtShippingCompany.Text = drShipping("shipping_company").ToString
+        txtShippingAddress.Text = drShipping("shipping_address").ToString
+        txtShippingCity.Text = drShipping("shipping_city").ToString
+        txtShippingZip.Text = drShipping("shipping_zip").ToString
+        txtShippingPhone.Text = drShipping("shipping_phone").ToString
+        txtShippingFax.Text = drShipping("shipping_fax").ToString
+        
     End Sub
         
-    '*** PAY HERE ***
-    Protected Sub btnPayHere_Click(ByVal sender As Object, ByVal e As System.EventArgs)
-        Dim nOrderId As Integer
-        nOrderId = SaveOrder()
-        If bUseShipping Then
-            SaveShipping(nOrderId)
-        End If
-        Response.Redirect(GetPaypalPaymentUrl(nOrderId))
-    End Sub
-   
-    '*** DATABASE ***
-    Protected Function SaveOrder() As Integer
-        Dim nOrderId As Integer
-
-        Dim sSQL As String
-        Dim oConn As SqlConnection
-        Dim oCommand As SqlCommand
-        oConn = New SqlConnection(sConn)
-        oConn.Open()
-        sSQL = "INSERT INTO orders (order_date,order_by,sub_total,total,status,shipping,tax,root_id) " & _
-            "VALUES (@order_date,@order_by,@sub_total,@total,@status,@shipping,@tax,@root_id);SELECT SCOPE_IDENTITY();"
-        oCommand = New SqlCommand(sSQL)
-        oCommand.CommandType = CommandType.Text
-        oCommand.Parameters.Add("@order_date", SqlDbType.DateTime).Value = Now
-        oCommand.Parameters.Add("@order_by", SqlDbType.NVarChar, 50).Value = Me.UserName
-        oCommand.Parameters.Add("@sub_total", SqlDbType.Money).Value = GetSubTotal()
-        oCommand.Parameters.Add("@total", SqlDbType.Money).Value = GetSubTotal() + GetShipping() + GetTax()
-        oCommand.Parameters.Add("@status", SqlDbType.NVarChar, 50).Value = "WAITING_FOR_PAYMENT"
-        oCommand.Parameters.Add("@shipping", SqlDbType.Money).Value = GetShipping()
-        oCommand.Parameters.Add("@tax", SqlDbType.Money).Value = GetTax()
-        oCommand.Parameters.Add("@root_id", SqlDbType.Int).Value = Me.RootID
-        oCommand.Connection = oConn
-        nOrderId = oCommand.ExecuteScalar()
-        
-        sSQL = "INSERT INTO order_items (order_id,item_id,item_desc,price,qty,tangible) " & _
-            "VALUES (@order_id,@item_id,@item_desc,@price,@qty,@tangible)"
-        Dim drCart As DataRow
-        dtCart = Session("Cart")
-        
-        For Each drCart In dtCart.Rows
-            oCommand = New SqlCommand(sSQL)
-            oCommand.CommandType = CommandType.Text
-            oCommand.Parameters.Add("@order_id", SqlDbType.Int).Value = nOrderId
-            oCommand.Parameters.Add("@item_id", SqlDbType.Int).Value = drCart("item_id")
-            oCommand.Parameters.Add("@item_desc", SqlDbType.NVarChar, 255).Value = drCart("item_desc")
-            oCommand.Parameters.Add("@price", SqlDbType.Money).Value = drCart("current_price")
-            oCommand.Parameters.Add("@qty", SqlDbType.Int).Value = drCart("qty")
-            oCommand.Parameters.Add("@tangible", SqlDbType.Bit).Value = drCart("tangible")
-            oCommand.Connection = oConn
-            oCommand.ExecuteNonQuery()
-        Next
-       
-        oCommand.Dispose()
-        oConn.Close()
-        oConn = Nothing
-        
-        Return nOrderId
-    End Function
-            
-    Protected Sub SaveShipping(ByVal nOrderId As Integer)
-        
-        Dim sSQL As String
-        Dim oConn As SqlConnection
-        Dim oCommand As SqlCommand
-        oConn = New SqlConnection(sConn)
-        oConn.Open()
-        sSQL = "UPDATE orders set shipping_first_name=@shipping_first_name, shipping_last_name=@shipping_last_name, " & _
-            "shipping_company=@shipping_company, shipping_address=@shipping_address, shipping_city=@shipping_city, " & _
-            "shipping_state=@shipping_state, shipping_country=@shipping_country, " & _
-            "shipping_zip=@shipping_zip, shipping_phone=@shipping_phone, shipping_fax=@shipping_fax " & _
-            "WHERE order_id=@order_id"
-        oCommand = New SqlCommand(sSQL)
-        oCommand.CommandType = CommandType.Text
-        
-        Dim drShipping As DataRow
-        dtShipping = Session("Shipping")
-        drShipping = dtShipping.Rows(0)
-        
-        oCommand.Parameters.Add("@shipping_first_name", SqlDbType.NVarChar, 50).Value = drShipping("shipping_first_name")
-        oCommand.Parameters.Add("@shipping_last_name", SqlDbType.NVarChar, 50).Value = drShipping("shipping_last_name")
-        oCommand.Parameters.Add("@shipping_company", SqlDbType.NVarChar, 50).Value = drShipping("shipping_company")
-        oCommand.Parameters.Add("@shipping_address", SqlDbType.NVarChar, 255).Value = drShipping("shipping_address")
-        oCommand.Parameters.Add("@shipping_city", SqlDbType.NVarChar, 50).Value = drShipping("shipping_city")
-        oCommand.Parameters.Add("@shipping_state", SqlDbType.NVarChar, 50).Value = drShipping("shipping_state")
-        oCommand.Parameters.Add("@shipping_country", SqlDbType.NVarChar, 50).Value = drShipping("shipping_country")
-        oCommand.Parameters.Add("@shipping_zip", SqlDbType.NVarChar, 50).Value = drShipping("shipping_zip")
-        oCommand.Parameters.Add("@shipping_phone", SqlDbType.NVarChar, 50).Value = drShipping("shipping_phone")
-        oCommand.Parameters.Add("@shipping_fax", SqlDbType.NVarChar, 50).Value = drShipping("shipping_fax")
-        oCommand.Parameters.Add("@order_id", SqlDbType.Int).Value = nOrderId
-        oCommand.Connection = oConn
-        oCommand.ExecuteNonQuery()
-        oCommand.Dispose()
-        oConn.Close()
-        oConn = Nothing
-    End Sub
 
     '*** UTILITY ***
     Sub GetConfigShop()
@@ -352,6 +313,17 @@
             End If
             
             sTerms = oDataReader("terms").ToString
+            If Not IsDBNull(oDataReader("use_cash_on_delivery")) Then
+                bUseCashOnDelivery = CBool(oDataReader("use_cash_on_delivery"))
+            Else
+                bUseCashOnDelivery = False
+            End If
+            If Not IsDBNull(oDataReader("use_paypal")) Then
+                bUsePaypal = CBool(oDataReader("use_paypal"))
+            Else
+                bUsePaypal = False
+            End If
+            sCODOrderConfirmTemplate = oDataReader("cod_order_confirm_template").ToString
         End While
         oDataReader.Close()
         oCmd.Dispose()
@@ -422,6 +394,45 @@
             dtShipping.Rows.Add(drShipping)
         End If
         Session("Shipping") = dtShipping
+        
+        'Insert/Update into shipping_info
+        Dim oCommand As SqlCommand
+        Dim oDataReader As SqlDataReader
+        oConn.Open()
+        Dim bShippingInfoExists As Boolean = False
+        oCommand = New SqlCommand("SELECT * FROM shipping_info WHERE username=@username")
+        oCommand.CommandType = CommandType.Text
+        oCommand.Parameters.Add("@username", SqlDbType.NVarChar, 256).Value = Me.UserName
+        oCommand.Connection = oConn
+        oDataReader = oCommand.ExecuteReader()
+        If oDataReader.Read() Then
+            bShippingInfoExists = True
+        End If
+        oDataReader.Close()
+        oDataReader = Nothing
+            
+        Dim sSQL As String
+        If bShippingInfoExists Then
+            sSQL = "UPDATE shipping_info SET shipping_first_name=@shipping_first_name,shipping_last_name=@shipping_last_name,shipping_company=@shipping_company,shipping_address=@shipping_address,shipping_city=@shipping_city,shipping_state=@shipping_state,shipping_country=@shipping_country,shipping_zip=@shipping_zip,shipping_phone=@shipping_phone,shipping_fax=@shipping_fax WHERE username=@username"
+        Else
+            sSQL = "INSERT INTO shipping_info (username,shipping_first_name,shipping_last_name,shipping_company,shipping_address,shipping_city,shipping_state,shipping_country,shipping_zip,shipping_phone,shipping_fax) VALUES (@username,@shipping_first_name,@shipping_last_name,@shipping_company,@shipping_address,@shipping_city,@shipping_state,@shipping_country,@shipping_zip,@shipping_phone,@shipping_fax)"
+        End If
+        oCommand = New SqlCommand(sSQL)
+        oCommand.CommandType = CommandType.Text
+        oCommand.Parameters.Add("@username", SqlDbType.NVarChar, 256).Value = Me.UserName.ToString
+        oCommand.Parameters.Add("@shipping_first_name", SqlDbType.NVarChar, 50).Value = txtShippingFirstName.Text
+        oCommand.Parameters.Add("@shipping_last_name", SqlDbType.NVarChar, 50).Value = txtShippingLastName.Text
+        oCommand.Parameters.Add("@shipping_company", SqlDbType.NVarChar, 50).Value = txtShippingCompany.Text
+        oCommand.Parameters.Add("@shipping_address", SqlDbType.NVarChar, 50).Value = txtShippingAddress.Text
+        oCommand.Parameters.Add("@shipping_city", SqlDbType.NVarChar, 50).Value = txtShippingCity.Text
+        oCommand.Parameters.Add("@shipping_state", SqlDbType.NVarChar, 50).Value = sShippingState
+        oCommand.Parameters.Add("@shipping_country", SqlDbType.NVarChar, 50).Value = ddShippingCountry.Text
+        oCommand.Parameters.Add("@shipping_zip", SqlDbType.NVarChar, 50).Value = txtShippingZip.Text
+        oCommand.Parameters.Add("@shipping_phone", SqlDbType.NVarChar, 50).Value = txtShippingPhone.Text
+        oCommand.Parameters.Add("@shipping_fax", SqlDbType.NVarChar, 50).Value = txtShippingFax.Text
+        oCommand.Connection = oConn
+        oCommand.ExecuteNonQuery()
+        oConn.Close()
     End Sub
     
     Sub AddToCart(ByVal nItemId As Integer)
@@ -617,7 +628,7 @@
 
         Dim cost As Decimal = 0 '-1
 
-        Dim baseSQL As String = "SELECT ship_cost, percentage_cost from shipping_cost WHERE weight_from<=@weight and weight_to>@weight and total_from<=@total and total_to>@total "
+        Dim baseSQL As String = "SELECT ship_cost, percentage_cost from shipping_cost WHERE weight_from<=@weight and weight_to>=@weight and total_from<=@total and total_to>=@total "
         Dim sSql As String = ""
         sSql = sSql & baseSQL & " AND location=@country_state "
         sSql = sSql & " UNION ALL " & baseSQL & " AND location=@country "
@@ -735,9 +746,29 @@
         Return sPaymentUrl
     End Function
     
+    Private Function SendMail(ByVal mailTo() As String, ByVal sSubject As String, ByVal sBody As String, ByVal bIsHTML As Boolean) As Boolean
+        Dim oSmtpClient As SmtpClient = New SmtpClient
+        Dim oMailMessage As MailMessage = New MailMessage
 
-    '*** OTHERS (UI) ***
-            
+        Try
+            Dim i As Integer
+            For i = 0 To UBound(mailTo)
+                oMailMessage.To.Add(mailTo(i))
+            Next
+
+            oMailMessage.Subject = sSubject
+            oMailMessage.IsBodyHtml = bIsHTML
+            oMailMessage.Body = sBody
+
+            oSmtpClient.Send(oMailMessage)
+            Return True
+        Catch ex As Exception
+            Return False
+        End Try
+    End Function
+
+    
+    '*** OTHERS (UI) ***            
     Protected Sub GridView1_RowDeleting(ByVal sender As Object, ByVal e As System.Web.UI.WebControls.GridViewDeleteEventArgs)
         dtCart = Session("Cart")
         dtCart.Rows(e.RowIndex).Delete()
@@ -836,9 +867,273 @@
         oConn.Close()
         oConn = Nothing
     End Sub
+    
+    
+    '*** DATABASE ***
+    Protected Function SaveOrder(ByVal sPaymentMethod As String) As Integer
+        Dim nOrderId As Integer
+
+        Dim sSQL As String
+        Dim oConn As SqlConnection
+        Dim oCommand As SqlCommand
+        oConn = New SqlConnection(sConn)
+        oConn.Open()
+        sSQL = "INSERT INTO orders (order_date,order_by,sub_total,total,status,shipping,tax,payment_method,root_id) " & _
+            "VALUES (@order_date,@order_by,@sub_total,@total,@status,@shipping,@tax,@payment_method,@root_id);SELECT SCOPE_IDENTITY();"
+        oCommand = New SqlCommand(sSQL)
+        oCommand.CommandType = CommandType.Text
+        oCommand.Parameters.Add("@order_date", SqlDbType.DateTime).Value = Now
+        oCommand.Parameters.Add("@order_by", SqlDbType.NVarChar, 50).Value = Me.UserName
+        oCommand.Parameters.Add("@sub_total", SqlDbType.Money).Value = GetSubTotal()
+        oCommand.Parameters.Add("@total", SqlDbType.Money).Value = GetSubTotal() + GetShipping() + GetTax()
+        oCommand.Parameters.Add("@status", SqlDbType.NVarChar, 50).Value = "WAITING_FOR_PAYMENT"
+        oCommand.Parameters.Add("@shipping", SqlDbType.Money).Value = GetShipping()
+        oCommand.Parameters.Add("@tax", SqlDbType.Money).Value = GetTax()
+        oCommand.Parameters.Add("@root_id", SqlDbType.Int).Value = Me.RootID
+        oCommand.Parameters.Add("@payment_method", SqlDbType.NVarChar, 50).Value = sPaymentMethod
+        oCommand.Connection = oConn
+        nOrderId = oCommand.ExecuteScalar()
+        
+        sSQL = "INSERT INTO order_items (order_id,item_id,item_desc,price,qty,tangible) " & _
+            "VALUES (@order_id,@item_id,@item_desc,@price,@qty,@tangible)"
+        Dim drCart As DataRow
+        dtCart = Session("Cart")
+        
+        For Each drCart In dtCart.Rows
+            oCommand = New SqlCommand(sSQL)
+            oCommand.CommandType = CommandType.Text
+            oCommand.Parameters.Add("@order_id", SqlDbType.Int).Value = nOrderId
+            oCommand.Parameters.Add("@item_id", SqlDbType.Int).Value = drCart("item_id")
+            oCommand.Parameters.Add("@item_desc", SqlDbType.NVarChar, 255).Value = drCart("item_desc")
+            oCommand.Parameters.Add("@price", SqlDbType.Money).Value = drCart("current_price")
+            oCommand.Parameters.Add("@qty", SqlDbType.Int).Value = drCart("qty")
+            oCommand.Parameters.Add("@tangible", SqlDbType.Bit).Value = drCart("tangible")
+            oCommand.Connection = oConn
+            oCommand.ExecuteNonQuery()
+        Next
+       
+        oCommand.Dispose()
+        oConn.Close()
+        oConn = Nothing
+        
+        Return nOrderId
+    End Function
+            
+    Protected Sub SaveShipping(ByVal nOrderId As Integer)
+        
+        Dim sSQL As String
+        Dim oConn As SqlConnection
+        Dim oCommand As SqlCommand
+        oConn = New SqlConnection(sConn)
+        oConn.Open()
+        sSQL = "UPDATE orders set shipping_first_name=@shipping_first_name, shipping_last_name=@shipping_last_name, " & _
+            "shipping_company=@shipping_company, shipping_address=@shipping_address, shipping_city=@shipping_city, " & _
+            "shipping_state=@shipping_state, shipping_country=@shipping_country, " & _
+            "shipping_zip=@shipping_zip, shipping_phone=@shipping_phone, shipping_fax=@shipping_fax " & _
+            "WHERE order_id=@order_id"
+        oCommand = New SqlCommand(sSQL)
+        oCommand.CommandType = CommandType.Text
+        
+        Dim drShipping As DataRow
+        dtShipping = Session("Shipping")
+        drShipping = dtShipping.Rows(0)
+        
+        oCommand.Parameters.Add("@shipping_first_name", SqlDbType.NVarChar, 50).Value = drShipping("shipping_first_name")
+        oCommand.Parameters.Add("@shipping_last_name", SqlDbType.NVarChar, 50).Value = drShipping("shipping_last_name")
+        oCommand.Parameters.Add("@shipping_company", SqlDbType.NVarChar, 50).Value = drShipping("shipping_company")
+        oCommand.Parameters.Add("@shipping_address", SqlDbType.NVarChar, 255).Value = drShipping("shipping_address")
+        oCommand.Parameters.Add("@shipping_city", SqlDbType.NVarChar, 50).Value = drShipping("shipping_city")
+        oCommand.Parameters.Add("@shipping_state", SqlDbType.NVarChar, 50).Value = drShipping("shipping_state")
+        oCommand.Parameters.Add("@shipping_country", SqlDbType.NVarChar, 50).Value = drShipping("shipping_country")
+        oCommand.Parameters.Add("@shipping_zip", SqlDbType.NVarChar, 50).Value = drShipping("shipping_zip")
+        oCommand.Parameters.Add("@shipping_phone", SqlDbType.NVarChar, 50).Value = drShipping("shipping_phone")
+        oCommand.Parameters.Add("@shipping_fax", SqlDbType.NVarChar, 50).Value = drShipping("shipping_fax")
+        oCommand.Parameters.Add("@order_id", SqlDbType.Int).Value = nOrderId
+        oCommand.Connection = oConn
+        oCommand.ExecuteNonQuery()
+        oCommand.Dispose()
+        oConn.Close()
+        oConn = Nothing
+    End Sub
+    
+    
+    '*** PAY HERE ***
+    Protected Sub btnPayHere_Click(ByVal sender As Object, ByVal e As System.EventArgs)
+        Dim nOrderId As Integer
+        nOrderId = SaveOrder("PAYPAL")
+        If bUseShipping Then
+            SaveShipping(nOrderId)
+        End If
+        
+        Response.Redirect(GetPaypalPaymentUrl(nOrderId))
+    End Sub
+    
+    
+    '*** Cash On Delivery ***
+    Protected Sub btnCashOnDelivery_Click(ByVal sender As Object, ByVal e As System.EventArgs)
+        Dim nOrderId As Integer
+        nOrderId = SaveOrder("CASH_ON_DELIVERY")
+        If bUseShipping Then
+            SaveShipping(nOrderId)
+        End If
+        
+        SendCashOnDeliveryConfirmation(nOrderId)
+
+        Session("cart") = Nothing 'Empty shopping cart
+        Wizard1.ActiveStepIndex = 4
+    End Sub
+    
+    Protected Sub SendCashOnDeliveryConfirmation(ByVal nOrderId As Integer)
+        Dim oCommand As SqlCommand
+        Dim oDataReader As SqlDataReader
+        
+        Dim nShipping As Decimal
+        Dim nTax As Decimal
+        Dim dtOrderDate As DateTime
+        Dim sOrderBy As String = ""
+        Dim sWebsiteUrl As String = Request.Url.AbsoluteUri.Replace(Request.Url.PathAndQuery, "")
+                
+        '*** order ***
+        oCommand = New SqlCommand("SELECT * FROM orders WHERE order_id=@order_id")
+        oCommand.CommandType = CommandType.Text
+        oCommand.Parameters.Add("@order_id", SqlDbType.Int).Value = nOrderId
+        oConn.Open()
+        oCommand.Connection = oConn
+        oDataReader = oCommand.ExecuteReader
+        Dim sShipping As String = ""
+        If oDataReader.Read Then
+            dtOrderDate = oDataReader("order_date")
+            sOrderBy = oDataReader("order_by").ToString
+            nShipping = oDataReader("shipping")
+            nTax = oDataReader("tax")
+            dtOrderDate = Convert.ToDateTime(oDataReader("order_date")) '6/2/2007 9:58:01 AM
+            
+            nShipping = oDataReader("shipping")
+            nTax = oDataReader("tax")
+            
+            If Not IsDBNull(oDataReader("shipping_first_name")) Then
+                bUseShipping = True
+                sShipping = "<div>" & oDataReader("shipping_first_name").ToString & " " & oDataReader("shipping_last_name").ToString & "</div>" & _
+                    "<div>" & oDataReader("shipping_company").ToString & "</div>" & _
+                    "<div>" & oDataReader("shipping_address").ToString & "</div>" & _
+                    "<div>" & oDataReader("shipping_city").ToString & "</div>" & _
+                    "<div>" & oDataReader("shipping_state").ToString & "</div>" & _
+                    "<div>" & oDataReader("shipping_country").ToString & "</div>" & _
+                    "<div>" & oDataReader("shipping_zip").ToString & "</div>" & _
+                    "<div>Ph." & oDataReader("shipping_phone").ToString & "</div>"
+                If Not oDataReader("shipping_fax").ToString = "" Then
+                    sShipping += "<div>Mobile." & oDataReader("shipping_fax").ToString & "</div>"
+                End If
+            Else
+                bUseShipping = False
+            End If
+        End If
+        oDataReader.Close()
+        oCommand.Dispose()
+        oConn.Close()
+        
+        '*** order items ***
+        oCommand = New SqlCommand("SELECT * FROM order_items where order_id=@order_id")
+        oCommand.CommandType = CommandType.Text
+        oCommand.Parameters.Add("@order_id", SqlDbType.Int).Value = nOrderId
+        oConn.Open()
+        oCommand.Connection = oConn
+        oDataReader = oCommand.ExecuteReader
+        Dim sOrderDetail As String = "<table style=""margin-bottom:15px;width:100%;"">"
+        Dim nSubTotal As Decimal = 0
+        While oDataReader.Read()
+            sOrderDetail += "<tr>" & _
+                "<td style=""width:100%"">" & oDataReader("item_desc").ToString & "</td>" & _
+                "<td style=""text-align:right"">" & oDataReader("qty").ToString & "</td>" & _
+                "<td style=""padding-left:30px;text-align:right"">" & sCurrencySymbol & FormatNumber(Convert.ToDecimal(oDataReader("price")), 2) & "</td>" & _
+                "</tr>"
+            nSubTotal += Convert.ToInt32(oDataReader("qty")) * Convert.ToDecimal(oDataReader("price"))
+        End While
+        If nShipping <> 0 Or nTax <> 0 Then
+            sOrderDetail += "<tr><td colspan=""2"" style=""text-align:right"">Subtotal:&nbsp;</td>" & _
+                "<td style=""text-align:right"">" & sCurrencySymbol & FormatNumber(nSubTotal, 2) & "</td></tr>"
+        End If
+        If nShipping <> 0 Then
+            sOrderDetail += "<tr><td colspan=""2"" style=""text-align:right"">Postage and Packing:&nbsp;</td>" & _
+                "<td style=""text-align:right"">" & sCurrencySymbol & FormatNumber(nShipping, 2) & "</td></tr>"
+        End If
+        If nTax <> 0 Then
+            sOrderDetail += "<tr><td colspan=""2"" style=""text-align:right"">Tax:&nbsp;</td>" & _
+             "<td style=""text-align:right"">" & sCurrencySymbol & FormatNumber(nTax, 2) & "</td></tr>"
+        End If
+        sOrderDetail += "<tr><td colspan=""2"" style=""text-align:right"">Total:&nbsp;</td>" & _
+        "<td style=""text-align:right"">" & sCurrencySymbol & FormatNumber(nSubTotal + nShipping + nTax, 2) & "</td></tr>" & _
+        "</table>"
+        oDataReader.Close()
+        oConn.Close()
+        
+        '*** Send Email to Admin ***   
+        Dim user As MembershipUser = Membership.GetUser(sOrderBy)
+        Dim sUserEmail As String = user.Email
+        Dim sEmailTemplate As String = "<html><head><title>Incoming Order</title>" & _
+            "<style>td{font-family:Verdana;font-size:11px}</style></head>" & _
+            "<body style=""font-family:Verdana;font-size:11px"">" & _
+            "<p>Incoming Order by " & sOrderBy & " (" & sUserEmail & ")</p>" & _
+            "<p>Order ID: [%ORDER_ID%]</p>" & _
+            "<p>Order Items:</p>" & _
+            "<p>[%ORDER_DETAIL%]</p>" & _
+            "<p>Ship to:</p>" & _
+            "<p>[%SHIP_TO%]</p>" & _
+            "<p>Sincerely,<br>Support<br><a href=""[%WEBSITE_URL%]"">[%WEBSITE_URL%]</a></p></body></html>"
+        Dim sBody As String = sEmailTemplate
+        sBody = sBody.Replace("[%ORDER_ID%]", nOrderId.ToString)
+        sBody = sBody.Replace("[%ORDER_DATE%]", dtOrderDate.AddHours(Me.TimeOffset).ToString)
+        sBody = sBody.Replace("[%ORDER_DETAIL%]", sOrderDetail)
+        sBody = sBody.Replace("[%SHIP_TO%]", sShipping)
+        sBody = sBody.Replace("[%WEBSITE_URL%]", sWebsiteUrl)
+        Dim mailToShopAdmin As String() = New String() {sPaypalEmail} 'Use Paypal Email Account
+        If Not SendMail(mailToShopAdmin, "Incoming Order #" & nOrderId & " (Cash On Delivery)", sBody, True) Then
+            'Mailing Failed...
+            'Exit Sub
+        End If
+        
+        '*** Send "Order Confirmation" to Customer (bukan "Thank You For Your Order" email) ***         
+        sBody = sCODOrderConfirmTemplate
+        sBody = sBody.Replace("[%ORDER_ID%]", nOrderId.ToString)
+        sBody = sBody.Replace("[%ORDER_DATE%]", dtOrderDate.AddHours(Me.TimeOffset).ToString)
+        sBody = sBody.Replace("[%ORDER_DETAIL%]", sOrderDetail)
+        sBody = sBody.Replace("[%SHIP_TO%]", sShipping)
+        sBody = sBody.Replace("[%WEBSITE_URL%]", sWebsiteUrl)
+        Dim mailToCustomer As String() = New String() {sUserEmail}
+        If Not SendMail(mailToCustomer, "Your Order #" & nOrderId & " (Cash On Delivery)", sBody, True) Then
+            'Mailing Failed...
+            'Exit Sub
+        End If
+        
+        oCommand.Dispose()
+        oConn = Nothing
+    End Sub
+
+    Protected Sub Login1_Authenticate(ByVal sender As Object, ByVal e As System.Web.UI.WebControls.AuthenticateEventArgs)
+        If Login1.UserName.Contains("@") Then
+            Dim sUserName As String
+            sUserName = Membership.GetUserNameByEmail(Login1.UserName)
+            If Not IsNothing(sUserName) Then
+                If Membership.ValidateUser(sUserName, Login1.Password) Then
+                    Login1.UserName = sUserName
+                    e.Authenticated = True
+                Else
+                    e.Authenticated = False
+                End If
+            Else
+                e.Authenticated = False
+            End If
+        Else
+            If Membership.ValidateUser(Login1.UserName, Login1.Password) Then
+                e.Authenticated = True
+            Else
+                e.Authenticated = False
+            End If
+        End If
+    End Sub
 </script>
 
-<asp:Wizard ID="Wizard1" StartNextButtonText="PROCEED TO CHECKOUT" meta:resourcekey="Wizard1" DisplaySideBar="false" runat="server" OnNextButtonClick="Wizard1_NextButtonClick">
+<asp:Wizard ID="Wizard1" StartNextButtonText="PROCEED TO CHECKOUT" meta:resourcekey="Wizard1" Width="100%" DisplaySideBar="false" runat="server" OnNextButtonClick="Wizard1_NextButtonClick">
     <WizardSteps>
         <asp:WizardStep ID="WizardStep1" runat="server" Title="Step 1">
             <p><asp:HyperLink ID="lnkContinue" meta:resourcekey="lnkContinue" runat="server"></asp:HyperLink></p>
@@ -881,7 +1176,7 @@
         </asp:WizardStep>  
               
         <asp:WizardStep ID="WizardStep2" runat="server" Title="Step 2">
-            <asp:Panel ID="panelLogin" runat="server">   
+            <asp:Panel ID="panelLogin" DefaultButton="Login1$LoginButton" runat="server">   
             <p>
                 <asp:Literal ID="litYouMustLogin" meta:resourcekey="litYouMustLogin" runat="server"></asp:Literal>
             </p>
@@ -889,7 +1184,7 @@
                 <asp:Label ID="lblLoginHere" meta:resourcekey="lblLoginHere" Font-Bold="true" runat="server" Text="Label"></asp:Label>
             </p>         
             <asp:Login ID="Login1" meta:resourcekey="Login1" Orientation="Horizontal" TitleText="" PasswordRecoveryText="Password Recovery"
-             DisplayRememberMe="false" LoginButtonText=" Login " runat="server" OnLoggedIn="Login1_LoggedIn">
+             DisplayRememberMe="false" LoginButtonText=" Login " runat="server" OnLoggedIn="Login1_LoggedIn" OnAuthenticate="Login1_Authenticate">
             </asp:Login>
             </asp:Panel>
             
@@ -926,30 +1221,34 @@
 
             <table cellpadding="3">
             <tr>
-                <td colspan="2" style="font-weight:bold;background:#cccccc;padding:5px;">
+                <td colspan="2" style="font-weight:bold;background:#d6d7d8;padding:10px;padding-left:5px">
                     <asp:Label ID="lblShippingInfo" meta:resourcekey="lblShippingInfo" runat="server" Text="Shipping Information"></asp:Label>
                 </td>
             </tr>
             <tr>
-                <td>
-                    <asp:Label ID="lblFirstName" meta:resourcekey="lblFirstName" runat="server" Text="First Name" Font-Size="XX-Small"></asp:Label><br />
-                    <asp:TextBox ID="txtShippingFirstName" Width="180px" runat="server"></asp:TextBox>
+                <td colspan="2" style="padding-top:10px">
+                    <asp:Label ID="lblFirstName" Visible=false meta:resourcekey="lblFirstName" runat="server" Text="First Name" Font-Size="XX-Small"></asp:Label>
+                    <asp:Label ID="lblFullName" meta:resourcekey="lblFullName" runat="server" Text="Full Name" Font-Size="XX-Small"></asp:Label><br />
+                    <asp:TextBox ID="txtShippingFirstName" Width="330px" runat="server"></asp:TextBox>
                     <asp:RequiredFieldValidator ID="rfv1" ControlToValidate="txtShippingFirstName" runat="server" ErrorMessage="*"></asp:RequiredFieldValidator>
                 </td>
-                <td>
+            </tr>
+            <tr style="display:none">
+                <td colspan="2">
                     <asp:Label ID="lblLastName" meta:resourcekey="lblLastName" runat="server" Text="Last Name" Font-Size="XX-Small"></asp:Label><br />
                     <asp:TextBox ID="txtShippingLastName" Width="180px" runat="server"></asp:TextBox>
-                    <asp:RequiredFieldValidator ID="rfv2" ControlToValidate="txtShippingLastName" runat="server" ErrorMessage="*"></asp:RequiredFieldValidator>
                 </td>
             </tr>
             <tr>
-                <td>
+                <td colspan="2">
                     <asp:Label ID="lblCompany" meta:resourcekey="lblCompany" runat="server" Text="Company (optional)" Font-Size="XX-Small"></asp:Label><br />
-                    <asp:TextBox ID="txtShippingCompany" Width="180px" runat="server"></asp:TextBox>
+                    <asp:TextBox ID="txtShippingCompany" Width="330px" runat="server"></asp:TextBox>
                 </td>
-                <td>
+            </tr>
+            <tr>
+                <td colspan="2">
                     <asp:Label ID="lblAddress" meta:resourcekey="lblAddress" runat="server" Text="Address" Font-Size="XX-Small"></asp:Label><br />
-                    <asp:TextBox ID="txtShippingAddress" Width="180px" runat="server"></asp:TextBox>
+                    <asp:TextBox ID="txtShippingAddress" Width="330px" runat="server"></asp:TextBox>
                     <asp:RequiredFieldValidator ID="rfv3" ControlToValidate="txtShippingAddress" runat="server" ErrorMessage="*"></asp:RequiredFieldValidator>
                 </td>
             </tr>
@@ -1247,12 +1546,13 @@
                     <asp:RequiredFieldValidator ID="rfv6" ControlToValidate="txtShippingPhone" runat="server" ErrorMessage="*"></asp:RequiredFieldValidator>
                 </td>
                 <td>
-                    <asp:Label ID="lblFax" meta:resourcekey="lblFax" runat="server" Text="Fax (optional)" Font-Size="XX-Small"></asp:Label><br />
+                    <asp:Label Visible="false" ID="lblFax" meta:resourcekey="lblFax" runat="server" Text="Fax (optional)" Font-Size="XX-Small"></asp:Label>
+                    <asp:Label ID="lblMobile" meta:resourcekey="lblMobile" runat="server" Text="lblMobile (optional)" Font-Size="XX-Small"></asp:Label><br />
                     <asp:TextBox ID="txtShippingFax" Width="180px" runat="server"></asp:TextBox>
                 </td>
             </tr>
             <tr>
-                <td colspan="2" style="text-align:right">
+                <td colspan="2" style="text-align:right;padding-top:10px">
                     <asp:Button ID="btnSaveAndReview" meta:resourcekey="btnSaveAndReview" runat="server" Text=" SAVE & REVIEW ORDER " OnClick="btnSaveAndReview_Click" />
                 </td>
             </tr>
@@ -1274,7 +1574,7 @@
             </Columns>
             </asp:GridView> 
             <hr />
-            <table cellpadding="7" width="100%">
+            <table cellpadding="7" style="width:100%">
             <tr id="idSubTotal" runat="server">
                 <td style="width:100%;text-align:right">
                 <asp:Label ID="lblSubtotalLabel2" meta:resourcekey="lblSubtotalLabel" runat="server" Font-Bold="true" Text="Subtotal"></asp:Label>
@@ -1307,7 +1607,7 @@
                 <asp:Label ID="lblTotalLabel" meta:resourcekey="lblTotalLabel" runat="server" Font-Bold="true" Text="Total"></asp:Label>
                 </td>
                 <td>:&nbsp;</td>
-                <td>            
+                <td style="text-align:right">                
                 <asp:Label ID="lblTotal" runat="server" Font-Bold="true" Text=""></asp:Label>
                 </td>
             </tr>
@@ -1329,34 +1629,35 @@
                 </div>
                 </td>
             </tr>
-            <tr>
+            <tr id="idChoosePayment" runat="server">
                 <td colspan="3">
                 <asp:Label ID="lblBillingInfo" meta:resourcekey="lblBillingInfo" runat="server" Font-Bold=true Text="Billing Information"></asp:Label>
                 <br />
-                <asp:Literal ID="litWeUsePaypal" meta:resourcekey="litWeUsePaypal" Text="We use Paypal to process credit card payment. Please click below to proceed:" runat="server"></asp:Literal>
+                <asp:Label ID="lblChoosePayment" meta:resourcekey="lblChoosePayment" runat="server" Text="Please choose your preferred payment method:"></asp:Label>
                 </td>
             </tr>
-            <tr>
+            <tr id="idPaypal" runat="server">
                 <td colspan="3" style="text-align:right">
+                    <asp:Label ID="lblCCPaypal" meta:resourcekey="lblCCPaypal" runat="server" Text="Credit Card Payment using PayPal:"></asp:Label>
                     <asp:Button ID="btnPayHere" meta:resourcekey="btnPayHere" runat="server" Text=" Pay Here " OnClick="btnPayHere_Click" />
                 </td>
             </tr>
+            <tr id="idCashOnDelivery" runat="server">
+                <td colspan="3" style="text-align:right">                    
+                    <asp:Label ID="lblCashOnDelivery" meta:resourcekey="lblCashOnDelivery" runat="server" Text="Cash On Delivery:"></asp:Label>
+                    <asp:Button ID="btnCashOnDelivery" meta:resourcekey="btnCashOnDelivery" runat="server" Text=" Cash On Delivery " OnClick="btnCashOnDelivery_Click" />
+                </td>
+            </tr>
             </table>
-            <script language="javascript" type="text/javascript">
-            function clientValidateTerms(source, arguments) 
-                {
-                var chkAcceptTerms=document.getElementById("<%=chkAcceptTerms.clientId%>");
-                if (chkAcceptTerms) 
-                    {
-                    if(!chkAcceptTerms.checked) 
-                        {
-                        arguments.IsValid=false;
-                        return;   
-                        }
-                    }
-                arguments.IsValid=true;    
-                }      
-            </script>
+        </asp:WizardStep>
+        <asp:WizardStep ID="WizardStep5" runat="server" AllowReturn="false" StepType="Finish" Title="">
+            <p>
+                <asp:Label ID="lblThankYou" meta:resourcekey="lblThankYou" Font-Bold="true" runat="server" Text="Thank you for your order!"></asp:Label>
+            </p>
+            <p>
+                <asp:Label ID="lblYourOrder" meta:resourcekey="lblYourOrder" runat="server" Text="Your order is currently being processed."></asp:Label>
+            </p>
+            <asp:HyperLink ID="lnkBack" meta:resourcekey="lnkBack" Text="Back to Home Page" runat="server"></asp:HyperLink>
         </asp:WizardStep>
     </WizardSteps>
 
@@ -1375,3 +1676,20 @@
 <asp:Label ID="lblCartEmpty" meta:resourcekey="lblCartEmpty" Font-Bold="true" runat="server" Text="Shopping Cart Empty."></asp:Label>
 </p>
 </asp:Panel>
+
+<script language="javascript" type="text/javascript">
+function clientValidateTerms(source, arguments) 
+    {
+    var chkAcceptTerms=document.getElementById("<%=chkAcceptTerms.clientId%>");
+    if (chkAcceptTerms) 
+        {
+        if(!chkAcceptTerms.checked) 
+            {
+            alert('<%=getlocalresourceobject("PleaseCheckTerms")%>')
+            arguments.IsValid=false;
+            return;   
+            }
+        }
+    arguments.IsValid=true;    
+    }      
+</script>

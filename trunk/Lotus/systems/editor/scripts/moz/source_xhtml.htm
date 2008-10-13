@@ -19,7 +19,7 @@ var sBodyHeader;
 var sBodyFooter;
 var sBodyTag;
 
-function init() 
+function init()
   {
   var idSource = document.getElementById("idSource").contentWindow;
   var doc = idSource.document;
@@ -65,7 +65,7 @@ function bodyOnLoad()
   //XHTML inside BODY tag
   var sBodyContent=recur(oEditor.document.body,"");
   //var sBodyContent= oEditor.document.body.innerHTML;
-  
+
   if(sBodyContent.substr(0,4)=="<br>")sBodyContent=sBodyContent.substr(4);//remove <br> if it is added by lineBreak2()
 
   var idSource = document.getElementById("idSource").contentWindow;
@@ -90,7 +90,7 @@ function bodyOnLoad()
   idSource.document.designMode="on";
   idSource.focus();
   }
-  
+
 function doKeyPress(evt)
   {
   /*
@@ -117,9 +117,9 @@ function doKeyPress(evt)
 function doUpdate()
   {
   window.opener.oUtil.obj.saveForUndo();
-  
+
   var obj = window.opener.oUtil.obj;
-  
+
   var oEditor=window.opener.oUtil.oEditor;
 
   var idSource = document.getElementById("idSource").contentWindow;
@@ -149,22 +149,22 @@ function doUpdate()
 function lineBreak2(tag) //[0]<TAG>[1]text[2]</TAG>
   {
   arrReturn = ["<br>","",""];
-  if( tag=="A"||tag=="B"||tag=="CITE"||tag=="CODE"||tag=="EM"|| 
+  if( tag=="A"||tag=="B"||tag=="CITE"||tag=="CODE"||tag=="EM"||
     tag=="FONT"||tag=="I"||tag=="SMALL"||tag=="STRIKE"||tag=="BIG"||
     tag=="STRONG"||tag=="SUB"||tag=="SUP"||tag=="U"||tag=="SAMP"||
-    tag=="S"||tag=="VAR"||tag=="BASEFONT"||tag=="KBD"||tag=="TT"||tag=="SPAN") 
+    tag=="S"||tag=="VAR"||tag=="BASEFONT"||tag=="KBD"||tag=="TT"||tag=="SPAN")
     arrReturn=["","",""];
 
-  if( tag=="TEXTAREA"||tag=="TABLE"||tag=="THEAD"||tag=="TBODY"|| 
-    tag=="TR"||tag=="OL"||tag=="UL"||tag=="DIR"||tag=="MENU"|| 
-    tag=="FORM"||tag=="SELECT"||tag=="MAP"||tag=="DL"||tag=="HEAD"|| 
-    tag=="BODY"||tag=="HTML") 
+  if( tag=="TEXTAREA"||tag=="TABLE"||tag=="THEAD"||tag=="TBODY"||
+    tag=="TR"||tag=="OL"||tag=="UL"||tag=="DIR"||tag=="MENU"||
+    tag=="FORM"||tag=="SELECT"||tag=="MAP"||tag=="DL"||tag=="HEAD"||
+    tag=="BODY"||tag=="HTML")
     arrReturn=["<br>","","<br>"];
 
   if( tag=="STYLE"||tag=="SCRIPT")
     arrReturn=["<br>","",""];
 
-  if(tag=="BR"||tag=="HR") 
+  if(tag=="BR"||tag=="HR")
     arrReturn=["","<br>",""];
 
   return arrReturn;
@@ -194,13 +194,15 @@ function recur(oEl,sTab)
   for(var i=0;i<oEl.childNodes.length;i++)
     {
     var oNode=oEl.childNodes[i];
-    
+
     if(oNode.parentNode!=oEl)continue;
-    
+
     if(oNode.nodeType==1)//tag
       {
       var sTagName = oNode.nodeName;
-      
+
+      if(sTagName=="BR" && oNode.className=="innova") continue;
+
       var bDoNotProcess=false;
       if(sTagName.substring(0,1)=="/")
         {
@@ -210,7 +212,7 @@ function recur(oEl,sTab)
         {
         /*** tabs ***/
         var sT= sTab;
-        sHTML+= lineBreak2(sTagName)[0];  
+        sHTML+= lineBreak2(sTagName)[0];
         if(lineBreak2(sTagName)[0] !="") sHTML+= sT;//If new line, use base Tabs
         /************/
         }
@@ -220,43 +222,43 @@ function recur(oEl,sTab)
         ;//do not process
         }
       else if(sTagName=="OBJECT" || sTagName=="EMBED")
-        {   
+        {
         s=window.opener.getOuterHTML(oNode);
 
-        s=s.replace(/\"[^\"]*\"/ig,function(x){           
+        s=s.replace(/\"[^\"]*\"/ig,function(x){
             x=x.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/'/g, "&apos;").replace(/\s+/ig,"#_#").replace(/&amp;amp;/gi,"&amp;");
             return x});
-        s=s.replace(/<([^ >]*)/ig,function(x){return x.toLowerCase()})  
+        s=s.replace(/<([^ >]*)/ig,function(x){return x.toLowerCase()})
         s=s.replace(/ ([^=]+)=([^"' >]+)/ig," $1=\"$2\"");//new
-        
+
         s=s.replace(/ ([^=]+)=/ig,function(x){return x.toLowerCase()});
         s=s.replace(/#_#/ig," ");
-  
+
         s=s.replace(/<param([^>]*)>/ig,"\n<param$1 />").replace(/\/ \/>$/ig," \/>");//no closing tag
-        
+
         if(sTagName=="EMBED")
           if(oNode.innerHTML=="")
             s=s.replace(/>$/ig," \/>").replace(/\/ \/>$/ig,"\/>");//no closing tag
-        
+
         s=s.replace(/<param name=\"Play\" value=\"0\" \/>/,"<param name=\"Play\" value=\"-1\" \/>")
-        
+
         //sSelThis="";//selThis
-        //if(oElement==oNode)sSelThis=" selThis='selThis'"        
-        
+        //if(oElement==oNode)sSelThis=" selThis='selThis'"
+
         /*** format ***/ //selThis
         sHTML+="<span style='color:#555555;background:#f7f7f7'><xmp style='font-family:tahoma;margin-top:0px;margin-bottom:0px;'>"+s+"</xmp></span>";
-        
+
         /**************/
         }
       else if(sTagName=="TITLE")
         {
         //s="<title>"+oNode.innerHTML+"</title>";
 
-        /*** format ***/      
+        /*** format ***/
         sHTML+="<font color='#0000cc'>&lt;<\/font><font color='#8b4513'>title</font>"+
           "<font color='#0000cc'>&gt;<\/font>" + oNode.innerHTML +
           "<font color='#0000cc'>&lt;/</font><font color='#8b4513'>title</font>"+
-          "<font color='#0000cc'>&gt;</font>";        
+          "<font color='#0000cc'>&gt;</font>";
         /**************/
         }
       else
@@ -267,24 +269,24 @@ function recur(oEl,sTab)
           var sShape=oNode.shape;
           }
 
-        var oNode2=oNode.cloneNode(false);       
+        var oNode2=oNode.cloneNode(false);
         s=window.opener.getOuterHTML(oNode2).replace(/<\/[^>]*>/,"");
-        
+
         if(sTagName=="STYLE")
           {
           var arrTmp=s.match(/<[^>]*>/ig);
           s=arrTmp[0];
-          }       
+          }
 
         s=s.replace(/\"[^\"]*\"/ig,function(x){
             //x=x.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/'/g, "&apos;").replace(/\s+/ig,"#_#");
             x=x.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/\s+/ig,"#_#");
             return x});
-        s=s.replace(/<([^ >]*)/ig,function(x){return x.toLowerCase()})            
+        s=s.replace(/<([^ >]*)/ig,function(x){return x.toLowerCase()})
         s=s.replace(/ ([^=]+)=([^" >]+)/ig," $1=\"$2\"");
         s=s.replace(/ ([^=]+)=/ig,function(x){return x.toLowerCase()});
         s=s.replace(/#_#/ig," ");
-    
+
         //single attribute
         s=s.replace(/(<hr[^>]*)(noshade="")/ig,"$1noshade=\"noshade\"");
         s=s.replace(/(<input[^>]*)(checked="")/ig,"$1checked=\"checked\"");
@@ -294,7 +296,7 @@ function recur(oEl,sTab)
         s=s.replace(/(<input[^>]*)(disabled="")/ig,"$1disabled=\"disabled\"");
         s=s.replace(/(<td[^>]*)(nowrap="" )/ig,"$1nowrap=\"nowrap\" ");
         s=s.replace(/(<td[^>]*)(nowrap=""\>)/ig,"$1nowrap=\"nowrap\"\>");
-   
+
         s=s.replace(/ contenteditable=\"true\"/ig,"");
 
         if(sTagName=="AREA")
@@ -302,39 +304,39 @@ function recur(oEl,sTab)
           s=s.replace(/ coords=\"0,0,0,0\"/ig," coords=\""+sCoords+"\"");
           s=s.replace(/ shape=\"RECT\"/ig," shape=\""+sShape+"\"");
           }
-    
+
         var bClosingTag=true;
         if(sTagName=="IMG"||sTagName=="BR"||
-          sTagName=="AREA"||sTagName=="HR"|| 
+          sTagName=="AREA"||sTagName=="HR"||
           sTagName=="INPUT"||sTagName=="BASE"||
           sTagName=="LINK"||sTagName=="META")//no closing tag
           {
           s=s.replace(/>$/ig," \/>").replace(/\/ \/>$/ig,"\/>");//no closing tag
-          bClosingTag=false;      
+          bClosingTag=false;
           }
 
         //sSelThis="";//selThis
         //if(oElement==oNode)sSelThis=" selThis='selThis'"
-          
+
         /*** format ***/  //selThis
         //sA1="<span"+sSelThis+"><font color='#0000cc'>&lt;<\/font><font color='#8b4513'>"
         sA1="<span><font color='#0000cc'>&lt;<\/font><font color='#8b4513'>"
         sA2="<\/font>"
-        sA3="<font color='#0000cc'>&gt;<\/font>"    
-        sA4="<font color='#0000cc'>/&gt;<\/font>"       
+        sA3="<font color='#0000cc'>&gt;<\/font>"
+        sA4="<font color='#0000cc'>/&gt;<\/font>"
         s=s.replace(/<([^ >]*)([^ \/>]*)/ig,sA1+"$1"+sA2+"$2");
         //s=s.replace(/\/>$/ig,sA4);//if there is no closing tag
         s=s.replace(/>$/ig,sA3);
         /**************/
 
-        sHTML+=s; 
+        sHTML+=s;
         if(!bClosingTag)sHTML+="</span>";//selThis
-            
+
         /*** tabs ***/
         if(sTagName!="TEXTAREA")sHTML+= lineBreak2(sTagName)[1];
         if(sTagName!="TEXTAREA")if(lineBreak2(sTagName)[1] !="") sHTML+= sT;//If new line, use base Tabs
-        /************/  
-          
+        /************/
+
         if(bClosingTag)
           {
           /*** CONTENT ***/
@@ -346,28 +348,28 @@ function recur(oEl,sTab)
             s = s.replace(/<script([^>]*)>\/\/<!\[CDATA\[/ig,"");
             s = s.replace(/\/\/\]\]><\/script>/ig,"");
             s = s.replace(/<script([^>]*)>/ig,"");
-            s = s.replace(/<\/script>/ig,"");         
-            s = s.replace(/^\s+/,'').replace(/\s+$/,'');            
+            s = s.replace(/<\/script>/ig,"");
+            s = s.replace(/^\s+/,'').replace(/\s+$/,'');
             /*** format ***/
             sHTML+="<div><span style='color:#828282;'>//&lt;![CDATA[<xmp style='font-family:tahoma;margin-top:0px;margin-bottom:0px;'>"+s+"</xmp>//]]&gt;</span></div>";
             /**************/
             }
           if(sTagName=="STYLE")
-            {       
+            {
             s = s.replace(/<style([^>]*)>[\n+\s+\t+]*/ig,"<style$1>");//clean spaces
-            s = s.replace(/[\n+\s+\t+]*<\/style>/ig,"<\/style>");//clean spaces         
+            s = s.replace(/[\n+\s+\t+]*<\/style>/ig,"<\/style>");//clean spaces
             s = s.replace(/<style([^>]*)><!--/ig,"");
             s = s.replace(/--><\/style>/ig,"");
             s = s.replace(/<style([^>]*)>/ig,"");
-            s = s.replace(/<\/style>/ig,"");          
-            s = s.replace(/^\s+/,"").replace(/\s+$/,"");      
+            s = s.replace(/<\/style>/ig,"");
+            s = s.replace(/^\s+/,"").replace(/\s+$/,"");
             /*** format ***/
             sHTML+="<div><span style='color:#828282;'>&lt;!--<xmp style='font-family:tahoma;margin-top:0px;margin-bottom:0px;'>"+s+"</xmp>--&gt;</span></div>";
             /**************/
             }
           if(sTagName=="DIV"||sTagName=="P")
             {
-            if(oNode.innerHTML==""||oNode.innerHTML=="&nbsp;") 
+            if(oNode.innerHTML==""||oNode.innerHTML=="&nbsp;")
               {
               sHTML+="&amp;nbsp;";
               }
@@ -380,23 +382,23 @@ function recur(oEl,sTab)
             }
           else
             {
-            sHTML+=recur(oNode,sT+"&nbsp;&nbsp;");  
-            }         
-              
+            sHTML+=recur(oNode,sT+"&nbsp;&nbsp;");
+            }
+
           /*** tabs ***/
           if(sTagName!="TEXTAREA")sHTML+= lineBreak2(sTagName)[2];
           if(sTagName!="TEXTAREA")if(lineBreak2(sTagName)[2] !="") sHTML+= sT;//If new line, use base Tabs
           /************/
-              
+
           /*** format ***/ //selThis
           sHTML+="<font color='#0000cc'>&lt;/</font><font color='#8b4513'>" + sTagName.toLowerCase() + "</font><font color='#0000cc'>&gt;</font></span>";
           /**************/
-          }     
-        }     
+          }
+        }
       }
     else if(oNode.nodeType==3)//text
       {
-      sHTML+= fixVal(oNode.nodeValue);  
+      sHTML+= fixVal(oNode.nodeValue);
       }
     else if(oNode.nodeType==8)
       {
@@ -422,7 +424,7 @@ function recur(oEl,sTab)
     }
   return sHTML;
   }
-  
+
 function doWrap()
     {
     var inpWrap = document.getElementById("inpWrap");
@@ -436,7 +438,7 @@ function doWrap()
         idSource.document.body.style.whiteSpace="nowrap";
         }
     }
-    
+
 //*******************
 function setupToolbar()
   {
@@ -446,19 +448,19 @@ function setupToolbar()
   tb.iconPath="../"+obj.iconPath;
   tb.btnWidth=obj.iconWidth;
   tb.btnHeight=obj.iconHeight;
-  
+
   //tb.addButton("btnCut","btnCut.gif",getTxt("Cut"));
   //tb.addButton("btnCopy","btnCopy.gif",getTxt("Copy"));
   //tb.addButton("btnPaste","btnPaste.gif",getTxt("Paste"));
-  //tb.addSeparator();  
+  //tb.addSeparator();
   tb.addButton("btnUndo","btnUndo.gif",getTxt("Uedo"));
   tb.addButton("btnRedo","btnRedo.gif",getTxt("Redo"));
-  tb.addSeparator();  
+  tb.addSeparator();
   tb.addButton("btnSearch","btnSearch.gif",getTxt("Search"));
-  idToolbar.innerHTML=tb.render();
+  document.getElementById("idToolbar").innerHTML=tb.render();
   }
-  
-function tbAction(tb, id) 
+
+function tbAction(tb, id)
   {
   switch(id)
     {
@@ -469,7 +471,7 @@ function tbAction(tb, id)
     case "btnRedo": doCmd('Redo'); break;
     case "btnSearch": modelessDialogShow('search2.htm',375,163); break;
     }
-  
+
   }
 //*******************
 function modelessDialogShow(url,width,height)
@@ -478,7 +480,7 @@ function modelessDialogShow(url,width,height)
     var top = screen.availHeight/2 - height/2;
     window.open(url, "", "dependent=yes,width="+width+"px,height="+height+",left="+left+",top="+top);
     }
-  
+
 </script>
 </head>
 <body onload="setupToolbar();loadTxt();init();bodyOnLoad();" style="overflow:hidden;margin:0;background: #f4f4f4;">

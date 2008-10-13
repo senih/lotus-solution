@@ -3,10 +3,15 @@
 <%@ Import Namespace="System.Web.Security.Membership"%>
 <%@ Import Namespace="System.Threading" %>
 <%@ Import Namespace="System.Globalization" %>
+<%@ Import Namespace="System.Data" %>
+<%@ Import Namespace="System.Data.sqlClient " %>
 
 <script runat="server">
+    Private sConn As String = ConfigurationManager.ConnectionStrings("SiteConnectionString").ConnectionString.ToString()
+    Private oConn As New SqlConnection(sConn)
     Private intPageId As Integer
-
+    Private nTimeOffset As Double = 0
+    
     Protected Sub RedirectForLogin()
         If IsNothing(GetUser) Then
             Response.Write("Session Expired.")
@@ -19,6 +24,38 @@
                 Response.End()
             End If
         End If
+    End Sub
+    
+    
+    Protected Sub Page_Init(ByVal sender As Object, ByVal e As System.EventArgs)
+        intPageId = CInt(Request.QueryString("pg"))
+        
+        Dim sSQL As String
+        Dim oConn As SqlConnection
+        Dim oCommand As SqlCommand
+        Dim oDataReader As SqlDataReader
+        
+        oConn = New SqlConnection(sConn)
+        oConn.Open()
+        
+        Dim nRootId As Integer
+        sSQL = "SELECT * FROM pages_working where page_id=" & intPageId
+        oCommand = New SqlCommand(sSQL, oConn)
+        oDataReader = oCommand.ExecuteReader()
+        If oDataReader.Read() Then
+            nRootId = oDataReader("root_id")
+        End If
+        oDataReader.Close()
+        
+        sSQL = "SELECT locales.time_offset FROM pages_working INNER JOIN locales ON pages_working.file_name = locales.home_page WHERE pages_working.root_id=" & nRootId
+        oCommand = New SqlCommand(sSQL, oConn)
+        oDataReader = oCommand.ExecuteReader()
+        If oDataReader.Read() Then
+            nTimeOffset = oDataReader("time_offset")
+        End If
+        oDataReader.Close()
+        oConn.Close()
+        oConn = Nothing
     End Sub
 
     Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
@@ -39,24 +76,31 @@
         btnSave.Text = GetLocalResourceObject("btnSave.Text")
         
         intPageId = CInt(Request.QueryString("pg"))
-
+        
         If Not Page.IsPostBack Then
             Dim contentLatest As CMSContent
             Dim oContentManager As ContentManager = New ContentManager
             contentLatest = oContentManager.GetLatestVersion(intPageId)
             Dim nullDate As DateTime = Nothing
+
+            Dim dStart As Date
+            Dim dStop As Date
             If (Not contentLatest.PublishStart.Equals(nullDate)) Then
-                calStart.SelectedDate = contentLatest.PublishStart
+                dStart = contentLatest.PublishStart.AddHours(nTimeOffset)
+                calStart.SelectedDate = New Date(dStart.Year, dStart.Month, dStart.Day)
                 rdoStartSpecified.Checked = True
             Else
-                calStart.SelectedDate = DateTime.Today
+                dStart = DateTime.Today.AddHours(nTimeOffset)
+                calStart.SelectedDate = New Date(dStart.Year, dStart.Month, dStart.Day)
                 rdoStartImmediately.Checked = True
             End If
             If (Not contentLatest.PublishEnd.Equals(nullDate)) Then
-                calStop.SelectedDate = contentLatest.PublishEnd
+                dStop = contentLatest.PublishEnd.AddHours(nTimeOffset)
+                calStop.SelectedDate = New Date(dStop.Year, dStop.Month, dStop.Day)
                 rdoStopSpecified.Checked = True
             Else
-                calStop.SelectedDate = DateTime.Today
+                dStop = DateTime.Today.AddHours(nTimeOffset)
+                calStop.SelectedDate = New Date(dStop.Year, dStop.Month, dStop.Day)
                 rdoStopNever.Checked = True
             End If
 
@@ -86,12 +130,12 @@
         If rdoStartImmediately.Checked Then
             publishStart = Nothing
         ElseIf rdoStartSpecified.Checked Then
-            publishStart = calStart.SelectedDate
+            publishStart = calStart.SelectedDate.AddHours(-nTimeOffset)
         End If
         If rdoStopNever.Checked Then
             publishEnd = Nothing
         ElseIf rdoStopSpecified.Checked Then
-            publishEnd = calStop.SelectedDate
+            publishEnd = calStop.SelectedDate.AddHours(-nTimeOffset)
         End If
         oContentManager.SetPublishingDate(intPageId, contentLatest.Version, publishStart, publishEnd)
 
@@ -100,6 +144,7 @@
 
         lblSaveStatus.Text = GetLocalResourceObject("DataUpdated")
     End Sub
+
 </script>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
@@ -172,7 +217,7 @@
 <tr>
 <td align=right style="padding:10px;padding-right:15px">  
     <asp:Label ID="lblSaveStatus" runat="server" Text="" Font-Bold=true></asp:Label>
-    <asp:Button ID="btnClose" meta:resourcekey="btnClose" runat="server" OnClientClick="self.close()" Text=" Close " />
+    <asp:Button ID="btnClose" meta:resourcekey="btnClose" runat="server" OnClientClick="parent.icCloseDlg();return false;" Text=" Close " />
     <asp:Button ID="btnSave" meta:resourcekey="btnSave" runat="server" Text="  Save  " />
 </td>
 </tr>

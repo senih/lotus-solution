@@ -138,9 +138,6 @@
   <data name="CreateUserWizard.ContinueButtonText" xml:space="preserve">
     <value>Continue</value>
   </data>
-  <data name="CreateUserWizard.CreateUserButtonText" xml:space="preserve">
-    <value>Create User</value>
-  </data>
   <data name="CreateUserWizard.DuplicateEmailErrorMessage" xml:space="preserve">
     <value>The e-mail address that you entered is already in use. Please enter a different e-mail address.</value>
   </data>
@@ -154,7 +151,7 @@
     <value>Password:</value>
   </data>
   <data name="CreateUserWizard.UserNameLabelText" xml:space="preserve">
-    <value>User Name:</value>
+    <value>Username:</value>
   </data>
   <data name="CreateUserWizardStep.title" xml:space="preserve">
     <value>Sign Up for Your New Account</value>
@@ -169,7 +166,7 @@
     <value>Sign Up for Your New Account</value>
   </data>
   <data name="lblUserName.text" xml:space="preserve">
-    <value>User Name:</value>
+    <value>Username:</value>
   </data>
   <data name="PleaseCheckEmail" xml:space="preserve">
     <value>Please check your email to confirm your registration.</value>
@@ -194,5 +191,17 @@
   </data>
   <data name="UserAlreadyActivated" xml:space="preserve">
     <value>User is already activated.</value>
+  </data>
+  <data name="CreateUserWizard.CreateUserButtonText" xml:space="preserve">
+    <value>   Create My Account   </value>
+  </data>
+  <data name="lblSubscribe.text" xml:space="preserve">
+    <value>Subscribe to our Newsletters</value>
+  </data>
+  <data name="lblSubscribeDesc.text" xml:space="preserve">
+    <value>Join our Newsletter! And get update right to your inbox!</value>
+  </data>
+  <data name="lblUsernameValidateInfo.text" xml:space="preserve">
+    <value>(Must be at least 4 characters, letters and numbers only)</value>
   </data>
 </root>

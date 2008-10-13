@@ -112,6 +112,7 @@ namespace Services
 				case "ddList":
 				DropDownList ddList = new DropDownList();
 				ddList.ID = id;
+				ddList.Width = width;
 				foreach (form_field_value value in listOfValues)
 				{
 					ListItem item = new ListItem(value.display_value, value.display_value);
@@ -227,7 +228,11 @@ namespace Services
 				break;
 
 				case "addressCtrl":
-				;
+				DropDownList city = new DropDownList();
+				DropDownList region = new DropDownList();
+				city.ID = "cityCtrl";
+				region.ID = "regionCtrl";
+
 				break;
 
 				case "header":

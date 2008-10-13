@@ -573,9 +573,6 @@
   <data name="litNewsletters.text" xml:space="preserve">
     <value>Create and manage email newsletters.</value>
   </data>
-  <data name="litOrderBy.text" xml:space="preserve">
-    <value>Order By: </value>
-  </data>
   <data name="litPageInfo.text" xml:space="preserve">
     <value>Page Info</value>
   </data>
@@ -607,7 +604,7 @@
     <value>Account</value>
   </data>
   <data name="lnkAdditionalContent.text" xml:space="preserve">
-    <value>Zustzlicher Inhalt</value>
+    <value>Side Content</value>
   </data>
   <data name="lnkAddNewBottom.text" xml:space="preserve">
     <value>Add New</value>
@@ -740,7 +737,7 @@
     <value>   Anmelden   </value>
   </data>
   <data name="Login_PasswordLabelText" xml:space="preserve">
-    <value>Kennwort:</value>
+    <value>Kennwort: </value>
   </data>
   <data name="Login_PasswordRecoveryText" xml:space="preserve">
     <value>Kennwortwiederherstellung</value>
@@ -749,7 +746,7 @@
     <value>Kennwort speichern.</value>
   </data>
   <data name="Login_UserNameLabelText" xml:space="preserve">
-    <value>Benutzername:</value>
+    <value>Email / Benutzername: </value>
   </data>
   <data name="Login1.FailureText" xml:space="preserve">
     <value>Ihre Anmeldung ist fehlgeschlagen. Bitte versuchen Sie es erneut.</value>
@@ -758,7 +755,7 @@
     <value>   Anmelden   </value>
   </data>
   <data name="Login1.PasswordLabelText" xml:space="preserve">
-    <value>Kennwort:</value>
+    <value>Kennwort: </value>
   </data>
   <data name="Login1.PasswordRecoveryText" xml:space="preserve">
     <value>Kennwortwiederherstellung</value>
@@ -767,7 +764,7 @@
     <value>Kennwort speichern.</value>
   </data>
   <data name="Login1.UserNameLabelText" xml:space="preserve">
-    <value>Benutzername:</value>
+    <value>Email / Benutzername: </value>
   </data>
   <data name="LoginLinkText" xml:space="preserve">
     <value>Anmelden</value>
@@ -958,18 +955,6 @@
   <data name="Password Recovery" xml:space="preserve">
     <value>Kennwortwiederherstellung</value>
     <comment>Title</comment>
-  </data>
-  <data name="pgDataListFirst.text" xml:space="preserve">
-    <value>First</value>
-  </data>
-  <data name="pgDataListLast.text" xml:space="preserve">
-    <value>Last</value>
-  </data>
-  <data name="pgDataListNext.text" xml:space="preserve">
-    <value>Next</value>
-  </data>
-  <data name="pgDataListPrevious.text" xml:space="preserve">
-    <value>Prev</value>
   </data>
   <data name="Poll Info" xml:space="preserve">
     <value>Answers</value>
@@ -1171,10 +1156,21 @@
   <data name="optActualSize.text" xml:space="preserve">
     <value>Actual Size</value>
   </data>
-  <data name="litClickAddNewLink.text" xml:space="preserve">
-    <value>Click &lt;b&gt;Add New&lt;/b&gt; link to add a new entry (page).</value>
+  <data name="NewPageMenuHere" xml:space="preserve">
+    <value>New Page Menu Here</value>
   </data>
-  <data name="litListingEmpty.text" xml:space="preserve">
-    <value>Listing Empty</value>
+  <data name="Add Newsletter" xml:space="preserve">
+    <value>Add Newsletter</value>
+    <comment>Title</comment>
+  </data>
+  <data name="Edit Newsletter" xml:space="preserve">
+    <value>Edit Newsletter</value>
+    <comment>Title</comment>
+  </data>
+  <data name="online" xml:space="preserve">
+    <value>online</value>
+  </data>
+  <data name="PageVisibilityInfo" xml:space="preserve">
+    <value>This page is hidden.</value>
   </data>
 </root>

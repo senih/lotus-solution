@@ -59,7 +59,7 @@
     <div id="footer">
         <asp:ContentPlaceHolder ID="placeholderCountrySelect" runat="server"></asp:ContentPlaceHolder>
         <asp:ContentPlaceHolder ID="placeholderBottomMenu" runat="server"></asp:ContentPlaceHolder>&nbsp;&nbsp;|&nbsp;&nbsp;
-        <a href="login.aspx?ReturnUrl=services.aspx">Login</a>&nbsp;&nbsp;|&nbsp;&nbsp; © 2008 Lotus Transport
+        <asp:ContentPlaceHolder ID="placeholderLoginLogout" runat="server"></asp:ContentPlaceHolder>&nbsp;&nbsp;|&nbsp;&nbsp; © 2008 Lotus Transport
     </div>
 
 			

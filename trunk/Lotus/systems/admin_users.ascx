@@ -12,11 +12,13 @@
     Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
         If IsNothing(GetUser) Then
             panelLogin.Visible = True
-            panelLogin.FindControl("Login1").Focus()
+            Dim oUC1 As Control = LoadControl("login.ascx")
+            panelLogin.Controls.Add(oUC1)
+            panelUsers.Visible = False
         Else
             If Roles.IsUserInRole(GetUser.UserName.ToString(), "Administrators") Then
                 CreateUserWizard1.Visible = True
-                DataUser.Visible = True
+                panelUsers.Visible = True
                 If Not IsPostBack Then
                     Users.DataSource = Membership.GetAllUsers(0, 100, Membership.GetAllUsers.Count)
                     Users.DataBind()
@@ -38,9 +40,22 @@
     End Sub
 
     Protected Sub Users_RowDeleting(ByVal sender As Object, ByVal e As System.Web.UI.WebControls.GridViewDeleteEventArgs) Handles Users.RowDeleting
-        If Not Me.IsUserLoggedIn Then Exit Sub
+        If Not Me.IsUserLoggedIn Then Response.Redirect(HttpContext.Current.Items("_path"))
 
         Dim sSelectedUserName As String = Server.HtmlDecode(Users.Rows(e.RowIndex).Cells(0).Text)
+        
+        Dim oCmd As SqlCommand
+        oConn.Open()
+    
+        oCmd = New SqlCommand
+        oCmd.Connection = oConn
+        oCmd.CommandText = "DELETE newsletters_subscribers WHERE email= @email"
+        oCmd.Parameters.Add("email", SqlDbType.NVarChar).Value = Membership.GetUser(sSelectedUserName).Email
+        oCmd.CommandType = CommandType.Text
+        oCmd.ExecuteNonQuery()
+        oCmd.Dispose()
+        oConn.Close()
+        
         Membership.DeleteUser(sSelectedUserName)
         Users.DataSource = Membership.GetAllUsers()
         Users.DataBind()
@@ -51,6 +66,21 @@
         Users.PageIndex = iIndex
         If Not txtName.Text = "" Then
             btnSearch_Click(Nothing, Nothing)
+        ElseIf hidByRole.Value = 1 Then
+            Dim sqlDS1 As SqlDataSource = New SqlDataSource
+            sqlDS1.ConnectionString = sconn
+
+            Dim sRole As String = dropUserRoles.SelectedValue
+        
+            sqlDS1.SelectCommand = "SELECT aspnet_Membership.UserId, aspnet_Users.UserName, aspnet_Membership.Email, aspnet_Membership.IsApproved " & _
+                "FROM aspnet_UsersInRoles INNER JOIN " & _
+                "aspnet_Roles ON aspnet_UsersInRoles.RoleId = aspnet_Roles.RoleId INNER JOIN " & _
+                "aspnet_Membership ON aspnet_UsersInRoles.UserId = aspnet_Membership.UserId INNER JOIN " & _
+                "aspnet_Users ON aspnet_UsersInRoles.UserId = aspnet_Users.UserId AND aspnet_Membership.UserId = aspnet_Users.UserId INNER JOIN " & _
+                "(SELECT ApplicationId FROM aspnet_Applications WHERE (LoweredApplicationName = '" & ApplicationName & "')) AS app ON app.ApplicationId = aspnet_Membership.ApplicationId " & _
+                "WHERE (aspnet_Roles.RoleName = N'" & sRole & "')"
+
+            Users.DataSource = sqlDS1
         Else
             Users.DataSource = Membership.GetAllUsers()
         End If
@@ -58,7 +88,7 @@
     End Sub
 
     Protected Sub Users_PageIndexChanged(ByVal sender As Object, ByVal e As System.EventArgs)
-        Users.PageIndex = iIndex
+        'Users.PageIndex = iIndex
     End Sub
 
     Protected Sub Users_SelectedIndexChanged(ByVal sender As Object, ByVal e As System.EventArgs) Handles Users.SelectedIndexChanged
@@ -67,13 +97,15 @@
     End Sub
 
     Protected Sub btnSearch_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles btnSearch.Click
-        If Not Me.IsUserLoggedIn Then Exit Sub
+        If Not Me.IsUserLoggedIn Then Response.Redirect(HttpContext.Current.Items("_path"))
 
+        hidByRole.Value = 0
+        
         Dim sqlDS1 As SqlDataSource = New SqlDataSource
         sqlDS1.ConnectionString = sconn
 
         If dropSearchUser.SelectedValue = "Name" Then
-            Dim sUserName As String = txtName.Text.ToLower
+            Dim sUserName As String = Replace(txtName.Text.ToLower, "'", "''")
             sqlDS1.SelectCommand = "select aspnet_Membership.*,users.UserName from aspnet_Membership Inner Join (" & _
               " select * from aspnet_Users" & _
               " where aspnet_Users.LoweredUserName like '%" & sUserName & "%' or aspnet_Users.LoweredUserName like '%" & sUserName & "' or aspnet_Users.LoweredUserName like '" & sUserName & "%' or aspnet_Users.LoweredUserName like '" & sUserName & "'" & _
@@ -82,7 +114,7 @@
             Users.DataSource = sqlDS1
             Users.DataBind()
         Else
-            Dim sEmail As String = txtName.Text.ToLower
+            Dim sEmail As String = Replace(txtName.Text.ToLower, "'", "''")
             sqlDS1.SelectCommand = "select users.*,aspnet_Users.UserName from aspnet_Users Inner Join (" & _
               " select * from aspnet_Membership" & _
               " where aspnet_Membership.LoweredEmail like '%" & sEmail & "%' or aspnet_Membership.LoweredEmail like '%" & sEmail & "' or aspnet_Membership.LoweredEmail like '" & sEmail & "%' or aspnet_Membership.LoweredEmail like '" & sEmail & "'" & _
@@ -99,8 +131,10 @@
     End Sub
  
     Protected Sub btnListAllUsers_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles btnListAllUsers.Click
-        If Not Me.IsUserLoggedIn Then Exit Sub
+        If Not Me.IsUserLoggedIn Then Response.Redirect(HttpContext.Current.Items("_path"))
 
+        hidByRole.Value = 0
+        
         txtName.Text = ""
 
         Users.DataSource = Membership.GetAllUsers()
@@ -152,21 +186,25 @@
         lsbRoles.Visible = False
     End Sub
 
-    Protected Sub Login1_LoggedIn(ByVal sender As Object, ByVal e As System.EventArgs)
-        Response.Redirect(HttpContext.Current.Items("_path"))
-    End Sub
-
-    Protected Sub Login1_PreRender(ByVal sender As Object, ByVal e As System.EventArgs)
-        Login1.PasswordRecoveryUrl = "~/" & Me.LinkPassword & "?ReturnUrl=" & HttpContext.Current.Items("_path")
-    End Sub
-
     Protected Sub CreateUserWizard1_CreatingUser(ByVal sender As Object, ByVal e As System.Web.UI.WebControls.LoginCancelEventArgs)
         If Not Me.IsUserLoggedIn Then Response.Redirect(HttpContext.Current.Items("_path"))
     End Sub
-
+    
+    Protected Sub CreateUserWizard1_CreateUserError(ByVal sender As Object, ByVal e As System.Web.UI.WebControls.CreateUserErrorEventArgs)
+        Dim lblError As Label = CreateUserWizardStep1.CustomNavigationTemplateContainer.FindControl("lblError")
+        If e.CreateUserError.ToString = "DuplicateUserName" Then
+            lblError.Text = GetLocalResourceObject("DuplicateUserName")
+        End If
+        If e.CreateUserError.ToString = "DuplicateEmail" Then
+            lblError.Text = GetLocalResourceObject("DuplicateEmail")
+        End If
+    End Sub
+    
     Protected Sub btnShowUsersInRole_Click(ByVal sender As Object, ByVal e As System.EventArgs)
-        If Not Me.IsUserLoggedIn Then Exit Sub
+        If Not Me.IsUserLoggedIn Then Response.Redirect(HttpContext.Current.Items("_path"))
 
+        hidByRole.Value = 1
+        
         Dim sqlDS1 As SqlDataSource = New SqlDataSource
         sqlDS1.ConnectionString = sconn
 
@@ -188,26 +226,12 @@
             lblSearchStatus.Text = ""
         End If
     End Sub
-
-    Protected Sub CreateUserWizard1_CreateUserError(ByVal sender As Object, ByVal e As System.Web.UI.WebControls.CreateUserErrorEventArgs)
-        Dim lblError As Label = CreateUserWizardStep1.CustomNavigationTemplateContainer.FindControl("lblError")
-        If e.CreateUserError.ToString = "DuplicateUserName" Then
-            lblError.Text = GetLocalResourceObject("DuplicateUserName")
-        End If
-        If e.CreateUserError.ToString = "DuplicateEmail" Then
-            lblError.Text = GetLocalResourceObject("DuplicateEmail")
-        End If
-    End Sub
 </script>
 
 <asp:Panel ID="panelLogin" runat="server" Visible="False">
-    <asp:Login ID="Login1" meta:resourcekey="Login1" runat="server"  PasswordRecoveryText="Password Recovery" TitleText="" OnLoggedIn="Login1_LoggedIn" OnPreRender="Login1_PreRender">
-        <LabelStyle HorizontalAlign="Left" Wrap="False" />
-    </asp:Login>
-    <br />
 </asp:Panel>
 
-<asp:Panel ID="DataUser" runat="server" Visible="false">
+<asp:Panel ID="panelUsers" runat="server" Visible="false">
 
 <table cellpadding="0" cellspacing="0">
 <tr>
@@ -253,6 +277,7 @@
     </tr>
     </table>
     <br />
+    <asp:HiddenField ID="hidByRole" Value="0" runat="server" />
     <asp:GridView ID="Users" GridLines=None Width="100%" AlternatingRowStyle-BackColor="#f6f7f8" HeaderStyle-BackColor="#d6d7d8"  CellPadding=7 HeaderStyle-HorizontalAlign=Left runat="server" DataKeyNames="UserName" AllowPaging="True" AutoGenerateColumns="False" AllowSorting="False" OnPreRender="Users_PreRender" OnPageIndexChanged="Users_PageIndexChanged">
             <Columns>
                 <asp:BoundField meta:resourcekey="lblUserName" DataField="UserName" HeaderText="User Name" SortExpression="UserName" HeaderStyle-Wrap="False" />

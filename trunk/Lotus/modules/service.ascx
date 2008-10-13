@@ -1,5 +1,6 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" CodeFile="service.ascx.cs" Inherits="modules_service" %>
-
+<asp:ScriptManager ID="ScriptManager1" runat="server">
+</asp:ScriptManager>
 <asp:Panel ID="AnonymousPanel" runat="server" Visible="false">
     
     <table style="width:728px;">
@@ -38,6 +39,8 @@
 </table>
 </asp:Panel>
 
+<asp:UpdatePanel ID="UpdatePanel1" runat="server">
+<ContentTemplate>
 <asp:Panel ID="AdministrationPanel" runat="server" Visible="false">
     <div class="admin_panel">
         <div class="admin_menu">
@@ -422,3 +425,5 @@
     </div>
     </asp:Panel>
 </asp:Panel>
+</ContentTemplate>
+</asp:UpdatePanel>

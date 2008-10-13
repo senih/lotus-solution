@@ -129,21 +129,6 @@
   <data name="Expiration Date" xml:space="preserve">
     <value>Udløbs dato</value>
   </data>
-  <data name="Login1.LoginButtonText" xml:space="preserve">
-    <value>Login</value>
-  </data>
-  <data name="Login1.PasswordLabelText" xml:space="preserve">
-    <value>Password:</value>
-  </data>
-  <data name="Login1.PasswordRecoveryText" xml:space="preserve">
-    <value>Password genoprettelse</value>
-  </data>
-  <data name="Login1.RememberMeText" xml:space="preserve">
-    <value>Husk mig næste gang.</value>
-  </data>
-  <data name="Login1.UserNameLabelText" xml:space="preserve">
-    <value>Bruger navn:</value>
-  </data>
   <data name="Min Purchase" xml:space="preserve">
     <value>Mit indkøb</value>
   </data>

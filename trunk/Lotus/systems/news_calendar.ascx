@@ -10,6 +10,7 @@
     Private nMonth As Integer
     Private nDay As Integer
     Private dt As DataTable
+    Private bUseSQLOptimize As Boolean = False
     
     Private bIsEntry As Boolean = False
     Public Property IsEntry() As Boolean
@@ -49,11 +50,25 @@
     Protected Sub calBlog_VisibleMonthChanged(ByVal sender As Object, ByVal e As System.Web.UI.WebControls.MonthChangedEventArgs)
         nYear = calBlog.VisibleDate.Year
         nMonth = calBlog.VisibleDate.Month
+        Dim nRecCount As Integer
         Dim oContent As Content = New Content
+        
+        If ConfigurationManager.AppSettings("SQLOptimize") = "yes" Then
+            bUseSQLOptimize = True
+        End If
+        
         If bIsEntry Then
-            dt = oContent.GetPagesWithin(Me.ParentID, 0, 4, Nothing, False, nYear, nMonth)
+            If bUseSQLOptimize Then
+                dt = oContent.GetPagesWithin2005(Me.ParentID, 0, 1000, nRecCount, 4, Nothing, nYear, nMonth)
+            Else
+                dt = oContent.GetPagesWithin(Me.ParentID, 0, 4, Nothing, False, nYear, nMonth)
+            End If
         Else
-            dt = oContent.GetPagesWithin(Me.PageID, 0, 4, Nothing, False, nYear, nMonth)
+            If bUseSQLOptimize Then
+                dt = oContent.GetPagesWithin2005(Me.PageID, 0, 1000, nRecCount, 4, Nothing, nYear, nMonth)
+            Else
+                dt = oContent.GetPagesWithin(Me.PageID, 0, 4, Nothing, False, nYear, nMonth)
+            End If
         End If
        
         oContent = Nothing
@@ -98,14 +113,32 @@
             calBlog.SelectedDates.Clear()
         End If
         
+        
+        If ConfigurationManager.AppSettings("SQLOptimize") = "yes" Then
+            bUseSQLOptimize = True
+        End If
+        
         '~~~ Get data (to specify selectable dates) ~~~        
         calBlog.VisibleDate = New Date(nYear, nMonth, 1)
+        Dim nRecCount As Integer
         If bIsEntry Then
-            dt = oContent.GetPagesWithin(Me.ParentID, 0, 4, _
-                Nothing, False, nYear, nMonth) 'Get all posts on the visible month.
+            'Get all posts on the visible month.  
+            If bUseSQLOptimize Then
+                dt = oContent.GetPagesWithin2005(Me.ParentID, 0, 1000, nRecCount, 4, _
+                   Nothing, nYear, nMonth)
+            Else
+                dt = oContent.GetPagesWithin(Me.ParentID, 0, 4, _
+                    Nothing, False, nYear, nMonth)
+            End If
         Else
-            dt = oContent.GetPagesWithin(Me.PageID, 0, 4, _
-                Nothing, False, nYear, nMonth) 'Get all posts on the visible month.       
+            'Get all posts on the visible month. 
+            If bUseSQLOptimize Then
+                dt = oContent.GetPagesWithin2005(Me.PageID, 0, 1000, nRecCount, 4, _
+                    Nothing, nYear, nMonth)
+            Else
+                dt = oContent.GetPagesWithin(Me.PageID, 0, 4, _
+                    Nothing, False, nYear, nMonth)
+            End If
         End If
 
         oContent = Nothing
@@ -119,7 +152,7 @@
         Dim dr As DataRow
         Dim dtDay As DateTime
         For Each dr In dt.Rows
-            dtDay = (CType(dr(5), DateTime))
+            dtDay = (CType(dr(5), DateTime).AddHours(Me.TimeOffset))
             If (e.Day.Date = dtDay.Date) And (e.Day.Date <> calBlog.SelectedDate) Then
                 e.Day.IsSelectable = True
             End If

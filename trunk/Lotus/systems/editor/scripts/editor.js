@@ -1,6 +1,6 @@
 /***********************************************************
-InnovaStudio .NET WYSIWYG Editor 1.0
-© 2008, InnovaStudio (www.innovastudio.com). All rights reserved.
+InnovaStudio.NET WYSIWYG Editor 1.0
+© 2008, InnovasSudio.net. All rights reserved.
 ************************************************************/
 
 var UA = navigator.userAgent.toLowerCase();
@@ -779,6 +779,7 @@ function initISEditor() {
     {
     this.loadHTML(this.preloadHTML)
     }
+  this.focus();
 }
 
 function buildToolbar(tb, oEdt, btnMap) {
@@ -3654,6 +3655,7 @@ function fullScreen()
     eval("idArea"+this.oName).style.position="absolute";
     eval("idArea"+this.oName).style.top=0;
     eval("idArea"+this.oName).style.left=0;
+    eval("idArea"+this.oName).style.zIndex=2000;
 
     var numOfBrk=0;
     for(var j=0;j<this.buttonMap.length;j++)if(this.buttonMap[j]=="BRK")numOfBrk++;
@@ -3708,6 +3710,7 @@ function fullScreen()
     ifrm.style.width=w;
     ifrm.style.height=h;
     ifrm.style.display="";
+    ifrm.style.zIndex = 1900;
 
     for(var i=0;i<oUtil.arrEditor.length;i++)
       {
@@ -3866,11 +3869,16 @@ function recur(oEl,sTab)
           var sShape=oNode.shape;
           }
 
-        var oNode2=oNode.cloneNode();
-        if (oNode.checked) oNode2.checked=oNode.checked;
-        if (oNode.selected) oNode2.selected=oNode.selected;
-        s=oNode2.outerHTML.replace(/<\/[^>]*>/,"");
-
+        if(sTagName=="BODY") {
+          var ht = oNode.outerHTML;
+          s=ht.substring(0, ht.indexOf(">")+1);
+        } else {
+          var oNode2=oNode.cloneNode();
+          if (oNode.checked) oNode2.checked=oNode.checked;
+          if (oNode.selected) oNode2.selected=oNode.selected;
+          s=oNode2.outerHTML.replace(/<\/[^>]*>/,"");
+        }
+        
         if(sTagName=="STYLE")
           {
           var arrTmp=s.match(/<[^>]*>/ig);

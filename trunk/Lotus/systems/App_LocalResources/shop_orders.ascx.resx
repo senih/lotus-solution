@@ -142,13 +142,13 @@
     <value>Shipment</value>
   </data>
   <data name="colStatus.HeaderText" xml:space="preserve">
-    <value>Status</value>
+    <value>Payment</value>
   </data>
   <data name="colTotal.HeaderText" xml:space="preserve">
     <value>Total</value>
   </data>
   <data name="Confirmed" xml:space="preserve">
-    <value>Confirmed</value>
+    <value>Waiting</value>
   </data>
   <data name="lblEmail.text" xml:space="preserve">
     <value>Email:</value>
@@ -174,35 +174,18 @@
   <data name="lblTo.text" xml:space="preserve">
     <value>To:</value>
   </data>
-  <data name="Login1.FailureText" xml:space="preserve">
-    <value>Your login attempt was not successful. Please try again.</value>
-  </data>
-  <data name="Login1.LoginButtonText" xml:space="preserve">
-    <value>Login</value>
-  </data>
-  <data name="Login1.PasswordLabelText" xml:space="preserve">
-    <value>Password:</value>
-  </data>
-  <data name="Login1.PasswordRecoveryText" xml:space="preserve">
-    <value>Password Recovery</value>
-  </data>
-  <data name="Login1.RememberMeText" xml:space="preserve">
-    <value>Remember me next time.</value>
-  </data>
-  <data name="Login1.UserNameLabelText" xml:space="preserve">
-    <value>User Name:</value>
-  </data>
   <data name="NotRequired" xml:space="preserve">
     <value>Not Required</value>
   </data>
   <data name="optConfirmed.text" xml:space="preserve">
     <value>Confirmed</value>
+    <comment>Not used</comment>
   </data>
   <data name="optVerified.text" xml:space="preserve">
-    <value>Verified</value>
+    <value>Completed</value>
   </data>
   <data name="optWaitingForPayment.text" xml:space="preserve">
-    <value>Waiting for payment</value>
+    <value>Waiting</value>
   </data>
   <data name="Shipped" xml:space="preserve">
     <value>Shipped</value>
@@ -217,12 +200,15 @@
     <value>(tax)</value>
   </data>
   <data name="Verified" xml:space="preserve">
-    <value>Verified</value>
+    <value>Completed</value>
   </data>
   <data name="Waiting" xml:space="preserve">
     <value>Waiting</value>
   </data>
   <data name="WaitingForPayment" xml:space="preserve">
-    <value>Waiting for payment</value>
+    <value>Waiting</value>
+  </data>
+  <data name="COD" xml:space="preserve">
+    <value>COD</value>
   </data>
 </root>

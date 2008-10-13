@@ -8,6 +8,16 @@ Public Class FormManager
     Private sConn As String
     Private oConn As SqlConnection
 
+    Private nTimeOffset As Double = 0
+    Public Property TimeOffset() As Double
+        Get
+            Return nTimeOffset
+        End Get
+        Set(ByVal value As Double)
+            nTimeOffset = value
+        End Set
+    End Property
+
     Public Function GetData(ByVal nPageId As Integer) As DataTable
         Dim oCmd As SqlCommand
         Dim reader As SqlDataReader
@@ -177,7 +187,7 @@ Public Class FormManager
                 End If
 
                 If Not IsDBNull(reader("submitted_date")) Then
-                    dt.Rows(n - 1).Item(arrFieldDefId.Count + 1) = CDate(reader("submitted_date"))
+                    dt.Rows(n - 1).Item(arrFieldDefId.Count + 1) = CDate(reader("submitted_date")).AddHours(nTimeOffset)
                 End If
 
             Loop

@@ -124,11 +124,11 @@
         txtAddContent.InternalLink = "page_links.aspx?c=" & sCulture & "&root=" & nRootId
 
         txtAddContent.CustomObjectWidth = 650
-        txtAddContent.CustomObjectHeight = 570
+        txtAddContent.CustomObjectHeight = 520
         txtAddContent.CustomObject = "page_resources.aspx?c=" & sCulture & "&pg=" & nPageId
         
         lnkInsertPageLinks.OnClientClick = "modalDialog('../dialogs/page_links.aspx?c=" & sCulture & "&root=" & nRootId & "',500,500);return false;"
-        lnkInsertResources.OnClientClick = "modalDialog('../dialogs/page_resources.aspx?c=" & sCulture & "&pg=" & nPageId & "',600,570);return false;"
+        lnkInsertResources.OnClientClick = "modalDialog('../dialogs/page_resources.aspx?c=" & sCulture & "&pg=" & nPageId & "',650,520);return false;"
 
         txtAddContent.CustomTags.Add(New InnovaStudio.Param("&nbsp;&nbsp;BREAK&nbsp;&nbsp;", "[%BREAK%]"))
 
@@ -282,8 +282,7 @@
         var left = screen.availWidth/2 - width/2;
         var top = screen.availHeight/2 - height/2;
         activeModalWin = window.open(url, "", "width="+width+"px,height="+height+",left="+left+",top="+top+",scrollbars=yes,resizable=yes");
-        window.onfocus = function(){if (activeModalWin.closed == false){activeModalWin.focus();};};
-        
+        window.onfocus = function(){if (activeModalWin.closed == false){activeModalWin.focus();};};        
         }
     function modalDialog(url,width,height)
 	    {
@@ -356,7 +355,7 @@
 <tr>
     <td colspan="2" align="right" style="padding:10px;padding-right:15px;">
         <asp:Label ID="lblSaveStatus" runat="server" Text="" Font-Bold="true"></asp:Label>
-        <asp:Button ID="btnClose" meta:resourcekey="btnClose" runat="server" OnClientClick="self.close()" Text=" Close " />
+        <asp:Button ID="btnClose" meta:resourcekey="btnClose" runat="server" OnClientClick="parent.icCloseDlg();return false;" Text=" Close " />
         <asp:Button ID="btnSave" meta:resourcekey="btnSave" runat="server" Text="  Save  " />        
     </td>
 </tr>

@@ -66,11 +66,14 @@
             End If
         Else
             panelLogin.Visible = True
+            Dim oUC1 As Control = LoadControl("login.ascx")
+            panelLogin.Controls.Add(oUC1)
+            PanelSettings.Visible = False
         End If
     End Sub
 
     Protected Sub btnSave_Click(ByVal sender As Object, ByVal e As System.EventArgs)
-        If Not Me.IsUserLoggedIn Then Exit Sub
+        If Not Me.IsUserLoggedIn Then Response.Redirect(HttpContext.Current.Items("_path"))
         Dim oSetting As RegistrationSetting = New RegistrationSetting
         oSetting.ConfirmationBody = txtConfirmationBody.Text
         oSetting.ConfirmationSubject = txtConfirmationSubject.Text
@@ -94,29 +97,11 @@
         'SAVE HERE
         oSetting = Nothing
 
-        'lblStatus.Text = GetLocalResourceObject("SavedSuccessfully")
-        Response.Redirect(HttpContext.Current.Items("_path"))
-    End Sub
-
-
-    Protected Sub btnCancel_Click(ByVal sender As Object, ByVal e As System.EventArgs)
-        Response.Redirect("~/" & Me.LinkAdmin)
-    End Sub
-
-    Protected Sub Login1_LoggedIn(ByVal sender As Object, ByVal e As System.EventArgs)
-        Response.Redirect(HttpContext.Current.Items("_path"))
-    End Sub
-
-    Protected Sub Login1_PreRender(ByVal sender As Object, ByVal e As System.EventArgs)
-        Login1.PasswordRecoveryUrl = "~/" & Me.LinkPassword & "?ReturnUrl=" & HttpContext.Current.Items("_path")
+        lblStatus.Text = GetLocalResourceObject("SavedSuccessfully")
     End Sub
 </script>
 
 <asp:Panel ID="panelLogin" runat="server" Visible="False">
-    <asp:Login ID="Login1" runat="server" meta:resourcekey="Login1" PasswordRecoveryText="Password Recovery" TitleText="" OnLoggedIn="Login1_LoggedIn" OnPreRender="Login1_PreRender">
-        <LabelStyle HorizontalAlign="Left" Wrap="False" />
-    </asp:Login>
-    <br />
 </asp:Panel>
 
 <asp:Panel ID="PanelSettings" runat="server" Visible="False">
@@ -192,7 +177,6 @@
     <td colspan="3">
     <div style="margin:7px"></div>
       <asp:Button ID="btnSave" runat="server" Text=" Save " meta:resourcekey="btnSave" OnClick="btnSave_Click" />
-        <asp:Button ID="btnCancel" runat="server" Text=" Cancel " meta:resourcekey="btnCancel" OnClick="btnCancel_Click" />
         <asp:Label ID="lblStatus" Font-Bold="true" runat="server" Text=""></asp:Label>
     </td>
     </tr>

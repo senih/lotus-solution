@@ -40,6 +40,8 @@
         Dim oConn As SqlConnection
         Dim oCommand As SqlCommand
         Dim oDataReader As SqlDataReader
+        
+        Dim nTimeOffset As Double = 0
 
         oConn = New SqlConnection(sConn)
         oConn.Open()
@@ -50,6 +52,7 @@
         sXML.WriteAttributeString("version", "2.0")
         sXML.WriteStartElement("channel")
 
+        Dim nRootId As Integer
         sSQL = "SELECT * FROM pages_published where channel_permission=1 AND page_id=" & nPageId ' & " and is_hidden=0"
         oCommand = New SqlCommand(sSQL, oConn)
         oDataReader = oCommand.ExecuteReader()
@@ -58,6 +61,15 @@
             sFileName = oDataReader("file_name").ToString
             sXML.WriteElementString("title", sTitle)
             sXML.WriteElementString("link", GetAppFullPath() & sFileName)
+            nRootId = oDataReader("root_id")
+        End If
+        oDataReader.Close()
+        
+        sSQL = "SELECT locales.time_offset FROM pages_working INNER JOIN locales ON pages_working.file_name = locales.home_page WHERE pages_working.root_id=" & nRootId
+        oCommand = New SqlCommand(sSQL, oConn)
+        oDataReader = oCommand.ExecuteReader()
+        If oDataReader.Read() Then
+            nTimeOffset = oDataReader("time_offset")
         End If
         oDataReader.Close()
 
@@ -84,7 +96,7 @@
                 sXML.WriteElementString("description", sSummary)
                 sXML.WriteElementString("content", sContentBody)
                 'sXML.WriteElementString("pubDate", FormatDateTime(dDisplayDate, DateFormat.ShortDate))
-                sXML.WriteElementString("pubDate", dDisplayDate.ToString("r"))
+                sXML.WriteElementString("pubDate", dDisplayDate.AddHours(nTimeOffset).ToString("r"))
                 sXML.WriteEndElement()
             End If
         End While

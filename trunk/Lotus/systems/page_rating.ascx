@@ -127,26 +127,33 @@
         oDataReader.Close()
 
         If bInsert Then
-            sSQL = "INSERT INTO page_ratings (page_id,rating,comment) VALUES (" & Me.PageID & "," & nRating & ",'" & Replace(txtComment.Text, "'", "''") & "')"
+            sSQL = "INSERT INTO page_ratings (page_id,rating,comment) VALUES (@page_id,@rating,@comment)"
             oCommand = New SqlCommand(sSQL, oConn)
+            oCommand.Parameters.Add("@page_id", SqlDbType.Int).Value = Me.PageID
+            oCommand.Parameters.Add("@rating", SqlDbType.Int).Value = nRating
+            oCommand.Parameters.Add("@comment", SqlDbType.NVarChar).Value = txtComment.Text
             oCommand.ExecuteNonQuery()
 
-            sSQL = "INSERT INTO page_rating_voters (page_id,ip) VALUES (" & Me.PageID & ",'" & sIP & "')"
+            sSQL = "INSERT INTO page_rating_voters (page_id,ip) VALUES (@page_id,@ip)"
             oCommand = New SqlCommand(sSQL, oConn)
+            oCommand.Parameters.Add("@page_id", SqlDbType.Int).Value = Me.PageID
+            oCommand.Parameters.Add("@ip", SqlDbType.NVarChar).Value = sIP
             oCommand.ExecuteNonQuery()
 
             sSQL = "SELECT * FROM page_rating_summary WHERE page_id=" & Me.PageID & " AND rating=" & nRating
             oCommand = New SqlCommand(sSQL, oConn)
             oDataReader = oCommand.ExecuteReader()
             If Not oDataReader.Read() Then
-                sSQL = "INSERT INTO page_rating_summary (page_id,rating, total) VALUES (" & Me.PageID & "," & nRating & ",1)"
+                sSQL = "INSERT INTO page_rating_summary (page_id,rating, total) VALUES (@page_id,@rating,1)"
             Else
                 nTotal = CInt(oDataReader("total"))
-                sSQL = "UPDATE page_rating_summary set total=" & (nTotal + 1) & " where page_id=" & Me.PageID & " and rating=" & nRating
+                sSQL = "UPDATE page_rating_summary set total=" & (nTotal + 1) & " where page_id=@page_id and rating=@rating"
             End If
             oDataReader.Close()
 
             oCommand = New SqlCommand(sSQL, oConn)
+            oCommand.Parameters.Add("@page_id", SqlDbType.Int).Value = Me.PageID
+            oCommand.Parameters.Add("@rating", SqlDbType.Int).Value = nRating
             oCommand.ExecuteNonQuery()
 
             lblSubmitStatus.Text = GetLocalResourceObject("ThankYou") '"Thank you for your feedback."
@@ -162,16 +169,8 @@
 
         panelRating.Visible = False
         Page.Master.FindControl("placeholderBody").FindControl("panelBody").Visible = False
-        
-        If Not IsNothing(Page.Master.FindControl("placeholderPublishingInfo")) Then
-            Page.Master.FindControl("placeholderPublishingInfo").Visible = False
-        End If
         Page.Master.FindControl("placeholderBodyTop").Visible = False
         Page.Master.FindControl("placeholderBodyBottom").Visible = False
-        Page.Master.FindControl("placeholderFileView").Visible = False
-        Page.Master.FindControl("placeholderFileDownload").Visible = False
-        Page.Master.FindControl("placeholderListing").Visible = False
-        Page.Master.FindControl("placeholderCategoryInfo").Visible = False
         'Page.Master.FindControl("placeholderContentRating").Visible = False
         Page.Master.FindControl("placeholderComments").Visible = False
         If Not IsNothing(Page.Master.FindControl("placeholderStatPageViews")) Then

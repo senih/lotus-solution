@@ -12,14 +12,19 @@ public partial class setup_address : System.Web.UI.Page
 	{
 		if (!IsPostBack)
 		{
-			DropDownList1.DataSource = Data.GetXmlElements(@"D:\webs\lotus-solution\Lotus\App_Data\CityRegion.xml");
+			string path = Server.MapPath("~/App_Data/") + "CityRegion.xml";
+			DropDownList1.DataSource = Data.GetXmlElements(path);
 			DropDownList1.DataBind();
 		}
 	}
 	protected void DropDownList1_SelectedIndexChanged(object sender, EventArgs e)
 	{
-		DropDownList2.Enabled = true;
-		DropDownList2.DataSource = Data.GetXmlChildElements(@"D:\webs\lotus-solution\Lotus\App_Data\CityRegion.xml", DropDownList1.SelectedItem.Text);
+		string path = Server.MapPath("~/App_Data/") + "CityRegion.xml";
+		if (DropDownList1.SelectedValue != "Please select city")
+			DropDownList2.Enabled = true;
+		else
+			DropDownList2.Enabled = false;
+		DropDownList2.DataSource = Data.GetXmlChildElements(path, DropDownList1.SelectedItem.Text);
 		DropDownList2.DataBind();
 	}
 }

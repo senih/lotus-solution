@@ -19,7 +19,9 @@ Public Class TemplateListing
 
     Private bIsReader As Boolean
 
-    Sub New(ByVal type As ListItemType, ByVal template As Integer, ByVal root As Integer, Optional ByVal bIsRdr As Boolean = True)
+    Private nTimeOffset As Double
+
+    Sub New(ByVal type As ListItemType, ByVal template As Integer, ByVal root As Integer, Optional ByVal bIsRdr As Boolean = True, Optional ByVal nTmOffs As Double = 0)
         oListItemType = type
         nListingTemplateId = template
         nRootId = root
@@ -27,6 +29,8 @@ Public Class TemplateListing
         oConn = New SqlConnection(sConn)
 
         bIsReader = bIsRdr
+
+        nTimeOffset = nTmOffs
 
         '*** Config Shop ***
         Dim oCmd As SqlCommand
@@ -108,6 +112,15 @@ Public Class TemplateListing
         Dim litText38 As New Literal
         Dim litText39 As New Literal
         Dim litText40 As New Literal
+        Dim litText41 As New Literal
+        Dim litText42 As New Literal
+        Dim litText43 As New Literal
+        Dim litText44 As New Literal
+        Dim litText45 As New Literal
+        Dim litText46 As New Literal
+        Dim litText47 As New Literal
+        Dim litText48 As New Literal
+        Dim litText49 As New Literal
         litText1.ID = "litText1"
         litText2.ID = "litText2"
         litText3.ID = "litText3"
@@ -148,7 +161,15 @@ Public Class TemplateListing
         litText38.ID = "litText38"
         litText39.ID = "litText39"
         litText40.ID = "litText40"
-
+        litText41.ID = "litText41"
+        litText42.ID = "litText42"
+        litText43.ID = "litText43"
+        litText44.ID = "litText44"
+        litText45.ID = "litText45"
+        litText46.ID = "litText46"
+        litText47.ID = "litText47"
+        litText48.ID = "litText48"
+        litText49.ID = "litText49"
 
         Dim sTemplate As String = ""
         Dim oCmd As SqlCommand
@@ -271,6 +292,24 @@ Public Class TemplateListing
                             ph.Controls.Add(litText39)
                         Case 40
                             ph.Controls.Add(litText40)
+                        Case 41
+                            ph.Controls.Add(litText41)
+                        Case 42
+                            ph.Controls.Add(litText42)
+                        Case 43
+                            ph.Controls.Add(litText43)
+                        Case 44
+                            ph.Controls.Add(litText44)
+                        Case 45
+                            ph.Controls.Add(litText45)
+                        Case 46
+                            ph.Controls.Add(litText46)
+                        Case 47
+                            ph.Controls.Add(litText47)
+                        Case 48
+                            ph.Controls.Add(litText48)
+                        Case 49
+                            ph.Controls.Add(litText49)
                     End Select
 
                     'sTmp = sTmp + sTemplate.Substring(nStart, nLen)
@@ -284,6 +323,12 @@ Public Class TemplateListing
                             oKey.Add("[%TITLE%]", nOrder)
                         Case "[%DISPLAY_DATE%]"
                             oKey.Add("[%DISPLAY_DATE%]", nOrder)
+                        Case "[%DISPLAY_DAY%]"
+                            oKey.Add("[%DISPLAY_DAY%]", nOrder)
+                        Case "[%DISPLAY_MONTH%]"
+                            oKey.Add("[%DISPLAY_MONTH%]", nOrder)
+                        Case "[%DISPLAY_YEAR%]"
+                            oKey.Add("[%DISPLAY_YEAR%]", nOrder)
                         Case "[%SUMMARY%]"
                             oKey.Add("[%SUMMARY%]", nOrder)
                         Case "[%FILE_DOWNLOAD%]"
@@ -304,8 +349,20 @@ Public Class TemplateListing
                             oKey.Add("[%LAST_UPDATED_BY%]", nOrder)
                         Case "[%FIRST_PUBLISHED_DATE%]"
                             oKey.Add("[%FIRST_PUBLISHED_DATE%]", nOrder)
+                        Case "[%FIRST_PUBLISHED_DAY%]"
+                            oKey.Add("[%FIRST_PUBLISHED_DAY%]", nOrder)
+                        Case "[%FIRST_PUBLISHED_MONTH%]"
+                            oKey.Add("[%FIRST_PUBLISHED_MONTH%]", nOrder)
+                        Case "[%FIRST_PUBLISHED_YEAR%]"
+                            oKey.Add("[%FIRST_PUBLISHED_YEAR%]", nOrder)
                         Case "[%LAST_UPDATED_DATE%]"
                             oKey.Add("[%LAST_UPDATED_DATE%]", nOrder)
+                        Case "[%LAST_UPDATED_DAY%]"
+                            oKey.Add("[%LAST_UPDATED_DAY%]", nOrder)
+                        Case "[%LAST_UPDATED_MONTH%]"
+                            oKey.Add("[%LAST_UPDATED_MONTH%]", nOrder)
+                        Case "[%LAST_UPDATED_YEAR%]"
+                            oKey.Add("[%LAST_UPDATED_YEAR%]", nOrder)
                         Case "[%TOTAL_HITS%]"
                             oKey.Add("[%TOTAL_HITS%]", nOrder)
                         Case "[%HITS_TODAY%]"
@@ -377,7 +434,7 @@ Public Class TemplateListing
         Dim ri As DataListItem = CType(ph.NamingContainer, DataListItem) 'Dim ri As GridViewRow = CType(ph.NamingContainer, GridViewRow)
 
         Dim i As Integer
-        For i = 1 To 15 'max 40
+        For i = 1 To 20 'max 49
             If Not IsNothing(ph.FindControl("litText" & i.ToString)) Then
                 Select Case oKey(i).ToString
                     Case "[%PAGE_ID%]"
@@ -393,6 +450,7 @@ Public Class TemplateListing
                     Case "[%DISPLAY_DATE%]"
                         Dim sTime As String
                         Dim dDisplayDate As DateTime = DataBinder.Eval(ri.DataItem, "display_date")
+                        dDisplayDate = dDisplayDate.AddHours(nTimeOffset)
                         If dDisplayDate.Hour = 0 And dDisplayDate.Minute = 0 Then
                             sTime = ""
                         Else
@@ -400,6 +458,18 @@ Public Class TemplateListing
                         End If
 
                         CType(ph.FindControl("litText" & i.ToString), Literal).Text = FormatDateTime(dDisplayDate, DateFormat.LongDate) & sTime
+                    Case "[%DISPLAY_DAY%]"
+                        Dim dDisplayDate As DateTime = DataBinder.Eval(ri.DataItem, "display_date")
+                        dDisplayDate = dDisplayDate.AddHours(nTimeOffset)
+                        CType(ph.FindControl("litText" & i.ToString), Literal).Text = dDisplayDate.Day
+                    Case "[%DISPLAY_MONTH%]"
+                        Dim dDisplayDate As DateTime = DataBinder.Eval(ri.DataItem, "display_date")
+                        dDisplayDate = dDisplayDate.AddHours(nTimeOffset)
+                        CType(ph.FindControl("litText" & i.ToString), Literal).Text = dDisplayDate.Month
+                    Case "[%DISPLAY_YEAR%]"
+                        Dim dDisplayDate As DateTime = DataBinder.Eval(ri.DataItem, "display_date")
+                        dDisplayDate = dDisplayDate.AddHours(nTimeOffset)
+                        CType(ph.FindControl("litText" & i.ToString), Literal).Text = dDisplayDate.Year
                     Case "[%SUMMARY%]"
                         CType(ph.FindControl("litText" & i.ToString), Literal).Text = Convert.ToString(DataBinder.Eval(ri.DataItem, "summary"))
                     Case "[%FILE_DOWNLOAD_URL%]"
@@ -438,12 +508,57 @@ Public Class TemplateListing
                         If IsDBNull(DataBinder.Eval(ri.DataItem, "first_published_date")) Then
                             CType(ph.FindControl("litText" & i.ToString), Literal).Text = ""
                         Else
-                            CType(ph.FindControl("litText" & i.ToString), Literal).Text = FormatDateTime(DataBinder.Eval(ri.DataItem, "first_published_date"), DateFormat.LongDate)
+                            Dim dPublishDate As DateTime = DataBinder.Eval(ri.DataItem, "first_published_date")
+                            dPublishDate = dPublishDate.AddHours(nTimeOffset)
+                            CType(ph.FindControl("litText" & i.ToString), Literal).Text = FormatDateTime(dPublishDate, DateFormat.LongDate)
                         End If
+
+                    Case "[%FIRST_PUBLISHED_DAY%]"
+                        If IsDBNull(DataBinder.Eval(ri.DataItem, "first_published_date")) Then
+                            CType(ph.FindControl("litText" & i.ToString), Literal).Text = ""
+                        Else
+                            Dim dPublishDate As DateTime = DataBinder.Eval(ri.DataItem, "first_published_date")
+                            dPublishDate = dPublishDate.AddHours(nTimeOffset)
+                            CType(ph.FindControl("litText" & i.ToString), Literal).Text = dPublishDate.Day
+                        End If
+                    Case "[%FIRST_PUBLISHED_MONTH%]"
+                        If IsDBNull(DataBinder.Eval(ri.DataItem, "first_published_date")) Then
+                            CType(ph.FindControl("litText" & i.ToString), Literal).Text = ""
+                        Else
+                            Dim dPublishDate As DateTime = DataBinder.Eval(ri.DataItem, "first_published_date")
+                            dPublishDate = dPublishDate.AddHours(nTimeOffset)
+                            CType(ph.FindControl("litText" & i.ToString), Literal).Text = dPublishDate.Month
+                        End If
+                    Case "[%FIRST_PUBLISHED_YEAR%]"
+                        If IsDBNull(DataBinder.Eval(ri.DataItem, "first_published_date")) Then
+                            CType(ph.FindControl("litText" & i.ToString), Literal).Text = ""
+                        Else
+                            Dim dPublishDate As DateTime = DataBinder.Eval(ri.DataItem, "first_published_date")
+                            dPublishDate = dPublishDate.AddHours(nTimeOffset)
+                            CType(ph.FindControl("litText" & i.ToString), Literal).Text = dPublishDate.Year
+                        End If
+
+
                     Case "[%LAST_UPDATED_BY%]"
                         CType(ph.FindControl("litText" & i.ToString), Literal).Text = Convert.ToString(DataBinder.Eval(ri.DataItem, "last_updated_by"))
+
                     Case "[%LAST_UPDATED_DATE%]"
-                        CType(ph.FindControl("litText" & i.ToString), Literal).Text = FormatDateTime(DataBinder.Eval(ri.DataItem, "last_updated_date"), DateFormat.LongDate)
+                        Dim dLastUpdatedDate As DateTime = DataBinder.Eval(ri.DataItem, "last_updated_date")
+                        dLastUpdatedDate = dLastUpdatedDate.AddHours(nTimeOffset)
+                        CType(ph.FindControl("litText" & i.ToString), Literal).Text = FormatDateTime(dLastUpdatedDate, DateFormat.LongDate)
+                    Case "[%LAST_UPDATED_DAY%]"
+                        Dim dLastUpdatedDate As DateTime = DataBinder.Eval(ri.DataItem, "last_updated_date")
+                        dLastUpdatedDate = dLastUpdatedDate.AddHours(nTimeOffset)
+                        CType(ph.FindControl("litText" & i.ToString), Literal).Text = dLastUpdatedDate.Day
+                    Case "[%LAST_UPDATED_MONTH%]"
+                        Dim dLastUpdatedDate As DateTime = DataBinder.Eval(ri.DataItem, "last_updated_date")
+                        dLastUpdatedDate = dLastUpdatedDate.AddHours(nTimeOffset)
+                        CType(ph.FindControl("litText" & i.ToString), Literal).Text = dLastUpdatedDate.Month
+                    Case "[%LAST_UPDATED_YEAR%]"
+                        Dim dLastUpdatedDate As DateTime = DataBinder.Eval(ri.DataItem, "last_updated_date")
+                        dLastUpdatedDate = dLastUpdatedDate.AddHours(nTimeOffset)
+                        CType(ph.FindControl("litText" & i.ToString), Literal).Text = dLastUpdatedDate.Year
+
                     Case "[%TOTAL_HITS%]"
                         CType(ph.FindControl("litText" & i.ToString), Literal).Text = Convert.ToString(DataBinder.Eval(ri.DataItem, "total_hits"))
                     Case "[%HITS_TODAY%]"

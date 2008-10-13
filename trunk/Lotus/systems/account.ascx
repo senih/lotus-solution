@@ -18,9 +18,14 @@
     Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
         panelUpdateAccount.Visible = False
         panelLogin.Visible = True
-        panelLogin.FindControl("Login1").Focus()
+        Dim oUC1 As Control = LoadControl("login.ascx")
+        panelLogin.Controls.Add(oUC1)
 
         If Not IsNothing(GetUser) Then
+            'Enable this line if using AJAX
+            'Dim oUpdate As ScriptManager = ScriptManager.GetCurrent(Page)
+            'oUpdate.RegisterPostBackControl(btnUpload)
+            
             panelLogin.Visible = False
             panelUpdateAccount.Visible = True
             Dim muSelectedUser As MembershipUser = Membership.GetUser()
@@ -97,7 +102,7 @@
     End Sub
 
     Protected Sub btnSave_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles btnSave.Click
-        If Not Me.IsUserLoggedIn Then Exit Sub
+        If Not Me.IsUserLoggedIn Then Response.Redirect(HttpContext.Current.Items("_path"))
 
         Dim muSelectedUser As MembershipUser = Membership.GetUser()
         Dim pcSelectedProfile As ProfileCommon = Profile.GetProfile(muSelectedUser.UserName)
@@ -138,7 +143,51 @@
         End If
         
         oConn.Close()
-        
+               
+        'Update subscriptions
+        Dim i As Integer
+        Dim colSubscriptionInfo As Subscription = New Subscription
+
+        For i = 0 To cbCategories.Items.Count - 1
+            colSubscriptionInfo = CheckSubscription(hidEmail.Value, cbCategories.Items(i).Value)
+            If cbCategories.Items(i).Selected Then
+                'check apakah dia sudah terdaftar pad akategory tersebut ? 
+                If Not IsNothing(colSubscriptionInfo) Then
+                    UpdateSubscription(hidEmail.Value, muSelectedUser.Email, cbCategories.Items(i).Value, False)
+                Else
+                    If sUsername = "" Then ' Belum pernah terdaftar pada mailinglist
+                        sUsername = pcSelectedProfile.FirstName & " " & pcSelectedProfile.LastName
+                    End If
+                    AddSubscriber(sUsername, muSelectedUser.Email, cbCategories.Items(i).Value, False)
+                End If
+                'If Not Roles.IsUserInRole(muSelectedUser.UserName, "Mailing List - " & cbCategories.Items(i).Text & " Subscribers") Then
+                '    Roles.AddUserToRole(muSelectedUser.UserName, "Mailing List - " & cbCategories.Items(i).Text & " Subscribers")
+                'End If
+
+            Else
+                If Not IsNothing(colSubscriptionInfo) Then
+                    UpdateSubscription(hidEmail.Value, muSelectedUser.Email, cbCategories.Items(i).Value, True)
+                End If
+                'If Roles.IsUserInRole(muSelectedUser.UserName, "Mailing List - " & cbCategories.Items(i).Text & " Subscribers") Then
+                '    Roles.RemoveUserFromRole(muSelectedUser.UserName, "Mailing List - " & cbCategories.Items(i).Text & " Subscribers")
+                'End If
+            End If
+        Next
+
+        lblSucceed.Visible = True
+        'Response.Redirect("account.aspx")
+    End Sub
+
+    Protected Sub ChangePassword1_ContinueButtonClick(ByVal sender As Object, ByVal e As System.EventArgs) Handles ChangePassword1.ContinueButtonClick
+        Response.Redirect(Me.LinkWorkspaceAccount)
+    End Sub
+
+    Protected Sub lnkForgot_Click(ByVal sender As Object, ByVal e As System.EventArgs)
+        panelUpdateAccount.Visible = False
+        panelLogin.Visible = True
+    End Sub
+
+    Protected Sub btnUpload_Click(ByVal sender As Object, ByVal e As System.EventArgs)
         'save image file
         Dim sImagePath As String
         
@@ -197,73 +246,18 @@
                     imgOri.Dispose()
                     
                     File.Delete(sImagePath)
+                    
+                    Response.Redirect(Me.LinkWorkspaceAccount)
                 End If
             End With
         End If
-        
-        'Update subscriptions
-        Dim i As Integer
-        Dim colSubscriptionInfo As Subscription = New Subscription
-
-        For i = 0 To cbCategories.Items.Count - 1
-            colSubscriptionInfo = CheckSubscription(hidEmail.Value, cbCategories.Items(i).Value)
-            If cbCategories.Items(i).Selected Then
-                'check apakah dia sudah terdaftar pad akategory tersebut ? 
-                If Not IsNothing(colSubscriptionInfo) Then
-                    UpdateSubscription(hidEmail.Value, muSelectedUser.Email, cbCategories.Items(i).Value, False)
-                Else
-                    If sUsername = "" Then ' Belum pernah terdaftar pada mailinglist
-                        sUsername = pcSelectedProfile.FirstName & " " & pcSelectedProfile.LastName
-                    End If
-                    AddSubscriber(sUsername, muSelectedUser.Email, cbCategories.Items(i).Value, False)
-                End If
-                'If Not Roles.IsUserInRole(muSelectedUser.UserName, "Mailing List - " & cbCategories.Items(i).Text & " Subscribers") Then
-                '    Roles.AddUserToRole(muSelectedUser.UserName, "Mailing List - " & cbCategories.Items(i).Text & " Subscribers")
-                'End If
-
-            Else
-                If Not IsNothing(colSubscriptionInfo) Then
-                    UpdateSubscription(hidEmail.Value, muSelectedUser.Email, cbCategories.Items(i).Value, True)
-                End If
-                'If Roles.IsUserInRole(muSelectedUser.UserName, "Mailing List - " & cbCategories.Items(i).Text & " Subscribers") Then
-                '    Roles.RemoveUserFromRole(muSelectedUser.UserName, "Mailing List - " & cbCategories.Items(i).Text & " Subscribers")
-                'End If
-            End If
-        Next
-
-        lblSucceed.Visible = True
-        Response.Redirect("account.aspx")
-    End Sub
-
-    Protected Sub ChangePassword1_ContinueButtonClick(ByVal sender As Object, ByVal e As System.EventArgs) Handles ChangePassword1.ContinueButtonClick
-        Response.Redirect(Me.LinkWorkspaceAccount)
-    End Sub
-
-    Protected Sub lnkForgot_Click(ByVal sender As Object, ByVal e As System.EventArgs)
-        panelUpdateAccount.Visible = False
-        panelLogin.Visible = True
-    End Sub
-
-    Protected Sub btnCancel_Click(ByVal sender As Object, ByVal e As System.EventArgs)
-        Response.Redirect(Me.LinkWorkspace)
-    End Sub
-
-    Protected Sub Login1_LoggedIn(ByVal sender As Object, ByVal e As System.EventArgs)
-        Response.Redirect(HttpContext.Current.Items("_path"))
-    End Sub
-
-    Protected Sub Login1_PreRender(ByVal sender As Object, ByVal e As System.EventArgs)
-        Login1.PasswordRecoveryUrl = "~/" & Me.LinkPassword & "?ReturnUrl=" & HttpContext.Current.Items("_path")
     End Sub
 </script>
 
 
 <asp:Panel ID="panelLogin" runat="server" Visible="False">
-    <asp:Login ID="Login1" meta:resourcekey="Login1" runat="server" PasswordRecoveryText="Password Recovery" TitleText="" OnLoggedIn="Login1_LoggedIn" OnPreRender="Login1_PreRender">
-        <LabelStyle HorizontalAlign="Left" Wrap="False" />
-    </asp:Login>
-    <br />
 </asp:Panel>
+
 
 <asp:Panel ID="panelUpdateAccount" runat="server" Visible="false">
 
@@ -335,6 +329,19 @@
             </ChangePasswordTemplate>
             </asp:ChangePassword>
             </div>
+            <br />
+            
+            <div style="border:#E0E0E0 1px solid;padding:10px;padding-left:10px;width:205px;margin-left:15px;margin-top:17px">
+            <asp:Label ID="lblPhoto" meta:resourcekey="lblPhoto" Font-Bold="true" runat="server" Text="Photo"></asp:Label><br /><br />
+            <asp:Image ID="imgUser" ImageUrl="images/photos/blank.gif" runat="server" BorderColor="#cccccc" BorderStyle="solid" BorderWidth="1px"/>
+            <div>
+            <asp:FileUpload ID="uplImage" runat="server" />
+            </div>
+            <div>
+            <asp:Button ID="btnUpload" meta:resourcekey="btnUpload" runat="server" Text=" Upload " OnClick="btnUpload_Click" />
+            </div>
+            </div>
+
         </td>
     </tr>
     <tr>
@@ -694,15 +701,6 @@
         </td>
     </tr>
     <tr>
-        <td style="text-align:left;white-space:nowrap" valign="top">
-            <asp:Label ID="lblPhoto" meta:resourcekey="lblPhoto" runat="server" Text="Photo"></asp:Label></td>
-        <td valign="top">:</td>
-        <td style="white-space:nowrap">
-            <asp:Image ID="imgUser" ImageUrl="images/photos/blank.gif" runat="server" BorderColor="#cccccc" BorderStyle="solid" BorderWidth="1px"/>
-            <br /><asp:FileUpload ID="uplImage" runat="server" />
-        </td>
-    </tr>
-    <tr>
         <td colspan="4">
             <div style="margin:7px"></div>
             <asp:Label ID="lblSubscriptions" runat="server" Text="Label" meta:resourcekey="Subscriptions"></asp:Label>
@@ -717,11 +715,11 @@
     <tr>
         <td colspan="4">
         <asp:Button ID="btnSave" meta:resourcekey="btnSave" runat="server" Text=" Save " ValidationGroup="Account" />
-        <asp:Button ID="btnCancel" meta:resourcekey="btnCancel" runat="server" Text=" Cancel " CausesValidation=false OnClick="btnCancel_Click" />
         <asp:Label ID="lblSucceed" meta:resourcekey="lblSucceed" runat="server" Text="Data updated successfully." Font-Bold=true></asp:Label>
         </td>
     </tr>
 </table>
 <br />
 <asp:HiddenField ID="hidEmail" runat="server" />
+
 </asp:Panel>

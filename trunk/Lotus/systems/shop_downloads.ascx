@@ -10,7 +10,9 @@
     Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs)
         If IsNothing(GetUser) Then
             panelLogin.Visible = True
-            panelLogin.FindControl("Login1").Focus()
+            Dim oUC1 As Control = LoadControl("login.ascx")
+            panelLogin.Controls.Add(oUC1)
+            panelDownloads.Visible = False
         Else
             panelDownloads.Visible = True
             
@@ -18,7 +20,7 @@
                 Dim sSQL As String = "SELECT order_items.order_item_id, order_items.item_id, order_items.item_desc, pages_published.version, pages_published.file_attachment, " & _
                 "pages_published.file_size, orders.order_date FROM orders INNER JOIN order_items ON orders.order_id = order_items.order_id INNER JOIN " & _
                 "pages_published ON order_items.item_id = pages_published.page_id " & _
-                "WHERE orders.status = 'VERIFIED' AND order_items.tangible = 0 AND orders.order_by = @order_by"
+                "WHERE orders.status = 'VERIFIED' AND order_items.tangible = 0 AND orders.order_by = @order_by AND pages_published.file_attachment<>''"
                 sqlDS.ConnectionString = sConn
                 sqlDS.SelectCommand = sSQL
                 sqlDS.SelectParameters.Add("order_by", Me.UserName)
@@ -41,18 +43,12 @@
                     oCommand.Connection = oConn
                     oCommand.ExecuteNonQuery()
                     oConn.Close()
+                Else
+                    lblNoDownloads.Text = GetLocalResourceObject("NoDownloadableItems") '"You have no downloadable items."
                 End If
             End If
 
         End If
-    End Sub
-    
-    Protected Sub Login1_LoggedIn(ByVal sender As Object, ByVal e As System.EventArgs)
-        Response.Redirect(HttpContext.Current.Items("_path"))
-    End Sub
-    
-    Protected Sub Login1_PreRender(ByVal sender As Object, ByVal e As System.EventArgs)
-        Login1.PasswordRecoveryUrl = "~/" & Me.LinkPassword & "?ReturnUrl=" & HttpContext.Current.Items("_path")
     End Sub
     
     Function GetFileUrl(ByVal nPageId As Integer, ByVal nVersion As Integer) As String
@@ -61,19 +57,16 @@
 </script>
 
 <asp:Panel ID="panelLogin" runat="server" Visible="False">
-    <asp:Login ID="Login1" meta:resourcekey="Login1" runat="server" PasswordRecoveryText="Password Recovery" TitleText="" OnLoggedIn="Login1_LoggedIn" OnPreRender="Login1_PreRender">
-        <LabelStyle HorizontalAlign="Left" Wrap="False" />
-    </asp:Login>
-    <br />
 </asp:Panel>
 
 <asp:Panel ID="panelDownloads" runat="server">
+    <asp:Label ID="lblNoDownloads" runat="server" Text=""></asp:Label>
     <asp:GridView ID="GridView1" DataSourceID="sqlDS" CellPadding="7" AutoGenerateColumns=false runat="server">
     <Columns>
     <asp:BoundField DataField="item_desc" meta:resourcekey="colItem" HeaderText="Items" />
     <asp:TemplateField meta:resourcekey="colPurchasedDate" HeaderText="Purchased Date" HeaderStyle-HorizontalAlign="Right" ItemStyle-HorizontalAlign="Right">
     <ItemTemplate>
-    <%#FormatDateTime(Eval("order_date"), DateFormat.LongDate)%>
+    <%#FormatDateTime(CDate(Eval("order_date")).AddHours(Me.TimeOffset), DateFormat.GeneralDate)%>
     </ItemTemplate>
     </asp:TemplateField>
     <asp:TemplateField HeaderText="">

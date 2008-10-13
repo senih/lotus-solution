@@ -399,7 +399,7 @@ Partial Class modules_forum
         Select Case hfType.Value
             Case TP_FORUM
                 LoadCategories()
-                ddCategory.SelectedValue = Request.QueryString("cat")
+                ddCategory.SelectedValue = Request.QueryString("ctgr")
                 pnlCategory.Visible = True
                 pnlStatus.Visible = True
             Case TP_THREAD
@@ -626,7 +626,7 @@ Partial Class modules_forum
 
         litThreadId.Text = threadId
         lblThreadTitle.Text = thrSubject
-        litThreadHeader.Text = thrPostedDate.ToString
+        litThreadHeader.Text = thrPostedDate.AddHours(Me.TimeOffset).ToString
 
         Dim userPosts As Decimal = GetUsersStats(thrPostedBy)
         Dim userPic As String = GetUsersPic(thrPostedBy)
@@ -634,7 +634,7 @@ Partial Class modules_forum
         Dim poster As MembershipUser = GetUser(thrPostedBy)
         Dim creationDate As String = ""
         If poster IsNot Nothing Then
-            creationDate = poster.CreationDate.ToShortDateString
+            creationDate = poster.CreationDate.AddHours(Me.TimeOffset).ToShortDateString
         End If
 
         Dim sb As StringBuilder = New StringBuilder()
@@ -739,7 +739,7 @@ Partial Class modules_forum
     Protected Sub dsRepeater_Selected(ByVal sender As Object, ByVal e As System.Web.UI.WebControls.SqlDataSourceStatusEventArgs) Handles dsRepeater.Selected
         litNewForumEmpty.Visible = False
         If e.AffectedRows = 0 AndAlso isAdmin() Then
-            litNewForumEmpty.Text = "<a href=""" & GetCurrentPage() & "?mode=crt&type=F&prn=0&rpt=0&cat=NEWCAT" & """>" & GetLocalResourceObject("lnkNewForum") & "</a>"
+            litNewForumEmpty.Text = "<a href=""" & GetCurrentPage() & "?mode=crt&type=F&prn=0&rpt=0&ctgr=NEWCAT" & """>" & GetLocalResourceObject("lnkNewForum") & "</a>"
             litNewForumEmpty.Visible = True
         End If
     End Sub
@@ -756,7 +756,7 @@ Partial Class modules_forum
             Dim litNewForum As Literal = CType(e.Item.FindControl("litNewForum"), Literal)
 
             If isAdmin() Then
-                litNewForum.Text = "<a href=""" & GetCurrentPage() & "?mode=crt&type=F&prn=0&rpt=0&cat=" & CType(e.Item.DataItem, DataRowView)("Category") & """>" & GetLocalResourceObject("lnkNewForum") & "</a>"
+                litNewForum.Text = "<a href=""" & GetCurrentPage() & "?mode=crt&type=F&prn=0&rpt=0&ctgr=" & CType(e.Item.DataItem, DataRowView)("Category") & """>" & GetLocalResourceObject("lnkNewForum") & "</a>"
             End If
 
             Dim DSource As SqlDataSource = CType(e.Item.FindControl("dsForum"), SqlDataSource)
@@ -846,7 +846,7 @@ Partial Class modules_forum
 
     Private Sub WriteDiscussion(ByVal drv As DataRowView, ByRef header As Literal, ByRef replyId As Literal, ByRef info As Literal, ByRef subject As Literal, ByRef message As Literal)
         Dim sb As StringBuilder = New StringBuilder("")
-        sb.Append(drv("posted_date"))
+        sb.Append(CDate(drv("posted_date")).AddHours(Me.TimeOffset))
         header.Text = sb.ToString
 
         sb = New StringBuilder("")
@@ -859,7 +859,7 @@ Partial Class modules_forum
         Dim poster As MembershipUser = GetUser(drv("posted_by").ToString)
         Dim creationDate As String = ""
         If poster IsNot Nothing Then
-            creationDate = poster.CreationDate.ToShortDateString
+            creationDate = poster.CreationDate.AddHours(Me.TimeOffset).ToShortDateString
         End If
 
         sb = New StringBuilder("")

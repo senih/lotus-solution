@@ -123,9 +123,6 @@
   <data name="btnAdd.text" xml:space="preserve">
     <value>Tilføj</value>
   </data>
-  <data name="btnCancel.text" xml:space="preserve">
-    <value>   Annuller   </value>
-  </data>
   <data name="btnRemove.text" xml:space="preserve">
     <value>Fjern</value>
   </data>
@@ -200,24 +197,6 @@
   </data>
   <data name="lblZip.text" xml:space="preserve">
     <value>Postnr.</value>
-  </data>
-  <data name="Login1.FailureText" xml:space="preserve">
-    <value>Login mislykkes. Prøv venligst igen.</value>
-  </data>
-  <data name="Login1.LoginButtonText" xml:space="preserve">
-    <value>Login</value>
-  </data>
-  <data name="Login1.PasswordLabelText" xml:space="preserve">
-    <value>Password</value>
-  </data>
-  <data name="Login1.PasswordRecoveryText" xml:space="preserve">
-    <value>Jeg har glemt mit password</value>
-  </data>
-  <data name="Login1.RememberMeText" xml:space="preserve">
-    <value>Husk mig.</value>
-  </data>
-  <data name="Login1.UserNameLabelText" xml:space="preserve">
-    <value>Brugernavn:</value>
   </data>
   <data name="PasswordUpdated" xml:space="preserve">
     <value>Password opdateret.</value>

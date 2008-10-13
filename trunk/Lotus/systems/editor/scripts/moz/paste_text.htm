@@ -3,8 +3,8 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <link href="../style/editor.css" rel="stylesheet" type="text/css">
 <script>
-	var sLangDir=window.opener.oUtil.langDir;
-	document.write("<scr"+"ipt src='../language/"+sLangDir+"/paste_text.js'></scr"+"ipt>");
+  var sLangDir=window.opener.oUtil.langDir;
+  document.write("<scr"+"ipt src='../language/"+sLangDir+"/paste_text.js'></scr"+"ipt>");
 </script>
 <script>writeTitle()</script>
 <script>
@@ -25,34 +25,15 @@ function bodyOnLoad()
     idSource.document.designMode="on";
     idSource.focus();
     }
-    
+
 function doInsert()
     {
     var idSource = document.getElementById("idSource").contentWindow;
-    
-    var sHTML = idSource.document.body.innerHTML;
-    sHTML = sHTML.replace(/>\s+</gi, "><"); //replace space between tag
-    sHTML = sHTML.replace(/\r/gi, ""); //replace space between tag
-    sHTML = sHTML.replace(/(<br>)\s+/gi, "$1"); //replace space between BR and text
-    
-    sHTML = sHTML.replace(/(<br>)/gi, "$1&lt;REPBR&gt;"); //replace space between BR and text
-    sHTML = sHTML.replace(/(<\/tr>)/gi, "$1&lt;REPBR&gt;"); //replace space between BR and text
-    sHTML = sHTML.replace(/(<\/div>)/gi, "$1&lt;REPBR&gt;"); //replace space between BR and text
-    sHTML = sHTML.replace(/(<\/h1>)/gi, "$1&lt;REPBR&gt;"); //replace space between BR and text
-    sHTML = sHTML.replace(/(<\/h2>)/gi, "$1&lt;REPBR&gt;"); //replace space between BR and text
-    sHTML = sHTML.replace(/(<\/h3>)/gi, "$1&lt;REPBR&gt;"); //replace space between BR and text
-    sHTML = sHTML.replace(/(<\/h4>)/gi, "$1&lt;REPBR&gt;"); //replace space between BR and text
-    sHTML = sHTML.replace(/(<\/h5>)/gi, "$1&lt;REPBR&gt;"); //replace space between BR and text
-    sHTML = sHTML.replace(/(<\/h6>)/gi, "$1&lt;REPBR&gt;"); //replace space between BR and text
-    sHTML = sHTML.replace(/(<p>)/gi, "$1&lt;REPBR&gt;"); //replace space between BR and text
-    idSource.document.body.innerHTML = sHTML;
-    
-    var range = idSource.document.body.ownerDocument.createRange();
-    range.selectNodeContents(idSource.document.body);
-    var sText = range.toString();
-    
-    sText = sText.replace(/<REPBR>/gi, "<br>")
-    
+
+    sText = idSource.document.body.textContent;
+
+    sText = sText.replace(/<!(?:--[\s\S]*?--\s*)?>\s*/gi, "");
+
     var obj = window.opener.oUtil.obj;
     obj.insertHTML(sText)
     }
@@ -69,7 +50,7 @@ function doInsert()
 <tr>
 <tr>
 <td style="height:100%">
-    <iframe style="width:100%;height:100%;border:#000000 1px solid" name="idSource" id="idSource"></iframe>     
+    <iframe style="width:100%;height:100%;border:#000000 1px solid" name="idSource" id="idSource"></iframe>
 </td>
 </tr>
 <tr>

@@ -1,6 +1,6 @@
 /***********************************************************
-InnovaStudio WYSIWYG Editor 3.0
-© 2007, InnovaStudio (www.innovastudio.com). All rights reserved.
+InnovaStudio.NET WYSIWYG Editor 1.0
+© 2008, InnovasSudio.net. All rights reserved.
 ************************************************************/
 var UA = navigator.userAgent.toLowerCase();
 var isIE = (UA.indexOf('msie') >= 0) ? true : false;

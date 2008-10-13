@@ -75,7 +75,7 @@
             oCommand = New SqlCommand("SELECT page_id, parent_id, sorting, page_type, file_name, " & _
                 "title, link_text, published_start_date, published_end_date, is_hidden, " & _
                 "is_system, channel_name, channel_permission, disable_collaboration, last_updated_date, status, " & _
-                "owner, title2, link_text2, is_link, link_target, link_target2 FROM pages_working where is_system=0 AND (page_id=@root_id or (parent_id=@root_id AND link_placement='main')) order by parent_id, sorting")
+                "owner, is_hidden2, title2, link_text2, is_link, link_target, link_target2 FROM pages_working where is_system=0 AND (page_id=@root_id or (parent_id=@root_id AND link_placement='main')) order by parent_id, sorting")
         Else
             oCommand = New SqlCommand("SELECT page_id, parent_id, sorting, page_type, file_name, title, link_text, published_start_date, published_end_date, is_hidden, " & _
                 "is_system, channel_name, channel_permission, is_link, link_target from pages_published where is_system=0 AND (page_id=@root_id or (parent_id=@root_id AND link_placement='main')) order by parent_id, sorting")
@@ -160,7 +160,12 @@
                     If sTtl2.ToString = "" Then 'kalau published version blm ada => bShowLink = False
                         bShowMenu = False
                     Else
-                        bShowMenu = True
+                        'bShowMenu = True
+                        If CBool(oDataReader("is_hidden2")) Then
+                            bShowMenu = False
+                        Else
+                            bShowMenu = True
+                        End If
                         sTtl = sTtl2
 
                         '--- Linked Page

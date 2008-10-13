@@ -10,7 +10,9 @@
     Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs)
         If IsNothing(GetUser) Then
             panelLogin.Visible = True
-            panelLogin.FindControl("Login1").Focus()
+            Dim oUC1 As Control = LoadControl("login.ascx")
+            panelLogin.Controls.Add(oUC1)
+            panelConfig.Visible = False
         Else
             panelConfig.Visible = True
             
@@ -35,7 +37,19 @@
                 txtPpUrl.Text = oReader("paypal_url").ToString
 
                 txtPpOrder.Text = oReader("paypal_order_email_template").ToString
+                txtCodOrderConfirm.Text = oReader("cod_order_confirm_template").ToString
                 txtOrderNow.Text = oReader("order_now_template").ToString
+                
+                If Not IsDBNull(oReader("use_paypal")) Then
+                    chkUsePaypal.Checked = CBool(oReader("use_paypal"))
+                Else
+                    chkUsePaypal.Checked = False
+                End If
+                If Not IsDBNull(oReader("use_cash_on_delivery")) Then
+                    chkUseCashOnDelivery.Checked = CBool(oReader("use_cash_on_delivery"))
+                Else
+                    chkUseCashOnDelivery.Checked = False
+                End If
                 
                 oReader.Close()
                 oCommand.Dispose()
@@ -47,7 +61,7 @@
             oReader.Close()
             oCommand.Dispose()
             
-            sSQL = "insert into config_shop (currency_symbol,currency_separator,currency_code,order_description,terms,paypal_email,paypal_url,paypal_order_email_template,order_now_template,root_id) values (@symbol,@separator,@code,@orderDesc,@terms,@ppemail,@ppurl,@ppOrder,@orderNow,@root_id)"
+            sSQL = "insert into config_shop (currency_symbol,currency_separator,currency_code,order_description,terms,paypal_email,paypal_url,paypal_order_email_template,cod_order_confirm_template,order_now_template,use_paypal,use_cash_on_delivery,root_id) values (@symbol,@separator,@code,@orderDesc,@terms,@ppemail,@ppurl,@ppOrder,@codOrderConfirm,@orderNow,@use_paypal,@use_cash_on_delivery,@root_id)"
             oCommand = New SqlCommand(sSQL)
             oCommand.Connection = oConn
             oCommand.Parameters.Add("@symbol", SqlDbType.NVarChar).Value = "$"
@@ -58,13 +72,18 @@
             oCommand.Parameters.Add("@ppemail", SqlDbType.NVarChar).Value = ""
             oCommand.Parameters.Add("@ppurl", SqlDbType.NVarChar).Value = "https://www.sandbox.paypal.com/us/cgi-bin/webscr"
             oCommand.Parameters.Add("@ppOrder", SqlDbType.Text).Value = "<html><head><title>Thank you for your order</title><style>td{font-family:Verdana;font-size:11px}</style></head><body style=""font-family:Verdana;font-size:11px""><p>Dear Customer,</p><p><b>Thank you for your order!</b><p>Following is a list of items you purchased on [%ORDER_DATE%] - Order #[%ORDER_ID%]:</p>[%ORDER_DETAIL%]<p>If your order contains downloadable items, please visit:&nbsp;<a href=""[%DOWNLOAD_LINK%]"">[%DOWNLOAD_LINK%]</a></p><p>Sincerely,<br>Support Team<br><a href=""[%WEBSITE_URL%]"">[%WEBSITE_URL%]</a></p></body></html>"
+            oCommand.Parameters.Add("@codOrderConfirm", SqlDbType.Text).Value = "<html><head><title>Order Confirmation (Cash On Delivery)</title><style>td{font-family:Verdana;font-size:11px}</style></head><body style=""font-family:Verdana;font-size:11px""><p>Dear Customer,</p><p>Following is a list of items you ordered on [%ORDER_DATE%] - Order #[%ORDER_ID%]:</p><p>[%ORDER_DETAIL%]</p><p>Ship to:</p><p>[%SHIP_TO%]</p><p>Sincerely,<br>Support Team<br><a href=""[%WEBSITE_URL%]"">[%WEBSITE_URL%]</a></p></body></html>"
             oCommand.Parameters.Add("@orderNow", SqlDbType.Text).Value = "<table cellpadding=""0"" cellspacing=""0"" class=""boxOrderNow""><tr><td class=""boxHeaderOrderNow"">Order Now!</td></tr><tr><td class=""boxContentOrderNow""><b>[%TITLE%]</b><br />[%SUMMARY%]<br /><br /><table cellpadding=""0"" cellspacing=""0""><tr style=""[%HIDE_PRICE%]""><td style=""text-align:right;padding:5px;padding-left:0px"">List Price: </td><td style=""font-size:14px;padding:5px""><strike>[%PRICE%]</strike></td></tr><tr><td style=""text-align:right;padding:5px;padding-left:0px"">Price:</td><td style=""font-size:12px;font-weight:bold;padding:5px"">[%CURRENT_PRICE%]</td></tr></table><br /><a href=""[%PAYPAL_ADD_TO_CART_URL%]""/><img src=""resources/1/btnBuyNow.jpg"" alt="""" border=""0""/></a><br /></td></tr></table>"
             oCommand.Parameters.Add("@root_id", SqlDbType.Int).Value = Me.RootID
+            oCommand.Parameters.Add("@use_paypal", SqlDbType.Bit).Value = True
+            oCommand.Parameters.Add("@use_cash_on_delivery", SqlDbType.Bit).Value = False
             oCommand.Connection = oConn
             oCommand.ExecuteReader(CommandBehavior.CloseConnection)
             
             oConn.Close()
             
+            chkUsePaypal.Checked = True
+            chkUseCashOnDelivery.Checked = False
             txtSymbol.Text = "$"
             txtSeparator.Text = ""
             txtCode.Text = "USD"
@@ -73,14 +92,15 @@
             txtPpEmail.Text = ""
             txtPpUrl.Text = "https://www.sandbox.paypal.com/us/cgi-bin/webscr"
             txtPpOrder.Text = "<html><head><title>Thank you for your order</title><style>td{font-family:Verdana;font-size:11px}</style></head><body style=""font-family:Verdana;font-size:11px""><p>Dear Customer,</p><p><b>Thank you for your order!</b><p>Following is a list of items you purchased on [%ORDER_DATE%] - Order #[%ORDER_ID%]:</p>[%ORDER_DETAIL%]<p>If your order contains downloadable items, please visit:&nbsp;<a href=""[%DOWNLOAD_LINK%]"">[%DOWNLOAD_LINK%]</a></p><p>Sincerely,<br>Support Team<br><a href=""[%WEBSITE_URL%]"">[%WEBSITE_URL%]</a></p></body></html>"
+            txtCodOrderConfirm.Text = "<html><head><title>Order Confirmation (Cash On Delivery)</title><style>td{font-family:Verdana;font-size:11px}</style></head><body style=""font-family:Verdana;font-size:11px""><p>Dear Customer,</p><p>Following is a list of items you ordered on [%ORDER_DATE%] - Order #[%ORDER_ID%]:</p><p>[%ORDER_DETAIL%]</p><p>Ship to:</p><p>[%SHIP_TO%]</p><p>Sincerely,<br>Support Team<br><a href=""[%WEBSITE_URL%]"">[%WEBSITE_URL%]</a></p></body></html>"
             txtOrderNow.Text = "<table cellpadding=""0"" cellspacing=""0"" class=""boxOrderNow""><tr><td class=""boxHeaderOrderNow"">Order Now!</td></tr><tr><td class=""boxContentOrderNow""><b>[%TITLE%]</b><br />[%SUMMARY%]<br /><br /><table cellpadding=""0"" cellspacing=""0""><tr style=""[%HIDE_PRICE%]""><td style=""text-align:right;padding:5px;padding-left:0px"">List Price: </td><td style=""font-size:14px;padding:5px""><strike>[%PRICE%]</strike></td></tr><tr><td style=""text-align:right;padding:5px;padding-left:0px"">Price:</td><td style=""font-size:12px;font-weight:bold;padding:5px"">[%CURRENT_PRICE%]</td></tr></table><br /><a href=""[%PAYPAL_ADD_TO_CART_URL%]""/><img src=""resources/1/btnBuyNow.jpg"" alt="""" border=""0""/></a><br /></td></tr></table>"
         End If
     End Sub
 
     Protected Sub btnSave_Click(ByVal sender As Object, ByVal e As System.EventArgs)
-        If Not Me.IsUserLoggedIn Then Exit Sub
+        If Not Me.IsUserLoggedIn Then Response.Redirect(HttpContext.Current.Items("_path"))
 
-        Dim sSQL As String = "update config_shop set currency_symbol=@symbol, currency_separator=@separator, currency_code=@code, order_description=@orderDesc, terms=@terms, paypal_email=@ppemail, paypal_url=@ppurl,paypal_order_email_template=@ppOrder, order_now_template=@orderNow where root_id=@root_id"
+        Dim sSQL As String = "update config_shop set currency_symbol=@symbol, currency_separator=@separator, currency_code=@code, order_description=@orderDesc, terms=@terms, paypal_email=@ppemail, paypal_url=@ppurl,paypal_order_email_template=@ppOrder, cod_order_confirm_template=@codOrderConfirm, order_now_template=@orderNow, use_paypal=@use_paypal, use_cash_on_delivery=@use_cash_on_delivery where root_id=@root_id"
         Dim oCommand As New SqlCommand(sSQL)
         oCommand.Connection = oConn
         oConn.Open()
@@ -93,32 +113,31 @@
         oCommand.Parameters.Add("@ppemail", SqlDbType.NVarChar).Value = txtPpEmail.Text
         oCommand.Parameters.Add("@ppurl", SqlDbType.NVarChar).Value = txtPpUrl.Text
         oCommand.Parameters.Add("@ppOrder", SqlDbType.Text).Value = txtPpOrder.Text
+        oCommand.Parameters.Add("@codOrderConfirm", SqlDbType.Text).Value = txtCodOrderConfirm.Text
         oCommand.Parameters.Add("@orderNow", SqlDbType.Text).Value = txtOrderNow.Text
         oCommand.Parameters.Add("@root_id", SqlDbType.Int).Value = Me.RootID
+        oCommand.Parameters.Add("@use_paypal", SqlDbType.Bit).Value = chkUsePaypal.Checked
+        oCommand.Parameters.Add("@use_cash_on_delivery", SqlDbType.Bit).Value = chkUseCashOnDelivery.Checked
         oCommand.Connection = oConn
         oCommand.ExecuteReader(CommandBehavior.CloseConnection)
-        
-        Response.Redirect(HttpContext.Current.Items("_path"))
-    End Sub
-
-    Protected Sub Login1_LoggedIn(ByVal sender As Object, ByVal e As System.EventArgs)
-        Response.Redirect(HttpContext.Current.Items("_path"))
-    End Sub
-    
-    Protected Sub Login1_PreRender(ByVal sender As Object, ByVal e As System.EventArgs)
-        Login1.PasswordRecoveryUrl = "~/" & Me.LinkPassword & "?ReturnUrl=" & HttpContext.Current.Items("_path")
     End Sub
 </script>
 
 <asp:Panel ID="panelLogin" runat="server" Visible="False">
-    <asp:Login ID="Login1" meta:resourcekey="Login1" runat="server"  PasswordRecoveryText="Password Recovery" TitleText="" OnLoggedIn="Login1_LoggedIn" OnPreRender="Login1_PreRender">
-        <LabelStyle HorizontalAlign="Left" Wrap="False" />
-    </asp:Login>
-    <br />
 </asp:Panel>
 
 <asp:Panel ID="panelConfig" runat="server" Visible="False" Wrap=false>
   <table>
+      <tr>
+        <td style="text-align:left;white-space:nowrap" valign="top">
+            <asp:Label ID="lblPaymentOptions" meta:resourcekey="lblPaymentOptions" runat="server" Text="Payment Options"></asp:Label>
+        </td>
+        <td valign="top">:</td>
+        <td style="text-align:left;white-space:nowrap" valign="top">
+            <asp:CheckBox ID="chkUsePaypal" meta:resourcekey="chkUsePaypal" Text="Credit Card Payment using Paypal" runat="server" /><br />
+            <asp:CheckBox ID="chkUseCashOnDelivery" meta:resourcekey="chkUseCashOnDelivery" Text="Cash On Delivery" runat="server" />
+        </td>
+    </tr>
     <tr>
       <td style="text-align:left;white-space:nowrap" valign="top">
         <asp:Label ID="lblSymbol" meta:resourcekey="lblSymbol" runat="server"></asp:Label>
@@ -191,6 +210,16 @@
       <td valign="top">:</td>
       <td style="text-align:left;white-space:nowrap" valign="top">
         <asp:TextBox ID="txtPpOrder" TextMode="MultiLine" Width="400" Height="250px" runat="server"></asp:TextBox>
+      </td>
+    </tr>
+    </tr>
+      <tr>
+      <td style="text-align:left;white-space:nowrap" valign="top">
+        <asp:Label ID="lblCodOrderConfirm" meta:resourcekey="lblCodOrderConfirm" runat="server"></asp:Label>
+      </td>
+      <td valign="top">:</td>
+      <td style="text-align:left;white-space:nowrap" valign="top">
+        <asp:TextBox ID="txtCodOrderConfirm" TextMode="MultiLine" Width="400" Height="250px" runat="server"></asp:TextBox>
       </td>
     </tr>
       <tr>

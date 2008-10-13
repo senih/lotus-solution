@@ -1,6 +1,6 @@
 /***********************************************************
-InnovaStudio .NET WYSIWYG Editor 1.0
-© 2008, InnovaStudio (www.innovastudio.com). All rights reserved.
+InnovaStudio.NET WYSIWYG Editor 1.0
+© 2008, InnovaSudio.net. All rights reserved.
 ************************************************************/
 
 var editor = new Array();
@@ -686,11 +686,12 @@ function initISEditor() {
 
     oUtil.arrEditor.push(this.oName);
 
+    try { oEditor.document.designMode="on"; } catch(e) {}
+
     var arrA = String(this.preloadHTML).match(/<HTML[^>]*>/ig);
     if(arrA)
         {//full html
-        //this.putHTML(this.preloadHTML);
-        this.loadHTMLFull(this.preloadHTML);
+          this.loadHTMLFull(this.preloadHTML);
         }
     else
         {
@@ -706,7 +707,25 @@ function initISEditor() {
       }
     /****************************************/
 
-    try { oEditor.document.designMode="on"; } catch (e) {}
+    this.focus();
+    
+    try {
+      var cnt = oEditor.document.body.innerHTML;
+      cnt = cnt.replace(/\s+/gi, "");
+      if(cnt=="") {
+        oEditor.document.body.innerHTML="<br class=\"innova\" />";
+      }
+      
+      var range = oEditor.document.createRange();
+      range.selectNode(oEditor.document.body.childNodes[0]);
+      range.collapse(true);
+      
+      var sel = oEditor.getSelection();
+      sel.removeAllRanges();
+      sel.addRange(range);      
+      
+    } catch (e) {}
+    
     this.focus();
 }
 
@@ -1334,7 +1353,7 @@ function loadHTMLFull(sHTML, firstLoad)//first load full HTML
     //RealTime
     var me=this;
     oEditor.document.addEventListener("keyup", new Function("editorDoc_onkeyup("+me.oName+")"), true);
-    oEditor.document.addEventListener("mouseup", function(e) {editorDoc_onmouseup(e, this.oName);}, true);
+    oEditor.document.addEventListener("mouseup", function(e) {editorDoc_onmouseup(e, me.oName);}, true);
 
     //<br> or <p>
     oEditor.document.addEventListener("keydown", new Function("var e=arguments[0];doKeyPress(eval(e), "+this.oName+")"), false);
@@ -1361,10 +1380,17 @@ function encodeHTMLCode(sHTML) {
   return sHTML.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
 }
 
+function cleanHTML(sHTML) {
+  var h = sHTML.replace(/<br class="innova" \/>/gi, "");
+  return h;
+}
+
 function getTextBody()
   {
   var oEditor=document.getElementById("idContent"+this.oName).contentWindow;
-  return oEditor.document.body.textContent;
+  var sText = oEditor.document.body.textContent;
+  sText = sText.replace(/<!(?:--[\s\S]*?--\s*)?>\s*/gi, "");
+  return sText;
   }
 function getHTML()
     {
@@ -1373,10 +1399,10 @@ function getHTML()
 
     sHTML=getOuterHTML(oEditor.document.documentElement);
     sHTML=String(sHTML).replace(/ contentEditable=true/g,"");
-    sHTML = String(sHTML).replace(/\<PARAM NAME=\"Play\" VALUE=\"0\">/ig,"<PARAM NAME=\"Play\" VALUE=\"-1\">");
     sHTML=this.docType+sHTML;//restore doctype (if any)
     sHTML=oUtil.replaceSpecialChar(sHTML);
     if(this.encodeIO) sHTML=encodeHTMLCode(sHTML);
+    sHTML = cleanHTML(sHTML);
     return sHTML;
     }
 function getHTMLBody()
@@ -1386,9 +1412,9 @@ function getHTMLBody()
 
     sHTML=oEditor.document.body.innerHTML;
     sHTML=String(sHTML).replace(/ contentEditable=true/g,"");
-    sHTML = String(sHTML).replace(/\<PARAM NAME=\"Play\" VALUE=\"0\">/ig,"<PARAM NAME=\"Play\" VALUE=\"-1\">");
     sHTML=oUtil.replaceSpecialChar(sHTML);
     if(this.encodeIO) sHTML=encodeHTMLCode(sHTML);
+    sHTML = cleanHTML(sHTML);
     return sHTML;
     }
 var sBaseHREF="";
@@ -1429,6 +1455,7 @@ function getXHTML()
   sHTML=sHTML.replace(/<head>/i,"<head>"+sBaseHREF);//restore base href  
   sHTML=oUtil.replaceSpecialChar(sHTML);
   if(this.encodeIO) sHTML=encodeHTMLCode(sHTML);
+  sHTML = cleanHTML(sHTML);
   return sHTML;
   }
 function getXHTMLBody()
@@ -1453,6 +1480,7 @@ function getXHTMLBody()
   sHTML=recur(oEditor.document.body,"");
   sHTML=oUtil.replaceSpecialChar(sHTML);
   if(this.encodeIO) sHTML=encodeHTMLCode(sHTML);
+  sHTML = cleanHTML(sHTML);
   return sHTML;
   }
 function ApplyCSS(oName)
@@ -3043,6 +3071,7 @@ function fullScreen()
         edtArea.style.left="0px";
         edtArea.style.width=window.innerWidth+"px";
         edtArea.style.height=window.innerHeight+"px";
+        edtArea.style.zIndex = 2000;
 
         for(var i=0;i<oUtil.arrEditor.length;i++)
             {
@@ -3541,7 +3570,7 @@ function ddAction(tb, id, edt, sfx) {
   } else
   if(btn.indexOf("btnParagraph")!=-1) {
     idx=btn.substr(btn.indexOf("_")+1);
-    e.applyParagraph("<"+e.arrParagraph[parseInt(idx)][1]+">");
+    e.applyParagraph(e.arrParagraph[parseInt(idx)][1]);
   } else
   if(btn.indexOf("btnFontName")!=-1) {
     idx=btn.substr(btn.indexOf("_")+1);

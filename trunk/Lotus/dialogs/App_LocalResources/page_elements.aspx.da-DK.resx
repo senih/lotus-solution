@@ -123,17 +123,8 @@
   <data name="btnSave.text" xml:space="preserve">
     <value>  Gem  </value>
   </data>
-  <data name="chkAuthor.text" xml:space="preserve">
-    <value>Person første oprettelse</value>
-  </data>
-  <data name="chkAuthorFullName.text" xml:space="preserve">
-    <value>Fulde navn</value>
-  </data>
   <data name="chkCalendar.text" xml:space="preserve">
     <value>Kalender</value>
-  </data>
-  <data name="chkCategoryInfo.text" xml:space="preserve">
-    <value>Kategori info</value>
   </data>
   <data name="chkCategoryList.text" xml:space="preserve">
     <value>Kategori liste</value>
@@ -144,17 +135,11 @@
   <data name="chkComments.text" xml:space="preserve">
     <value>Kommentar postering</value>
   </data>
-  <data name="chkDisplayDate.text" xml:space="preserve">
-    <value>Vis dato</value>
-  </data>
   <data name="chkFileDownload.text" xml:space="preserve">
     <value>Fil download</value>
   </data>
   <data name="chkFileView.text" xml:space="preserve">
     <value>Fil visning</value>
-  </data>
-  <data name="chkLastUpdatedDate.text" xml:space="preserve">
-    <value>Dato seneste opdatering/udgivelse</value>
   </data>
   <data name="chkListingOrdering.text" xml:space="preserve">
     <value>Liste rækkefølge</value>
@@ -167,6 +152,9 @@
   </data>
   <data name="chkOrderByComments.text" xml:space="preserve">
     <value>Ved kommentar</value>
+  </data>
+  <data name="chkOrderByDisplayDate.text" xml:space="preserve">
+    <value>By Display Date</value>
   </data>
   <data name="chkOrderByDownloadsToday.text" xml:space="preserve">
     <value>Ved downloads i dag</value>
@@ -201,23 +189,8 @@
   <data name="chkOrderByTotalHits.text" xml:space="preserve">
     <value>Ved total Hits</value>
   </data>
-  <data name="chkPersonLastUpdating.text" xml:space="preserve">
-    <value>Person seneste opdatering</value>
-  </data>
-  <data name="chkPersonLastUpdatingFullName.text" xml:space="preserve">
-    <value>Fulde navn</value>
-  </data>
   <data name="chkPodcast.text" xml:space="preserve">
     <value>Podcast</value>
-  </data>
-  <data name="chkPostedBy.text" xml:space="preserve">
-    <value>Posted af (person seneste opdatering)</value>
-  </data>
-  <data name="chkPostedByFullName.text" xml:space="preserve">
-    <value>Fuld navn</value>
-  </data>
-  <data name="chkPublishDate.text" xml:space="preserve">
-    <value>Dato første udgivelse</value>
   </data>
   <data name="chkRating.text" xml:space="preserve">
     <value>Vælg vurderings tal</value>
@@ -233,9 +206,6 @@
   </data>
   <data name="idTitle.text" xml:space="preserve">
     <value>Side elementer</value>
-  </data>
-  <data name="lblVisibleOnListing.text" xml:space="preserve">
-    <value>Synlige på liste indgangs sider</value>
   </data>
   <data name="lblVisibleOnPage.text" xml:space="preserve">
     <value>Synlige på denne side</value>

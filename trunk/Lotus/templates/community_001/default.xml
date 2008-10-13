@@ -25,6 +25,9 @@
   <menu_tabs>
     <hide_root>false</hide_root>
   </menu_tabs>
+  <menu_side>
+    <maxlvl>10</maxlvl>
+  </menu_side>
   <menu_links>
     <hide_root>false</hide_root>
     <separator><![CDATA[&nbsp;&nbsp;&nbsp;&nbsp;]]></separator>

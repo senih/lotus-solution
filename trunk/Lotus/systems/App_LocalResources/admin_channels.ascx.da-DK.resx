@@ -168,24 +168,6 @@
   <data name="lblViewPermission.HeaderText" xml:space="preserve">
     <value>Se tilladelser</value>
   </data>
-  <data name="Login1.FailureText" xml:space="preserve">
-    <value>Login mislykkes. Prøv venligst igen.</value>
-  </data>
-  <data name="Login1.LoginButtonText" xml:space="preserve">
-    <value>Login</value>
-  </data>
-  <data name="Login1.PasswordLabelText" xml:space="preserve">
-    <value>Password:</value>
-  </data>
-  <data name="Login1.PasswordRecoveryText" xml:space="preserve">
-    <value>Jeg har glemt mit password</value>
-  </data>
-  <data name="Login1.RememberMeText" xml:space="preserve">
-    <value>Husk mig.</value>
-  </data>
-  <data name="Login1.UserNameLabelText" xml:space="preserve">
-    <value>Brugernavn:</value>
-  </data>
   <data name="ViewPermission1" xml:space="preserve">
     <value>Everyone (Anonymous Users)</value>
   </data>
@@ -194,5 +176,11 @@
   </data>
   <data name="ViewPermission3" xml:space="preserve">
     <value>Channel's Users Only</value>
+  </data>
+  <data name="btnCancel.text" xml:space="preserve">
+    <value>     Annuller  </value>
+  </data>
+  <data name="btnUpdate.text" xml:space="preserve">
+    <value>     Opdater  </value>
   </data>
 </root>

@@ -10,8 +10,12 @@
     Private oConn As New SqlConnection(sConn)
 
     Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
-        If (IsNothing(GetUser())) Then
+        
+        If IsNothing(GetUser) Then
             panelLogin.Visible = True
+            Dim oUC1 As Control = LoadControl("login.ascx")
+            panelLogin.Controls.Add(oUC1)
+            PanelConfigure.Visible = False
         Else
             '~~~ Only Administrators  ~~~
             If (Roles.IsUserInRole(GetUser.UserName.ToString(), "Administrators")) Then
@@ -88,7 +92,7 @@
     End Sub
 
     Protected Sub btnNext_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles btnNext.Click
-        If Not Me.IsUserLoggedIn Then Exit Sub
+        If Not Me.IsUserLoggedIn Then Response.Redirect(HttpContext.Current.Items("_path"))
         Dim iReceipientType As Integer = 0
         Dim sEmails As String = ""
         Dim sEmail As String
@@ -231,25 +235,13 @@
     Protected Sub btnCancel_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles btnCancel.Click
         Response.Redirect(Me.LinkWorkspaceNewsletters)
     End Sub
-
-    Protected Sub Login1_LoggedIn(ByVal sender As Object, ByVal e As System.EventArgs)
-        Response.Redirect(HttpContext.Current.Items("_path"))
-    End Sub
-
-    Protected Sub Login1_PreRender(ByVal sender As Object, ByVal e As System.EventArgs)
-        Login1.PasswordRecoveryUrl = "~/" & Me.LinkPassword & "?ReturnUrl=" & HttpContext.Current.Items("_path")
-    End Sub
 </script>
 
 <asp:Panel ID="panelLogin" runat="server" Visible="False">
-    <asp:Login ID="Login1" runat="server" meta:resourcekey="Login1" PasswordRecoveryText="Password Recovery" TitleText="" OnLoggedIn="Login1_LoggedIn" OnPreRender="Login1_PreRender">
-        <LabelStyle HorizontalAlign="Left" Wrap="False" />
-    </asp:Login>
-    <br />
 </asp:Panel>
 
 <asp:Panel ID="PanelConfigure" runat="server" Visible="False">
-<p></p>
+<p>
 <table >
   <tr  valign=top>
     <td >
@@ -290,7 +282,7 @@
       </td>
   </tr>
 </table>
-
+</p>
  <asp:HiddenField ID="hidRoles" runat="server" /> 
  <script language="javascript">
     function transferValues(oList,oHid)
@@ -310,7 +302,8 @@
 		//alert(oHid.value);
 	  }
 </script>
- <p></p>
+ <p>
   <asp:Button ID="btnNext" runat="server" Text=" Next " meta:resourcekey="btnNext"/>
   <asp:Button ID="btnCancel" runat="server" Text=" Cancel " meta:resourcekey="btnCancel"/>
+ </p>
 </asp:Panel>

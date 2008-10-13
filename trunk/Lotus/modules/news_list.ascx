@@ -5,9 +5,19 @@
 <script runat="server">
 
     Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs)
-        If Not IsPostBack Then
-            lnkShowLatest_Click(sender, Nothing)
-        End If
+        'If Not IsPostBack Then
+        'lnkShowLatest_Click(sender, Nothing)
+        gvMailList.DataSource = GetNewsleters(True, Me.RootID)
+        gvMailList.DataBind()
+        ddlList.DataSource = GetCategoriesByRootID(Me.RootID, True, True)
+        ddlList.DataBind()
+        ddlList.Items.Insert(0, GetLocalResourceObject("SelectList"))
+        gvMailList.Visible = True
+            
+        'txtMessage.Visible = False
+        'txtMessage.Text = ""
+        litMessage.Text = ""
+        'End If
     End Sub
 
     Protected Sub ddlList_SelectedIndexChanged(ByVal sender As Object, ByVal e As System.EventArgs)
@@ -18,6 +28,11 @@
             litMessage.Text = ""
             'txtMessage.Visible = False
             'txtMessage.Text = ""
+        Else
+            gvMailList.DataSource = GetNewsleters(True, Me.RootID)
+            gvMailList.DataBind()
+            gvMailList.Visible = True
+            litMessage.Text = ""
         End If
     End Sub
 
@@ -51,6 +66,14 @@
         litMessage.Text = ""
     End Sub
   
+    Protected Sub gvMailList_PageIndexChanging(ByVal sender As Object, ByVal e As System.Web.UI.WebControls.GridViewPageEventArgs)
+        Dim iIndex As Integer = e.NewPageIndex()
+        gvMailList.PageIndex = iIndex
+        gvMailList.DataBind()
+        gvMailList.Visible = True
+        
+        'Response.Redirect(HttpContext.Current.Items("_page"))
+    End Sub
 </script>
 
 <asp:DropDownList ID="ddlList" runat="server" DataTextField="category" DataValueField="category_id" AutoPostBack="true" OnSelectedIndexChanged="ddlList_SelectedIndexChanged">
@@ -60,11 +83,11 @@
 <asp:GridView ID="gvMailList" runat="server" EnableTheming="false"
       CellPadding="4" ShowHeader="false" GridLines="None" AutoGenerateColumns="False" 
       AllowPaging="True" AllowSorting="false" DataKeyNames="id" 
-      OnSelectedIndexChanging="gvMailList_SelectedIndexChanging">
+      OnSelectedIndexChanging="gvMailList_SelectedIndexChanging" OnPageIndexChanging="gvMailList_PageIndexChanging">
       <Columns>
         <asp:TemplateField>
           <ItemTemplate>
-           <%# Eval("Subject", "")%> - <%#Eval("CreatedDate", "")%>
+           <%# Eval("Subject", "")%> - <%#CDate(Eval("CreatedDate")).AddHours(Me.TimeOffset)%>
           </ItemTemplate>
         </asp:TemplateField>
         <asp:CommandField SelectText="Select" ItemStyle-VerticalAlign="top" ShowSelectButton="True" meta:resourcekey="Select"/> 

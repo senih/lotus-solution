@@ -120,9 +120,6 @@
   <data name="Body" xml:space="preserve">
     <value>Abonnent bekræftelses meddelelse</value>
   </data>
-  <data name="btnCancel.text" xml:space="preserve">
-    <value>   Annuller   </value>
-  </data>
   <data name="btnSave.Text" xml:space="preserve">
     <value>   Gem   </value>
   </data>

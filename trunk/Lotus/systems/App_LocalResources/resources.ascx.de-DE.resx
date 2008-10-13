@@ -121,7 +121,7 @@
     <value>Ausgewhlte Dateien lschen</value>
   </data>
   <data name="btnNewFolder.Text" xml:space="preserve">
-    <value>Create Folder</value>
+    <value>  Create  </value>
   </data>
   <data name="btnUpload.text" xml:space="preserve">
     <value>   Datei hochladen   </value>
@@ -168,28 +168,13 @@
   <data name="lblUploadFile.text" xml:space="preserve">
     <value>Upload File</value>
   </data>
-  <data name="Login1.FailureText" xml:space="preserve">
-    <value>Ihr Anmeldeversuch war nicht erfolgreich. Bitte versuchen Sie es erneut.</value>
-  </data>
-  <data name="Login1.LoginButtonText" xml:space="preserve">
-    <value>Anmelden</value>
-  </data>
-  <data name="Login1.PasswordLabelText" xml:space="preserve">
-    <value>Kennwort:</value>
-  </data>
-  <data name="Login1.PasswordRecoveryText" xml:space="preserve">
-    <value>Kennwortwiederherstellung</value>
-  </data>
-  <data name="Login1.RememberMeText" xml:space="preserve">
-    <value>Kennwort merken.</value>
-  </data>
-  <data name="Login1.UserNameLabelText" xml:space="preserve">
-    <value>Benutzername:</value>
-  </data>
   <data name="SelectChannel" xml:space="preserve">
     <value>Kanal whlen..</value>
   </data>
   <data name="UploadFailed" xml:space="preserve">
     <value>Hochladen fehlgeschlagen. Dateityp nicht erlaubt.</value>
+  </data>
+  <data name="lblNewFolder.text" xml:space="preserve">
+    <value>New Folder</value>
   </data>
 </root>

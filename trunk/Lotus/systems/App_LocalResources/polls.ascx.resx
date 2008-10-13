@@ -123,9 +123,6 @@
   <data name="cmdDelete.DeleteText" xml:space="preserve">
     <value>Delete</value>
   </data>
-  <data name="cmdEdit.EditText" xml:space="preserve">
-    <value>Answers</value>
-  </data>
   <data name="cmdEmbed.SelectText" xml:space="preserve">
     <value>Embed Poll</value>
   </data>
@@ -141,22 +138,10 @@
   <data name="lblQuestions.HeaderText" xml:space="preserve">
     <value>Questions</value>
   </data>
-  <data name="Login1.FailureText" xml:space="preserve">
-    <value>Your login attempt was not successful. Please try again.</value>
+  <data name="cmdAnswers.text" xml:space="preserve">
+    <value>Answers</value>
   </data>
-  <data name="Login1.LoginButtonText" xml:space="preserve">
-    <value>Login</value>
-  </data>
-  <data name="Login1.PasswordLabelText" xml:space="preserve">
-    <value>Password:</value>
-  </data>
-  <data name="Login1.PasswordRecoveryText" xml:space="preserve">
-    <value>Password Recovery</value>
-  </data>
-  <data name="Login1.RememberMeText" xml:space="preserve">
-    <value>Remember me next time.</value>
-  </data>
-  <data name="Login1.UserNameLabelText" xml:space="preserve">
-    <value>User Name:</value>
+  <data name="SavedSuccessfully" xml:space="preserve">
+    <value>Saved Successfully.</value>
   </data>
 </root>

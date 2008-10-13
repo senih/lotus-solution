@@ -173,7 +173,12 @@
                     If sTtl2.ToString = "" Then 'kalau published version blm ada => bShowLink = False
                         bShowMenu = False
                     Else
-                        bShowMenu = True
+                        'bShowMenu = True
+                        If CBool(oDataReader("is_hidden2")) Then
+                            bShowMenu = False
+                        Else
+                            bShowMenu = True
+                        End If
                         sTtl = sTtl2
 
                         '--- Linked Page

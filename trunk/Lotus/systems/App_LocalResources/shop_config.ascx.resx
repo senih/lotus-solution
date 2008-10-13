@@ -147,19 +147,16 @@
   <data name="lblTerms.text" xml:space="preserve">
     <value>Terms </value>
   </data>
-  <data name="Login1.LoginButtonText" xml:space="preserve">
-    <value>Login</value>
+  <data name="chkUseCashOnDelivery.text" xml:space="preserve">
+    <value>Cash On Delivery</value>
   </data>
-  <data name="Login1.PasswordLabelText" xml:space="preserve">
-    <value>Password:</value>
+  <data name="chkUsePaypal.text" xml:space="preserve">
+    <value>Credit Card Payment using Paypal</value>
   </data>
-  <data name="Login1.PasswordRecoveryText" xml:space="preserve">
-    <value>Password Recovery</value>
+  <data name="lblPaymentOptions.text" xml:space="preserve">
+    <value>Payment Options</value>
   </data>
-  <data name="Login1.RememberMeText" xml:space="preserve">
-    <value>Remember me next time.</value>
-  </data>
-  <data name="Login1.UserNameLabelText" xml:space="preserve">
-    <value>User Name:</value>
+  <data name="lblCodOrderConfirm.text" xml:space="preserve">
+    <value>COD order confirm template </value>
   </data>
 </root>

@@ -17,6 +17,8 @@
     Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
         If (IsNothing(GetUser())) Then
             panelLogin.Visible = True
+            Dim oUC1 As Control = LoadControl("login.ascx")
+            panelLogin.Controls.Add(oUC1)
             panelSend.Visible = False
         Else
             '~~~ Only Administrators  ~~~
@@ -97,9 +99,9 @@
 
                 oNewsletter = Nothing
 
-                lnkView.Attributes.Add("onclick", "window.open('" & Me.AppPath & "systems/newsletter_viewer.aspx?c=" & Me.Culture & "&id=" & NewsId & "',""_blank"",""width=700,height=500,top=100,left=100,scrollbars=yes,resizable=yes"");return false;")
-                lnkReport.OnClientClick = "window.open('" & Me.AppPath & "systems/newsletter_report.aspx?c=" & Me.Culture & "&id=" & NewsId & "',""_blank"",""width=450,height=405,top=150,left=150,scrollbars=yes"");return false;"
-
+                lnkView.Attributes.Add("onclick", "modalDialog('" & Me.AppPath & "systems/newsletter_viewer.aspx?c=" & Me.Culture & "&id=" & NewsId & "',700,500);return false;")
+                lnkReport.OnClientClick = "modalDialog('" & Me.AppPath & "systems/newsletter_report.aspx?c=" & Me.Culture & "&id=" & NewsId & "',450,405);return false;"
+                
                 'Get Total receipient and total send mail
                 Dim i As Integer
                 Dim colReceipients As Collection = New Collection
@@ -125,20 +127,12 @@
         Response.Redirect(Me.LinkWorkspaceNewsletters)
     End Sub
 
-    Protected Sub Login1_LoggedIn(ByVal sender As Object, ByVal e As System.EventArgs)
-        Response.Redirect(HttpContext.Current.Items("_path"))
-    End Sub
-
-    Protected Sub Login1_PreRender(ByVal sender As Object, ByVal e As System.EventArgs)
-        Login1.PasswordRecoveryUrl = "~/" & Me.LinkPassword & "?ReturnUrl=" & HttpContext.Current.Items("_path")
-    End Sub
-
     Protected Sub lnkConfigure_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles lnkConfigure.Click
         Response.Redirect(Me.LinkWorkspaceNewsConfigure & "?id=" & NewsId.ToString)
     End Sub
 
     Protected Sub btnSend_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles btnSend.Click
-        If Not Me.IsUserLoggedIn Then Exit Sub
+        If Not Me.IsUserLoggedIn Then Response.Redirect(HttpContext.Current.Items("_path"))
         Try
             Dim n As Integer = CInt(txtCount.Text)
         Catch ex As Exception
@@ -149,7 +143,7 @@
     End Sub
 
     Protected Sub btnSendToAll_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles btnSendToAll.Click
-        If Not Me.IsUserLoggedIn Then Exit Sub
+        If Not Me.IsUserLoggedIn Then Response.Redirect(HttpContext.Current.Items("_path"))
         SendMessage("All")
     End Sub
 
@@ -241,13 +235,12 @@
                         For Each item As String In System.IO.Directory.GetFiles(sPath)
                             If Not item.Substring(item.LastIndexOf("\") + 1).ToLower = "thumbs.db" Then
                                 sPathFile = sPath & "\" & item.Substring(item.LastIndexOf("\") + 1)
+                                
+                                oMailMessage.Attachments.Add(New Attachment(sPathFile))
                             End If
                         Next
                     End If
-
-                    If Not sPathFile = "" Then
-                        oMailMessage.Attachments.Add(New Attachment(sPathFile))
-                    End If
+                    
                     '--------------------------------------------------
                     oSmtpClient.Send(oMailMessage)
                     bSend = True
@@ -273,15 +266,11 @@
     End Sub
  </script>
 
-<p></p>
 <asp:Panel ID="panelLogin" runat="server" Visible="False">
-    <asp:Login ID="Login1" runat="server" meta:resourcekey="Login1"  PasswordRecoveryText="Password Recovery" TitleText="" OnLoggedIn="Login1_LoggedIn" OnPreRender="Login1_PreRender">
-        <LabelStyle HorizontalAlign="Left" Wrap="False" />
-    </asp:Login>
-    <br />
 </asp:Panel>
 
 <asp:Panel ID="panelSend" runat="server">
+
 <table >
   <tr>
     <td>
@@ -309,7 +298,10 @@
     </td>
   </tr>
 </table>
+
 <div style=" border-bottom:#d0d0d0 1px solid;width:350px;margin-bottom:3px;margin-top:3px;"></div>
+
+<p>
 <table>
   <tr>
     <td valign="top" width=120px>
@@ -369,4 +361,6 @@
 <asp:Button Text="Back to Newslettter List" ID="btnBack" runat="server" Visible="false"  meta:resourcekey="btnBack"></asp:Button>
 
 <asp:HiddenField ID="hidReceipients" runat="server" />
+</p>
+
 </asp:Panel>

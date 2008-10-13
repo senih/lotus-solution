@@ -4,17 +4,14 @@
 <%@ Import Namespace="System.Web.Security.Membership"%>
 <%@ Import Namespace="System.IO" %>
 
-
 <script runat="server">
     Private sCurrentDirectory As String
     Private sPath As String = ""
     
     Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
-        If Not Page.IsPostBack Then
-            panelManager.Visible = False
-        Else
-            panelManager.Visible = True
-        End If
+        'Enable this line if using AJAX
+        'Dim oUpdate As ScriptManager = ScriptManager.GetCurrent(Page)
+        'oUpdate.RegisterPostBackControl(btnUpload)
 
         If Me.IsUserLoggedIn Then
             Dim oList As ListItem
@@ -23,38 +20,37 @@
             Dim oChannelManager As ChannelManager = New ChannelManager
 
             'Render Channels
-            dropChannels.Items.Clear()
-            'oList = New ListItem
-            'oList.Value = ""
-            'oList.Text = GetLocalResourceObject("SelectChannel") 'Select Channel..
-            'dropChannels.Items.Add(oList)
+            If Not Page.IsPostBack Then
+                dropChannels.Items.Clear()
 
-            If Me.IsAdministrator Then
-                Dim oDataReader As SqlDataReader
-                oDataReader = oChannelManager.GetChannels()
-                Do While oDataReader.Read()
-                    oList = New ListItem
-                    oList.Value = oDataReader("channel_id").ToString
-                    oList.Text = oDataReader("channel_name").ToString
-                    dropChannels.Items.Add(oList)
-                Loop
-                oDataReader.Close()
-                oDataReader = Nothing
-            Else
-                For Each Item In Roles.GetRolesForUser(GetUser.UserName)
-                    If Item.Contains("Resource Managers") Then
-                        If Item.Substring(Item.IndexOf("Resource Managers")) = "Resource Managers" Then
-                            sChannelName = Item.Substring(0, Item.IndexOf("Resource Managers") - 1)
-                            oList = New ListItem
-                            oList.Value = oChannelManager.GetChannelByName(sChannelName).ChannelId.ToString
-                            oList.Text = sChannelName
-                            dropChannels.Items.Add(oList)
+                If Me.IsAdministrator Then
+                    Dim oDataReader As SqlDataReader
+                    oDataReader = oChannelManager.GetChannels()
+                    Do While oDataReader.Read()
+                        oList = New ListItem
+                        oList.Value = oDataReader("channel_id").ToString
+                        oList.Text = oDataReader("channel_name").ToString
+                        dropChannels.Items.Add(oList)
+                    Loop
+                    oDataReader.Close()
+                    oDataReader = Nothing
+                Else
+                    For Each Item In Roles.GetRolesForUser(GetUser.UserName)
+                        If Item.Contains("Resource Managers") Then
+                            If Item.Substring(Item.IndexOf("Resource Managers")) = "Resource Managers" Then
+                                sChannelName = Item.Substring(0, Item.IndexOf("Resource Managers") - 1)
+                                oList = New ListItem
+                                oList.Value = oChannelManager.GetChannelByName(sChannelName).ChannelId.ToString
+                                oList.Text = sChannelName
+                                dropChannels.Items.Add(oList)
+                            End If
                         End If
-                    End If
-                Next
+                    Next
+                End If
+
+                oChannelManager = Nothing
             End If
 
-            oChannelManager = Nothing
             
             If dropChannels.Items.Count = 0 Then
                 panelResources.Visible = False
@@ -66,43 +62,22 @@
             panelResources.Visible = True
             panelLogin.Visible = False
 
-            sPath = Request.QueryString("path")
-            If sPath <> "" Then
-                Dim nChnlId As Integer
-                If sPath.Substring(1).IndexOf("\") = -1 Then
-                    nChnlId = sPath.Substring(1)
-                Else
-                    nChnlId = sPath.Substring(1, sPath.Substring(1).IndexOf("\"))
-                End If
-                dropChannels.SelectedValue = nChnlId
-
-                sPath = Server.MapPath("resources") & sPath
-                If Directory.Exists(sPath) Then
-                    sCurrentDirectory = sPath
-                End If
-                
-                panelManager.Visible = True
-                showFiles()
-            Else
-                sPath = Server.MapPath("resources") & "\" & dropChannels.SelectedValue
-                If Directory.Exists(sPath) Then
-                    sCurrentDirectory = sPath
-                End If
-                
-                panelManager.Visible = True
-                showFiles()
+            sPath = Server.MapPath("resources") & "\" & dropChannels.SelectedValue
+            If Directory.Exists(sPath) Then
+                sCurrentDirectory = sPath
             End If
-
+            showFiles()
         Else
             panelResources.Visible = False
             panelLogin.Visible = True
-            panelLogin.FindControl("Login1").Focus()
+            Dim oUC1 As Control = LoadControl("login.ascx")
+            panelLogin.Controls.Add(oUC1)
         End If
     End Sub
 
     Protected Sub showFiles()
         With My.Computer.FileSystem
-            'install Path
+
             Dim n As Integer
             Dim nFileLength As Double
             Dim i As Integer
@@ -121,37 +96,33 @@
             End If
 
             'Breadcrumb
-            Dim sQueryString As String = Request.QueryString("path") & ""
-            If sQueryString = "" Then sQueryString = "\" & dropChannels.SelectedValue
-            
+            If hidPath.Value = "" Then hidPath.Value = "\" & dropChannels.SelectedValue
+            Dim sTmp As String = hidPath.Value
             Dim sBreadcrumb As String = ""
-                
             Dim item As String
             Dim slink As String = ""
             Dim count As String = 0
             Dim nLength As Integer
-            If Not sQueryString.Substring(1).IndexOf("\") = -1 Then
-                nLength = sQueryString.Substring(sQueryString.Substring(1).IndexOf("\")).Split("\").Length()
-                For Each item In sQueryString.Substring(sQueryString.Substring(1).IndexOf("\")).Split("\")
+            If Not sTmp.Substring(1).IndexOf("\") = -1 Then
+                nLength = sTmp.Substring(sTmp.Substring(1).IndexOf("\")).Split("\").Length()
+                For Each item In sTmp.Substring(sTmp.Substring(1).IndexOf("\")).Split("\")
                     slink = slink & "\" & item
                     If count = nLength - 1 Then
                         sBreadcrumb = sBreadcrumb & item
                     ElseIf count = 0 Then
-                        sBreadcrumb = sBreadcrumb & "\" ' "<a href=""" & Me.LinkWorkspaceResources & "?path=" & Server.UrlEncode(slink) & """>" & dropChannels.SelectedItem.Text & "</a>\"
+                        sBreadcrumb = sBreadcrumb & "\"
                     Else
-                        sBreadcrumb = sBreadcrumb & "<a href=""" & Me.LinkWorkspaceResources & "?path=" & Server.UrlEncode(slink) & """>" & item & "</a>\"
+                        sBreadcrumb = sBreadcrumb & item & "\"
                     End If
                     count += 1
                 Next
             Else
-                sBreadcrumb = sBreadcrumb ' & dropChannels.SelectedItem.Text
+                sBreadcrumb = sBreadcrumb
             End If
-
             lblPath.Text = sBreadcrumb.Replace("\", " \ ")
-            'dropChannels.SelectedItem.Text & sBreadcrumb.Replace("\", " \ ")
 
  
-            
+            'Install Path
             Dim sInstallPath As String 'relative
             Dim sPath As String
             Dim sRawUrl As String = Context.Request.RawUrl.ToString()
@@ -163,6 +134,7 @@
             End If
             sInstallPath = sPath.Substring(0, sPath.LastIndexOf("/") + 1)
 
+            
             Dim dt As New DataTable
             dt.Columns.Add(New DataColumn("FileName", GetType(String)))
             dt.Columns.Add(New DataColumn("FileUrl", GetType(String)))
@@ -171,14 +143,12 @@
             dt.Columns.Add(New DataColumn("Icon", GetType(String)))
 
             ' Create Up one Folder
-            If Request.QueryString("path") <> "" Then
-                If .GetParentPath(sCurrentDirectory) <> sResMapPath Then
-                    Dim dr As DataRow = dt.NewRow()
-                    dr("FileName") = "..."
-                    dr("Icon") = ""
-                    dr("FileUrl") = Me.AppFullPath & Me.LinkWorkspaceResources & "?path=" & Server.UrlEncode(.GetParentPath(sCurrentDirectory).Substring(sResMapPath.Length))
-                    dt.Rows.Add(dr)
-                End If
+            If .GetParentPath(sCurrentDirectory) <> sResMapPath Then
+                Dim dr As DataRow = dt.NewRow()
+                dr("FileName") = "..."
+                dr("Icon") = ""
+                dr("FileUrl") = .GetParentPath(sCurrentDirectory).Substring(sResMapPath.Length)
+                dt.Rows.Add(dr)
             End If
 
             'List Folder at current directory
@@ -201,20 +171,19 @@
                     dr("Size") = nFileLength & " " & GetLocalResourceObject("Files")
                 End If
 
-                sVirtualPath = Me.AppFullPath & Me.LinkWorkspaceResources & "?path=" & Server.UrlEncode(.GetDirectoryInfo(cItems(i)).FullName.Substring(sResMapPath.Length))
-                dr("Icon") = sVirtualPath
-                dr("FileUrl") = sVirtualPath
+                dr("Icon") = "folder"
+                dr("FileUrl") = .GetDirectoryInfo(cItems(i)).FullName.Substring(sResMapPath.Length)
                 dt.Rows.Add(dr)
             Next
 
-            'List All File at current directory
+            'List All Files on the current directory
             cItems = .GetFiles(sPhysicalPath, FileIO.SearchOption.SearchTopLevelOnly)
             If cItems.Count = 0 Then
                 btnDelete.Visible = False
-                'lblEmpty.Visible = True
+                lblEmpty.Visible = True
             Else
                 btnDelete.Visible = True
-                'lblEmpty.Visible = False
+                lblEmpty.Visible = False
             End If
 
             For i = 0 To cItems.Count - 1
@@ -249,14 +218,18 @@
 
             btnDelete.OnClientClick = "if(_getSelection(document.getElementById('" & hidFilesToDel.ClientID & "'))){return confirm('" & GetLocalResourceObject("DeleteConfirm") & "')}else{return false}"
             btnDelete.Style.Add("margin-right", "5px")
-            btnDelete2.Attributes.Add("onclick", "if(!confirm('" & GetLocalResourceObject("DeleteConfirm2") & "'))return;")
         End With
     End Sub
 
     Protected Sub btnUpload_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles btnUpload.Click
-        If Not Me.IsUserLoggedIn Then Exit Sub
+        If Not Me.IsUserLoggedIn Then Response.Redirect(HttpContext.Current.Items("_path"))
+        
+        sPath = Server.MapPath("resources") & hidPath.Value
+        If Directory.Exists(sPath) Then
+            sCurrentDirectory = sPath
+        End If
+        
         Dim sPhysicalPath As String = sCurrentDirectory
-      
         With FileUpload1.PostedFile
             'File asp,cgi,pl merupakan plain/text
             'aspx dan ascx typenya application/xml
@@ -275,11 +248,19 @@
     End Sub
 
     Protected Sub dropChannels_SelectedIndexChanged(ByVal sender As Object, ByVal e As System.EventArgs) Handles dropChannels.SelectedIndexChanged
-        Response.Redirect(Me.LinkWorkspaceResources & "?path=%5c" & dropChannels.SelectedValue)
+        hidPath.Value = "\" & dropChannels.SelectedValue
+        lblPath.Text = ""
+
+        'Refresh
+        sPath = Server.MapPath("resources") & hidPath.Value
+        If Directory.Exists(sPath) Then
+            sCurrentDirectory = sPath
+        End If
+        showFiles()
     End Sub
 
     Protected Sub btnDelete_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles btnDelete.Click
-        If Not Me.IsUserLoggedIn Then Exit Sub
+        If Not Me.IsUserLoggedIn Then Response.Redirect(HttpContext.Current.Items("_path"))
         Dim Item As String
         With My.Computer.FileSystem
             For Each Item In hidFilesToDel.Value.Split("|")
@@ -289,25 +270,23 @@
             Next
         End With
 
+        'Refresh
+        sPath = Server.MapPath("resources") & hidPath.Value
+        If Directory.Exists(sPath) Then
+            sCurrentDirectory = sPath
+        End If
         showFiles()
-    End Sub
-
-    Protected Sub GridView1_PageIndexChanging(ByVal sender As Object, ByVal e As System.Web.UI.WebControls.GridViewPageEventArgs) Handles GridView1.PageIndexChanging
-        Dim iIndex As Integer = e.NewPageIndex()
-        GridView1.PageIndex = iIndex
-        showFiles()
-    End Sub
-
-    Protected Sub Login1_LoggedIn(ByVal sender As Object, ByVal e As System.EventArgs)
-        Response.Redirect(HttpContext.Current.Items("_path"))
-    End Sub
-
-    Protected Sub Login1_PreRender(ByVal sender As Object, ByVal e As System.EventArgs)
-        Login1.PasswordRecoveryUrl = "~/" & Me.LinkPassword & "?ReturnUrl=" & HttpContext.Current.Items("_path")
     End Sub
 
     Protected Sub btnNewFolder_Click(ByVal sender As Object, ByVal e As System.EventArgs)
-        If Not Me.IsUserLoggedIn Then Exit Sub
+        If Not Me.IsUserLoggedIn Then Response.Redirect(HttpContext.Current.Items("_path"))
+
+        sPath = Server.MapPath("resources") & hidPath.Value
+        
+        If Directory.Exists(sPath) Then
+            sCurrentDirectory = sPath
+        End If
+        
         Dim sPhysicalPath As String
         With My.Computer.FileSystem
             sPhysicalPath = sCurrentDirectory
@@ -315,16 +294,16 @@
                 lblUploadStatus.Text = GetLocalResourceObject("DirectoryExist")
             Else
                 .CreateDirectory(sPhysicalPath & "\" & txtNewFolder.Text)
-                sCurrentDirectory = sPhysicalPath
             End If
         End With
+        
         showFiles()
         txtNewFolder.Text = ""
     End Sub
 
-    Function ShowCheckBox(ByVal sUrl As String) As String
+    Function ShowCheckBox(ByVal sIcon As String, ByVal sUrl As String) As String
         Dim sHTML As String
-        If sUrl.Contains("?path=") Then
+        If sIcon = "folder" Or sIcon = "" Then
             sHTML = "<img src=""systems/images/ico_folder.gif""><input name=""chkSelect"" style=""display:none"" type=""checkbox"" />"
         Else
             sHTML = "<input name=""chkSelect"" type=""checkbox"" />"
@@ -334,150 +313,193 @@
 
     Function Preview(ByVal sIcon As String) As String
         Dim sHTML As String
-        If sIcon = "" Then
+        If sIcon = "folder" Or sIcon = "" Then
             sHTML = ""
-        ElseIf sIcon.Contains("?path=") Then
-            sHTML = "<a href=""#"" " & _
-            "onclick=""document.getElementById('" & hidFilesToDel.ClientID & "').value ='" & sIcon & "'; " & _
-            "document.getElementById('" & btnDelete2.ClientID & "').click();return false;"">" & GetLocalResourceObject("delete") & "</a>"
         Else
             sHTML = "<img src=""" & sIcon & """>"
         End If
         Return sHTML
     End Function
 
-    Function ShowLink(ByVal sUrl As String, ByVal sFileName As String) As String
-        Dim sHTML As String
-        If sUrl.Contains("?path=") Then
-            sHTML = "<a href=""" & sUrl & """ name=""Folder"">" & sFileName & "</a>"
-        Else
-            sHTML = "<a href=""" & sUrl & """ target=""_blank"">" & sFileName & "</a>"
+    Function ShowFolderLink(ByVal sIcon As String) As String
+        Dim sHTML As String = ""
+        If sIcon <> "folder" And sIcon <> "" Then
+            sHTML = "<span style=""display:none"">"
         End If
         Return sHTML
     End Function
 
-    Protected Sub btnDelete2_Click(ByVal sender As Object, ByVal e As System.EventArgs)
-        If Not Me.IsUserLoggedIn Then Exit Sub
-        Dim Item As String = hidFilesToDel.Value
-        Dim sDirectory As String = Server.MapPath("resources") & Server.UrlDecode(Item.Substring(Item.LastIndexOf("=") + 1))
+    Function ShowDeleteFolderLink(ByVal sIcon As String) As String
+        Dim sHTML As String = ""
+        If sIcon <> "folder" Then
+            sHTML = "<span style=""display:none"">"
+        End If
+        Return sHTML
+    End Function
+    
+    Function ShowFile(ByVal sIcon As String, ByVal sUrl As String, ByVal sFileName As String) As String
+        Dim sHTML As String = ""
+        If sIcon <> "folder" And sIcon <> "" Then
+            sHTML = "<a href=""" & sUrl & """ title="""" target=""_blank"">" & sFileName & "</a>"
+        End If
+        Return sHTML
+    End Function
+
+    Protected Sub GridView1_RowCreated(ByVal sender As Object, ByVal e As System.Web.UI.WebControls.GridViewRowEventArgs)
+        If e.Row.RowType = DataControlRowType.DataRow Then
+            Dim addButton As LinkButton = CType(e.Row.Cells(1).Controls(1), LinkButton)
+            addButton.Attributes("index") = e.Row.RowIndex.ToString()
+            
+            Dim addButton2 As LinkButton = CType(e.Row.Cells(4).Controls(1), LinkButton)
+            addButton2.Attributes("index") = e.Row.RowIndex.ToString()
+            addButton2.OnClientClick = "if(!confirm('" & GetLocalResourceObject("DeleteConfirm2") & "'))return false;"
+        End If
+    End Sub
+
+    Protected Sub lnkFolder_Click(ByVal sender As Object, ByVal e As System.EventArgs)
+        If Not Me.IsUserLoggedIn Then Response.Redirect(HttpContext.Current.Items("_path"))
+
+        Dim lnkBtn As LinkButton = sender
+        Dim index As Integer = CInt(lnkBtn.Attributes("index"))
+        
+        If Request.Form("hidFileFolder").Split(",")(index).Contains("/") Then
+            'MsgBox(Request.Form("hidFileFolder").Split(",")(index).ToString)
+        Else
+            hidPath.Value = Request.Form("hidFileFolder").Split(",")(index).ToString
+            
+            'Refresh
+            sPath = Server.MapPath("resources") & hidPath.Value
+            If Directory.Exists(sPath) Then
+                sCurrentDirectory = sPath
+            End If
+            showFiles()
+        End If
+    End Sub
+
+    Protected Sub lnkFolderDelete_Click(ByVal sender As Object, ByVal e As System.EventArgs)
+        If Not Me.IsUserLoggedIn Then Response.Redirect(HttpContext.Current.Items("_path"))
+        
+        Dim lnkBtn As LinkButton = sender
+        Dim index As Integer = CInt(lnkBtn.Attributes("index"))
+        
+        Dim sDirectory As String = Server.MapPath("resources") & Request.Form("hidFolderDel").Split(",")(index).ToString
         If Directory.Exists(sDirectory) Then
             Directory.Delete(sDirectory, True)
+        End If
+
+        'Refresh
+        sPath = Server.MapPath("resources") & hidPath.Value
+        If Directory.Exists(sPath) Then
+            sCurrentDirectory = sPath
         End If
         showFiles()
     End Sub
 </script>
 
 <asp:Panel ID="panelLogin" runat="server" Visible="False">
-    <asp:Login ID="Login1" meta:resourcekey="Login1" runat="server"  PasswordRecoveryText="Password Recovery" TitleText="" OnLoggedIn="Login1_LoggedIn" OnPreRender="Login1_PreRender">
-        <LabelStyle HorizontalAlign="Left" Wrap="False" />
-    </asp:Login>
-    <br />
 </asp:Panel>
 
 <asp:Panel ID="panelResources" runat="server">
+
     <table cellpadding="0" cellspacing="0">
     <tr><td><asp:Label ID="lblChannel" meta:resourcekey="lblChannel" runat="server" Text="Channel"></asp:Label>:&nbsp;</td><td>
     <asp:DropDownList ID="dropChannels" runat="server" AutoPostBack="true">
     </asp:DropDownList>&nbsp;</td><td><asp:Label ID="lblPath" runat="server" Text=""></asp:Label>
     </td></tr></table>
-    <br /><br />
+    <br />
+    
+    <asp:HiddenField ID="hidPath" runat="server" />
      
-    <table cellpadding="0" cellspacing="0">
+    <table cellpadding="0" cellspacing="0" border="0" style="width:100%">
     <tr>
-    <td>
+    <td valign="top" style="width:100%">
 
-    <asp:GridView ID="GridView1" GridLines=None AlternatingRowStyle-BackColor="#f6f7f8" 
+    <asp:GridView ID="GridView1" GridLines=None AlternatingRowStyle-BackColor="#f6f7f8" Width="100%"
         HeaderStyle-BackColor="#d6d7d8" CellPadding=7 runat="server" 
-        HeaderStyle-HorizontalAlign=left AllowPaging="True" AllowSorting="False" 
-        AutoGenerateColumns="False">
+        HeaderStyle-HorizontalAlign=left AllowPaging="False" AllowSorting="False" 
+        AutoGenerateColumns="False" OnRowCreated="GridView1_RowCreated">
         <Columns>
-       <asp:TemplateField ItemStyle-VerticalAlign="Middle" HeaderText="" ItemStyle-CssClass="padding2">
+       <asp:TemplateField ItemStyle-VerticalAlign="Middle" HeaderText="" >
         <ItemTemplate>
-          <%#ShowCheckBox(Eval("FileUrl"))%>
+          <%#ShowCheckBox(Eval("icon"), Eval("FileUrl"))%>
         </ItemTemplate>
         </asp:TemplateField>
-       <asp:TemplateField SortExpression="FileName" ItemStyle-VerticalAlign="Middle" meta:resourcekey="lblFileName"  HeaderText="File Name" HeaderStyle-Wrap=false ItemStyle-CssClass="padding2">
+       <asp:TemplateField SortExpression="FileName" ItemStyle-VerticalAlign="Middle" meta:resourcekey="lblFileName"  HeaderText="File Name" HeaderStyle-Wrap=false >
         <ItemTemplate>
-          <%#ShowLink(Eval("FileUrl"), Eval("FileName"))%> 
+            <%#ShowFolderLink(Eval("Icon"))%>
+            <asp:LinkButton ID="lnkFolder" runat="server" OnClick="lnkFolder_Click"><%#Eval("FileName")%></asp:LinkButton>
+            <input name="hidFileFolder" value="<%#Eval("FileUrl")%>" type="hidden" />
+            </span>
+            
+            <%#ShowFile(Eval("Icon"), Eval("FileUrl"), Eval("FileName"))%>  
         </ItemTemplate>
         </asp:TemplateField>
-        <asp:BoundField meta:resourcekey="lblLastUpdated" DataField="LastUpdated" HeaderText="Last Updated" SortExpression="LastUpdated">
+        <asp:BoundField Visible="false" meta:resourcekey="lblLastUpdated" DataField="LastUpdated" HeaderText="Last Updated" SortExpression="LastUpdated">
            <ItemStyle VerticalAlign="Middle" Wrap=false/>
        </asp:BoundField>
-       <asp:BoundField meta:resourcekey="lblSize" DataField="Size" HeaderText="Size" SortExpression="Size">
+       <asp:BoundField meta:resourcekey="lblSize" DataField="Size" ItemStyle-Font-Size=XX-Small HeaderText="Size" SortExpression="Size">
            <ItemStyle VerticalAlign="Middle" Wrap=false />
        </asp:BoundField>
-       <asp:TemplateField ItemStyle-VerticalAlign="Middle"  meta:resourcekey="lblPreview" ItemStyle-CssClass="padding2" HeaderText="Preview">
+       <asp:TemplateField ItemStyle-VerticalAlign="Middle"  meta:resourcekey="lblPreview"  HeaderText="Preview">
         <ItemTemplate >
-          <%#Preview(Eval("Icon"))%>
+            <%#ShowDeleteFolderLink(Eval("Icon"))%>
+            <asp:LinkButton ID="lnkFolderDelete" runat="server" OnClick="lnkFolderDelete_Click"><%#GetLocalResourceObject("delete")%></asp:LinkButton>
+            <input name="hidFolderDel" value="<%#Eval("FileUrl")%>" type="hidden" />
+            </span>  
+             
+            <%#Preview(Eval("Icon"))%>          
         </ItemTemplate>
         </asp:TemplateField>
     </Columns>
     </asp:GridView>
     
-    <asp:Panel ID="panelManager" runat="server">
-    
-        <div style="margin:5px"></div>
-        <script language="javascript">
-        function _getSelection(oEl)
+    <script language="javascript">
+    function _getSelection(oEl)
+        {
+        var bReturn=false;
+        var sTmp="";
+        for(var i=0;i<document.getElementsByName("chkSelect").length;i++)
             {
-            var bReturn=false;
-            var sTmp="";
-            for(var i=0;i<document.getElementsByName("chkSelect").length;i++)
+            var oInput=document.getElementsByName("chkSelect")[i];        
+            if(oInput.checked==true)
                 {
-                var oInput=document.getElementsByName("chkSelect")[i];        
-                if(oInput.checked==true)
-                    {
-                    sTmp+= "|" + document.getElementsByName("hidSelect")[i].value;
-                   // alert(document.getElementsByName("hidSelect")[i].value)
-                    bReturn=true;
-                    }
+                sTmp+= "|" + document.getElementsByName("hidSelect")[i].value;
+               // alert(document.getElementsByName("hidSelect")[i].value)
+                bReturn=true;
                 }
-            oEl.value=sTmp.substring(1);
-            return bReturn;
             }
-        </script>
-        <asp:Label ID="lblEmpty" Visible="false" meta:resourcekey="lblEmpty" runat="server" Height="20px" Font-Bold=true Text="No files found."></asp:Label>
+        oEl.value=sTmp.substring(1);
+        return bReturn;
+        }
+    </script>
+    <asp:Label ID="lblEmpty" Visible="false" meta:resourcekey="lblEmpty" runat="server" Height="20px" Font-Bold=true Text="No files found."></asp:Label>
+    
+    <asp:HiddenField ID="hidFilesToDel" runat="server" />
         
-        <asp:HiddenField ID="hidFilesToDel" runat="server" />
-        
-        <table cellpadding="0" cellspacing="0" style="margin-top:10px">
-        <tr>
-        <td><asp:TextBox ID="txtNewFolder" runat="server"></asp:TextBox></td>
-        <td><asp:Button ID="btnNewFolder" runat="server" Text="New Folder" meta:resourcekey="btnNewFolder" OnClick="btnNewFolder_Click" ValidationGroup="NewFolder" /></td>
-        <td><asp:RequiredFieldValidator ID="rfv1" ControlToValidate="txtNewFolder" ValidationGroup="NewFolder" runat="server" ErrorMessage="*"></asp:RequiredFieldValidator></td>
-        <td style="width:100%">&nbsp;</td> 
-        <td><asp:Button ID="btnDelete" meta:resourcekey="btnDelete" runat="server" Text="Delete selected files"  /></td>
-        </tr>
-        </table>       
-        
-        <div style="border:#E0E0E0 1px solid;padding:10px;width:270px;margin-top:20px">
-        <table cellpadding="0" cellspacing="0">
-        <tr>
-            <td colspan="2" style="padding-bottom:10px">
-                <asp:Label ID="lblUploadFile" meta:resourcekey="lblUploadFile" Font-Bold="true" runat="server" Text="Upload File"></asp:Label>
-            </td>
-        </tr>
-        <tr>
-            <td><asp:FileUpload ID="FileUpload1" runat="server"/></td>
-            <td><asp:Button ID="btnUpload" meta:resourcekey="btnUpload" runat="server" Text="Upload" /></td>
-        </tr>
-        <tr>
-            <td colspan="2" height="5px"></td>
-        </tr>
-        <tr>
-            <td colspan="2"><asp:Label ID="lblUploadStatus" runat="server" Text="" ForeColor="Red"></asp:Label></td>
-        </tr>
-        </table>  
+    </td>
+    <td valign="top">
+        <div style="border:#E0E0E0 1px solid;padding:10px;margin-left:20px;margin-bottom:20px">
+            <asp:Label ID="lblUploadFile" meta:resourcekey="lblUploadFile" Font-Bold="true" runat="server" Text="Upload File"></asp:Label>
+            <br /><br />
+            <asp:FileUpload ID="FileUpload1" runat="server"/>
+            <br />
+            <asp:Button ID="btnUpload" meta:resourcekey="btnUpload" runat="server" Text="Upload" />
+            <asp:Label ID="lblUploadStatus" runat="server" Text="" ForeColor="Red"></asp:Label>
+        </div> 
+        <div style="border:#E0E0E0 1px solid;padding:10px;margin-left:20px">
+            <asp:Label ID="lblNewFolder" meta:resourcekey="lblNewFolder" Font-Bold="true" runat="server" Text="New Folder"></asp:Label>
+            <br /><br />
+            <asp:TextBox ID="txtNewFolder" runat="server"></asp:TextBox>
+            <asp:RequiredFieldValidator ID="rfv1" ControlToValidate="txtNewFolder" ValidationGroup="NewFolder" runat="server" ErrorMessage="*"></asp:RequiredFieldValidator>
+            <br /><br />
+            <asp:Button ID="btnNewFolder" runat="server" Text="New Folder" meta:resourcekey="btnNewFolder" OnClick="btnNewFolder_Click" ValidationGroup="NewFolder" />
         </div>
-    
-    </asp:Panel>  
-    <input ID="btnDelete2" runat="server" style="display:none" type="button" onserverclick="btnDelete2_Click" /> 
-    
         
     </td>
     </tr>
     </table>
-    
+    <br />
+    <asp:Button ID="btnDelete" meta:resourcekey="btnDelete" runat="server" Text="Delete selected files"  />
+        
     <br /><br />
 </asp:Panel>

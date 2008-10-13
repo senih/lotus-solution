@@ -79,7 +79,7 @@
             contentLatest = Nothing
             oContentManager = Nothing
 
-            btnClose.OnClientClick = "self.close()"
+            btnClose.OnClientClick = "parent.icCloseDlg();return false;" '"self.close()"
         End If
     End Sub
 
@@ -168,8 +168,10 @@
     </style>
     <script type="text/javascript" language="javascript">
     function closeAndRefresh(sFileName)
-        {        
-        if(navigator.appName.indexOf("Microsoft")!=-1)
+        {   
+        parent.location.href="../" + sFileName;      
+        parent.icCloseDlg();     
+        /*if(navigator.appName.indexOf("Microsoft")!=-1)
             {
             dialogArguments.navigate("../" + sFileName)
             }
@@ -177,7 +179,7 @@
             {
             window.opener.location.href="../" + sFileName;
             }
-        self.close();
+        self.close();*/
         }
     function adjustHeight()
         {

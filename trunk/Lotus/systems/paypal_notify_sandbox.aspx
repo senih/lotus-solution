@@ -60,6 +60,16 @@
                 End If
             End If
             oDataReader.Close()
+            
+            Dim nTimeOffset As Double = 0
+            Dim sSQL As String = "SELECT locales.time_offset FROM pages_working INNER JOIN locales ON pages_working.file_name = locales.home_page WHERE pages_working.root_id=" & nRootId
+            oCommand = New SqlCommand(sSQL, oConn)
+            oDataReader = oCommand.ExecuteReader()
+            If oDataReader.Read() Then
+                nTimeOffset = oDataReader("time_offset")
+            End If
+            oDataReader.Close()
+            
             oConn.Close()
 
             If Not bOk Then
@@ -149,7 +159,7 @@
             sDownloadLink = sBaseUrl & sPaypalDownloadsPage
             Dim sBody As String = sEmailTemplate
             sBody = sBody.Replace("[%ORDER_ID%]", nOrderId.ToString)
-            sBody = sBody.Replace("[%ORDER_DATE%]", dtOrderDate.ToString)
+            sBody = sBody.Replace("[%ORDER_DATE%]", dtOrderDate.AddHours(nTimeOffset).ToString)
             sBody = sBody.Replace("[%ORDER_DETAIL%]", sOrderDetail)
             sBody = sBody.Replace("[%DOWNLOAD_LINK%]", sDownloadLink)
             sBody = sBody.Replace("[%WEBSITE_URL%]", sWebsiteUrl)

@@ -1,0 +1,303 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="btnContinue.text" xml:space="preserve">
+    <value>Ga verder naar volgende pagina</value>
+  </data>
+  <data name="btnPayHere.text" xml:space="preserve">
+    <value> Hier betalen </value>
+  </data>
+  <data name="btnSaveAndReview.text" xml:space="preserve">
+    <value> BEWAAR &amp; BEKIJK BESTELLING </value>
+  </data>
+  <data name="btnUpdate.text" xml:space="preserve">
+    <value> Aanpassen </value>
+  </data>
+  <data name="chkAcceptTerms.text" xml:space="preserve">
+    <value>Voorwaarden aanvaarden</value>
+  </data>
+  <data name="colItem.HeaderText" xml:space="preserve">
+    <value>Item</value>
+  </data>
+  <data name="colPrice.HeaderText" xml:space="preserve">
+    <value>Prijs</value>
+  </data>
+  <data name="colQuantity.HeaderText" xml:space="preserve">
+    <value>Kwantiteit</value>
+  </data>
+  <data name="colRemove.DeleteText" xml:space="preserve">
+    <value>Verwijderen</value>
+  </data>
+  <data name="CreateUserWizard1.ConfirmPasswordLabelText" xml:space="preserve">
+    <value>Paswoord bevestigen:</value>
+  </data>
+  <data name="CreateUserWizard1.ContinueButtonText" xml:space="preserve">
+    <value>Doorgaan naar de volgende stap</value>
+  </data>
+  <data name="CreateUserWizard1.CreateUserButtonText" xml:space="preserve">
+    <value> Account creëren </value>
+  </data>
+  <data name="CreateUserWizard1.EmailLabelText" xml:space="preserve">
+    <value>Email:</value>
+  </data>
+  <data name="CreateUserWizard1.HeaderText" xml:space="preserve">
+    <value>Indien u nog niet bent geregistreerd, vul dan volgend formulier in:</value>
+  </data>
+  <data name="CreateUserWizard1.PasswordLabelText" xml:space="preserve">
+    <value>Paswoord:</value>
+  </data>
+  <data name="CreateUserWizard1.UserNameLabelText" xml:space="preserve">
+    <value>Gebruikersnaam:</value>
+  </data>
+  <data name="lblAddress.text" xml:space="preserve">
+    <value>Adres</value>
+  </data>
+  <data name="lblBillingInfo.text" xml:space="preserve">
+    <value>Betalingsinformatie</value>
+  </data>
+  <data name="lblCartEmpty.text" xml:space="preserve">
+    <value>Winkelkarretje leeg.</value>
+  </data>
+  <data name="lblCity.text" xml:space="preserve">
+    <value>Stad</value>
+  </data>
+  <data name="lblCompany.text" xml:space="preserve">
+    <value>Bedrijf (optioneel)</value>
+  </data>
+  <data name="lblCountry.text" xml:space="preserve">
+    <value>Land</value>
+  </data>
+  <data name="lblFax.text" xml:space="preserve">
+    <value>Fax (optioneel)</value>
+  </data>
+  <data name="lblFirstName.text" xml:space="preserve">
+    <value>Voornaam</value>
+  </data>
+  <data name="lblIfYouNeverRegist.text" xml:space="preserve">
+    <value>Indien u nog niet geregistreerd bent:</value>
+  </data>
+  <data name="lblLastName.text" xml:space="preserve">
+    <value>Achternaam</value>
+  </data>
+  <data name="lblLoginHere.text" xml:space="preserve">
+    <value>Indien u al geregistreerd bent, log dan hier in:</value>
+  </data>
+  <data name="lblPhone.text" xml:space="preserve">
+    <value>Telefoon</value>
+  </data>
+  <data name="lblPleaseReview.text" xml:space="preserve">
+    <value>Controleer het volgende item in uw winkelkarretje:</value>
+  </data>
+  <data name="lblRegistIsFast.text" xml:space="preserve">
+    <value>Registratie is snel en gratis.</value>
+  </data>
+  <data name="lblShippingInfo.text" xml:space="preserve">
+    <value>Verschepingsinformatie</value>
+  </data>
+  <data name="lblShippingLabel.text" xml:space="preserve">
+    <value>Postage en Packing</value>
+  </data>
+  <data name="lblState.text" xml:space="preserve">
+    <value>Staat/Provincie</value>
+  </data>
+  <data name="lblSubtotalLabel.text" xml:space="preserve">
+    <value>Subtotaal</value>
+  </data>
+  <data name="lblTaxLabel.text" xml:space="preserve">
+    <value>Tax</value>
+  </data>
+  <data name="lblTerms.text" xml:space="preserve">
+    <value>Termen &amp; voorwaarden</value>
+  </data>
+  <data name="lblTotalLabel.text" xml:space="preserve">
+    <value>Totaal</value>
+  </data>
+  <data name="lblZip.text" xml:space="preserve">
+    <value>Postcode</value>
+  </data>
+  <data name="linkRegister.text" xml:space="preserve">
+    <value>Registreer nu!</value>
+  </data>
+  <data name="litIfYouHaveCoupon.text" xml:space="preserve">
+    <value>Indien u een promotionele coupon code heeft, vul deze dan hier in, en druk vervolgens op de &lt;i&gt;Update&lt;/i&gt; knop.</value>
+  </data>
+  <data name="litRegistThankYou.text" xml:space="preserve">
+    <value>Dank u voor uw registratie! We appreciëren uw intresse in ons.</value>
+  </data>
+  <data name="litYouMustLogin.text" xml:space="preserve">
+    <value>Indien u items wilt aankopen, moet u een geregistreerde gebruiker zijn.</value>
+  </data>
+  <data name="lnkContinue.text" xml:space="preserve">
+    <value>Doorgaan met winkelen</value>
+  </data>
+  <data name="lnkEditCart.text" xml:space="preserve">
+    <value>Winkelkarretje bewerken</value>
+  </data>
+  <data name="Login1.FailureText" xml:space="preserve">
+    <value>Uw loginpoging is mislukt. Probeer opnieuw.</value>
+  </data>
+  <data name="Login1.LoginButtonText" xml:space="preserve">
+    <value>   Login   </value>
+  </data>
+  <data name="Login1.PasswordLabelText" xml:space="preserve">
+    <value>Paswoord: </value>
+  </data>
+  <data name="Login1.PasswordRecoveryText" xml:space="preserve">
+    <value>Paswoord terughalen</value>
+  </data>
+  <data name="Login1.RememberMeText" xml:space="preserve">
+    <value>Onthoud me de volgende keer.</value>
+  </data>
+  <data name="Login1.UserNameLabelText" xml:space="preserve">
+    <value>Email / Gebruikersnaam: </value>
+  </data>
+  <data name="Wizard1.StartNextButtonText" xml:space="preserve">
+    <value>NAAR CHECKOUT GAAN</value>
+  </data>
+  <data name="btnCashOnDelivery.text" xml:space="preserve">
+    <value>  Cash On Delivery  </value>
+  </data>
+  <data name="lblCCPaypal.text" xml:space="preserve">
+    <value>Credit Card Payment (using PayPal) :</value>
+  </data>
+  <data name="lblChoosePayment.text" xml:space="preserve">
+    <value>Please choose your preferred payment method:</value>
+  </data>
+  <data name="lblCashOnDelivery.text" xml:space="preserve">
+    <value>Cash On Delivery :</value>
+  </data>
+  <data name="lblThankYou.text" xml:space="preserve">
+    <value>Thank you for your order!</value>
+  </data>
+  <data name="lblYourOrder.text" xml:space="preserve">
+    <value>Your order is currently being processed.</value>
+  </data>
+  <data name="lnkBack.text" xml:space="preserve">
+    <value>Back to Home Page</value>
+  </data>
+  <data name="PleaseCheckTerms" xml:space="preserve">
+    <value>Please check the Terms and Conditions</value>
+  </data>
+  <data name="lblFullName.text" xml:space="preserve">
+    <value>Full Name</value>
+  </data>
+  <data name="lblMobile.text" xml:space="preserve">
+    <value>Mobile (optional)</value>
+  </data>
+</root>

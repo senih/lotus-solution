@@ -123,9 +123,6 @@
   <data name="btnAdd.text" xml:space="preserve">
     <value>Add</value>
   </data>
-  <data name="btnCancel.text" xml:space="preserve">
-    <value>   Abbrechen   </value>
-  </data>
   <data name="btnRemove.text" xml:space="preserve">
     <value>Entfernen</value>
   </data>
@@ -200,24 +197,6 @@
   </data>
   <data name="lblZip.text" xml:space="preserve">
     <value>Postleitzahl</value>
-  </data>
-  <data name="Login1.FailureText" xml:space="preserve">
-    <value>Ihr Anmeldeversuch war nicht erfolgreich. Bitte versuchen Sie es erneut.</value>
-  </data>
-  <data name="Login1.LoginButtonText" xml:space="preserve">
-    <value>Anmelden</value>
-  </data>
-  <data name="Login1.PasswordLabelText" xml:space="preserve">
-    <value>Kennwort</value>
-  </data>
-  <data name="Login1.PasswordRecoveryText" xml:space="preserve">
-    <value>Kennwortwiederherstellung</value>
-  </data>
-  <data name="Login1.RememberMeText" xml:space="preserve">
-    <value>Kennwort merken.</value>
-  </data>
-  <data name="Login1.UserNameLabelText" xml:space="preserve">
-    <value>Benutzername</value>
   </data>
   <data name="PasswordUpdated" xml:space="preserve">
     <value>Kennwort aktualisiert.</value>

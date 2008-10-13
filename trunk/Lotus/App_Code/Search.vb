@@ -16,21 +16,21 @@ Public Class Search
         End If
 
         If i = 0 Then
-            sScript += "SELECT product_id from products left join pages as pg on pg.page_id=products.page_id Where (products.title like '%" & sKey & "%' "
+            sScript += "SELECT product_id from products left join pages as pg on pg.page_id=products.page_id Where (products.title like @Key4 "
         Else
-            sScript += "UNION SELECT product_id from products left join pages as pg on pg.page_id=products.page_id Where (products.title like '%" & sKey & "%' "
+            sScript += "UNION SELECT product_id from products left join pages as pg on pg.page_id=products.page_id Where (products.title like @Key4 "
         End If
-        sScript += " OR products.title like '" & sKey & "%' "
-        sScript += " OR products.title like '%" & sKey & "' "
-        sScript += " OR products.title like '" & sKey & "') AND pg.root_id=" & root_id & sSQLHid
-        sScript += " UNION SELECT product_id FROM products left join pages as pg on pg.page_id=products.page_id WHERE (products.author like '%" & sKey & "%' "
-        sScript += " OR products.author like '" & sKey & "%' "
-        sScript += " OR products.author like '%" & sKey & "' "
-        sScript += " OR products.author like '" & sKey & "') AND pg.root_id=" & root_id & sSQLHid
-        sScript += " UNION SELECT product_id FROM products left join pages as pg on pg.page_id=products.page_id WHERE (products.long_description like '%" & sKey & "%' "
-        sScript += " OR products.long_description like '" & sKey & "%' "
-        sScript += " OR products.long_description like '%" & sKey & "' "
-        sScript += " OR products.long_description like '" & sKey & "') AND pg.root_id=" & root_id & sSQLHid
+        sScript += " OR products.title like @Key1 "
+        sScript += " OR products.title like @Key2 "
+        sScript += " OR products.title like @Key3) AND pg.root_id=@root" & sSQLHid
+        sScript += " UNION SELECT product_id FROM products left join pages as pg on pg.page_id=products.page_id WHERE (products.author like @Key4 "
+        sScript += " OR products.author like @Key1 "
+        sScript += " OR products.author like @Key2 "
+        sScript += " OR products.author like @Key3) AND pg.root_id=@root" & sSQLHid
+        sScript += " UNION SELECT product_id FROM products left join pages as pg on pg.page_id=products.page_id WHERE (products.long_description like @Key4 "
+        sScript += " OR products.long_description like @Key1 "
+        sScript += " OR products.long_description like @Key2 "
+        sScript += " OR products.long_description like @Key3) AND pg.root_id=@root" & sSQLHid
         Return sScript
     End Function
 
@@ -109,38 +109,38 @@ Public Class Search
 
         End If
         If i = 0 Then
-            sScript += "SELECT Top 50 page_id, version FROM Pages_published WHERE (title like '%" & sKey & "%' "
+            sScript += "SELECT Top 50 page_id, version FROM Pages_published WHERE (title like @Key4 "
         Else
-            sScript += "UNION SELECT Top 50 page_id, version FROM Pages_published WHERE (title like '%" & sKey & "%' "
+            sScript += "UNION SELECT Top 50 page_id, version FROM Pages_published WHERE (title like @Key4 "
         End If
 
-        'sScript += " OR title like '" & sKey & "%' " & _
-        '    " OR title like '%" & sKey & "' " & _
-        '    " OR title like '" & sKey & "') " & sWhere & " AND is_system=0 AND is_hidden=0 AND allow_page_indexed=1 AND root_id=" & root_id.ToString & " " & _
-        '    " UNION SELECT page_id, version FROM Pages_published WHERE (content_body like '%" & sKey & "%' " & _
-        '    " OR content_body like '" & sKey & "%' " & _
-        '    " OR content_body like '%" & sKey & "' " & _
-        '    " OR content_body like '" & sKey & "') " & sWhere & " AND is_system=0 AND is_hidden=0 AND allow_page_indexed=1 AND root_id=" & root_id.ToString & " "
+        'sScript += " OR title like @Key " & _
+        '    " OR title like @Key2 " & _
+        '    " OR title like @Key3) " & sWhere & " AND is_system=0 AND is_hidden=0 AND allow_page_indexed=1 AND root_id=" & root_id.ToString & " " & _
+        '    " UNION SELECT page_id, version FROM Pages_published WHERE (content_body like @Key4 " & _
+        '    " OR content_body like @Key " & _
+        '    " OR content_body like @Key2 " & _
+        '    " OR content_body like @Key3) " & sWhere & " AND is_system=0 AND is_hidden=0 AND allow_page_indexed=1 AND root_id=" & root_id.ToString & " "
 
-        'sScript += " OR title like '" & sKey & "%' " & _
-        '    " OR title like '%" & sKey & "' " & _
-        '    " OR title like '" & sKey & "') " & sWhere & " AND is_system=0 AND is_hidden=0 and display_date <= getdate() and (published_start_date <= getdate() or published_start_date is null) and (getdate() <= published_end_date or published_end_date is null) AND allow_page_indexed=1 AND root_id=" & root_id.ToString & " " & _
-        '    " UNION SELECT page_id, version FROM Pages_published WHERE (content_body like '%" & sKey & "%' " & _
-        '    " OR content_body like '" & sKey & "%' " & _
-        '    " OR content_body like '%" & sKey & "' " & _
-        '    " OR content_body like '" & sKey & "') " & sWhere & " AND is_system=0 AND is_hidden=0 and display_date <= getdate() and (published_start_date <= getdate() or published_start_date is null) and (getdate() <= published_end_date or published_end_date is null) AND allow_page_indexed=1 AND root_id=" & root_id.ToString & " "
+        'sScript += " OR title like @Key " & _
+        '    " OR title like @Key2 " & _
+        '    " OR title like @Key3) " & sWhere & " AND is_system=0 AND is_hidden=0 and display_date <= getdate() and (published_start_date <= getdate() or published_start_date is null) and (getdate() <= published_end_date or published_end_date is null) AND allow_page_indexed=1 AND root_id=" & root_id.ToString & " " & _
+        '    " UNION SELECT page_id, version FROM Pages_published WHERE (content_body like @Key4 " & _
+        '    " OR content_body like @Key " & _
+        '    " OR content_body like @Key2 " & _
+        '    " OR content_body like @Key3) " & sWhere & " AND is_system=0 AND is_hidden=0 and display_date <= getdate() and (published_start_date <= getdate() or published_start_date is null) and (getdate() <= published_end_date or published_end_date is null) AND allow_page_indexed=1 AND root_id=" & root_id.ToString & " "
 
-        sScript += " OR title like '" & sKey & "%' " & _
-            " OR title like '%" & sKey & "' " & _
-            " OR title like '" & sKey & "') " & sWhere & " AND is_system=0 AND is_hidden=0 and display_date <= getdate() and (published_start_date <= getdate() or published_start_date is null) and (getdate() <= published_end_date or published_end_date is null) AND allow_page_indexed=1 AND root_id=" & root_id.ToString & " " & _
-            " UNION SELECT page_id, version FROM Pages_published WHERE (content_body like '%" & sKey & "%' " & _
-            " OR content_body like '" & sKey & "%' " & _
-            " OR content_body like '%" & sKey & "' " & _
-            " OR content_body like '" & sKey & "') " & sWhere & " AND is_system=0 AND is_hidden=0 and display_date <= getdate() and (published_start_date <= getdate() or published_start_date is null) and (getdate() <= published_end_date or published_end_date is null) AND allow_page_indexed=1 AND root_id=" & root_id.ToString & " " & _
-            " UNION SELECT page_id, version FROM Pages_published WHERE (summary like '%" & sKey & "%' " & _
-            " OR summary like '" & sKey & "%' " & _
-            " OR summary like '%" & sKey & "' " & _
-            " OR summary like '" & sKey & "') " & sWhere & " AND is_system=0 AND is_hidden=0 and display_date <= getdate() and (published_start_date <= getdate() or published_start_date is null) and (getdate() <= published_end_date or published_end_date is null) AND allow_page_indexed=1 AND root_id=" & root_id.ToString & " "
+        sScript += " OR title like @Key1 " & _
+            " OR title like @Key2 " & _
+            " OR title like @Key3) " & sWhere & " AND is_system=0 AND is_hidden=0 and display_date <= getdate() and (published_start_date <= getdate() or published_start_date is null) and (getdate() <= published_end_date or published_end_date is null) AND allow_page_indexed=1 AND root_id=" & root_id.ToString & " " & _
+            " UNION SELECT page_id, version FROM Pages_published WHERE (content_body like @Key4 " & _
+            " OR content_body like @Key1 " & _
+            " OR content_body like @Key2 " & _
+            " OR content_body like @Key3) " & sWhere & " AND is_system=0 AND is_hidden=0 and display_date <= getdate() and (published_start_date <= getdate() or published_start_date is null) and (getdate() <= published_end_date or published_end_date is null) AND allow_page_indexed=1 AND root_id=" & root_id.ToString & " " & _
+            " UNION SELECT page_id, version FROM Pages_published WHERE (summary like @Key4 " & _
+            " OR summary like @Key1 " & _
+            " OR summary like @Key2 " & _
+            " OR summary like @Key3) " & sWhere & " AND is_system=0 AND is_hidden=0 and display_date <= getdate() and (published_start_date <= getdate() or published_start_date is null) and (getdate() <= published_end_date or published_end_date is null) AND allow_page_indexed=1 AND root_id=" & root_id.ToString & " "
         Return sScript
     End Function
 
@@ -192,6 +192,7 @@ Public Class Search
                     End If
                 End If
             Next
+
             If Not sSql = "" Then
                 If opt = "product" Then
                     'sSql = "SELECT products.product_id,products.sub_title,products.image,products.title,products.short_description,products.unit_price,products.sale_price,products.discount, products.upcoming,products.is_hidden FROM products " & _

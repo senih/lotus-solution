@@ -1,0 +1,1183 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Account" xml:space="preserve">
+    <value>Account</value>
+    <comment>Titel</comment>
+  </data>
+  <data name="Action_Delete" xml:space="preserve">
+    <value>Verwijderen</value>
+  </data>
+  <data name="Action_Publish" xml:space="preserve">
+    <value>Publiceren</value>
+  </data>
+  <data name="Action_SendForReview" xml:space="preserve">
+    <value>Verstuur voor goedkeuring</value>
+  </data>
+  <data name="Admin" xml:space="preserve">
+    <value>Admin</value>
+    <comment>Titel</comment>
+  </data>
+  <data name="AdminLinkText" xml:space="preserve">
+    <value>Admin</value>
+  </data>
+  <data name="Approval Assistant" xml:space="preserve">
+    <value>Goedkeuringsassistent</value>
+    <comment>Titel</comment>
+  </data>
+  <data name="Archives" xml:space="preserve">
+    <value>Archieven</value>
+  </data>
+  <data name="btnBackToPage.text" xml:space="preserve">
+    <value>   Terug naar de pagina   </value>
+  </data>
+  <data name="btnCancel.text" xml:space="preserve">
+    <value>   Annuleren   </value>
+  </data>
+  <data name="btnCancel2.text" xml:space="preserve">
+    <value>   Annuleren   </value>
+  </data>
+  <data name="btnCancel3.text" xml:space="preserve">
+    <value>   Annuleren   </value>
+  </data>
+  <data name="btnCancel4.text" xml:space="preserve">
+    <value>   Annuleren   </value>
+  </data>
+  <data name="btnCreateAndPublishPage.text" xml:space="preserve">
+    <value>   Publiceren   </value>
+  </data>
+  <data name="btnCreatePage.text" xml:space="preserve">
+    <value>   Creëer pagina   </value>
+  </data>
+  <data name="btnCreatePage2.text" xml:space="preserve">
+    <value>   Creëer pagina   </value>
+  </data>
+  <data name="btnDelete.text" xml:space="preserve">
+    <value>   Verwijderen   </value>
+  </data>
+  <data name="btnDeleteCancel.text" xml:space="preserve">
+    <value>   Annuleren   </value>
+  </data>
+  <data name="btnDown.text" xml:space="preserve">
+    <value>  Naar beneden   </value>
+  </data>
+  <data name="btnMove.text" xml:space="preserve">
+    <value>   Verplaatsen   </value>
+  </data>
+  <data name="btnMove3.text" xml:space="preserve">
+    <value>   Verplaatsen   </value>
+  </data>
+  <data name="btnMoveDown.text" xml:space="preserve">
+    <value>   Naar beneden   </value>
+  </data>
+  <data name="btnMoveStep1Cancel.text" xml:space="preserve">
+    <value>   Annuleren   </value>
+  </data>
+  <data name="btnMoveStep2Cancel.text" xml:space="preserve">
+    <value>   Annuleren   </value>
+  </data>
+  <data name="btnMoveUp.text" xml:space="preserve">
+    <value>   Naar boven   </value>
+  </data>
+  <data name="btnQuickAdd.text" xml:space="preserve">
+    <value>   Publiceren   </value>
+  </data>
+  <data name="btnRename.text" xml:space="preserve">
+    <value>   Update   </value>
+  </data>
+  <data name="btnSave.text" xml:space="preserve">
+    <value> Bewaren </value>
+  </data>
+  <data name="btnSave2.text" xml:space="preserve">
+    <value> Bewaren </value>
+  </data>
+  <data name="btnSaveAndFinish.text" xml:space="preserve">
+    <value>Bewaar en Beëindig</value>
+  </data>
+  <data name="btnSearch.text" xml:space="preserve">
+    <value>  Zoeken  </value>
+  </data>
+  <data name="btnSubmit.text" xml:space="preserve">
+    <value>   Verstuur voor goedkeuring   </value>
+  </data>
+  <data name="btnUp.text" xml:space="preserve">
+    <value>   Naar boven   </value>
+  </data>
+  <data name="btnUpload.text" xml:space="preserve">
+    <value>   Uploaden   </value>
+  </data>
+  <data name="btnUploadImage.text" xml:space="preserve">
+    <value>   Afbeelding uploaden   </value>
+  </data>
+  <data name="Categories" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Category" xml:space="preserve">
+    <value>Categorie:</value>
+  </data>
+  <data name="Channels" xml:space="preserve">
+    <value>Kanalen</value>
+    <comment>Titel</comment>
+  </data>
+  <data name="Checkout" xml:space="preserve">
+    <value>Checkout</value>
+    <comment>Titel</comment>
+  </data>
+  <data name="chkAddFile.text" xml:space="preserve">
+    <value>Bestand toevoegen</value>
+  </data>
+  <data name="chkDelDownload.text" xml:space="preserve">
+    <value>Bestand verwijderen</value>
+  </data>
+  <data name="chkDelPicture.text" xml:space="preserve">
+    <value>Afbeelding verwijderen</value>
+  </data>
+  <data name="chkIsListing.text" xml:space="preserve">
+    <value>Maak van deze pagina een lijst/galerij</value>
+  </data>
+  <data name="chkLinkNewWindow.text" xml:space="preserve">
+    <value>Openen in een nieuw venster</value>
+  </data>
+  <data name="Configuration" xml:space="preserve">
+    <value>Configuratie</value>
+    <comment>Titel</comment>
+  </data>
+  <data name="Configure Newsletter" xml:space="preserve">
+    <value>Configureer nieuwsbrief</value>
+    <comment>Titel</comment>
+  </data>
+  <data name="Coupons" xml:space="preserve">
+    <value>Coupons</value>
+    <comment>Titel</comment>
+  </data>
+  <data name="Custom Listing" xml:space="preserve">
+    <value>Lijst op maat</value>
+    <comment>Titel</comment>
+  </data>
+  <data name="Detach" xml:space="preserve">
+    <value>Losmaken</value>
+  </data>
+  <data name="DetachModuleConfirm" xml:space="preserve">
+    <value>Wilt u deze module zeker losmaken?</value>
+  </data>
+  <data name="Download" xml:space="preserve">
+    <value>Download</value>
+  </data>
+  <data name="Downloads" xml:space="preserve">
+    <value>Downloads</value>
+    <comment>Titel</comment>
+  </data>
+  <data name="Edit Channel" xml:space="preserve">
+    <value>Kanaal bewerken</value>
+    <comment>Titel</comment>
+  </data>
+  <data name="Edit Event" xml:space="preserve">
+    <value>Evenement bewerken</value>
+    <comment>Titel</comment>
+  </data>
+  <data name="Edit User" xml:space="preserve">
+    <value>Gebruiker bewerken</value>
+    <comment>Titel</comment>
+  </data>
+  <data name="Embed Module" xml:space="preserve">
+    <value>Module inbedden</value>
+    <comment>Titel</comment>
+  </data>
+  <data name="Embed Poll" xml:space="preserve">
+    <value>Poll inbedden</value>
+    <comment>Titel</comment>
+  </data>
+  <data name="Embed Upcoming Event List" xml:space="preserve">
+    <value>Opkomende evenementenlijst inbedden</value>
+    <comment>Titel</comment>
+  </data>
+  <data name="Events" xml:space="preserve">
+    <value>Evenementen</value>
+    <comment>Titel</comment>
+  </data>
+  <data name="imgAddNew.AlternateText" xml:space="preserve">
+    <value>Nieuw toevoegen</value>
+  </data>
+  <data name="imgAddNew.ImageUrl" xml:space="preserve">
+    <value>systems/images/btnAddNew.gif</value>
+  </data>
+  <data name="imgDelete.AlternateText" xml:space="preserve">
+    <value>Verwijderen</value>
+  </data>
+  <data name="imgDelete.ImageUrl" xml:space="preserve">
+    <value>systems/images/btnDelete.gif</value>
+  </data>
+  <data name="imgEdit.AlternateText" xml:space="preserve">
+    <value>Bewerken</value>
+  </data>
+  <data name="imgEdit.ImageUrl" xml:space="preserve">
+    <value>systems/images/btnEdit.gif</value>
+  </data>
+  <data name="imgHideInfo.AlternateText" xml:space="preserve">
+    <value>Info verbergen</value>
+  </data>
+  <data name="imgHideInfo.title" xml:space="preserve">
+    <value>Info verbergen</value>
+  </data>
+  <data name="imgMoreInfo.AlternateText" xml:space="preserve">
+    <value>Meer info</value>
+  </data>
+  <data name="imgMoreInfo.title" xml:space="preserve">
+    <value>Meer info</value>
+  </data>
+  <data name="imgMove.AlternateText" xml:space="preserve">
+    <value>Verplaatsen</value>
+  </data>
+  <data name="imgMove.ImageUrl" xml:space="preserve">
+    <value>systems/images/btnMove.gif</value>
+  </data>
+  <data name="imgRename.AlternateText" xml:space="preserve">
+    <value>Hernoemen</value>
+  </data>
+  <data name="imgRename.ImageUrl" xml:space="preserve">
+    <value>systems/images/btnRename.gif</value>
+  </data>
+  <data name="imgSubmitAlt1" xml:space="preserve">
+    <value>Verstuur voor goedkeuring</value>
+  </data>
+  <data name="imgSubmitAlt2" xml:space="preserve">
+    <value>Publiceren</value>
+  </data>
+  <data name="imgSubmitImageUrl1" xml:space="preserve">
+    <value>systems/images/btnSendForReview.gif</value>
+  </data>
+  <data name="imgSubmitImageUrl2" xml:space="preserve">
+    <value>systems/images/btnPublish.gif</value>
+  </data>
+  <data name="Import Users" xml:space="preserve">
+    <value>Gebruikers importeren</value>
+    <comment>Titel</comment>
+  </data>
+  <data name="Info_AsAnEditor" xml:space="preserve">
+    <value>Als Editor, kan u de pagina goed- of afkeuren.</value>
+  </data>
+  <data name="Info_AsAPublisher" xml:space="preserve">
+    <value>Als Publisher, kan u de pagina goed- of afkeuren.</value>
+  </data>
+  <data name="Info_CannotAddNewPages" xml:space="preserve">
+    <value>Omdat de huidige pagina aangeduid is voor verwijdering, kan u hier geen nieuwe pagina's aan toevoegen.</value>
+  </data>
+  <data name="Info_CannotDeleteOrMove" xml:space="preserve">
+    <value>Omdat de huidige pagina een "Home" pagina is, kan u deze niet verwijderen of verplaatsen.</value>
+  </data>
+  <data name="Info_CannotMakeChanges1" xml:space="preserve">
+    <value>U kan de pagina niet bewerken omdat de huidige pagina vergrendeld is door een andere auteur.</value>
+  </data>
+  <data name="Info_CannotMakeChanges2" xml:space="preserve">
+    <value>U kan de pagina niet bewerken omdat de pagina is verstuurd ter goedkeuring.</value>
+  </data>
+  <data name="Info_DidNotMatch" xml:space="preserve">
+    <value>Kwam niet overeen met één of meerdere documenten.</value>
+  </data>
+  <data name="Info_ImageFound" xml:space="preserve">
+    <value>Afbeelding gevonden.</value>
+  </data>
+  <data name="Info_ImagesFound" xml:space="preserve">
+    <value>afbeeldingen gevonden.</value>
+  </data>
+  <data name="Info_NoImagesFound" xml:space="preserve">
+    <value>Geen afbeeldingen gevonden</value>
+  </data>
+  <data name="Info_Page" xml:space="preserve">
+    <value>Pagina:</value>
+  </data>
+  <data name="Info_SearchResult" xml:space="preserve">
+    <value>Zoekresultaten:</value>
+  </data>
+  <data name="Info_YouCanStillEdit" xml:space="preserve">
+    <value>U kan de pagina bewerken tot u de pagina ontgrendeld.</value>
+  </data>
+  <data name="Info_YouDontHaveAuthorRight" xml:space="preserve">
+    <value>U heeft geen &lt;b&gt;Auteur&lt;/b&gt; rechten in het huidige kanaal.</value>
+  </data>
+  <data name="Info_YouHaveAdminRight" xml:space="preserve">
+    <value>U heeft &lt;b&gt;Administrator&lt;/b&gt; rechten.</value>
+  </data>
+  <data name="Info_YouHaveAuthorRight" xml:space="preserve">
+    <value>U heeft &lt;b&gt;Auteur&lt;/b&gt; rechten in het huidige kanaal.</value>
+  </data>
+  <data name="Info_YouHaveEditorRight" xml:space="preserve">
+    <value>U heeft &lt;b&gt;Editor&lt;/b&gt; rechten in het huidige kanaal.</value>
+  </data>
+  <data name="Info_YouHavePublisherRight" xml:space="preserve">
+    <value>U heeft &lt;b&gt;Publisher&lt;/b&gt; rechten in het huidige kanaal.</value>
+  </data>
+  <data name="Info_YourSearch" xml:space="preserve">
+    <value>Uw zoekopdracht</value>
+  </data>
+  <data name="lblAt.text" xml:space="preserve">
+    <value>op</value>
+  </data>
+  <data name="lblBottomNavigation.text" xml:space="preserve">
+    <value>Bottom Navigation</value>
+  </data>
+  <data name="lblChannelLabel.text" xml:space="preserve">
+    <value>Kanaal</value>
+  </data>
+  <data name="lblContent.text" xml:space="preserve">
+    <value>Inhoud</value>
+  </data>
+  <data name="lblContent2.text" xml:space="preserve">
+    <value>Inhoud</value>
+  </data>
+  <data name="lblDeleteConfirm.text" xml:space="preserve">
+    <value>Wilt u deze pagina zeker verwijderen?</value>
+  </data>
+  <data name="lblDeleteNotAllowed.text" xml:space="preserve">
+    <value>De pagina kan niet verwijderd worden aangezien het één of meerdere subpagina's bevat.</value>
+  </data>
+  <data name="lblDisplayDate.text" xml:space="preserve">
+    <value>Display datum</value>
+  </data>
+  <data name="lblFileDownload.text" xml:space="preserve">
+    <value>FILE DOWNLOAD</value>
+  </data>
+  <data name="lblFileExistsLabel.text" xml:space="preserve">
+    <value>Bestand bestaat al.</value>
+  </data>
+  <data name="lblInsertPageResources.text" xml:space="preserve">
+    <value>Invoegen:</value>
+  </data>
+  <data name="lblLinkTo.text" xml:space="preserve">
+    <value>Link naar</value>
+  </data>
+  <data name="lblListingCategory.text" xml:space="preserve">
+    <value>Categorie</value>
+  </data>
+  <data name="lblListingEmpty.text" xml:space="preserve">
+    <value>Listing leeg.</value>
+  </data>
+  <data name="lblListingEmptyInstruction.text" xml:space="preserve">
+    <value>Klik "Add New" link om een nieuw lijstitem toe te voegen.</value>
+  </data>
+  <data name="lblListingTemplate.text" xml:space="preserve">
+    <value>Template</value>
+  </data>
+  <data name="lblListSorting.text" xml:space="preserve">
+    <value>Sorteren op:</value>
+  </data>
+  <data name="lblMainNavigation.text" xml:space="preserve">
+    <value>Main navigatien</value>
+  </data>
+  <data name="lblMoveStep1.text" xml:space="preserve">
+    <value>Selecteer een nieuwe positie:</value>
+  </data>
+  <data name="lblMoveStep2.text" xml:space="preserve">
+    <value>U kan de volgorde nu specificeren:</value>
+  </data>
+  <data name="lblNewsEmpty.text" xml:space="preserve">
+    <value>Nieuws/Journaal leeg.</value>
+  </data>
+  <data name="lblNewsEmptyInstruction.text" xml:space="preserve">
+    <value>Klik "Add New" link om een nieuw nieuwsitem toe te voegen.</value>
+  </data>
+  <data name="lblOptionalSettings.text" xml:space="preserve">
+    <value>Optionele eigenschappen</value>
+  </data>
+  <data name="lblPageOrder.text" xml:space="preserve">
+    <value>Pagina volgorde</value>
+  </data>
+  <data name="lblPageStatusLabel.text" xml:space="preserve">
+    <value>Pagina status</value>
+  </data>
+  <data name="lblPicture.text" xml:space="preserve">
+    <value>Afbeelding</value>
+  </data>
+  <data name="lblPreviewOnListing.text" xml:space="preserve">
+    <value>PREVIEW OP LIJST</value>
+  </data>
+  <data name="lblPreviewOnPage.text" xml:space="preserve">
+    <value>PREVIEW OP PAGINA</value>
+  </data>
+  <data name="lblPutBreakTag.text" xml:space="preserve">
+    <value>Plaats [break] tag om lange tekst op te breken en een 'Lees meer' link te plaatsen.</value>
+  </data>
+  <data name="lblQuickAdd.text" xml:space="preserve">
+    <value>Snelle toevoeger</value>
+  </data>
+  <data name="lblQuickFile.text" xml:space="preserve">
+    <value>Bestand</value>
+  </data>
+  <data name="lblQuickSummary.text" xml:space="preserve">
+    <value>Details</value>
+  </data>
+  <data name="lblQuickTitle.text" xml:space="preserve">
+    <value>Titel</value>
+  </data>
+  <data name="lblSelectAction.text" xml:space="preserve">
+    <value>Selecteer actie na het bewaren..</value>
+  </data>
+  <data name="lblSummary.text" xml:space="preserve">
+    <value>Samenvatting</value>
+  </data>
+  <data name="lblTitle.text" xml:space="preserve">
+    <value>Titel</value>
+  </data>
+  <data name="lblTopNavigation.text" xml:space="preserve">
+    <value>Top Navigatie</value>
+  </data>
+  <data name="lblUrl.text" xml:space="preserve">
+    <value>URL</value>
+  </data>
+  <data name="ListingItemMore" xml:space="preserve">
+    <value>Meer</value>
+  </data>
+  <data name="ListingShortItemMore" xml:space="preserve">
+    <value>Meer</value>
+  </data>
+  <data name="ListingTemplate" xml:space="preserve">
+    <value>Lijst template</value>
+  </data>
+  <data name="litAccount.text" xml:space="preserve">
+    <value>Pas uw profiel aan.</value>
+  </data>
+  <data name="litApproval.text" xml:space="preserve">
+    <value>Paginalijst wachtend op uw goedkeuring.</value>
+  </data>
+  <data name="litChannels.text" xml:space="preserve">
+    <value>Creëer &amp; beheer kanalen.</value>
+  </data>
+  <data name="litCustomListing.text" xml:space="preserve">
+    <value>Creëer &amp;  bed custom lijsten in</value>
+  </data>
+  <data name="litEvents.text" xml:space="preserve">
+    <value>Creëer &amp; beheer evenementen.</value>
+  </data>
+  <data name="litLocalization.text" xml:space="preserve">
+    <value>Creëer en beheer sites &amp; landinstellingen.</value>
+  </data>
+  <data name="litModules.text" xml:space="preserve">
+    <value>Registreer uw modules hier.</value>
+  </data>
+  <data name="litNewsletters.text" xml:space="preserve">
+    <value>Creëer &amp; beheer nieuwsbrieven.</value>
+  </data>
+  <data name="litOrderBy.text" xml:space="preserve">
+    <value>Sorteer op: </value>
+  </data>
+  <data name="litPageInfo.text" xml:space="preserve">
+    <value>Pagina info</value>
+  </data>
+  <data name="litPages.text" xml:space="preserve">
+    <value>Lijst van pagina's in uw kanalen.</value>
+  </data>
+  <data name="litPolls.text" xml:space="preserve">
+    <value>Creëer &amp;  beheer polls.</value>
+  </data>
+  <data name="litPreferences.text" xml:space="preserve">
+    <value>Pas uw werkpanelen aan.</value>
+  </data>
+  <data name="litRegistrationSettings.text" xml:space="preserve">
+    <value>Configureer site gebruiker registratie.</value>
+  </data>
+  <data name="litResources.text" xml:space="preserve">
+    <value>Beheer afbeeldingen &amp; multimedia bestanden.</value>
+  </data>
+  <data name="litShop.text" xml:space="preserve">
+    <value>Beheer online shop.</value>
+  </data>
+  <data name="litTemplates.text" xml:space="preserve">
+    <value>Registreer uw templates hier.</value>
+  </data>
+  <data name="litUsers.text" xml:space="preserve">
+    <value>Creëer, beheer en geef gebruikers rechten tot verschillende kanalen.</value>
+  </data>
+  <data name="lnkAccount.text" xml:space="preserve">
+    <value>Account</value>
+  </data>
+  <data name="lnkAdditionalContent.text" xml:space="preserve">
+    <value>Bijkomende inhoud</value>
+    <comment>Side Content</comment>
+  </data>
+  <data name="lnkAddNewBottom.text" xml:space="preserve">
+    <value>Nieuw toevoegen</value>
+  </data>
+  <data name="lnkAddNewTop.text" xml:space="preserve">
+    <value>Nieuw toevoegen</value>
+  </data>
+  <data name="lnkAdmin.text" xml:space="preserve">
+    <value>Admin</value>
+  </data>
+  <data name="lnkAdvEdit.text" xml:space="preserve">
+    <value>Schakel over op geavanceerde editor</value>
+    <comment>Geavanceerde modus</comment>
+  </data>
+  <data name="lnkApproval.text" xml:space="preserve">
+    <value>Goedkeuring</value>
+  </data>
+  <data name="lnkApprovalAssistant.text" xml:space="preserve">
+    <value>Goedkeuringsassistent</value>
+  </data>
+  <data name="lnkApprovalAssistant2.text" xml:space="preserve">
+    <value>Goedkeuringsassistent</value>
+  </data>
+  <data name="lnkApprove.text" xml:space="preserve">
+    <value>Goedkeuren</value>
+  </data>
+  <data name="lnkApprove2.text" xml:space="preserve">
+    <value>Goedkeuren</value>
+  </data>
+  <data name="lnkChangeChannel.text" xml:space="preserve">
+    <value>Bewerken</value>
+  </data>
+  <data name="lnkChannels.text" xml:space="preserve">
+    <value>Kanalen</value>
+  </data>
+  <data name="lnkCustomListing.text" xml:space="preserve">
+    <value>Lijst op maat</value>
+  </data>
+  <data name="lnkCustomProperties.text" xml:space="preserve">
+    <value>Custom eigenschappen</value>
+  </data>
+  <data name="lnkDecline.text" xml:space="preserve">
+    <value>Afkeuren</value>
+  </data>
+  <data name="lnkDecline2.text" xml:space="preserve">
+    <value>Afkeuren</value>
+  </data>
+  <data name="lnkEvents.text" xml:space="preserve">
+    <value>Evenementen</value>
+  </data>
+  <data name="lnkForceUnlock.text" xml:space="preserve">
+    <value>Ontgrendelen</value>
+  </data>
+  <data name="lnkInsertPageLinks.text" xml:space="preserve">
+    <value>Interne link plaatsen</value>
+  </data>
+  <data name="lnkInsertResources.text" xml:space="preserve">
+    <value>Bronnen</value>
+  </data>
+  <data name="lnkLatestEvents.text" xml:space="preserve">
+    <value>Laatste evenementen</value>
+  </data>
+  <data name="lnkLatestPosts.text" xml:space="preserve">
+    <value>Laatste posts</value>
+  </data>
+  <data name="lnkLocalization.text" xml:space="preserve">
+    <value>Sites &amp; Landinstellingen</value>
+  </data>
+  <data name="lnkModules.text" xml:space="preserve">
+    <value>Modules</value>
+  </data>
+  <data name="lnkMyWorkspace.text" xml:space="preserve">
+    <value>Mijn werkplaats</value>
+  </data>
+  <data name="lnkNewsletters.text" xml:space="preserve">
+    <value>Nieuwsbrieven</value>
+  </data>
+  <data name="lnkPageElements.text" xml:space="preserve">
+    <value>Pagina elementen</value>
+  </data>
+  <data name="lnkPageProperties.text" xml:space="preserve">
+    <value>Pagina eigenschappen</value>
+  </data>
+  <data name="lnkPages.text" xml:space="preserve">
+    <value>Pagina's</value>
+  </data>
+  <data name="lnkPageShop.text" xml:space="preserve">
+    <value>eShop</value>
+  </data>
+  <data name="lnkPolls.text" xml:space="preserve">
+    <value>Polls</value>
+  </data>
+  <data name="lnkPreferences.text" xml:space="preserve">
+    <value>Voorkeuren</value>
+  </data>
+  <data name="lnkPublishingDate.text" xml:space="preserve">
+    <value>Publiceerschema</value>
+  </data>
+  <data name="lnkQuickEdit.text" xml:space="preserve">
+    <value>Schakel over op snelle editor</value>
+    <comment>Snelle modus</comment>
+  </data>
+  <data name="lnkRegistrationSettings.text" xml:space="preserve">
+    <value>Registratie eigenschappen</value>
+  </data>
+  <data name="lnkResources.text" xml:space="preserve">
+    <value>Bronnen</value>
+  </data>
+  <data name="lnkShop.text" xml:space="preserve">
+    <value>eShop</value>
+  </data>
+  <data name="lnkTemplates.text" xml:space="preserve">
+    <value>Templates</value>
+  </data>
+  <data name="lnkUnlock.text" xml:space="preserve">
+    <value>Ontgrendelen</value>
+  </data>
+  <data name="lnkUsers.text" xml:space="preserve">
+    <value>Gebruikers</value>
+  </data>
+  <data name="lnkVersionHistory.text" xml:space="preserve">
+    <value>Versie geschiedenis</value>
+  </data>
+  <data name="Login" xml:space="preserve">
+    <value>Login</value>
+    <comment>Titel</comment>
+  </data>
+  <data name="Login_FailureText" xml:space="preserve">
+    <value>Uw loginpoging was niet succesvol. Probeer opnieuw.</value>
+  </data>
+  <data name="Login_LoginButtonText" xml:space="preserve">
+    <value>   Login   </value>
+  </data>
+  <data name="Login_PasswordLabelText" xml:space="preserve">
+    <value>Paswoord: </value>
+  </data>
+  <data name="Login_PasswordRecoveryText" xml:space="preserve">
+    <value>Paswoord terughalen</value>
+  </data>
+  <data name="Login_RememberMeText" xml:space="preserve">
+    <value>Onthoud me.</value>
+  </data>
+  <data name="Login_UserNameLabelText" xml:space="preserve">
+    <value>Email / Gebruikersnaam: </value>
+  </data>
+  <data name="Login1.FailureText" xml:space="preserve">
+    <value>Uw loginpoging was niet succesvol. Probeer opnieuw.</value>
+  </data>
+  <data name="Login1.LoginButtonText" xml:space="preserve">
+    <value>   Login   </value>
+  </data>
+  <data name="Login1.PasswordLabelText" xml:space="preserve">
+    <value>Paswoord: </value>
+  </data>
+  <data name="Login1.PasswordRecoveryText" xml:space="preserve">
+    <value>Paswoord terughalen</value>
+  </data>
+  <data name="Login1.RememberMeText" xml:space="preserve">
+    <value>Onthoud me volgende keer.</value>
+  </data>
+  <data name="Login1.UserNameLabelText" xml:space="preserve">
+    <value>Email / Gebruikersnaam: </value>
+  </data>
+  <data name="LoginLinkText" xml:space="preserve">
+    <value>Login</value>
+  </data>
+  <data name="Logout_LogoutText" xml:space="preserve">
+    <value>Logout</value>
+  </data>
+  <data name="LogoutLinkText" xml:space="preserve">
+    <value>Logout</value>
+  </data>
+  <data name="Lookup" xml:space="preserve">
+    <value>Opzoeken</value>
+    <comment>Titel</comment>
+  </data>
+  <data name="Mailing Lists" xml:space="preserve">
+    <value>MailingLijsten</value>
+    <comment>Titel</comment>
+  </data>
+  <data name="ManageCategories" xml:space="preserve">
+    <value>Beheer Categorieën</value>
+  </data>
+  <data name="Modules" xml:space="preserve">
+    <value>Modules</value>
+    <comment>Titel</comment>
+  </data>
+  <data name="More" xml:space="preserve">
+    <value>Meer</value>
+  </data>
+  <data name="Move Down" xml:space="preserve">
+    <value>Naar beneden</value>
+  </data>
+  <data name="Move Up" xml:space="preserve">
+    <value>Naar boven</value>
+  </data>
+  <data name="My Workspace" xml:space="preserve">
+    <value>Mijn werkplaats</value>
+    <comment>Titel</comment>
+  </data>
+  <data name="MyWorkspaceLinkText" xml:space="preserve">
+    <value>Mijn werkplaats</value>
+  </data>
+  <data name="New Channel" xml:space="preserve">
+    <value>Nieuw kanaal</value>
+    <comment>Titel</comment>
+  </data>
+  <data name="New Event" xml:space="preserve">
+    <value>Nieuw evenement</value>
+    <comment>Titel</comment>
+  </data>
+  <data name="New Module" xml:space="preserve">
+    <value>Nieuwe module</value>
+    <comment>Titel</comment>
+  </data>
+  <data name="New Poll" xml:space="preserve">
+    <value>Nieuwe poll</value>
+    <comment>Titel</comment>
+  </data>
+  <data name="New Template" xml:space="preserve">
+    <value>Nieuwe template</value>
+    <comment>Titel</comment>
+  </data>
+  <data name="New User" xml:space="preserve">
+    <value>Nieuwe gebruiker</value>
+    <comment>Titel</comment>
+  </data>
+  <data name="News List" xml:space="preserve">
+    <value>News List</value>
+    <comment>Titel</comment>
+  </data>
+  <data name="Newsletters" xml:space="preserve">
+    <value>Nieuwsbrieven</value>
+    <comment>Titel</comment>
+  </data>
+  <data name="of" xml:space="preserve">
+    <value>van</value>
+  </data>
+  <data name="optAfter.text" xml:space="preserve">
+    <value>Na</value>
+  </data>
+  <data name="optBefore.text" xml:space="preserve">
+    <value>Voor</value>
+  </data>
+  <data name="optBlog.text" xml:space="preserve">
+    <value>Blog</value>
+  </data>
+  <data name="optBottom.text" xml:space="preserve">
+    <value>Bottom</value>
+  </data>
+  <data name="optEvent.text" xml:space="preserve">
+    <value>Evenementen</value>
+  </data>
+  <data name="optFileDocument.text" xml:space="preserve">
+    <value>Bestand/Document</value>
+  </data>
+  <data name="optFinishLock.text" xml:space="preserve">
+    <value> Finish &amp; Lock for Later Editing (Other users won't be able to edit this page).</value>
+  </data>
+  <data name="optFinishUnlock.text" xml:space="preserve">
+    <value> Finish &amp; Unlock (Other users will be able to edit this page).</value>
+  </data>
+  <data name="optForm.text" xml:space="preserve">
+    <value>Formulier</value>
+  </data>
+  <data name="optImageGallery.text" xml:space="preserve">
+    <value>Afbeeldinggalerij</value>
+  </data>
+  <data name="optLink.text" xml:space="preserve">
+    <value>Link</value>
+  </data>
+  <data name="optListing.text" xml:space="preserve">
+    <value>Lijst</value>
+  </data>
+  <data name="optListingShort.text" xml:space="preserve">
+    <value>Lijst (Kort)</value>
+  </data>
+  <data name="optMain.text" xml:space="preserve">
+    <value>Main</value>
+  </data>
+  <data name="optNews.text" xml:space="preserve">
+    <value>Nieuws/Journaal</value>
+  </data>
+  <data name="optNone.text" xml:space="preserve">
+    <value> Geen (Ga door met bewerken).</value>
+  </data>
+  <data name="optSend.text" xml:space="preserve">
+    <value> Verstuur ter goedkeuring.</value>
+  </data>
+  <data name="optShopPage.text" xml:space="preserve">
+    <value>eShop</value>
+  </data>
+  <data name="optTop.text" xml:space="preserve">
+    <value>Top</value>
+  </data>
+  <data name="optUnder.text" xml:space="preserve">
+    <value>Onder</value>
+  </data>
+  <data name="optWebContent.text" xml:space="preserve">
+    <value>Webinhoud</value>
+  </data>
+  <data name="Order Completed" xml:space="preserve">
+    <value>Bestelling voltooid</value>
+    <comment>Titel</comment>
+  </data>
+  <data name="Orders" xml:space="preserve">
+    <value>Bestellingen</value>
+    <comment>Titel</comment>
+  </data>
+  <data name="PAGE" xml:space="preserve">
+    <value>PAGINA</value>
+  </data>
+  <data name="PageAvailableForEditing" xml:space="preserve">
+    <value>Deze pagina is beschikbaar voor bewerking (&lt;b&gt;niet vergrendeld&lt;/b&gt;).&lt;br /&gt;Laatste update:</value>
+  </data>
+  <data name="PageBeingEdited" xml:space="preserve">
+    <value>Deze pagina is &lt;b&gt;vergrendeld&lt;/b&gt; door</value>
+    <comment>Deze pagina wordt bewerkt (&lt;b&gt;vergrendeld&lt;/b&gt;) door</comment>
+  </data>
+  <data name="PageDeclinedByEditor" xml:space="preserve">
+    <value>Afgekeurd door Editor. Laatste update:</value>
+  </data>
+  <data name="PageDeclinedByPublisher" xml:space="preserve">
+    <value>Afgekeurd door Publisher. Laatste update:</value>
+  </data>
+  <data name="PageExpired" xml:space="preserve">
+    <value>Vervallen. Laatste update:</value>
+  </data>
+  <data name="PageMarkedForDeletion_WaitingForEditorApproval" xml:space="preserve">
+    <value>Deze pagina is gemarkeerd voor verwijdering (Wachtend op goedkeuring Editor). Laatste update:</value>
+  </data>
+  <data name="PageMarkedForDeletion_WaitingForPublisherApproval" xml:space="preserve">
+    <value>Deze pagina is gemarkeerd voor verwijdering (Wachtend op goedkeuring Publisher). Laatste update:</value>
+  </data>
+  <data name="PagePublished" xml:space="preserve">
+    <value>Gepubliceerd. Laatste update:</value>
+  </data>
+  <data name="Pages" xml:space="preserve">
+    <value>Pagina's</value>
+    <comment>Titel</comment>
+  </data>
+  <data name="PageScheduled" xml:space="preserve">
+    <value>Gepland. Laatst geupdate:</value>
+  </data>
+  <data name="PageWaitingForEditorApproval" xml:space="preserve">
+    <value>Wachtend op goedkeuring Editor Approval. Laatste update:</value>
+  </data>
+  <data name="PageWaitingForPublisherApproval" xml:space="preserve">
+    <value>Wachtend op goedkeuring Publisher. Laatste update:</value>
+  </data>
+  <data name="Password Recovery" xml:space="preserve">
+    <value>Paswoord terughalen</value>
+    <comment>Titel</comment>
+  </data>
+  <data name="Poll Info" xml:space="preserve">
+    <value>Antwoorden</value>
+    <comment>Titel</comment>
+  </data>
+  <data name="Poll Results" xml:space="preserve">
+    <value>Poll resultaten</value>
+    <comment>Titel</comment>
+  </data>
+  <data name="Polls" xml:space="preserve">
+    <value>Polls</value>
+    <comment>Titel</comment>
+  </data>
+  <data name="Preferences" xml:space="preserve">
+    <value>Voorkeuren</value>
+    <comment>Titel</comment>
+  </data>
+  <data name="Print this page" xml:space="preserve">
+    <value>Print deze pagina</value>
+  </data>
+  <data name="Product" xml:space="preserve">
+    <value>Product</value>
+    <comment>Titel</comment>
+  </data>
+  <data name="Product Info" xml:space="preserve">
+    <value>Product info</value>
+    <comment>Titel</comment>
+  </data>
+  <data name="Product Types" xml:space="preserve">
+    <value>Product types</value>
+    <comment>Titel</comment>
+  </data>
+  <data name="QuickLinks" xml:space="preserve">
+    <value>Snelle links:</value>
+  </data>
+  <data name="rdoLinkedPage.text" xml:space="preserve">
+    <value>Link</value>
+  </data>
+  <data name="rdoNormalPage.text" xml:space="preserve">
+    <value>Webpagina</value>
+  </data>
+  <data name="RegisterLinkText" xml:space="preserve">
+    <value>Registreer</value>
+  </data>
+  <data name="Registration" xml:space="preserve">
+    <value>Registratie</value>
+    <comment>Titel</comment>
+  </data>
+  <data name="Registration Settings" xml:space="preserve">
+    <value>Registratie eigenschappen</value>
+    <comment>Titel</comment>
+  </data>
+  <data name="Resources" xml:space="preserve">
+    <value>Bronnen</value>
+    <comment>Titel</comment>
+  </data>
+  <data name="Search" xml:space="preserve">
+    <value>Zoeken</value>
+    <comment>Titel</comment>
+  </data>
+  <data name="Send Newsletter" xml:space="preserve">
+    <value>Nieuwsbrief versturen</value>
+    <comment>Titel</comment>
+  </data>
+  <data name="Settings" xml:space="preserve">
+    <value>Eigenschappen</value>
+    <comment>Titel</comment>
+  </data>
+  <data name="Shipments" xml:space="preserve">
+    <value>Verschepingen</value>
+    <comment>Titel</comment>
+  </data>
+  <data name="Shop" xml:space="preserve">
+    <value>eShop</value>
+    <comment>Titel</comment>
+  </data>
+  <data name="Shopping Cart" xml:space="preserve">
+    <value>Winkelkarretje</value>
+    <comment>Titel</comment>
+  </data>
+  <data name="Sites &amp; Localization" xml:space="preserve">
+    <value>Sites &amp; instellingen</value>
+    <comment>Titel</comment>
+  </data>
+  <data name="Special Offer Manager" xml:space="preserve">
+    <value>Special Offer Manager</value>
+    <comment>Titel</comment>
+  </data>
+  <data name="Subscribe" xml:space="preserve">
+    <value>Inschrijven</value>
+  </data>
+  <data name="Subscribers" xml:space="preserve">
+    <value>Inschrijvers</value>
+    <comment>Titel</comment>
+  </data>
+  <data name="Tax Rates" xml:space="preserve">
+    <value>Belastingspercentage</value>
+    <comment>Titel</comment>
+  </data>
+  <data name="Taxes" xml:space="preserve">
+    <value>Belastingen</value>
+    <comment>Titel</comment>
+  </data>
+  <data name="Templates" xml:space="preserve">
+    <value>Templates</value>
+    <comment>Titel</comment>
+  </data>
+  <data name="Title_AddNew" xml:space="preserve">
+    <value>Nieuw toevoegen</value>
+  </data>
+  <data name="Title_DeletePage" xml:space="preserve">
+    <value>Pagina verwijderen</value>
+  </data>
+  <data name="Title_EditPage" xml:space="preserve">
+    <value>Pagina bewerken</value>
+  </data>
+  <data name="Title_Home" xml:space="preserve">
+    <value>Home</value>
+  </data>
+  <data name="Title_MovePage" xml:space="preserve">
+    <value>Pagina verplaatsen</value>
+  </data>
+  <data name="Title_RenamePage" xml:space="preserve">
+    <value>Pagina hernoemen</value>
+  </data>
+  <data name="Title_Search" xml:space="preserve">
+    <value>Zoeken</value>
+  </data>
+  <data name="Uncategorized" xml:space="preserve">
+    <value>Niet gecategoriseerd</value>
+  </data>
+  <data name="Update Subscription" xml:space="preserve">
+    <value>Inschrijving aanpassen</value>
+    <comment>Titel</comment>
+  </data>
+  <data name="UpdateFile" xml:space="preserve">
+    <value>Update</value>
+  </data>
+  <data name="UploadFile" xml:space="preserve">
+    <value>Opladen</value>
+  </data>
+  <data name="User Registration" xml:space="preserve">
+    <value>Inschrijving nieuwsbrief</value>
+    <comment>Titel</comment>
+  </data>
+  <data name="Users" xml:space="preserve">
+    <value>Gebruikers</value>
+    <comment>Titel</comment>
+  </data>
+  <data name="ViewCart" xml:space="preserve">
+    <value>Winkelkarretje bekijken</value>
+  </data>
+  <data name="Welcome" xml:space="preserve">
+    <value>Welkom</value>
+  </data>
+  <data name="We're sorry" xml:space="preserve">
+    <value>Het spijt ons</value>
+    <comment>Titel</comment>
+  </data>
+  <data name="NewPageMenuHere" xml:space="preserve">
+    <value>Nieuw Paginamenu hier</value>
+  </data>
+  <data name="Add to Favorites" xml:space="preserve">
+    <value>Add to Favorites</value>
+  </data>
+  <data name="litSummaryNote.Text" xml:space="preserve">
+    <value>Summary is optional and will be displayed on listing page.</value>
+  </data>
+  <data name="optActualSize.text" xml:space="preserve">
+    <value>Actual Size</value>
+  </data>
+  <data name="Overall" xml:space="preserve">
+    <value>Overall:</value>
+  </data>
+  <data name="page_views" xml:space="preserve">
+    <value>THIS PAGE (Views)</value>
+  </data>
+  <data name="Site Rss" xml:space="preserve">
+    <value>Site Rss</value>
+    <comment>Title</comment>
+  </data>
+  <data name="SummaryNote" xml:space="preserve">
+    <value>Summary will be displayed on listing page.</value>
+    <comment>Summary will not be displayed on this page. It will be displayed on listing page.</comment>
+  </data>
+  <data name="Tell A Friend" xml:space="preserve">
+    <value>Tell A Friend</value>
+    <comment>Title</comment>
+  </data>
+  <data name="times" xml:space="preserve">
+    <value>times</value>
+  </data>
+  <data name="times_lastmonth" xml:space="preserve">
+    <value>(last month)</value>
+  </data>
+  <data name="times_thismonth" xml:space="preserve">
+    <value>(this month)</value>
+  </data>
+  <data name="times_today" xml:space="preserve">
+    <value>(today)</value>
+  </data>
+  <data name="times_yesterday" xml:space="preserve">
+    <value>(yesterday)</value>
+  </data>
+  <data name="Add Newsletter" xml:space="preserve">
+    <value>Add Newsletter</value>
+    <comment>Title</comment>
+  </data>
+  <data name="Edit Newsletter" xml:space="preserve">
+    <value>Edit Newsletter</value>
+    <comment>Title</comment>
+  </data>
+  <data name="online" xml:space="preserve">
+    <value>online</value>
+  </data>
+  <data name="PageVisibilityInfo" xml:space="preserve">
+    <value>This page is hidden.</value>
+  </data>
+</root>

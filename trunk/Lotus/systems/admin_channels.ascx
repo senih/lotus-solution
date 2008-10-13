@@ -5,10 +5,15 @@
 <%@ Import Namespace="ChannelManager" %> 
 
 <script runat="server">
+    Private sRawUrl As String = Context.Request.RawUrl.ToString
+    
     Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
         If IsNothing(GetUser) Then
             panelLogin.Visible = True
-            panelLogin.FindControl("Login1").Focus()
+            Dim oUC1 As Control = LoadControl("login.ascx")
+            panelLogin.Controls.Add(oUC1)
+            panelChannels.Visible = False
+            panelChannelInfo.Visible = False
         Else
             If Roles.IsUserInRole(GetUser.UserName.ToString(), "Administrators") Then
                 panelChannels.Visible = True
@@ -18,8 +23,8 @@
                 grvChannels.DataBind()
                 
                 Dim oTemplate As TemplateManager = New TemplateManager
-                ddlDefaultTamplate.DataSource = oTemplate.ListAllTemplates
-                ddlDefaultTamplate.DataBind()
+                ddlDefaultTemplate.DataSource = oTemplate.ListAllTemplates
+                ddlDefaultTemplate.DataBind()
             End If
         End If
     End Sub
@@ -31,11 +36,25 @@
         Dim oSelectChannel As CMSChannel = New CMSChannel
         Dim oChannel As ChannelManager = New ChannelManager
         oSelectChannel = oChannel.GetChannelByName(sChannel)
-        Response.Redirect(Me.LinkAdminChannelInfo & "?ChannelId=" & oSelectChannel.ChannelId)
+        
+        hidChannelId.Value = oSelectChannel.ChannelId
+        Dim nChannelId As Integer = CInt(hidChannelId.Value)
+        oSelectChannel = oChannel.GetChannel(nChannelId)
+        Dim oTemplates As TemplateManager = New TemplateManager
+        ddlTemplate2.DataSource = oTemplates.ListAllTemplates()
+        ddlTemplate2.DataBind()
+        
+        txtChannelName2.Text = oSelectChannel.ChannelName
+        ddlTemplate2.SelectedValue = oSelectChannel.DefaultTemplate.ToString
+        ddlPermission2.SelectedValue = oSelectChannel.Permission.ToString
+        chkDisableCollabAuth2.Checked = oSelectChannel.DisableCollaboration
+        
+        panelChannelInfo.Visible = True
+        panelChannels.Visible=False
     End Sub
     
     Protected Sub grvChannels_RowDeleting(ByVal sender As Object, ByVal e As System.Web.UI.WebControls.GridViewDeleteEventArgs)
-        If Not Me.IsUserLoggedIn Then Exit Sub
+        If Not Me.IsUserLoggedIn Then Response.Redirect(HttpContext.Current.Items("_path"))
         
         Dim bChannelExist As Boolean = False
         Dim iIndex As Integer
@@ -107,7 +126,7 @@
     End Function
     
     Protected Sub btnCreateChannel_Click(ByVal sender As Object, ByVal e As System.EventArgs)
-        If Not Me.IsUserLoggedIn Then Exit Sub
+        If Not Me.IsUserLoggedIn Then Response.Redirect(HttpContext.Current.Items("_path"))
         
         Dim bChannelExist As Boolean = False
         Dim sFolder As String = Server.MapPath("resources") & "\"
@@ -115,7 +134,7 @@
         Dim oCreateChannel As ChannelManager = New ChannelManager
         Dim oChannel As CMSChannel = New CMSChannel
         oNewChannel.ChannelName = txtChannelName.Text.ToString
-        oNewChannel.DefaultTemplate = ddlDefaultTamplate.SelectedValue
+        oNewChannel.DefaultTemplate = ddlDefaultTemplate.SelectedValue
         oNewChannel.Permission = ddlPermission.SelectedValue
         oNewChannel.DisableCollaboration = chkDisableCollabAuth.Checked
         
@@ -134,23 +153,62 @@
         
         txtChannelName.Text = ""
         
-        Response.Redirect(Me.LinkAdminChannels)
-    End Sub
-       
-    Protected Sub Login1_LoggedIn(ByVal sender As Object, ByVal e As System.EventArgs)
-        Response.Redirect(HttpContext.Current.Items("_path"))
+        Dim oChannelManager As ChannelManager = New ChannelManager
+        grvChannels.DataSource = oChannelManager.GetChannelsCollection()
+        grvChannels.DataBind()
     End Sub
     
-    Protected Sub Login1_PreRender(ByVal sender As Object, ByVal e As System.EventArgs)
-        Login1.PasswordRecoveryUrl = "~/" & Me.LinkPassword & "?ReturnUrl=" & HttpContext.Current.Items("_path")
+    Private Function GetFileName() As String
+        Dim sFileName As String
+        Dim sPath As String
+        If sRawUrl.Contains("?") Then
+            sPath = sRawUrl.Split(CChar("?"))(0).ToString
+        Else
+            sPath = sRawUrl
+        End If
+
+        sFileName = sPath.Substring(sPath.LastIndexOf("/") + 1) 'All pages are in root
+        Return sFileName
+    End Function
+
+    Protected Sub btnUpdate_Click(ByVal sender As Object, ByVal e As System.EventArgs)
+        If Not Me.IsUserLoggedIn Then Response.Redirect(HttpContext.Current.Items("_path"))
+        
+        Dim nChannelId As Integer = CInt(hidChannelId.Value)
+        Dim oUpdateChannel As CMSChannel = New CMSChannel
+        Dim oChannel As ChannelManager = New ChannelManager
+        
+        oUpdateChannel = oChannel.GetChannel(nChannelId)
+        oUpdateChannel.ChannelName = txtChannelName2.Text
+        oUpdateChannel.DefaultTemplate = ddlTemplate2.SelectedValue
+        oUpdateChannel.Permission = ddlPermission2.SelectedValue
+        oUpdateChannel.DisableCollaboration = chkDisableCollabAuth2.Checked
+
+        If Not IsNothing(oChannel.GetChannelByName(txtChannelName2.Text)) Then
+            If oChannel.GetChannelByName(txtChannelName2.Text).ChannelId = nChannelId Then
+                'self update (same id)
+                oChannel.UpdateChannel(oUpdateChannel)
+            Else
+                'do not update, other channel has the same name
+            End If
+        Else
+            oChannel.UpdateChannel(oUpdateChannel)
+        End If
+        
+        panelChannels.Visible = True
+        panelChannelInfo.Visible = False
+        
+        grvChannels.DataSource = oChannel.GetChannelsCollection()
+        grvChannels.DataBind()
+    End Sub
+
+    Protected Sub btnCancel_Click(ByVal sender As Object, ByVal e As System.EventArgs)
+        panelChannels.Visible = True
+        panelChannelInfo.Visible = False
     End Sub
 </script>
 
 <asp:Panel ID="panelLogin" runat="server" Visible="False">
-    <asp:Login ID="Login1" meta:resourcekey="Login1" runat="server" PasswordRecoveryText="Password Recovery" TitleText="" OnLoggedIn="Login1_LoggedIn" OnPreRender="Login1_PreRender">
-        <LabelStyle HorizontalAlign="Left" Wrap="False" />
-    </asp:Login>
-    <br />
 </asp:Panel>
 
 <asp:Panel ID="panelChannels" runat="server" Visible="false" >
@@ -201,7 +259,7 @@
         </td>
         <td>:</td>
         <td>
-            <asp:TextBox ID="txtChannelName" runat="server"></asp:TextBox>
+            <asp:TextBox ID="txtChannelName" runat="server"  ValidationGroup="Channel"></asp:TextBox>
             <asp:RequiredFieldValidator ID="rfv1" runat="server" ErrorMessage="*" ControlToValidate="txtChannelName" ValidationGroup="Channel"></asp:RequiredFieldValidator>
         </td>
     </tr>
@@ -211,7 +269,7 @@
         </td>
         <td>:</td>
         <td>
-            <asp:DropDownList ID="ddlDefaultTamplate" runat="server" DataTextField="TemplateName" DataValueField="TemplateId">
+            <asp:DropDownList ID="ddlDefaultTemplate" runat="server" DataTextField="TemplateName" DataValueField="TemplateId">
             </asp:DropDownList>
         </td>
     </tr>
@@ -237,17 +295,70 @@
         <td colspan="3" height="10px"></td>
     </tr>
     <tr>
-        <td colspan="2">
+        <td colspan="3">
             <asp:Button ID="btnCreateChannel" meta:resourcekey="btnCreate" runat="server" Text=" Create " OnClick="btnCreateChannel_Click" ValidationGroup="Channel"/>
-        </td>
-        <td>
-            <asp:Label ID="Label1" meta:resourcekey="lblSucess" Font-Bold="true" runat="server" Text="Channel already exists." Visible=false></asp:Label>
         </td>
     </tr>
 
 </table>
 </div>
 
+</asp:Panel>
+
+<asp:Panel ID="panelChannelInfo" runat="server" Visible="false">
+    <asp:HiddenField ID="hidChannelId" runat="server" />
+    <table>
+    <tr>
+        <td align="left" nowrap=nowrap>
+           <asp:Label ID="Label2" meta:resourcekey="lblChannelName" runat="server" Text="Name"></asp:Label>
+        </td>
+        <td align="left" style="width: 3px; text-align: left">
+            :</td>
+        <td>
+            <asp:TextBox ID="txtChannelName2" runat="server" ValidationGroup="ChannelUpdate"></asp:TextBox>
+            <asp:RequiredFieldValidator ID="RequiredFieldValidator1" runat="server" ErrorMessage="*" ControlToValidate="txtChannelName" ValidationGroup="ChannelUpdate"></asp:RequiredFieldValidator>
+        </td>
+    </tr>
+    <tr>
+        <td align="left" nowrap=nowrap>
+            <asp:Label ID="lblTemplate" meta:resourcekey="lblTemplate" runat="server" Text="Default Template"></asp:Label></td>
+        <td align="left" style="width: 3px">
+            :</td>
+        <td>
+            <asp:DropDownList ID="ddlTemplate2" runat="server" DataTextField="TemplateName" DataValueField="TemplateId"> 
+            </asp:DropDownList>
+        </td>
+    </tr>
+    <tr>
+        <td align="left" style="text-align: left; " nowrap=nowrap>
+           <asp:Label ID="Label3" meta:resourcekey="lblPermission" runat="server" Text="View Permission"></asp:Label></td>
+        <td align="left">
+            :</td>
+        <td>
+            <asp:DropDownList ID="ddlPermission2" runat="server">
+            <asp:ListItem Value="1" meta:resourcekey="ddlPermissionOpt1" Text="Everyone (Anonymous Users)"></asp:ListItem>
+            <asp:ListItem Value="2" meta:resourcekey="ddlPermissionOpt2" Text="All Users (Registered)"></asp:ListItem>
+            <asp:ListItem Value="3" meta:resourcekey="ddlPermissionOpt3" Text="Channel's Users Only"></asp:ListItem>
+            </asp:DropDownList>
+        </td>
+    </tr>
+    <tr>
+        <td colspan=3 height="10px"></td>
+    </tr>
+    <tr>
+        <td colspan="3">
+            <asp:CheckBox ID="chkDisableCollabAuth2" meta:resourcekey="chkDisableCollabAuth" Text=" Disable Collaborative Authoring" runat="server" />
+        </td>
+    </tr>
+    <tr>
+        <td colspan=3 align="left" style="text-align:left;padding-top:10px" nowrap=nowrap>
+            <asp:Button ID="btnUpdate" meta:resourcekey="btnUpdate" runat="server" Text=" Update " ValidationGroup="ChannelUpdate" OnClick="btnUpdate_Click" />  
+            <asp:Button ID="btnCancel" meta:resourcekey="btnCancel" runat="server" Text="  Cancel  " OnClick="btnCancel_Click" />  
+        </td>
+    </tr>
+    
+</table>
+<br />
 
 </asp:Panel>
 

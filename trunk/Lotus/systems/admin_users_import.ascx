@@ -5,9 +5,15 @@
 <script runat="server">
     Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs)
         panelLogin.Visible = True
+        Dim oUC1 As Control = LoadControl("login.ascx")
+        panelLogin.Controls.Add(oUC1)
         panelImport.Visible = False
         If Not (IsNothing(GetUser())) Then
             If Roles.IsUserInRole(GetUser.UserName, "Administrators") Then
+                                
+                'Enable this line if using AJAX
+                'Dim oUpdate As ScriptManager = ScriptManager.GetCurrent(Page)
+                'oUpdate.RegisterPostBackControl(btnCreateUser)
                 
                 panelLogin.Visible = False
                 panelImport.Visible = True
@@ -24,7 +30,7 @@
     End Sub
 
     Protected Sub btnCreateUser_Click(ByVal sender As Object, ByVal e As System.EventArgs)
-        If Not Me.IsUserLoggedIn Then Exit Sub
+        If Not Me.IsUserLoggedIn Then Response.Redirect(HttpContext.Current.Items("_path"))
     
         Dim x As Integer
         Dim item As String
@@ -208,23 +214,12 @@
         Fileupload1.PostedFile.InputStream.Close()
     End Sub
 
-    Protected Sub Login1_LoggedIn(ByVal sender As Object, ByVal e As System.EventArgs) Handles Login1.LoggedIn
-        Response.Redirect(HttpContext.Current.Items("_path"))
-    End Sub
-
-    Protected Sub Login1_PreRender(ByVal sender As Object, ByVal e As System.EventArgs)
-        Login1.PasswordRecoveryUrl = "~/" & Me.LinkPassword & "?ReturnUrl=" & HttpContext.Current.Items("_path")
-    End Sub
-
     Protected Sub btnCancel_Click(ByVal sender As Object, ByVal e As System.EventArgs)
         Response.Redirect(Me.LinkAdminUsers)
     End Sub
 </script>
 
 <asp:Panel ID="panelLogin" runat="server" Visible="False">
-    <asp:Login ID="Login1" meta:resourcekey="Login1" runat="server"  PasswordRecoveryText="Password Recovery" TitleText="" OnLoggedIn="Login1_LoggedIn" OnPreRender="Login1_PreRender">
-        <LabelStyle HorizontalAlign="Left" Wrap="False" />
-    </asp:Login>
 </asp:Panel> 
 
 <asp:Panel ID="panelImport" runat="server" style="width:100%">
@@ -264,7 +259,6 @@
 <tr>
     <td colspan="3" style="padding-left:0px;">
     <asp:Button ID="btnCreateUser" runat="server" meta:resourcekey="btnCreateUser" OnClick="btnCreateUser_Click" /> 
-    <asp:Button ID="btnCancel" meta:resourcekey="btnCancel" runat="server" Text=" Cancel " CausesValidation=false OnClick="btnCancel_Click" />
     <asp:Label ID="lblNote" Font-Bold=true runat="server" Text=""></asp:Label>   
     </td>
 </tr>

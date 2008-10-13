@@ -28,6 +28,19 @@
     Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
         RedirectForLogin()
         
+        Dim sAppPath As String = Context.Request.ApplicationPath
+        If Not sAppPath.EndsWith("/") Then sAppPath = sAppPath & "/"
+        Dim sPort As String
+        sPort = Request.ServerVariables("SERVER_PORT")
+        If IsNothing(sPort) Or sPort = "80" Or sPort = "443" Then
+            sPort = ""
+        Else
+            sPort = ":" & sPort
+        End If
+        Dim sUrlAuthority As String = Request.ServerVariables("SERVER_NAME") & sPort
+        Dim sBaseHref As String = Request.Url.Scheme & "://" & sUrlAuthority & sAppPath
+        Page.Header.Controls.AddAt(0, New LiteralControl("<base target=""_self"" href=""" & sBaseHref & """ />"))
+                
         Dim sCulture As String = Request.QueryString("c")
         If Not sCulture = "" Then
             Dim ci As New CultureInfo(sCulture)
@@ -58,6 +71,34 @@
         Dim Item As ListItem
         Dim sText As String
         Dim sStatus As String
+        
+                
+        Dim sSQL As String
+        Dim oConn As SqlConnection
+        Dim oCommand As SqlCommand
+        Dim oDataReader As SqlDataReader
+        
+        Dim nTimeOffset As Double = 0
+
+        oConn = New SqlConnection(sConn)
+        oConn.Open()
+        
+        Dim nRootId As Integer
+        sSQL = "SELECT * FROM pages_working where page_id=" & intPageId
+        oCommand = New SqlCommand(sSQL, oConn)
+        oDataReader = oCommand.ExecuteReader()
+        If oDataReader.Read() Then
+            nRootId = oDataReader("root_id")
+        End If
+        oDataReader.Close()
+        
+        sSQL = "SELECT locales.time_offset FROM pages_working INNER JOIN locales ON pages_working.file_name = locales.home_page WHERE pages_working.root_id=" & nRootId
+        oCommand = New SqlCommand(sSQL, oConn)
+        oDataReader = oCommand.ExecuteReader()
+        If oDataReader.Read() Then
+            nTimeOffset = oDataReader("time_offset")
+        End If
+        oDataReader.Close()
 
         If Not Page.IsPostBack Then
             dropVersions.Items.Clear()
@@ -67,11 +108,10 @@
             dropVersions.Items.Add(Item)
 
             Dim oContentManager As ContentManager = New ContentManager
-            Dim oDataReader As SqlDataReader
             oDataReader = oContentManager.GetContentVersions(intPageId)
             Do While oDataReader.Read()
                 Item = New ListItem
-                sText = oDataReader("last_updated_date").ToString() & " - By: " & oDataReader("last_updated_by").ToString()
+                sText = CDate(oDataReader("last_updated_date")).AddHours(nTimeOffset).ToString() & " - By: " & oDataReader("last_updated_by").ToString()
                 sStatus = oDataReader("status").ToString()
 
                 If sStatus = "published_archived" Or sStatus = "published" Then
@@ -133,18 +173,18 @@
                 lblDownloadFileName.Text = .FileAttachment.Substring(.FileAttachment.IndexOf("_") + 1)
                 Dim sExt As String = (.FileAttachment.Substring(.FileAttachment.LastIndexOf(".") + 1)).ToLower
                 If sExt = "jpg" Or sExt = "gif" Or sExt = "png" Or sExt = "bmp" Then
-                    litDownloadThumb.Text = "<img alt="""" title="""" src=""../systems/image_thumbnail3_fileattach.aspx?file=" & .PageId  & "\" & .FileAttachment & "&amp;Size=100&amp;Quality=90"" border=""0"" />"
+                    litDownloadThumb.Text = "<img alt="""" title="""" src=""systems/image_thumbnail3_fileattach.aspx?file=" & .PageId & "\" & .FileAttachment & "&amp;Size=100&amp;Quality=90"" border=""0"" />"
                 Else
                     litDownloadThumb.Text = ""
                 End If
-                lblDownloadFile.Text = "<a target=""_blank"" href=""" & "../systems/file_download.aspx?pg=" & .PageId & "&ver=" & .Version & """>" & GetLocalResourceObject("lblDownloadFileLinkText") & "</a> (" & FormatNumber((.FileSize / 1024), 0) & " KB" & ")"
+                lblDownloadFile.Text = "<a target=""_blank"" href=""" & "systems/file_download.aspx?pg=" & .PageId & "&ver=" & .Version & """>" & GetLocalResourceObject("lblDownloadFileLinkText") & "</a> (" & FormatNumber((.FileSize / 1024), 0) & " KB" & ")"
             End IF
 
             If .FileView <> "" Then
                 lblViewFileName.Text = .FileView.Substring(.FileView.IndexOf("_") + 1)
                 Dim sExt As String = (.FileView.Substring(.FileView.LastIndexOf(".") + 1)).ToLower
                 If sExt = "jpg" Or sExt = "gif" Or sExt = "png" Or sExt = "bmp" Then
-                    litViewThumb.Text = "<img alt="""" title="""" src=""../systems/image_thumbnail3_fileview.aspx?file=" & .PageId  & "\" & .FileView & "&amp;Size=100&amp;Quality=90"" border=""0"" />"
+                    litViewThumb.Text = "<img alt="""" title="""" src=""systems/image_thumbnail3_fileview.aspx?file=" & .PageId & "\" & .FileView & "&amp;Size=100&amp;Quality=90"" border=""0"" />"
                 Else
                     litViewThumb.Text = ""
                 End If
@@ -155,7 +195,7 @@
                 lblViewListingFileName.Text = .FileViewListing.Substring(.FileViewListing.IndexOf("_") + 1)
                 Dim sExt As String = (.FileViewListing.Substring(.FileViewListing.LastIndexOf(".") + 1)).ToLower
                 If sExt = "jpg" Or sExt = "gif" Or sExt = "png" Or sExt = "bmp" Then
-                    litViewListingThumb.Text = "<img alt="""" title="""" src=""../systems/image_thumbnail3_listview.aspx?file=" & .PageId  & "\" & .FileViewListing & "&amp;Size=100&amp;Quality=90"" border=""0"" />"
+                    litViewListingThumb.Text = "<img alt="""" title="""" src=""systems/image_thumbnail3_listview.aspx?file=" & .PageId & "\" & .FileViewListing & "&amp;Size=100&amp;Quality=90"" border=""0"" />"
                 Else
                     litViewListingThumb.Text = ""
                 End If
@@ -164,7 +204,6 @@
         End With
 
         oContentManager = Nothing
-
         lblRestoreStatus.Text = ""
     End Sub
 
@@ -195,7 +234,6 @@
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
-<base target="_self">
 <html xmlns="http://www.w3.org/1999/xhtml" >
 <head runat="server">
     <title id="idTitle" meta:resourcekey="idTitle" runat="server"></title>
@@ -208,8 +246,10 @@
     </style>
     <script>
     function closeAndRefresh(sFileName)
-        {        
-        if(navigator.appName.indexOf("Microsoft")!=-1)
+        {            
+        parent.location.href=parent.location.href; //parent.location.href="../" + sFileName;     
+        parent.icCloseDlg();
+        /*if(navigator.appName.indexOf("Microsoft")!=-1)
             {
             dialogArguments.navigate("../" + sFileName)
             }
@@ -217,8 +257,13 @@
             {
             window.opener.location.href="../" + sFileName;
             }
-        self.close();
+        self.close();*/
         }
+    function clearFormAction()
+        {
+        document.getElementsByTagName('form')[0].action="";
+        }
+    window.onload=clearFormAction;
     </script>
 </head>
 <body style="margin:10px;background-color:#E6E7E8">
@@ -226,7 +271,7 @@
 <asp:DropDownList ID="dropVersions" AutoPostBack="true" runat="server">
 </asp:DropDownList>
 <asp:Button ID="btnRestore" meta:resourcekey="btnRestore" runat="server" Text=" Restore This Version " />
-<asp:Button ID="btnClose" meta:resourcekey="btnClose" runat="server" Text=" Close " OnClientClick="self.close()" />
+<asp:Button ID="btnClose" meta:resourcekey="btnClose" runat="server" Text=" Close " OnClientClick="parent.icCloseDlg();return false;" />
 <asp:Label ID="lblRestoreStatus" runat="server" Text="" Font-Bold="true"></asp:Label>
 <asp:Panel runat="server" ID="panelOptions">
 <table cellpadding="2" cellspacing="2">
