@@ -15,7 +15,7 @@ namespace Services
 	public class Data
 	{
 		/// <summary>
-		/// Connections the manager.
+		/// Connection manager.
 		/// </summary>
 		/// <returns>Gets the database connection string</returns>
 		public static string ConnectionManager()
@@ -91,8 +91,7 @@ namespace Services
 
 				case "txtArea":
 				case "chkBoxList":
-				case "addressFromCtrl":
-				case "addressToCtrl":
+				case "addressCtrl":
 				data.value2 = sValue;
 				break;
 

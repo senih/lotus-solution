@@ -286,8 +286,9 @@ public partial class modules_service : BaseUserControl
 			divContainer.Controls.Add(new LiteralControl("<table>"));
 			foreach (form_field_definition field in listOfFormControls)
 			{
+				WebCustomControl custCtrl = new WebCustomControl();
 				divContainer.Controls.Add(new LiteralControl("<tr>"));
-				divContainer.Controls.Add(WebCustomControl.GetControl(field));
+				divContainer.Controls.Add(custCtrl.GetControl(field));
 				divContainer.Controls.Add(new LiteralControl("</tr>"));
 			}
 			divContainer.Controls.Add(new LiteralControl("</table>"));
@@ -382,19 +383,19 @@ public partial class modules_service : BaseUserControl
 				sValue = ((DropDownList)this.FindControl("hours")).SelectedValue + ":" + ((DropDownList)this.FindControl("minutes")).SelectedValue;
 				break;
 
-				case "addressFromCtrl":
-				string cityFrom = ((DropDownList)this.FindControl("cityFrom")).SelectedValue;
-				string regionFrom = ((DropDownList)this.FindControl("regionFrom")).SelectedValue;
-				string addressFrom = ((TextBox)this.FindControl("addressFrom")).Text;
-				sValue = addressFrom + ", " + regionFrom + ", " + cityFrom;
+				case "addressCtrl":
+				string city = ((DropDownList)this.FindControl("city" + control.default_value)).SelectedValue;
+				string region = ((DropDownList)this.FindControl("region" + control.default_value)).SelectedValue;
+				string address = ((TextBox)this.FindControl("address1" + control.default_value)).Text;
+				sValue = address + ", " + region + ", " + city;
 				break;
 
-				case "addressToCtrl":
-				string cityTo = ((DropDownList)this.FindControl("cityTo")).SelectedValue;
-				string regionTo = ((DropDownList)this.FindControl("regionTo")).SelectedValue;
-				string addressTo = ((TextBox)this.FindControl("addressTo")).Text;
-				sValue = addressTo + ", " + regionTo + ", " + cityTo;
-				break;
+				//case "addressToCtrl":
+				//string cityTo = ((DropDownList)this.FindControl("cityTo")).SelectedValue;
+				//string regionTo = ((DropDownList)this.FindControl("regionTo")).SelectedValue;
+				//string addressTo = ((TextBox)this.FindControl("addressTo")).Text;
+				//sValue = addressTo + ", " + regionTo + ", " + cityTo;
+				//break;
 			}
 			Data.InsertData(dataId, control.form_field_definition_id, PageID, control.input_type, sValue, bValue, dValue);
 		}

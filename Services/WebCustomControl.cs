@@ -15,8 +15,15 @@ namespace Services
 {
 	public class WebCustomControl : WebControl
 	{
+		DropDownList region = new DropDownList();
+		DropDownList city = new DropDownList();
 
-		public static Control GetControl(form_field_definition control)
+		/// <summary>
+		/// Gets the control.
+		/// </summary>
+		/// <param name="control">The control.</param>
+		/// <returns>Returns custom user control</returns>
+		public Control GetControl(form_field_definition control)
 		{
 			string conn = Data.ConnectionManager();
 			int ctrlId = control.form_field_definition_id;
@@ -41,7 +48,7 @@ namespace Services
 			nameLbl.Text = name;
 			PlaceHolder ctrlHolder = new PlaceHolder();
 			RequiredFieldValidator validator = new RequiredFieldValidator();
-			if (type != "header" && type != "lblNoName" && type != "addressFromCtrl" && type != "addressToCtrl")
+			if (type != "header" && type != "lblNoName" && type != "addressCtrl")
 			{
 				ctrlHolder.Controls.Add(new LiteralControl("<td align=\"left\">"));
 				ctrlHolder.Controls.Add(nameLbl);
@@ -228,23 +235,91 @@ namespace Services
 				ctrlHolder.Controls.Add(new LiteralControl("</td>"));
 				break;
 
-				case "addressFromCtrl":
-				UserControl addressFrom = new UserControl();
-				addressFrom.ID = id;
-				Control ctrlFrom = addressFrom.LoadControl("~/modules/address_from.ascx");
+				case "addressCtrl":
+				Unit adressWidth = new Unit(150);
+				string path = HttpContext.Current.Server.MapPath("~/App_Data/") + "CityRegion.xml";
+				city.ID = "city" + defaultValue;
+				region.ID = "region" + defaultValue;
+				city.Width = adressWidth;
+				region.Width = adressWidth;
+				region.Enabled = false;
+				city.DataSource = Data.GetXmlElements(path);
+				city.DataBind();
+				Label cityLabel = new Label();
+				Label regionLabel = new Label();
+				Label addressLabel = new Label();
+				cityLabel.Text = "City " + defaultValue;
+				regionLabel.Text = "Region " + defaultValue;
+				addressLabel.Text = "Address " + defaultValue;
+				TextBox addressTxtBox = new TextBox();
+				addressTxtBox.ID = "address1" + defaultValue;
+				addressTxtBox.TextMode = TextBoxMode.MultiLine;
+				addressTxtBox.Width = adressWidth;
+				Panel addressPanel = new Panel();
+				addressPanel.ID = id;
+				city.SelectedIndexChanged += new EventHandler(city_SelectedIndexChanged);
+				city.AutoPostBack = true;
 				ctrlHolder.Controls.Add(new LiteralControl("<td>"));
-				ctrlHolder.Controls.Add(ctrlFrom);
+				ctrlHolder.Controls.Add(new LiteralControl("<table>"));
+
+				ctrlHolder.Controls.Add(new LiteralControl("<tr>"));
+				ctrlHolder.Controls.Add(new LiteralControl("<td>"));
+				ctrlHolder.Controls.Add(cityLabel);
 				ctrlHolder.Controls.Add(new LiteralControl("</td>"));
+				ctrlHolder.Controls.Add(new LiteralControl("<td>"));
+				ctrlHolder.Controls.Add(new LiteralControl("&nbsp;:&nbsp;"));
+				ctrlHolder.Controls.Add(new LiteralControl("</td>"));
+				ctrlHolder.Controls.Add(new LiteralControl("<td>"));
+				ctrlHolder.Controls.Add(city);
+				ctrlHolder.Controls.Add(new LiteralControl("</td>"));
+				ctrlHolder.Controls.Add(new LiteralControl("</tr>"));
+
+				ctrlHolder.Controls.Add(new LiteralControl("<tr>"));
+				ctrlHolder.Controls.Add(new LiteralControl("<td>"));
+				ctrlHolder.Controls.Add(regionLabel);
+				ctrlHolder.Controls.Add(new LiteralControl("</td>"));
+				ctrlHolder.Controls.Add(new LiteralControl("<td>"));
+				ctrlHolder.Controls.Add(new LiteralControl("&nbsp;:&nbsp;"));
+				ctrlHolder.Controls.Add(new LiteralControl("</td>"));
+				ctrlHolder.Controls.Add(new LiteralControl("<td>"));
+				ctrlHolder.Controls.Add(region);
+				ctrlHolder.Controls.Add(new LiteralControl("</td>"));
+				ctrlHolder.Controls.Add(new LiteralControl("</tr>"));
+
+				ctrlHolder.Controls.Add(new LiteralControl("<tr>"));
+				ctrlHolder.Controls.Add(new LiteralControl("<td>"));
+				ctrlHolder.Controls.Add(addressLabel);
+				ctrlHolder.Controls.Add(new LiteralControl("</td>"));
+				ctrlHolder.Controls.Add(new LiteralControl("<td>"));
+				ctrlHolder.Controls.Add(new LiteralControl("&nbsp;:&nbsp;"));
+				ctrlHolder.Controls.Add(new LiteralControl("</td>"));
+				ctrlHolder.Controls.Add(new LiteralControl("<td>"));
+				ctrlHolder.Controls.Add(addressTxtBox);
+				ctrlHolder.Controls.Add(new LiteralControl("</td>"));
+				ctrlHolder.Controls.Add(new LiteralControl("</tr>"));
+
+				ctrlHolder.Controls.Add(new LiteralControl("</table>"));
+				ctrlHolder.Controls.Add(new LiteralControl("</td>"));
+
 				break;
 
-				case "addressToCtrl":
-				UserControl addressTo = new UserControl();
-				addressTo.ID = id;
-				Control ctrlTo = addressTo.LoadControl("~/modules/address_to.ascx");
-				ctrlHolder.Controls.Add(new LiteralControl("<td>"));
-				ctrlHolder.Controls.Add(ctrlTo);
-				ctrlHolder.Controls.Add(new LiteralControl("</td>"));
-				break;
+				//case "addressFromCtrl":
+				//UserControl addressFrom = new UserControl();
+				//addressFrom.ID = id;
+				//Control ctrlFrom = addressFrom.LoadControl("~/modules/address_from.ascx");
+				//ctrlHolder.Controls.Add(new LiteralControl("<td>"));
+				//ctrlHolder.Controls.Add(ctrlFrom);
+				//ctrlHolder.Controls.Add(new LiteralControl("</td>"));
+				//break;
+
+				//case "addressToCtrl":
+				//UserControl addressTo = new UserControl();
+				//addressTo.ID = id;
+				//Control ctrlTo = addressTo.LoadControl("~/modules/address_to.ascx");
+				//ctrlHolder.Controls.Add(new LiteralControl("<td>"));
+				//ctrlHolder.Controls.Add(ctrlTo);
+				//ctrlHolder.Controls.Add(new LiteralControl("</td>"));
+				//break;
 
 				case "header":
 				Label headerCtrl = new Label();
@@ -269,6 +344,22 @@ namespace Services
 			}
 			newControl = ctrlHolder;
 			return newControl;
+		}
+
+		/// <summary>
+		/// Handles the SelectedIndexChanged event of the city control.
+		/// </summary>
+		/// <param name="sender">The source of the event.</param>
+		/// <param name="e">The <see cref="System.EventArgs"/> instance containing the event data.</param>
+		protected void city_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			string path = HttpContext.Current.Server.MapPath("~/App_Data/") + "CityRegion.xml";
+			if (city.SelectedValue != "Please select city")
+				region.Enabled = true;
+			else
+				region.Enabled = false;
+			region.DataSource = Data.GetXmlChildElements(path, city.SelectedItem.Text);
+			region.DataBind();
 		}
 	}
 }
