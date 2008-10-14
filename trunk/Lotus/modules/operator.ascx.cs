@@ -97,6 +97,8 @@ public partial class modules_operator : BaseUserControl
 		DetailsView.DataBind();
 		if (DetailsView.Rows[2].Cells[1].Text == "Taxi")
 			ReplyPanel.Visible = true;
+		else
+			ReplyPanel.Visible = false;
 		DetailsPanel.Visible = true;
 		ResultsGridView.Visible = false;
 	}

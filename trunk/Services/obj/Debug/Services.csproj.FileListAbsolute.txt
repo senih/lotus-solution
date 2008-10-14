@@ -20,3 +20,13 @@ D:\Webs\lotus-solution\Services\obj\Debug\Services.dll
 D:\Webs\lotus-solution\Services\obj\Debug\Services.pdb
 D:\Webs\lotus-solution\Services\bin\Debug\EclipseWebSolutions.DatePicker.dll
 D:\Webs\lotus-solution\Services\bin\Debug\EclipseWebSolutions.DatePicker.pdb
+D:\websites\Lotus\Services\bin\Debug\Services.dll
+D:\websites\Lotus\Services\bin\Debug\Services.pdb
+D:\websites\Lotus\Services\obj\Debug\ResolveAssemblyReference.cache
+D:\websites\Lotus\Services\obj\Debug\Services.dll
+D:\websites\Lotus\Services\obj\Debug\Services.pdb
+C:\Documents and Settings\Admin\Desktop\Lotus\Services\bin\Debug\Services.dll
+C:\Documents and Settings\Admin\Desktop\Lotus\Services\bin\Debug\Services.pdb
+C:\Documents and Settings\Admin\Desktop\Lotus\Services\obj\Debug\ResolveAssemblyReference.cache
+C:\Documents and Settings\Admin\Desktop\Lotus\Services\obj\Debug\Services.dll
+C:\Documents and Settings\Admin\Desktop\Lotus\Services\obj\Debug\Services.pdb

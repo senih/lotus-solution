@@ -21,7 +21,7 @@
             If gridviewEvents.Rows.Count > 0 Then
                 lblEvents.Visible = True
                 idMoreEvents.Visible = True
-                lnkMoreEvents.NavigateUrl = "~/" & Me.LinkEvents
+                'lnkMoreEvents.NavigateUrl = "~/" & Me.LinkEvents
                 panelEventsPublic.Visible = True
             Else
                 panelEventsPublic.Visible = False

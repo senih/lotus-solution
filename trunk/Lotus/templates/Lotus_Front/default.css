@@ -68,7 +68,6 @@ body
 #menu
 {
 	height:48px;
-	padding-left:10px;
 	text-align:center;
 	
 }
@@ -80,8 +79,9 @@ body
 	text-transform:uppercase;
 	font-family:Trebuchet MS;
 	font-size:12px;
-	font-weight:bold;	
-	padding-right:20px;
+	font-weight:bold;
+	padding-left:10px;	
+	padding-right:10px;
 	letter-spacing:1px;	
 
 }

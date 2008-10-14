@@ -91,6 +91,8 @@ namespace Services
 
 				case "txtArea":
 				case "chkBoxList":
+				case "addressFromCtrl":
+				case "addressToCtrl":
 				data.value2 = sValue;
 				break;
 

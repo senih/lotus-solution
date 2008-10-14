@@ -466,7 +466,7 @@
             <option value="BW">Botswana</option>
             <option value="BV">Bouvet Island</option>
             <option value="BR">Brazil</option>
-            <option value="IO">British Indian Ocean Territory</option>
+            <option value="IO">British Indian</option>
             <option value="BN">Brunei</option>
             <option value="BG">Bulgaria</option>
             <option value="BF">Burkina Faso</option>
@@ -504,14 +504,14 @@
             <option value="ER">Eritrea</option>
             <option value="EE">Estonia</option>
             <option value="ET">Ethiopia</option>
-            <option value="FK">Falkland Islands (Islas Malvinas)</option>
+            <option value="FK">Falkland Islands</option>
             <option value="FO">Faroe Islands</option>
             <option value="FJ">Fiji Islands</option>
             <option value="FI">Finland</option>
             <option value="FR">France</option>
             <option value="GF">French Guiana</option>
             <option value="PF">French Polynesia</option>
-            <option value="TF">French Southern and Antarctic Lands</option>
+            <option value="TF">French Southern</option>
             <option value="GA">Gabon</option>
             <option value="GM">Gambia, The</option>
             <option value="GE">Georgia</option>
@@ -529,7 +529,7 @@
             <option value="GW">Guinea-Bissau</option>
             <option value="GY">Guyana</option>
             <option value="HT">Haiti</option>
-            <option value="HM">Heard Island and McDonald Islands</option>
+            <option value="HM">Heard Island</option>
             <option value="HN">Honduras</option>
             <option value="HK">Hong Kong SAR</option>
             <option value="HU">Hungary</option>
@@ -562,7 +562,7 @@
             <option value="LT">Lithuania</option>
             <option value="LU">Luxembourg</option>
             <option value="MO">Macao SAR</option>
-            <option value="MK">Macedonia, Former Yugoslav Republic of</option>
+            <option value="MK">Macedonia</option>
             <option value="MG">Madagascar</option>
             <option value="MW">Malawi</option>
             <option value="MY">Malaysia</option>
@@ -630,7 +630,7 @@
             <option value="SB">Solomon Islands</option>
             <option value="SO">Somalia</option>
             <option value="ZA">South Africa</option>
-            <option value="GS">South Georgia and the South Sandwich Islands</option>
+            <option value="GS">South Georgia</option>
             <option value="ES">Spain</option>
             <option value="LK">Sri Lanka</option>
             <option value="SH">St. Helena</option>
@@ -665,7 +665,7 @@
             <option value="AE">United Arab Emirates</option>
             <option value="UK">United Kingdom</option>
             <option value="US">United States</option>
-            <option value="UM">United States Minor Outlying Islands</option>
+            <option value="UM">United States Minor</option>
             <option value="UY">Uruguay</option>
             <option value="UZ">Uzbekistan</option>
             <option value="VU">Vanuatu</option>

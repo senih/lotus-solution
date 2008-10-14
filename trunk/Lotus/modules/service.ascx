@@ -3,7 +3,7 @@
 </asp:ScriptManager>
 <asp:Panel ID="AnonymousPanel" runat="server" Visible="false">
     
-    <table style="width:728px;">
+    <table style="width:720px;">
     <tr>
         <td style="width:50%;">
             <asp:Label ID="lblLogin" meta:resourcekey="lblLogin" runat="server" Text="Login" CssClass="subTitle"></asp:Label>
@@ -21,11 +21,12 @@
         <td rowspan="2">
             <asp:Label ID="lblregistertxt" meta:resourcekey="lblRegistertxt" runat="server" Text="Tuka treba da pishuva neshto kako Doklolku nemate profil, ve molime kreirajte so shto ke ni ovozmozite podobar, bla bla ..."></asp:Label>
             <br />
-
             <br />
-
-            <asp:Button ID="btnregister" runat="server" Text="Register" 
-                onclick="btnregister_Click" />
+            <br />
+            <br />
+            <br />
+            <br />
+            <asp:HyperLink ID="hlRegister" runat="server" meta:resourcekey="hlRegistertxt" NavigateUrl="~/register.aspx">Register</asp:HyperLink>
         </td>
     </tr>
     <tr>
@@ -121,7 +122,8 @@
                                     <asp:ListItem Value="radioBtnList">Radio button list</asp:ListItem>
                                     <asp:ListItem Value="datePicker">Date picker</asp:ListItem>
                                     <asp:ListItem Value="timePicker">Time picker</asp:ListItem>
-                                    <asp:ListItem Value="addressCtrl">Address</asp:ListItem>
+                                    <asp:ListItem Value="addressFromCtrl">Address from</asp:ListItem>
+                                    <asp:ListItem Value="addressToCtrl">Address To</asp:ListItem>
                                     <asp:ListItem Value="header">Header</asp:ListItem>
                                     <asp:ListItem Value="lblNoName">Label (without name)</asp:ListItem>
                                 </asp:DropDownList>

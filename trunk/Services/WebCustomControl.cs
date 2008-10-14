@@ -15,6 +15,7 @@ namespace Services
 {
 	public class WebCustomControl : WebControl
 	{
+
 		public static Control GetControl(form_field_definition control)
 		{
 			string conn = Data.ConnectionManager();
@@ -40,14 +41,14 @@ namespace Services
 			nameLbl.Text = name;
 			PlaceHolder ctrlHolder = new PlaceHolder();
 			RequiredFieldValidator validator = new RequiredFieldValidator();
-			if (type != "header" && type != "lblNoName")
+			if (type != "header" && type != "lblNoName" && type != "addressFromCtrl" && type != "addressToCtrl")
 			{
-				ctrlHolder.Controls.Add(new LiteralControl("<td align=\"right\">"));
+				ctrlHolder.Controls.Add(new LiteralControl("<td align=\"left\">"));
 				ctrlHolder.Controls.Add(nameLbl);
 				ctrlHolder.Controls.Add(new LiteralControl("</td>"));
 				ctrlHolder.Controls.Add(new LiteralControl("<td>"));
 				ctrlHolder.Controls.Add(new LiteralControl("&nbsp;:&nbsp;"));
-				ctrlHolder.Controls.Add(new LiteralControl("</td>"));				
+				ctrlHolder.Controls.Add(new LiteralControl("</td>"));
 			}
 
 			switch (type)
@@ -227,12 +228,22 @@ namespace Services
 				ctrlHolder.Controls.Add(new LiteralControl("</td>"));
 				break;
 
-				case "addressCtrl":
-				DropDownList city = new DropDownList();
-				DropDownList region = new DropDownList();
-				city.ID = "cityCtrl";
-				region.ID = "regionCtrl";
+				case "addressFromCtrl":
+				UserControl addressFrom = new UserControl();
+				addressFrom.ID = id;
+				Control ctrlFrom = addressFrom.LoadControl("~/modules/address_from.ascx");
+				ctrlHolder.Controls.Add(new LiteralControl("<td>"));
+				ctrlHolder.Controls.Add(ctrlFrom);
+				ctrlHolder.Controls.Add(new LiteralControl("</td>"));
+				break;
 
+				case "addressToCtrl":
+				UserControl addressTo = new UserControl();
+				addressTo.ID = id;
+				Control ctrlTo = addressTo.LoadControl("~/modules/address_to.ascx");
+				ctrlHolder.Controls.Add(new LiteralControl("<td>"));
+				ctrlHolder.Controls.Add(ctrlTo);
+				ctrlHolder.Controls.Add(new LiteralControl("</td>"));
 				break;
 
 				case "header":

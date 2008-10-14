@@ -8,6 +8,11 @@ body
 	margin:0px;
 	padding:0px;
 }
+h1 
+{
+    padding:0;
+    margin:0;
+}
 
 .testContainer
 {
@@ -135,6 +140,7 @@ body
 	font-family:Verdana;
 	font-size:12px;
 	float:left;
+	width:517px;
 	padding-right:20px;
 	padding-left:10px;
 }
@@ -177,15 +183,7 @@ body
 {
 	text-decoration:none;
 }
-.footerContainer 
-{
-    margin:0px auto;
-	width:736px;
-}
-.langSelect 
-{
-    float:left;
-}
+
 
 .clear
 {
@@ -258,10 +256,9 @@ body
 {
 	background-color:#d1e0e4;
 }
-
-#form 
+.langSelect a
 {
-	
+    float:left;
 }
 
 /*AdminWorkspace*/
@@ -283,8 +280,24 @@ a.register:link{color:Black; text-decoration:none; font-family:Tahoma; font-size
 a.register:visited{color:Black; text-decoration:none; font-family:Tahoma; font-size:12px;padding:0px 6px;border-right: 1px solid #000000;}
 
 /* PAGE ELEMENTS */
-.title{font-family:Trebuchet MS; font-size:28px; letter-spacing:2px; color:#405c64; padding-top:80px; text-align:right; padding-right:18px; }
+.title{font-family:Trebuchet MS; font-size:28px; letter-spacing:2px; color:#405c64; padding-top:60px; text-align:right; padding-right:18px; }
 .subTitle{font-family:Trebuchet MS; font-size:20px; letter-spacing:1px; color:#405c64; margin-bottom:20px; }
+.book_now {font-family:Trebuchet MS;color:#018dc5; font-size:14px; font-weight:bold; letter-spacing:0px; text-align:right; padding-right:20px; }
+.book_now a { font-family:Trebuchet MS;color:#018dc5; font-size:14px; font-weight:bold; letter-spacing:0px; text-decoration:none;}
+.book_now a:link { font-family:Trebuchet MS;color:#018dc5; font-size:14px; font-weight:bold; letter-spacing:0px; text-decoration:none;}
+.book_now a:visited{ font-family:Trebuchet MS;color:#018dc5; font-size:14px; font-weight:bold; letter-spacing:0px; text-decoration:none;}
+.book_now a:hover { font-family:Trebuchet MS;color:#405c64; font-size:14px; font-weight:bold; letter-spacing:0px; text-decoration:none;}
+
+.weather_link a {height:28px; display:block; font-family:Trebuchet MS;font-size:14px;color:#34525a; font-weight:bold; text-decoration:none; background-image:url('Images/weather_icon.gif'); background-repeat:no-repeat; background-position:right;padding-top:4px; padding-left:10px;  border-bottom:1px solid #405c64;margin-bottom:5px; }
+.weather_link a:visited{ color:#34525a; }
+.weather_link a:hover { color:#018dc5; }
+
+.airports{ width:160px; float:right; margin-left:20px; padding:8px;}
+
+.airport_link a {height:28px; display:block; font-family:Trebuchet MS;font-size:14px;color:#34525a; font-weight:bold; text-decoration:none; background-image:url('Images/airport_icon.png'); background-repeat:no-repeat; background-position:right;padding-top:4px; padding-left:10px;  border-bottom:1px solid #405c64; margin-bottom:5px; }
+.airport_link a:visited{ color:#34525a; }
+.airport_link a:hover { color:#018dc5; }
+
 
 .publishing_info {margin-top:5px;margin-bottom:15px}
 .author_date_first_published {font-style:italic;color:#999999}
@@ -684,185 +697,13 @@ input.nodeedit {
     border:#cfcfcf 1px solid;
     z-index:1;}
 .nlstree {text-align:left; border:#e6e7e8 5px solid;padding:12px;background:white;}
-.locationFrom_287
+.buttonBook 
 {
-    float:left;
-    width:280px;
-    color:#0b4b5a;
-    margin-bottom:12px;
-}
-
-.form_header
-{
-	text-transform:uppercase;
-	font-size:12px;
-	font-weight:bold;
-	font-style:italic;
-	padding-bottom:10px;
-}
-
-
-.dateFrom_287
-{
- margin-bottom:18px;
- color:#0b4b5a;
-}
-.passengers_287
-{
-    white-space:nowrap;
-    color:#0b4b5a;
-    clear:left;
-    float:left;
-    margin-bottom:12px;
-    width:280px;
-}
-.flightNo_287
-{
-    white-space:nowrap;
-    color:#0b4b5a;
-    margin-bottom:12px;
-
-}
-
-.adresaod_286
-{
-    float:left;
-    width:320px;
-    white-space:nowrap;
-    color:#0b4b5a;
-    margin-bottom:12px;
-}
-
-.adresado_286
-{
-    color:#0b4b5a;
-    white-space:nowrap;
-    margin-bottom:12px;
-}
-
-.brPatnici_286 
-{
-    white-space:nowrap;
-    color:#0b4b5a;
-    clear:left;
-    float:left;
-    margin-bottom:12px;
-    width:320px;
-}
-
-.dt_286
-{
-    white-space:nowrap;
-    color:#0b4b5a;
-    margin-bottom:12px;
-}
-
-/*Children*/
-.adresaod_289
-{
-    float:left;
-    width:320px;
-    white-space:nowrap;
-    color:#0b4b5a;
-    margin-bottom:12px;
-}
-
-.adresado_289
-{
-    color:#0b4b5a;
-    white-space:nowrap;
-    margin-bottom:12px;
-}
-
-.brPatnici_289 
-{
-    white-space:nowrap;
-    color:#0b4b5a;
-    clear:left;
-    float:left;
-    margin-bottom:12px;
-    width:320px;
-}
-
-.datePicking_289
-{
-    white-space:nowrap;
-    color:#0b4b5a;
-    margin-bottom:12px;
-}
-
-/*VIP*/
-
-.adresaod_290
-{
-    float:left;
-    width:320px;
-    white-space:nowrap;
-    color:#0b4b5a;
-    margin-bottom:12px;
-}
-
-.adresado_290
-{
-    color:#0b4b5a;
-    white-space:nowrap;
-    margin-bottom:12px;
-}
-
-.brPatnici_290 
-{
-    white-space:nowrap;
-    color:#0b4b5a;
-    clear:left;
-    float:left;
-    margin-bottom:12px;
-    width:320px;
-}
-
-.datePicking_290
-{
-    white-space:nowrap;
-    color:#0b4b5a;
-    margin-bottom:12px;
-}
-
-.dodatoci_290
-{
-	width:320px;
-	float:left;
-}
-
-/*Pets*/
-
-.adresaod_292
-{
-    float:left;
-    width:320px;
-    white-space:nowrap;
-    color:#0b4b5a;
-    margin-bottom:12px;
-}
-
-.adresado_292
-{
-    color:#0b4b5a;
-    white-space:nowrap;
-    margin-bottom:12px;
-}
-
-.brPatnici_292 
-{
-    white-space:nowrap;
-    color:#0b4b5a;
-    clear:left;
-    float:left;
-    margin-bottom:12px;
-    width:320px;
-}
-
-.datePicking_292
-{
-    white-space:nowrap;
-    color:#0b4b5a;
-    margin-bottom:12px;
+    display:block;
+    float:right;
+    text-decoration:none;
+    padding:0px 8px;
+    height:26px;
+    line-height:26px;
+    background-image: url('images/admin_menu_bg.gif');
 }
