@@ -122,8 +122,7 @@
                                     <asp:ListItem Value="radioBtnList">Radio button list</asp:ListItem>
                                     <asp:ListItem Value="datePicker">Date picker</asp:ListItem>
                                     <asp:ListItem Value="timePicker">Time picker</asp:ListItem>
-                                    <asp:ListItem Value="addressFromCtrl">Address from</asp:ListItem>
-                                    <asp:ListItem Value="addressToCtrl">Address To</asp:ListItem>
+                                    <asp:ListItem Value="addressCtrl">Address</asp:ListItem>                                    
                                     <asp:ListItem Value="header">Header</asp:ListItem>
                                     <asp:ListItem Value="lblNoName">Label (without name)</asp:ListItem>
                                 </asp:DropDownList>

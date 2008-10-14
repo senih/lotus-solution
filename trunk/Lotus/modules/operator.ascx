@@ -4,14 +4,26 @@
 <div id="operator_module">
 <asp:UpdatePanel ID="UpdatePanel1" runat="server">
     <ContentTemplate>
-        Time:
-        <asp:Label ID="TimeLabel" runat="server"></asp:Label>
-        <br /><br /><br />
+        <table style="width:100%">
+            <tr>
+                <td>
+                    Time: <asp:Label ID="TimeLabel" runat="server"></asp:Label>
+                </td>
+                <td align="right">
+                    <asp:RadioButtonList ID="OperatorRadioButtonList" runat="server" 
+                        AutoPostBack="True" RepeatDirection="Horizontal" 
+                        onselectedindexchanged="OperatorRadioButtonList_SelectedIndexChanged">
+                        <asp:ListItem Selected="True" Value="active">Active bookings</asp:ListItem>
+                        <asp:ListItem Value="archive">Archived bookings</asp:ListItem>
+                    </asp:RadioButtonList>
+                </td>
+            </tr>
+        </table>
+        <br />
         <asp:GridView ID="ResultsGridView" runat="server"
-            AutoGenerateColumns="False" 
+            AutoGenerateColumns="False" SkinID="gridResults"
             onselectedindexchanged="ResultsGridView_SelectedIndexChanged" 
-            DataKeyNames="ID" CellPadding="4" ForeColor="#333333" GridLines="Horizontal">
-            <RowStyle BackColor="#F7F6F3" ForeColor="#333333" />
+            DataKeyNames="ID">
         <Columns>
             <asp:BoundField DataField="ID" HeaderText="ID" />
             <asp:BoundField DataField="User" HeaderText="User" />
@@ -20,12 +32,19 @@
             <asp:BoundField DataField="Date" HeaderText="Date" />
             <asp:CommandField ButtonType="Button" ShowSelectButton="true" SelectText="Details" />            
         </Columns>
-            <FooterStyle BackColor="#5D7B9D" Font-Bold="True" ForeColor="White" />
-            <PagerStyle BackColor="#284775" ForeColor="White" HorizontalAlign="Center" />
-            <SelectedRowStyle BackColor="#E2DED6" Font-Bold="True" ForeColor="#333333" />
-            <HeaderStyle BackColor="#5D7B9D" Font-Bold="True" ForeColor="White" />
-            <EditRowStyle BackColor="#999999" />
-            <AlternatingRowStyle BackColor="White" ForeColor="#284775" />
+        </asp:GridView>
+        
+        <asp:GridView ID="ArchivesGridView" Visible="false" runat="server" 
+            AutoGenerateColumns="false" SkinID="gridResults" DataKeyNames="ID" 
+            onselectedindexchanged="ArchivesGridView_SelectedIndexChanged">
+        <Columns>
+            <asp:BoundField DataField="ID" HeaderText="ID" />
+            <asp:BoundField DataField="User" HeaderText="User" />
+            <asp:BoundField DataField="Service" HeaderText="Service" />
+            <asp:BoundField DataField="Status" HeaderText="Status" />
+            <asp:BoundField DataField="Date" HeaderText="Date" />
+            <asp:CommandField ButtonType="Button" ShowSelectButton="true" SelectText="Details" />  
+        </Columns>
         </asp:GridView>
         <asp:Panel ID="DetailsPanel" runat="server" Visible="false">
             <table>
@@ -63,16 +82,8 @@
                         </table>
 
                     </td>
-                    <td>
-                        <asp:GridView ID="DetailsGridView" runat="server" CellPadding="4" 
-                            ForeColor="#333333" GridLines="Horizontal">
-                        <RowStyle BackColor="#F7F6F3" ForeColor="#333333" />
-                        <FooterStyle BackColor="#5D7B9D" Font-Bold="True" ForeColor="White" />
-                        <PagerStyle BackColor="#284775" ForeColor="White" HorizontalAlign="Center" />
-                        <SelectedRowStyle BackColor="#E2DED6" Font-Bold="True" ForeColor="#333333" />
-                        <HeaderStyle BackColor="#5D7B9D" Font-Bold="True" ForeColor="White" />
-                        <EditRowStyle BackColor="#999999" />
-                        <AlternatingRowStyle BackColor="White" ForeColor="#284775" />
+                    <td valign="top">
+                        <asp:GridView ID="DetailsGridView" SkinID="gridResults" runat="server">
                         </asp:GridView>
                     </td>
                 </tr>
