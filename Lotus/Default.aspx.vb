@@ -1471,6 +1471,9 @@ Partial Class _Default
         End If
 
         '*** COUNTRY SELECTION ***
+        'my code
+        Dim currentCountryID As Integer
+        'end mycode
         If Not IsNothing(placeholderCountrySelect) Then
             If Not placeholderCountrySelect.Visible = False Then
 
@@ -1482,6 +1485,9 @@ Partial Class _Default
                 oDataReader = oCommand.ExecuteReader()
                 If oDataReader.Read() Then
                     sSelectInstruction = oDataReader("instruction_text").ToString
+                    'my code
+                    currentCountryID = oDataReader("locale_id")
+                    'end mycode
                 End If
                 oDataReader.Close()
                 If sSelectInstruction = "" Then
@@ -1493,6 +1499,9 @@ Partial Class _Default
                 Dim oList As ListItem
                 Dim oDropDownList As DropDownList = New DropDownList
                 Dim sLocaleDescription As String
+                'my code
+                Dim sLangTabs As String = ""
+                'end my code
                 Dim sLocaleHomePage As String
                 Dim sFileUrl As String 'eg. /default.aspx, /mysite/default.aspx
 
@@ -1511,6 +1520,12 @@ Partial Class _Default
                     sLocaleHomePage = oDataReader("home_page")
                     sFileUrl = sAppPath & sLocaleHomePage
 
+                    'my code
+                    If oDataReader("locale_id") <> currentCountryID Then
+                        sLangTabs += "<a  href=""" & sFileUrl & """>" & sLocaleDescription & "</a>&nbsp;&nbsp;|&nbsp;&nbsp;"
+                    End If
+                    'end my code
+
                     oList = New ListItem
                     oList.Text = sLocaleDescription
                     oList.Value = sFileUrl 'sLocaleHomePage
@@ -1521,7 +1536,8 @@ Partial Class _Default
                     oDropDownList.Visible = False
                 End If
                 oDropDownList.Attributes.Add("onchange", "if(this.value!='')window.location.href=this.value;")
-                placeholderCountrySelect.Controls.Add(oDropDownList)
+                'placeholderCountrySelect.Controls.Add(oDropDownList)
+                placeholderCountrySelect.Controls.Add(New LiteralControl(sLangTabs))
             End If
         End If
 

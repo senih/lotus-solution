@@ -381,6 +381,20 @@ public partial class modules_service : BaseUserControl
 				case "timePicker":
 				sValue = ((DropDownList)this.FindControl("hours")).SelectedValue + ":" + ((DropDownList)this.FindControl("minutes")).SelectedValue;
 				break;
+
+				case "addressFromCtrl":
+				string cityFrom = ((DropDownList)this.FindControl("cityFrom")).SelectedValue;
+				string regionFrom = ((DropDownList)this.FindControl("regionFrom")).SelectedValue;
+				string addressFrom = ((TextBox)this.FindControl("addressFrom")).Text;
+				sValue = addressFrom + ", " + regionFrom + ", " + cityFrom;
+				break;
+
+				case "addressToCtrl":
+				string cityTo = ((DropDownList)this.FindControl("cityTo")).SelectedValue;
+				string regionTo = ((DropDownList)this.FindControl("regionTo")).SelectedValue;
+				string addressTo = ((TextBox)this.FindControl("addressTo")).Text;
+				sValue = addressTo + ", " + regionTo + ", " + cityTo;
+				break;
 			}
 			Data.InsertData(dataId, control.form_field_definition_id, PageID, control.input_type, sValue, bValue, dValue);
 		}

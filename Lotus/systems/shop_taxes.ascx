@@ -190,7 +190,7 @@
             <asp:ListItem value="BW">Botswana</asp:ListItem>
             <asp:ListItem value="BV">Bouvet Island</asp:ListItem>
             <asp:ListItem value="BR">Brazil</asp:ListItem>
-            <asp:ListItem value="IO">British Indian Ocean Territory</asp:ListItem>
+            <asp:ListItem value="IO">British Indian</asp:ListItem>
             <asp:ListItem value="BN">Brunei</asp:ListItem>
             <asp:ListItem value="BG">Bulgaria</asp:ListItem>
             <asp:ListItem value="BF">Burkina Faso</asp:ListItem>
@@ -228,14 +228,14 @@
             <asp:ListItem value="ER">Eritrea</asp:ListItem>
             <asp:ListItem value="EE">Estonia</asp:ListItem>
             <asp:ListItem value="ET">Ethiopia</asp:ListItem>
-            <asp:ListItem value="FK">Falkland Islands (Islas Malvinas)</asp:ListItem>
+            <asp:ListItem value="FK">Falkland Islands</asp:ListItem>
             <asp:ListItem value="FO">Faroe Islands</asp:ListItem>
             <asp:ListItem value="FJ">Fiji Islands</asp:ListItem>
             <asp:ListItem value="FI">Finland</asp:ListItem>
             <asp:ListItem value="FR">France</asp:ListItem>
             <asp:ListItem value="GF">French Guiana</asp:ListItem>
             <asp:ListItem value="PF">French Polynesia</asp:ListItem>
-            <asp:ListItem value="TF">French Southern and Antarctic Lands</asp:ListItem>
+            <asp:ListItem value="TF">French Southern</asp:ListItem>
             <asp:ListItem value="GA">Gabon</asp:ListItem>
             <asp:ListItem value="GM">Gambia, The</asp:ListItem>
             <asp:ListItem value="GE">Georgia</asp:ListItem>
@@ -253,7 +253,7 @@
             <asp:ListItem value="GW">Guinea-Bissau</asp:ListItem>
             <asp:ListItem value="GY">Guyana</asp:ListItem>
             <asp:ListItem value="HT">Haiti</asp:ListItem>
-            <asp:ListItem value="HM">Heard Island and McDonald Islands</asp:ListItem>
+            <asp:ListItem value="HM">Heard Island</asp:ListItem>
             <asp:ListItem value="HN">Honduras</asp:ListItem>
             <asp:ListItem value="HK">Hong Kong SAR</asp:ListItem>
             <asp:ListItem value="HU">Hungary</asp:ListItem>
@@ -286,7 +286,7 @@
             <asp:ListItem value="LT">Lithuania</asp:ListItem>
             <asp:ListItem value="LU">Luxembourg</asp:ListItem>
             <asp:ListItem value="MO">Macao SAR</asp:ListItem>
-            <asp:ListItem value="MK">Macedonia, Former Yugoslav Republic of</asp:ListItem>
+            <asp:ListItem value="MK">Macedonia</asp:ListItem>
             <asp:ListItem value="MG">Madagascar</asp:ListItem>
             <asp:ListItem value="MW">Malawi</asp:ListItem>
             <asp:ListItem value="MY">Malaysia</asp:ListItem>
@@ -354,7 +354,7 @@
             <asp:ListItem value="SB">Solomon Islands</asp:ListItem>
             <asp:ListItem value="SO">Somalia</asp:ListItem>
             <asp:ListItem value="ZA">South Africa</asp:ListItem>
-            <asp:ListItem value="GS">South Georgia and the South Sandwich Islands</asp:ListItem>
+            <asp:ListItem value="GS">South Georgia</asp:ListItem>
             <asp:ListItem value="ES">Spain</asp:ListItem>
             <asp:ListItem value="LK">Sri Lanka</asp:ListItem>
             <asp:ListItem value="SH">St. Helena</asp:ListItem>
@@ -389,7 +389,7 @@
             <asp:ListItem value="AE">United Arab Emirates</asp:ListItem>
             <asp:ListItem value="UK">United Kingdom</asp:ListItem>
             <asp:ListItem value="US">United States</asp:ListItem>
-            <asp:ListItem value="UM">United States Minor Outlying Islands</asp:ListItem>
+            <asp:ListItem value="UM">United States Minor</asp:ListItem>
             <asp:ListItem value="UY">Uruguay</asp:ListItem>
             <asp:ListItem value="UZ">Uzbekistan</asp:ListItem>
             <asp:ListItem value="VU">Vanuatu</asp:ListItem>

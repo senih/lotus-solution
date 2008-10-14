@@ -46,6 +46,7 @@
     		    <div id="pic_right">
     		        <asp:ContentPlaceHolder ID="placeholderSearch" runat="server" Visible="false"></asp:ContentPlaceHolder>
     		        <asp:ContentPlaceHolder ID="placeholderTitle" runat="server"></asp:ContentPlaceHolder>
+    		        <asp:ContentPlaceHolder ID="placeholderRightTop" runat="server"></asp:ContentPlaceHolder>
     		    </div>
     		    <div class="clear"></div>
     		    <asp:ContentPlaceHolder ID="placeholderBreadcrumb" runat="server"></asp:ContentPlaceHolder>
@@ -65,20 +66,23 @@
 	    	    <asp:ContentPlaceHolder ID="placeholderBodyBottom" runat="server"></asp:ContentPlaceHolder>		
 	    	    <asp:ContentPlaceHolder ID="placeholderAuthoring" runat="server"></asp:ContentPlaceHolder>
 	    	</div>
-	    	    <asp:ContentPlaceHolder ID="placeholderRightTop" runat="server" Visible="false"></asp:ContentPlaceHolder>
-	    	    <asp:ContentPlaceHolder ID="placeholderPagesWithin" runat="server" Visible="false"></asp:ContentPlaceHolder>
-                <asp:ContentPlaceHolder ID="placeholderSameLevelPages" runat="server" Visible="false"></asp:ContentPlaceHolder>
-                <asp:ContentPlaceHolder ID="placeholderArchives" runat="server" Visible="false"></asp:ContentPlaceHolder>
-		        <asp:ContentPlaceHolder ID="placeholderCategoryList" runat="server" Visible="false"></asp:ContentPlaceHolder>
-		        <asp:ContentPlaceHolder ID="placeholderSubscribe" runat="server" Visible="false"></asp:ContentPlaceHolder>    	    
-	    	    <asp:ContentPlaceHolder ID="placeholderRight" runat="server" Visible="false"></asp:ContentPlaceHolder>
-	    	    <asp:ContentPlaceHolder ID="placeholderRightBottom" runat="server" Visible="false"></asp:ContentPlaceHolder>
-	    </div>
-	    <div class="clear"></div>
+	    	<div id="menu_right">
+	    	    <asp:ContentPlaceHolder ID="placeholderRight" runat="server"></asp:ContentPlaceHolder>
+	    	    <asp:ContentPlaceHolder ID="placeholderPagesWithin" runat="server"></asp:ContentPlaceHolder>
+                <asp:ContentPlaceHolder ID="placeholderSameLevelPages" runat="server"></asp:ContentPlaceHolder>
+                <asp:ContentPlaceHolder ID="placeholderArchives" runat="server"></asp:ContentPlaceHolder>
+		        <asp:ContentPlaceHolder ID="placeholderCategoryList" runat="server"></asp:ContentPlaceHolder>
+		        <asp:ContentPlaceHolder ID="placeholderSubscribe" runat="server"></asp:ContentPlaceHolder>
+		        <asp:ContentPlaceHolder ID="placeholderRightBottom" runat="server"></asp:ContentPlaceHolder>
+            </div>	    	    
+	    	    
+	    	    
+	  </div>
+	  <div class="clear"></div>
     </div>
     <div id="footer">
-        <asp:ContentPlaceHolder ID="placeholderCountrySelect" runat="server"></asp:ContentPlaceHolder>
-        <asp:ContentPlaceHolder ID="placeholderBottomMenu" runat="server"></asp:ContentPlaceHolder>&nbsp;&nbsp;|&nbsp;&nbsp; © 2008 Lotus Transport
+            <asp:ContentPlaceHolder ID="placeholderCountrySelect" runat="server"></asp:ContentPlaceHolder>
+            <asp:ContentPlaceHolder ID="placeholderBottomMenu" runat="server"></asp:ContentPlaceHolder>&nbsp;&nbsp;|&nbsp;&nbsp; © 2008 Lotus Transport
     </div>
 
 			
