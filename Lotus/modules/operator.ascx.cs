@@ -116,9 +116,11 @@ public partial class modules_operator : BaseUserControl
 		DetailsView.DataSource = source1;
 		DetailsView.DataBind();
 		if (DetailsView.Rows[2].Cells[1].Text == "Taxi")
-			ReplyPanel.Visible = true;
+		{
+			ChatButton.Visible = true;
+		}
 		else
-			ReplyPanel.Visible = false;
+			ChatButton.Visible = false;
 		DetailsPanel.Visible = true;
 		ResultsGridView.Visible = false;
 		OperatorRadioButtonList.Visible = false;
@@ -132,14 +134,6 @@ public partial class modules_operator : BaseUserControl
 		else
 			ResultsGridView.Visible = true;
 		OperatorRadioButtonList.Visible = true;
-	}
-
-	protected void ReplyButton_Click(object sender, EventArgs e)
-	{
-		int bookingId = int.Parse(ResultsGridView.SelectedDataKey.Value.ToString());
-		string comment = ReplyTextBox.Text;
-		string status = "ACCEPTED";
-		Data.UpdateBooking(bookingId, comment, status);
 	}
 
 	protected void AcceptedButton_Click(object sender, EventArgs e)
@@ -240,8 +234,11 @@ public partial class modules_operator : BaseUserControl
 		DetailsView.DataSource = source1;
 		DetailsView.DataBind();
 		DetailsPanel.Visible = true;
-		ReplyPanel.Visible = false;
 		ArchivesGridView.Visible = false;
 		OperatorRadioButtonList.Visible = false;
+	}
+	protected void ChatButton_Click(object sender, EventArgs e)
+	{
+		Response.Redirect(string.Format("chat.aspx?bookingID={0}", ResultsGridView.SelectedDataKey.Value.ToString()));
 	}
 }
