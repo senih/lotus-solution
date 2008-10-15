@@ -79,6 +79,13 @@
                                         onclick="DeclineButton_Click" />
                                 </td>
                             </tr>
+                            <tr>
+                                <td></td>
+                                <td>
+                                    <asp:Button ID="ChatButton" runat="server" Text="Chat" Visible="false" 
+                                        onclick="ChatButton_Click" Width="100px" />
+                                </td>
+                            </tr>
                         </table>
 
                     </td>
@@ -90,21 +97,7 @@
                 <tr>
                     <td></td>
                     <td>
-                        <asp:Panel ID="ReplyPanel" runat="server" Visible="false">
-                            <table>
-                                <tr>
-                                    <td>
-                                        <asp:TextBox ID="ReplyTextBox" runat="server" TextMode="MultiLine" 
-                                            Width="295px"></asp:TextBox>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td align="right">
-                                        <asp:Button ID="ReplyButton" runat="server" Text="Reply" onclick="ReplyButton_Click" />
-                                    </td>
-                                </tr>
-                            </table>
-                        </asp:Panel>
+
                     </td>
                 </tr>
             </table>
