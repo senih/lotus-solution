@@ -235,5 +235,28 @@ namespace Services
 			}
 			return list;
 		}
+
+		public static void CreateLog(List<string> list, string file)
+		{
+			//XDocument log = new XDocument();
+			//foreach (string line in list)
+			//{
+			//    XElement lineElement = new XElement("line",
+			//        new XAttribute("text", line));
+			//    log.Add(lineElement);
+			//}
+			//log.Save(file);
+
+
+			XmlDocument log = new XmlDocument();
+			foreach (string line in list)
+			{
+				XmlNode node = log.CreateElement("line");
+				node.InnerXml = line;
+				log.AppendChild(node);
+			}
+
+			log.Save(file);
+		}
 	}
 }

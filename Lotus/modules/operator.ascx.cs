@@ -9,6 +9,7 @@ using Services;
 
 public partial class modules_operator : BaseUserControl
 {
+	string bookingId;
 	protected void Page_Load(object sender, EventArgs e)
 	{
 		TimeLabel.Text = DateTime.Now.ToString();
@@ -118,6 +119,10 @@ public partial class modules_operator : BaseUserControl
 		if (DetailsView.Rows[2].Cells[1].Text == "Taxi")
 		{
 			ChatButton.Visible = true;
+			bookingId = ResultsGridView.SelectedDataKey.Value.ToString();
+			string query = EncodingDecoding.EncodeMd5(bookingId);
+			string value = string.Format("window.open('chat.aspx?ChatID={0}',null,'height=300, width=430,status= no, resizable= no, scrollbars=no, toolbar=no, location=no, menubar=no ');", query);
+			ChatButton.Attributes.Add("onclick", value);
 		}
 		else
 			ChatButton.Visible = false;
@@ -139,6 +144,15 @@ public partial class modules_operator : BaseUserControl
 	protected void AcceptedButton_Click(object sender, EventArgs e)
 	{
 		int bookingId = int.Parse(ResultsGridView.SelectedDataKey.Value.ToString());
+		if (DetailsView.Rows[2].Cells[1].Text == "Taxi")
+		{
+			string path = Server.MapPath("~/App_Data/Logs/") + "BookingLogNo_" + bookingId.ToString() + ".xml";
+			List<string> list = new List<string>();
+			list = (List<string>)Application[EncodingDecoding.EncodeMd5(bookingId.ToString())];
+			//TODO Kreiranjeto na XML file ne raboti uste
+			//Data.CreateLog(list, path);
+			Application.Clear();
+		}
 		string status = "ACCEPTED";
 		Data.UpdateBooking(bookingId, "", status);
 		Response.Redirect(Request.RawUrl);
@@ -236,9 +250,5 @@ public partial class modules_operator : BaseUserControl
 		DetailsPanel.Visible = true;
 		ArchivesGridView.Visible = false;
 		OperatorRadioButtonList.Visible = false;
-	}
-	protected void ChatButton_Click(object sender, EventArgs e)
-	{
-		Response.Redirect(string.Format("chat.aspx?bookingID={0}", ResultsGridView.SelectedDataKey.Value.ToString()));
 	}
 }

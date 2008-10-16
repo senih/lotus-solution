@@ -83,7 +83,7 @@
                                 <td></td>
                                 <td>
                                     <asp:Button ID="ChatButton" runat="server" Text="Chat" Visible="false" 
-                                        onclick="ChatButton_Click" Width="100px" />
+                                        Width="100px" />
                                 </td>
                             </tr>
                         </table>
