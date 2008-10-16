@@ -9,6 +9,7 @@ using Services;
 using System.Data.SqlTypes;
 using System.Net.Mail;
 using System.Web.Security;
+using System.Text;
 
 public partial class modules_service : BaseUserControl
 {
@@ -405,6 +406,17 @@ public partial class modules_service : BaseUserControl
 		ThankYouPanel.Visible = true;
 		if (ModuleData != "taxi")
 			SendMail();
+		else
+		{
+			string query = EncodingDecoding.EncodeMd5(dataId.ToString());
+			Response.Redirect("chat.aspx?ChatID=" + query);
+			//string value = string.Format("window.open('chat.aspx?bookingID={0}',null,'height=300, width=430,status= no, resizable= no, scrollbars=no, toolbar=no, location=no, menubar=no ');", query);
+			//StringBuilder sb = new StringBuilder();
+			//sb.Append("<script>");
+			//sb.Append(value);
+			//sb.Append("</script>");
+			//Page.RegisterStartupScript("onclick", sb.ToString());
+		}
 	}
 
 	/// <summary>
