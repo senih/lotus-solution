@@ -26,8 +26,7 @@ namespace Services.Properties {
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.SpecialSettingAttribute(global::System.Configuration.SpecialSetting.ConnectionString)]
-        [global::System.Configuration.DefaultSettingValueAttribute("Data Source=WORKSTATION2\\SQLEXPRESS;Initial Catalog=LotusDB;Integrated Security=T" +
-            "rue")]
+        [global::System.Configuration.DefaultSettingValueAttribute("Data Source=.\\SQLEXPRESS;Initial Catalog=LotusDB;Integrated Security=True")]
         public string LotusDBConnectionString {
             get {
                 return ((string)(this["LotusDBConnectionString"]));
