@@ -5,6 +5,7 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Data;
+using System.Web.Security;
 using Services;
 
 public partial class modules_operator : BaseUserControl
@@ -28,21 +29,6 @@ public partial class modules_operator : BaseUserControl
 					  }).Distinct();
 		ResultsGridView.DataSource = source;
 		ResultsGridView.DataBind();
-
-		var source2 = (from b in db.bookings
-					   join p in db.pages on b.page_id equals p.page_id
-					   where (b.status != "NEW")
-					   orderby b.id descending
-					   select new
-					   {
-						   ID = b.id,
-						   User = b.user_name,
-						   Service = p.title,
-						   Date = b.submited_date.ToString(),
-						   Status = b.status
-					   }).Distinct();
-		ArchivesGridView.DataSource = source2;
-		ArchivesGridView.DataBind();
 	}
 
 	protected void ResultsGridView_SelectedIndexChanged(object sender, EventArgs e)
@@ -149,8 +135,7 @@ public partial class modules_operator : BaseUserControl
 			string path = Server.MapPath("~/App_Data/Logs/") + "BookingLogNo_" + bookingId.ToString() + ".xml";
 			List<string> list = new List<string>();
 			list = (List<string>)Application[EncodingDecoding.EncodeMd5(bookingId.ToString())];
-			//TODO Kreiranjeto na XML file ne raboti uste
-			//Data.CreateLog(list, path);
+			Data.CreateLog(list, path);
 			Application.Clear();
 		}
 		string status = "ACCEPTED";
@@ -168,17 +153,60 @@ public partial class modules_operator : BaseUserControl
 	{
 		if (OperatorRadioButtonList.SelectedValue == "archive")
 		{
+			LotusDataContext db = new LotusDataContext(Data.ConnectionManager());
+			var source2 = (from b in db.bookings
+						   join p in db.pages on b.page_id equals p.page_id
+						   where (b.status != "NEW")
+						   orderby b.id descending
+						   select new
+						   {
+							   ID = b.id,
+							   User = b.user_name,
+							   Service = p.title,
+							   Date = b.submited_date.ToString(),
+							   Status = b.status
+						   }).Distinct();
+			ArchivesGridView.DataSource = source2;
+			ArchivesGridView.DataBind();
+
 			ResultsGridView.Visible = false;
+			UsersGridView.Visible = false;
+			LogsDataList.Visible = false;
 			ArchivesGridView.Visible = true;
 			AcceptedButton.Visible = false;
 			DeclineButton.Visible = false;
+			UserDetailsView.Visible = false;
 		}
-		else
+		if (OperatorRadioButtonList.SelectedValue == "active")
 		{
 			ArchivesGridView.Visible = false;
+			UsersGridView.Visible = false;
+			LogsDataList.Visible = false;
 			ResultsGridView.Visible = true;
 			AcceptedButton.Visible = true;
 			DeclineButton.Visible = true;
+			UserDetailsView.Visible = false;
+		}
+		if (OperatorRadioButtonList.SelectedValue == "logs")
+		{
+			LogsDataList.DataSource = Data.GetListOfLogs();
+			LogsDataList.DataBind();
+			ArchivesGridView.Visible = false;
+			ResultsGridView.Visible = false;
+			UsersGridView.Visible = false;
+			LogsDataList.Visible = true;
+			UserDetailsView.Visible = false;
+		}
+		if (OperatorRadioButtonList.SelectedValue == "users")
+		{
+			UsersGridView.DataSource = Membership.GetAllUsers();
+			UsersGridView.DataBind();
+
+			ResultsGridView.Visible = false;
+			ArchivesGridView.Visible = false;
+			LogsDataList.Visible = false;
+			UsersGridView.Visible = true;
+			UserDetailsView.Visible = false;
 		}
 	}
 	protected void ArchivesGridView_SelectedIndexChanged(object sender, EventArgs e)
@@ -250,5 +278,20 @@ public partial class modules_operator : BaseUserControl
 		DetailsPanel.Visible = true;
 		ArchivesGridView.Visible = false;
 		OperatorRadioButtonList.Visible = false;
+	}
+
+	protected void LogsDataList_Click(object sender, EventArgs e)
+	{
+		// Ne e doraboteno
+	}
+	protected void UsersGridView_SelectedIndexChanged(object sender, EventArgs e)
+	{
+		//MembershipUser user = Membership.GetUser(UsersGridView.SelectedDataKey.Value.ToString());
+		ProfileCommon profile = Profile.GetProfile(UsersGridView.SelectedDataKey.Value.ToString());
+		List<ProfileCommon> list = new List<ProfileCommon>();
+		list.Add(profile);
+		UserDetailsView.DataSource = list;
+		UserDetailsView.DataBind();
+		UserDetailsView.Visible = true;
 	}
 }
