@@ -9,9 +9,7 @@
         <asp:GridView ID="BookingsGridView" runat="server"
             AutoGenerateColumns="False" 
             onselectedindexchanged="ResultsGridView_SelectedIndexChanged" 
-            DataKeyNames="ID" CellPadding="4" ForeColor="#333333" 
-            GridLines="Horizontal">
-            <RowStyle BackColor="#F7F6F3" ForeColor="#333333" />
+            DataKeyNames="ID">
         <Columns>
             <asp:BoundField DataField="ID" HeaderText="ID" />
             <asp:BoundField DataField="User" HeaderText="User" />
@@ -20,12 +18,6 @@
             <asp:BoundField DataField="Date" HeaderText="Date" />
             <asp:CommandField ButtonType="Button" ShowSelectButton="true" SelectText="Details" />            
         </Columns>
-            <FooterStyle BackColor="#5D7B9D" Font-Bold="True" ForeColor="White" />
-            <PagerStyle BackColor="#284775" ForeColor="White" HorizontalAlign="Center" />
-            <SelectedRowStyle BackColor="#E2DED6" Font-Bold="True" ForeColor="#333333" />
-            <HeaderStyle BackColor="#5D7B9D" Font-Bold="True" ForeColor="White" />
-            <EditRowStyle BackColor="#999999" />
-            <AlternatingRowStyle BackColor="White" ForeColor="#284775" />
         </asp:GridView>
         <asp:Panel ID="DetailsPanel" runat="server" Visible="false">
             <table>
@@ -59,16 +51,8 @@
                         </table>
 
                     </td>
-                    <td>
-                        <asp:GridView ID="DetailsGridView" runat="server" CellPadding="4" 
-                            ForeColor="#333333" GridLines="Horizontal">
-                        <RowStyle BackColor="#F7F6F3" ForeColor="#333333" />
-                        <FooterStyle BackColor="#5D7B9D" Font-Bold="True" ForeColor="White" />
-                        <PagerStyle BackColor="#284775" ForeColor="White" HorizontalAlign="Center" />
-                        <SelectedRowStyle BackColor="#E2DED6" Font-Bold="True" ForeColor="#333333" />
-                        <HeaderStyle BackColor="#5D7B9D" Font-Bold="True" ForeColor="White" />
-                        <EditRowStyle BackColor="#999999" />
-                        <AlternatingRowStyle BackColor="White" ForeColor="#284775" />
+                    <td valign="top">
+                        <asp:GridView ID="DetailsGridView" runat="server">
                         </asp:GridView>
                     </td>
                 </tr>

@@ -182,10 +182,20 @@ namespace Services
 				months.ID = "months";
 				DropDownList years = new DropDownList();
 				years.ID = "years";
-				for (int i=1; i<=31; i++)
-					days.Items.Add(new ListItem(i.ToString(), i.ToString()));
-				for (int i=1; i<=12; i++)
-					months.Items.Add(new ListItem(i.ToString(), i.ToString()));
+				for (int i = 1; i <= 31; i++)
+				{
+					if (i < 10)
+						days.Items.Add(new ListItem("0" + i.ToString(), "0" + i.ToString()));
+					else
+						days.Items.Add(new ListItem(i.ToString(), i.ToString()));
+				}
+				for (int i = 1; i <= 12; i++)
+				{
+					if (i<10)
+						months.Items.Add(new ListItem("0" + i.ToString(), "0" + i.ToString()));
+					else
+						months.Items.Add(new ListItem(i.ToString(), i.ToString()));
+				}
 				for (int i=2008; i<=2015; i++)
 					years.Items.Add(new ListItem(i.ToString(), i.ToString()));
 				datePicker.Controls.Add(new LiteralControl("<table><tr>"));
@@ -214,9 +224,19 @@ namespace Services
 				for (int i = 0; i < 60; i++)
 				{
 					if (i > 0 && i <= 24)
-						hour.Items.Add(new ListItem(i.ToString(), i.ToString()));
+					{
+						if (i<10)
+							hour.Items.Add(new ListItem("0" + i.ToString(), "0" + i.ToString()));
+						else
+							hour.Items.Add(new ListItem(i.ToString(), i.ToString()));
+					}
 					if (i % 10 == 0)
-						minutes.Items.Add(new ListItem(i.ToString(), i.ToString()));
+					{
+						if(i<10)
+							minutes.Items.Add(new ListItem("0" + i.ToString(), "0" + i.ToString()));
+						else
+							minutes.Items.Add(new ListItem(i.ToString(), i.ToString()));
+					}
 				}
 				timePicker.Controls.Add(new LiteralControl("<table><tr>"));
 				timePicker.Controls.Add(new LiteralControl("<td>"));

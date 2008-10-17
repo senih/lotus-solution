@@ -6,6 +6,8 @@ using System.Configuration;
 using System.Data;
 using System.Xml;
 using System.Xml.Linq;
+using System.IO;
+using System.Web;
 
 namespace Services
 {
@@ -238,25 +240,28 @@ namespace Services
 
 		public static void CreateLog(List<string> list, string file)
 		{
-			//XDocument log = new XDocument();
-			//foreach (string line in list)
-			//{
-			//    XElement lineElement = new XElement("line",
-			//        new XAttribute("text", line));
-			//    log.Add(lineElement);
-			//}
-			//log.Save(file);
-
-
-			XmlDocument log = new XmlDocument();
+			XDocument log = new XDocument(new XDeclaration("1.0", "utf-8", "yes"),
+				new XElement("lines"));
 			foreach (string line in list)
 			{
-				XmlNode node = log.CreateElement("line");
-				node.InnerXml = line;
-				log.AppendChild(node);
+				XElement newLine = log.Descendants("lines").Last();
+				newLine.Add(new XElement("line", new XAttribute("text", line)));
 			}
-
 			log.Save(file);
 		}
+
+		public static List<string> GetListOfLogs()
+		{
+			List<string> listOfFiles = Directory.GetFiles(HttpContext.Current.Server.MapPath("~/App_Data/Logs/"), "*.xml").ToList<string>();
+			List<string> listOfFileNames = new List<string>();
+			foreach (string file in listOfFiles)
+			{
+				int pos = file.LastIndexOf(@"\") + 1;
+				string name = file.Substring(pos);
+				listOfFileNames.Add(name);
+			}
+			return listOfFileNames;
+		}
+
 	}
 }
