@@ -48,6 +48,7 @@ namespace Services
 			nameLbl.Text = name;
 			PlaceHolder ctrlHolder = new PlaceHolder();
 			RequiredFieldValidator validator = new RequiredFieldValidator();
+			RequiredFieldValidator validator1 = new RequiredFieldValidator();
 			if (type != "header" && type != "lblNoName" && type != "addressCtrl")
 			{
 				ctrlHolder.Controls.Add(new LiteralControl("<td align=\"left\">"));
@@ -292,7 +293,13 @@ namespace Services
 				ctrlHolder.Controls.Add(new LiteralControl("<td>"));
 				ctrlHolder.Controls.Add(city);
 				ctrlHolder.Controls.Add(new LiteralControl("</td>"));
-				ctrlHolder.Controls.Add(new LiteralControl("<td></td>"));
+				ctrlHolder.Controls.Add(new LiteralControl("<td>"));
+				validator1.ControlToValidate = city.ID;
+				validator1.InitialValue = "Please select city";
+				validator1.ErrorMessage = "*";
+				ctrlHolder.Controls.Add(new LiteralControl("<td>"));
+				ctrlHolder.Controls.Add(validator1);
+				ctrlHolder.Controls.Add(new LiteralControl("</td>"));
 				ctrlHolder.Controls.Add(new LiteralControl("</tr>"));				
 
 				ctrlHolder.Controls.Add(new LiteralControl("<tr>"));
