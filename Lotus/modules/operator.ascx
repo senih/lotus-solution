@@ -15,7 +15,6 @@
                         onselectedindexchanged="OperatorRadioButtonList_SelectedIndexChanged">
                         <asp:ListItem Selected="True" Value="active">Active bookings</asp:ListItem>
                         <asp:ListItem Value="archive">Archived bookings</asp:ListItem>
-                        <asp:ListItem Value="logs">Logs</asp:ListItem>
                         <asp:ListItem Value="users">Users</asp:ListItem>
                     </asp:RadioButtonList>
                 </td>
@@ -48,11 +47,6 @@
             <asp:CommandField ButtonType="Button" ShowSelectButton="true" SelectText="Details" />  
         </Columns>
         </asp:GridView>
-        <asp:DataList ID="LogsDataList" runat="server" Visible="false">
-            <ItemTemplate>                
-                <asp:LinkButton ID="LinkButton1" OnClick="LogsDataList_Click" Text='<%# Container.DataItem %>' runat="server"></asp:LinkButton>
-            </ItemTemplate>
-        </asp:DataList>
         
         <asp:GridView ID="UsersGridView" runat="server" SkinID="gridResults" 
             AutoGenerateColumns="False" DataKeyNames="UserName" 
@@ -112,7 +106,8 @@
                         <table>
                             <tr>
                                 <td valign="top">
-                                    <asp:Button ID="BackButton" runat="server" onclick="BackButton_Click" Text="Back" />
+                                    <asp:Button ID="BackButton" runat="server" onclick="BackButton_Click" 
+                                        Text="Back" Width="100px" />
                                 </td>
                                 <td>
                                     <asp:Button ID="AcceptedButton" runat="server" Text="Accept" Width="100px" 
@@ -120,7 +115,10 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td></td>
+                                <td>
+                                    <asp:Button ID="ChatLogButton" runat="server" Text="Chat log" Visible="False" 
+                                        Width="100px" onclick="ChatLogButton_Click" />
+                                </td>
                                 <td>
                                     <asp:Button ID="DeclineButton" runat="server" Text="Decline" Width="100px" 
                                         onclick="DeclineButton_Click" />
@@ -133,12 +131,23 @@
                                         Width="100px" />
                                 </td>
                             </tr>
+                            <tr>
+                                <td>
+                                    &nbsp;</td>
+                                <td>
+                                    &nbsp;</td>
+                            </tr>
                         </table>
 
                     </td>
-                    <td valign="top">
+                    <td valign="top" align="center">
                         <asp:GridView ID="DetailsGridView" SkinID="gridResults" runat="server">
-                        </asp:GridView>
+                        </asp:GridView><br /><br />
+                        <asp:DataList ID="ChatLogDataList" runat="server" Visible="false">
+                            <ItemTemplate>                
+                                <asp:Label ID="Label1" runat="server" Text='<%# Container.DataItem %>'></asp:Label>
+                            </ItemTemplate>
+                        </asp:DataList>
                     </td>
                 </tr>
                 <tr>

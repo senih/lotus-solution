@@ -292,7 +292,8 @@ namespace Services
 				ctrlHolder.Controls.Add(new LiteralControl("<td>"));
 				ctrlHolder.Controls.Add(city);
 				ctrlHolder.Controls.Add(new LiteralControl("</td>"));
-				ctrlHolder.Controls.Add(new LiteralControl("</tr>"));
+				ctrlHolder.Controls.Add(new LiteralControl("<td></td>"));
+				ctrlHolder.Controls.Add(new LiteralControl("</tr>"));				
 
 				ctrlHolder.Controls.Add(new LiteralControl("<tr>"));
 				ctrlHolder.Controls.Add(new LiteralControl("<td>"));
@@ -304,7 +305,8 @@ namespace Services
 				ctrlHolder.Controls.Add(new LiteralControl("<td>"));
 				ctrlHolder.Controls.Add(region);
 				ctrlHolder.Controls.Add(new LiteralControl("</td>"));
-				ctrlHolder.Controls.Add(new LiteralControl("</tr>"));
+				ctrlHolder.Controls.Add(new LiteralControl("<td></td>"));
+				ctrlHolder.Controls.Add(new LiteralControl("</tr>"));				
 
 				ctrlHolder.Controls.Add(new LiteralControl("<tr>"));
 				ctrlHolder.Controls.Add(new LiteralControl("<td>"));
@@ -315,6 +317,12 @@ namespace Services
 				ctrlHolder.Controls.Add(new LiteralControl("</td>"));
 				ctrlHolder.Controls.Add(new LiteralControl("<td>"));
 				ctrlHolder.Controls.Add(addressTxtBox);
+				ctrlHolder.Controls.Add(new LiteralControl("</td>"));
+				ctrlHolder.Controls.Add(new LiteralControl("<td>"));
+				validator.ControlToValidate = addressTxtBox.ID;
+				validator.ErrorMessage = "*";
+				ctrlHolder.Controls.Add(new LiteralControl("<td>"));
+				ctrlHolder.Controls.Add(validator);
 				ctrlHolder.Controls.Add(new LiteralControl("</td>"));
 				ctrlHolder.Controls.Add(new LiteralControl("</tr>"));
 
