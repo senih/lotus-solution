@@ -121,7 +121,10 @@ public partial class modules_operator : BaseUserControl
 	{
 		DetailsPanel.Visible = false;
 		if (OperatorRadioButtonList.SelectedValue == "archive")
+		{
 			ArchivesGridView.Visible = true;
+			ChatLogDataList.Visible = false;
+		}
 		else
 			ResultsGridView.Visible = true;
 		OperatorRadioButtonList.Visible = true;
@@ -171,32 +174,24 @@ public partial class modules_operator : BaseUserControl
 
 			ResultsGridView.Visible = false;
 			UsersGridView.Visible = false;
-			LogsDataList.Visible = false;
 			ArchivesGridView.Visible = true;
 			AcceptedButton.Visible = false;
 			DeclineButton.Visible = false;
 			UserDetailsView.Visible = false;
+			ChatButton.Visible = false;
 		}
 		if (OperatorRadioButtonList.SelectedValue == "active")
 		{
 			ArchivesGridView.Visible = false;
 			UsersGridView.Visible = false;
-			LogsDataList.Visible = false;
+			ChatLogDataList.Visible = false;
 			ResultsGridView.Visible = true;
 			AcceptedButton.Visible = true;
 			DeclineButton.Visible = true;
+			ChatLogButton.Visible = false;
 			UserDetailsView.Visible = false;
 		}
-		if (OperatorRadioButtonList.SelectedValue == "logs")
-		{
-			LogsDataList.DataSource = Data.GetListOfLogs();
-			LogsDataList.DataBind();
-			ArchivesGridView.Visible = false;
-			ResultsGridView.Visible = false;
-			UsersGridView.Visible = false;
-			LogsDataList.Visible = true;
-			UserDetailsView.Visible = false;
-		}
+
 		if (OperatorRadioButtonList.SelectedValue == "users")
 		{
 			UsersGridView.DataSource = Membership.GetAllUsers();
@@ -204,7 +199,6 @@ public partial class modules_operator : BaseUserControl
 
 			ResultsGridView.Visible = false;
 			ArchivesGridView.Visible = false;
-			LogsDataList.Visible = false;
 			UsersGridView.Visible = true;
 			UserDetailsView.Visible = false;
 		}
@@ -277,21 +271,26 @@ public partial class modules_operator : BaseUserControl
 		DetailsView.DataBind();
 		DetailsPanel.Visible = true;
 		ArchivesGridView.Visible = false;
+		if (DetailsView.Rows[2].Cells[1].Text == "Taxi")
+			ChatLogButton.Visible = true;
 		OperatorRadioButtonList.Visible = false;
 	}
 
-	protected void LogsDataList_Click(object sender, EventArgs e)
-	{
-		// Ne e doraboteno
-	}
 	protected void UsersGridView_SelectedIndexChanged(object sender, EventArgs e)
 	{
-		//MembershipUser user = Membership.GetUser(UsersGridView.SelectedDataKey.Value.ToString());
 		ProfileCommon profile = Profile.GetProfile(UsersGridView.SelectedDataKey.Value.ToString());
 		List<ProfileCommon> list = new List<ProfileCommon>();
 		list.Add(profile);
 		UserDetailsView.DataSource = list;
 		UserDetailsView.DataBind();
 		UserDetailsView.Visible = true;
+	}
+
+	protected void ChatLogButton_Click(object sender, EventArgs e)
+	{
+		ChatLogDataList.Visible = true;
+		List<string> list = Data.GetLog(ArchivesGridView.SelectedDataKey.Value.ToString());
+		ChatLogDataList.DataSource = list;
+		ChatLogDataList.DataBind();
 	}
 }

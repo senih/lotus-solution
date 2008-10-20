@@ -11,7 +11,8 @@ public partial class modules_chat : BaseUserControl
 	{
 		EndChatButton.Attributes.Add("onclick", "window.close();");
 		TimeLabel.Text = DateTime.Now.Hour.ToString() + ":" + DateTime.Now.Minute.ToString() + ":" + DateTime.Now.Second.ToString();
-		MessageTextBox.Focus();
+		if (IsPostBack)
+			MessageTextBox.Focus();
 		if (Application[Request.QueryString["ChatID"]] == null)
 		{
 			List<string> list = new List<string>();
@@ -32,7 +33,7 @@ public partial class modules_chat : BaseUserControl
 	{
 		List<string> list = (List<string>)Application[Request.QueryString["ChatID"]];
 		string time = DateTime.Now.Hour.ToString() + ":" + DateTime.Now.Minute.ToString() + ":" + DateTime.Now.Second.ToString();
-		string msg = string.Format("({0}){1}: {2} {3}", time, Page.User.Identity.Name.ToUpper(),  MessageTextBox.Text, Environment.NewLine);
+		string msg = string.Format("({0}) {1}: {2} {3}", time, Page.User.Identity.Name.ToUpper(),  MessageTextBox.Text, Environment.NewLine);
 		list.Add(msg);
 		Application.Clear();
 		Application[Request.QueryString["ChatID"]] = list;

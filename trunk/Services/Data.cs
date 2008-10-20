@@ -263,5 +263,18 @@ namespace Services
 			return listOfFileNames;
 		}
 
+		public static List<string> GetLog(string bookingId)
+		{
+			string path = HttpContext.Current.Server.MapPath("~/App_Data/Logs/") + string.Format("BookingLogNo_{0}.xml", bookingId);
+			List<string> list = new List<string>();
+			XDocument log = XDocument.Load(path);
+			List<XAttribute> lines = log.Descendants("line").Attributes("text").ToList<XAttribute>();
+			foreach (XAttribute line in lines)
+			{
+				list.Add(line.Value);
+			}
+			return list;
+		}
+
 	}
 }
