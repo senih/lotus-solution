@@ -10,7 +10,7 @@
 </head>
 <body>
     <form id="form1" runat="server">
-    <div style="width:430px; margin:0px auto;">    
+    <div style="width:530px; margin:0px auto;">    
         <uc1:chat ID="chat1" runat="server" />    
     </div>
     </form>
