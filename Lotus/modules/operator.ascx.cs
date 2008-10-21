@@ -107,7 +107,7 @@ public partial class modules_operator : BaseUserControl
 			ChatButton.Visible = true;
 			bookingId = ResultsGridView.SelectedDataKey.Value.ToString();
 			string query = EncodingDecoding.EncodeMd5(bookingId);
-			string value = string.Format("window.open('chat.aspx?ChatID={0}',null,'height=300, width=430,status= no, resizable= no, scrollbars=no, toolbar=no, location=no, menubar=no ');", query);
+			string value = string.Format("window.open('chat.aspx?ChatID={0}',null,'height=530, width=530, left=200, top=150, status= no, resizable= no, scrollbars=no, toolbar=no, location=no, menubar=no ');", query);
 			ChatButton.Attributes.Add("onclick", value);
 		}
 		else

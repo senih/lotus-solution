@@ -10,9 +10,8 @@ public partial class modules_chat : BaseUserControl
 	protected void Page_Load(object sender, EventArgs e)
 	{
 		EndChatButton.Attributes.Add("onclick", "window.close();");
+		SendButton.Attributes.Add("reset", "document.getElementById('MessageTextBox').focus();");
 		TimeLabel.Text = DateTime.Now.Hour.ToString() + ":" + DateTime.Now.Minute.ToString() + ":" + DateTime.Now.Second.ToString();
-		if (IsPostBack)
-			MessageTextBox.Focus();
 		if (Application[Request.QueryString["ChatID"]] == null)
 		{
 			List<string> list = new List<string>();

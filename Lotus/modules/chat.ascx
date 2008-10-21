@@ -1,5 +1,12 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" CodeFile="chat.ascx.cs" Inherits="modules_chat" %>
-
+<script type="text/javascript" >
+ <!--
+    function doClear(theText) {        
+            theText.value = ""      
+    }
+ // -->
+ </script>
+ 
 <asp:ScriptManager ID="ScriptManager1" runat="server">
 </asp:ScriptManager>
 <asp:UpdatePanel ID="UpdatePanel1" runat="server">
@@ -13,8 +20,8 @@
         </tr>
             <tr>
                 <td colspan="2">
-                    <asp:TextBox ID="ChatTextBox" runat="server" Height="200px" 
-                        TextMode="MultiLine" Width="400px"></asp:TextBox>
+                    <asp:TextBox ID="ChatTextBox" runat="server" Height="400px"
+                        TextMode="MultiLine" Width="500px"></asp:TextBox>
                 </td>
             </tr>
         </table>
@@ -27,19 +34,12 @@
 <table>
     <tr>
         <td>
-            <asp:UpdatePanel ID="UpdatePanel2" runat="server">
-                <ContentTemplate>
-                    <asp:TextBox ID="MessageTextBox" runat="server" Width="300px"></asp:TextBox>
-                </ContentTemplate>
-                <Triggers>
-                    <asp:AsyncPostBackTrigger ControlID="SendButton" EventName="Click" />
-                </Triggers>
-            </asp:UpdatePanel>
-            
+            <asp:TextBox ID="MessageTextBox" runat="server" Width="400px" 
+                onFocus="doClear(this)"></asp:TextBox>
         </td>
         <td>
             <asp:Button ID="SendButton" runat="server" Text="Send" Width="100px" 
-                onclick="SendButton_Click" />
+                onclick="SendButton_Click"/>
         </td>
     </tr>
     <tr>
