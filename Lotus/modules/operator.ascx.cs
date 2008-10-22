@@ -7,6 +7,7 @@ using System.Web.UI.WebControls;
 using System.Data;
 using System.Web.Security;
 using Services;
+using System.Data.SqlTypes;
 
 public partial class modules_operator : BaseUserControl
 {
@@ -31,11 +32,19 @@ public partial class modules_operator : BaseUserControl
 		ResultsGridView.DataBind();
 	}
 
+	/// <summary>
+	/// Handles the SelectedIndexChanged event of the ResultsGridView control.
+	/// </summary>
+	/// <param name="sender">The source of the event.</param>
+	/// <param name="e">The <see cref="System.EventArgs"/> instance containing the event data.</param>
 	protected void ResultsGridView_SelectedIndexChanged(object sender, EventArgs e)
 	{
 		GetDetails();
 	}
 
+	/// <summary>
+	/// Gets the details.
+	/// </summary>
 	private void GetDetails()
 	{
 		LotusDataContext db = new LotusDataContext();
@@ -117,12 +126,17 @@ public partial class modules_operator : BaseUserControl
 		OperatorRadioButtonList.Visible = false;
 	}
 
+	/// <summary>
+	/// Handles the Click event of the BackButton control.
+	/// </summary>
+	/// <param name="sender">The source of the event.</param>
+	/// <param name="e">The <see cref="System.EventArgs"/> instance containing the event data.</param>
 	protected void BackButton_Click(object sender, EventArgs e)
 	{
 		DetailsPanel.Visible = false;
 		if (OperatorRadioButtonList.SelectedValue == "archive")
 		{
-			ArchivesGridView.Visible = true;
+			ArchivesPanel.Visible = true;
 			ChatLogDataList.Visible = false;
 		}
 		else
@@ -130,6 +144,11 @@ public partial class modules_operator : BaseUserControl
 		OperatorRadioButtonList.Visible = true;
 	}
 
+	/// <summary>
+	/// Handles the Click event of the AcceptedButton control.
+	/// </summary>
+	/// <param name="sender">The source of the event.</param>
+	/// <param name="e">The <see cref="System.EventArgs"/> instance containing the event data.</param>
 	protected void AcceptedButton_Click(object sender, EventArgs e)
 	{
 		int bookingId = int.Parse(ResultsGridView.SelectedDataKey.Value.ToString());
@@ -138,13 +157,20 @@ public partial class modules_operator : BaseUserControl
 			string path = Server.MapPath("~/App_Data/Logs/") + "BookingLogNo_" + bookingId.ToString() + ".xml";
 			List<string> list = new List<string>();
 			list = (List<string>)Application[EncodingDecoding.EncodeMd5(bookingId.ToString())];
-			Data.CreateLog(list, path);
+			if (list != null)
+				Data.CreateLog(list, path);
 			Application.Clear();
 		}
 		string status = "ACCEPTED";
 		Data.UpdateBooking(bookingId, "", status);
 		Response.Redirect(Request.RawUrl);
 	}
+
+	/// <summary>
+	/// Handles the Click event of the DeclineButton control.
+	/// </summary>
+	/// <param name="sender">The source of the event.</param>
+	/// <param name="e">The <see cref="System.EventArgs"/> instance containing the event data.</param>
 	protected void DeclineButton_Click(object sender, EventArgs e)
 	{
 		int bookingId = int.Parse(ResultsGridView.SelectedDataKey.Value.ToString());
@@ -152,10 +178,17 @@ public partial class modules_operator : BaseUserControl
 		Data.UpdateBooking(bookingId, "", status);
 		Response.Redirect(Request.RawUrl);
 	}
+
+	/// <summary>
+	/// Handles the SelectedIndexChanged event of the OperatorRadioButtonList control.
+	/// </summary>
+	/// <param name="sender">The source of the event.</param>
+	/// <param name="e">The <see cref="System.EventArgs"/> instance containing the event data.</param>
 	protected void OperatorRadioButtonList_SelectedIndexChanged(object sender, EventArgs e)
 	{
 		if (OperatorRadioButtonList.SelectedValue == "archive")
 		{
+			Session["StartIndex"] = 0;
 			LotusDataContext db = new LotusDataContext(Data.ConnectionManager());
 			var source2 = (from b in db.bookings
 						   join p in db.pages on b.page_id equals p.page_id
@@ -169,12 +202,21 @@ public partial class modules_operator : BaseUserControl
 							   Date = b.submited_date.ToString(),
 							   Status = b.status
 						   }).Distinct();
-			ArchivesGridView.DataSource = source2;
+			ArchivesGridView.DataSource = source2.Skip(0).Take(20);
 			ArchivesGridView.DataBind();
 
+			List<ListItem> items = new List<ListItem>();
+			items.Add(new ListItem("All", "All"));
+			foreach (MembershipUser user in Membership.GetAllUsers())
+			{
+				items.Add(new ListItem(user.UserName, user.UserName));
+			}
+			UsersDropDownList.DataSource = items;
+			UsersDropDownList.DataBind();
+			SearchResultsLabel.Text = "";
 			ResultsGridView.Visible = false;
 			UsersGridView.Visible = false;
-			ArchivesGridView.Visible = true;
+			ArchivesPanel.Visible = true;
 			AcceptedButton.Visible = false;
 			DeclineButton.Visible = false;
 			UserDetailsView.Visible = false;
@@ -182,7 +224,7 @@ public partial class modules_operator : BaseUserControl
 		}
 		if (OperatorRadioButtonList.SelectedValue == "active")
 		{
-			ArchivesGridView.Visible = false;
+			ArchivesPanel.Visible = false;
 			UsersGridView.Visible = false;
 			ChatLogDataList.Visible = false;
 			ResultsGridView.Visible = true;
@@ -198,11 +240,17 @@ public partial class modules_operator : BaseUserControl
 			UsersGridView.DataBind();
 
 			ResultsGridView.Visible = false;
-			ArchivesGridView.Visible = false;
+			ArchivesPanel.Visible = false;
 			UsersGridView.Visible = true;
 			UserDetailsView.Visible = false;
 		}
 	}
+
+	/// <summary>
+	/// Handles the SelectedIndexChanged event of the ArchivesGridView control.
+	/// </summary>
+	/// <param name="sender">The source of the event.</param>
+	/// <param name="e">The <see cref="System.EventArgs"/> instance containing the event data.</param>
 	protected void ArchivesGridView_SelectedIndexChanged(object sender, EventArgs e)
 	{
 		LotusDataContext db = new LotusDataContext();
@@ -270,12 +318,17 @@ public partial class modules_operator : BaseUserControl
 		DetailsView.DataSource = source1;
 		DetailsView.DataBind();
 		DetailsPanel.Visible = true;
-		ArchivesGridView.Visible = false;
+		ArchivesPanel.Visible = false;
 		if (DetailsView.Rows[2].Cells[1].Text == "Taxi")
 			ChatLogButton.Visible = true;
 		OperatorRadioButtonList.Visible = false;
 	}
 
+	/// <summary>
+	/// Handles the SelectedIndexChanged event of the UsersGridView control.
+	/// </summary>
+	/// <param name="sender">The source of the event.</param>
+	/// <param name="e">The <see cref="System.EventArgs"/> instance containing the event data.</param>
 	protected void UsersGridView_SelectedIndexChanged(object sender, EventArgs e)
 	{
 		ProfileCommon profile = Profile.GetProfile(UsersGridView.SelectedDataKey.Value.ToString());
@@ -286,11 +339,116 @@ public partial class modules_operator : BaseUserControl
 		UserDetailsView.Visible = true;
 	}
 
+	/// <summary>
+	/// Handles the Click event of the ChatLogButton control.
+	/// </summary>
+	/// <param name="sender">The source of the event.</param>
+	/// <param name="e">The <see cref="System.EventArgs"/> instance containing the event data.</param>
 	protected void ChatLogButton_Click(object sender, EventArgs e)
 	{
 		ChatLogDataList.Visible = true;
 		List<string> list = Data.GetLog(ArchivesGridView.SelectedDataKey.Value.ToString());
 		ChatLogDataList.DataSource = list;
 		ChatLogDataList.DataBind();
+	}
+
+	/// <summary>
+	/// Handles the Click event of the SearchButton control.
+	/// </summary>
+	/// <param name="sender">The source of the event.</param>
+	/// <param name="e">The <see cref="System.EventArgs"/> instance containing the event data.</param>
+	protected void SearchButton_Click(object sender, EventArgs e)
+	{
+		string service = ServiceDropDownList.SelectedValue;
+		string userName = UsersDropDownList.SelectedValue;
+		DateTime minDateTime = SqlDateTime.MinValue.Value;
+		DateTime maxDateTime = SqlDateTime.MaxValue.Value;
+		DateTime fromDateTime = minDateTime;
+		DateTime toDateTime = maxDateTime;
+		DateTime.TryParse(FromDatePicker.txtDate.Text, out fromDateTime);
+		DateTime.TryParse(ToDatePicker.txtDate.Text, out toDateTime);
+		if (fromDateTime < minDateTime || fromDateTime > maxDateTime)
+			fromDateTime = minDateTime;
+		if (toDateTime < minDateTime || toDateTime > maxDateTime)
+			toDateTime = maxDateTime;
+
+		LotusDataContext db = new LotusDataContext(Data.ConnectionManager());
+		var q = (from b in db.bookings
+				 join p in db.pages on b.page_id equals p.page_id
+				 where (b.status != "NEW") && (p.title == service || service == "All") && (b.user_name == userName || userName == "All") &&
+				 (b.submited_date >= fromDateTime && b.submited_date <= toDateTime)
+				 orderby b.id descending
+				 select new
+				 {
+					 ID = b.id,
+					 User = b.user_name,
+					 Service = p.title,
+					 Date = b.submited_date.ToString(),
+					 Status = b.status
+				 }).Distinct();
+
+		ArchivesGridView.DataSource = q;
+		ArchivesGridView.DataBind();
+		if (q.Count() == 0)
+			SearchResultsLabel.Text = "No results found";
+		else
+			SearchResultsLabel.Text = "";
+	}
+
+	/// <summary>
+	/// Handles the Click event of the NextLinkButton control.
+	/// </summary>
+	/// <param name="sender">The source of the event.</param>
+	/// <param name="e">The <see cref="System.EventArgs"/> instance containing the event data.</param>
+	protected void NextLinkButton_Click(object sender, EventArgs e)
+	{
+		int startIndex = (int)Session["StartIndex"];
+		LotusDataContext db = new LotusDataContext(Data.ConnectionManager());
+		var source2 = (from b in db.bookings
+					   join p in db.pages on b.page_id equals p.page_id
+					   where (b.status != "NEW")
+					   orderby b.id descending
+					   select new
+					   {
+						   ID = b.id,
+						   User = b.user_name,
+						   Service = p.title,
+						   Date = b.submited_date.ToString(),
+						   Status = b.status
+					   }).Distinct();
+		int itemNumber = source2.Count();
+		if (startIndex + 20 <= itemNumber)
+			startIndex += 20;
+		Session["StartIndex"] = startIndex;
+		ArchivesGridView.DataSource = source2.Skip(startIndex).Take(20);
+		ArchivesGridView.DataBind();
+	}
+
+	/// <summary>
+	/// Handles the Click event of the PreviousLinkButton control.
+	/// </summary>
+	/// <param name="sender">The source of the event.</param>
+	/// <param name="e">The <see cref="System.EventArgs"/> instance containing the event data.</param>
+	protected void PreviousLinkButton_Click(object sender, EventArgs e)
+	{
+		int startIndex = (int)Session["StartIndex"];
+		if (startIndex > 0)
+			startIndex -= 20;
+		Session["StartIndex"] = startIndex;
+		LotusDataContext db = new LotusDataContext(Data.ConnectionManager());
+		var source2 = (from b in db.bookings
+					   join p in db.pages on b.page_id equals p.page_id
+					   where (b.status != "NEW")
+					   orderby b.id descending
+					   select new
+					   {
+						   ID = b.id,
+						   User = b.user_name,
+						   Service = p.title,
+						   Date = b.submited_date.ToString(),
+						   Status = b.status
+					   }).Distinct();
+		ArchivesGridView.DataSource = source2.Skip(startIndex).Take(20);
+		ArchivesGridView.DataBind();
 	}
 }

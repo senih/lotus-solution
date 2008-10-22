@@ -238,6 +238,11 @@ namespace Services
 			return list;
 		}
 
+		/// <summary>
+		/// Creates the log.
+		/// </summary>
+		/// <param name="list">The list.</param>
+		/// <param name="file">The file.</param>
 		public static void CreateLog(List<string> list, string file)
 		{
 			XDocument log = new XDocument(new XDeclaration("1.0", "utf-8", "yes"),
@@ -250,6 +255,10 @@ namespace Services
 			log.Save(file);
 		}
 
+		/// <summary>
+		/// Gets the list of logs.
+		/// </summary>
+		/// <returns>Returns list of all log files</returns>
 		public static List<string> GetListOfLogs()
 		{
 			List<string> listOfFiles = Directory.GetFiles(HttpContext.Current.Server.MapPath("~/App_Data/Logs/"), "*.xml").ToList<string>();
@@ -263,6 +272,11 @@ namespace Services
 			return listOfFileNames;
 		}
 
+		/// <summary>
+		/// Gets the log.
+		/// </summary>
+		/// <param name="bookingId">The booking id.</param>
+		/// <returns>Returns contents of log file as list of strings</returns>
 		public static List<string> GetLog(string bookingId)
 		{
 			string path = HttpContext.Current.Server.MapPath("~/App_Data/Logs/") + string.Format("BookingLogNo_{0}.xml", bookingId);
@@ -275,6 +289,5 @@ namespace Services
 			}
 			return list;
 		}
-
 	}
 }

@@ -1,4 +1,7 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" CodeFile="operator.ascx.cs" Inherits="modules_operator" %>
+
+<%@ Register assembly="EclipseWebSolutions.DatePicker" namespace="EclipseWebSolutions.DatePicker" tagprefix="cc1" %>
+
 <asp:ScriptManager ID="ScriptManager1" runat="server">
 </asp:ScriptManager>
 <div id="operator_module">
@@ -34,19 +37,75 @@
             <asp:CommandField ButtonType="Button" ShowSelectButton="true" SelectText="Details" />            
         </Columns>
         </asp:GridView>
-        
-        <asp:GridView ID="ArchivesGridView" Visible="false" runat="server" 
-            AutoGenerateColumns="false" SkinID="gridResults" DataKeyNames="ID" 
-            onselectedindexchanged="ArchivesGridView_SelectedIndexChanged">
-        <Columns>
-            <asp:BoundField DataField="ID" HeaderText="ID" />
-            <asp:BoundField DataField="User" HeaderText="User" />
-            <asp:BoundField DataField="Service" HeaderText="Service" />
-            <asp:BoundField DataField="Status" HeaderText="Status" />
-            <asp:BoundField DataField="Date" HeaderText="Date" />
-            <asp:CommandField ButtonType="Button" ShowSelectButton="true" SelectText="Details" />  
-        </Columns>
-        </asp:GridView>
+        <asp:Panel ID="ArchivesPanel" runat="server" Visible="false">
+            <table>
+                <tr>
+                    <td>User</td><td>Service</td><td>Date from</td><td>Date to</td>
+                </tr>
+                <tr>
+                    <td>
+                        <asp:DropDownList ID="UsersDropDownList" runat="server" Width="100px">
+                        </asp:DropDownList>
+                    </td>
+                    <td>
+                        <asp:DropDownList ID="ServiceDropDownList" runat="server" Width="100px">
+                            <asp:ListItem Value="All" Text="All"></asp:ListItem>
+                            <asp:ListItem Value="Taxi" Text="Taxi"></asp:ListItem>
+                            <asp:ListItem Value="Airport" Text="Airport"></asp:ListItem>
+                            <asp:ListItem Value="Children" Text="Children"></asp:ListItem>
+                            <asp:ListItem Value="VIP" Text="VIP"></asp:ListItem>
+                            <asp:ListItem Value="Pets" Text="Pets"></asp:ListItem>
+                        </asp:DropDownList>
+                    </td>
+                    <td>
+                        <cc1:DatePicker ID="FromDatePicker" runat="server" 
+                            CalendarPosition="DisplayBelow" />
+                    </td>
+                    <td>
+                        <cc1:DatePicker ID="ToDatePicker" runat="server" 
+                            CalendarPosition="DisplayBelow" />
+                    </td>
+                </tr>
+                <tr>
+                    <td align="right">
+                    <asp:Button ID="SearchButton" runat="server" onclick="SearchButton_Click" 
+                        Text="Search" Width="100px" />
+                    </td>
+                    <td colspan="3">
+                        <asp:Label ID="SearchResultsLabel" runat="server"></asp:Label>
+                    </td>
+                </tr>
+            </table>
+            <br /><br />
+            <table>
+                <tr>
+                    <td align="left">
+                        <asp:LinkButton ID="PreviousLinkButton" runat="server" 
+                            onclick="PreviousLinkButton_Click"><< Previous</asp:LinkButton>
+                    </td>
+                    <td align="right">
+                        <asp:LinkButton ID="NextLinkButton" runat="server" 
+                            onclick="NextLinkButton_Click">Next >></asp:LinkButton>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <asp:GridView ID="ArchivesGridView" runat="server" 
+                            AutoGenerateColumns="false" SkinID="gridResults" DataKeyNames="ID" 
+                            onselectedindexchanged="ArchivesGridView_SelectedIndexChanged">
+                        <Columns>
+                            <asp:BoundField DataField="ID" HeaderText="ID" />
+                            <asp:BoundField DataField="User" HeaderText="User" />
+                            <asp:BoundField DataField="Service" HeaderText="Service" />
+                            <asp:BoundField DataField="Status" HeaderText="Status" />
+                            <asp:BoundField DataField="Date" HeaderText="Date" />
+                            <asp:CommandField ButtonType="Button" ShowSelectButton="true" SelectText="Details" />  
+                        </Columns>
+                        </asp:GridView>
+                    </td>
+                </tr>
+            </table>
+        </asp:Panel>
         
         <asp:GridView ID="UsersGridView" runat="server" SkinID="gridResults" 
             AutoGenerateColumns="False" DataKeyNames="UserName" 
@@ -91,7 +150,7 @@
             <table>
                 <tr>
                     <td valign="top">
-                        <asp:DetailsView ID="DetailsView" runat="server" Height="50px" Width="195px" 
+                        <asp:DetailsView ID="DetailsView" runat="server" Height="50px" Width="210px" 
                             CellPadding="4" ForeColor="#333333" GridLines="Horizontal">
                             <FooterStyle BackColor="#1C5E55" Font-Bold="True" ForeColor="White" />
                             <CommandRowStyle BackColor="#C5BBAF" Font-Bold="True" />

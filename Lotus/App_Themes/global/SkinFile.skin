@@ -14,7 +14,7 @@
     <AlternatingRowStyle BackColor="White" ForeColor="#284775" />
 </asp:GridView>
 
-<asp:GridView runat="server" SkinID="gridResults" CellPadding="4" ForeColor="#333333" Width="500px"
+<asp:GridView runat="server" SkinID="gridResults" CellPadding="4" ForeColor="#333333" Width="450px"
     GridLines="Horizontal">
     <RowStyle BackColor="#F7F6F3" ForeColor="#333333" />
     <FooterStyle BackColor="#5D7B9D" Font-Bold="True" ForeColor="White" />
