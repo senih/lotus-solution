@@ -27,7 +27,7 @@
             <br />
             <br />
             <br />
-            <asp:HyperLink ID="hlRegister" runat="server" meta:resourcekey="hlRegistertxt" NavigateUrl="~/register.aspx">Register</asp:HyperLink>
+            <asp:HyperLink ID="hlRegister" runat="server" meta:resourcekey="hlRegistertxt" NavigateUrl="~/registration.aspx">Register</asp:HyperLink>
         </td>
     </tr>
     <tr>
