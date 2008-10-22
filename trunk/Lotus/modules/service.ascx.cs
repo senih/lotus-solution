@@ -31,6 +31,7 @@ public partial class modules_service : BaseUserControl
 	/// <param name="e">The <see cref="System.EventArgs"/> instance containing the event data.</param>
     protected void Page_Load(object sender, EventArgs e)
     {
+		Session["Service"] = ModuleData;
 		if (!Page.User.Identity.IsAuthenticated)
 		{
 			BookingLogin.DestinationPageUrl = Request.RawUrl;
@@ -52,6 +53,13 @@ public partial class modules_service : BaseUserControl
 				LogedinPanel.Visible = true;
 			}
 		}
+		if (ModuleData == "taxi")
+		{
+			SubmitButton.Visible = false;
+			SubmitTaxiButton.Visible = true;
+		}
+		string value = "window.open('chat.aspx',null,'height=530, width=530, left=200, top=150, status= no, resizable= no, scrollbars=no, toolbar=no, location=no, menubar=no ');";
+		SubmitTaxiButton.OnClientClick = value;
     }
 
 	/// <summary>
@@ -333,7 +341,7 @@ public partial class modules_service : BaseUserControl
 	/// </summary>
 	/// <param name="sender">The source of the event.</param>
 	/// <param name="e">The <see cref="System.EventArgs"/> instance containing the event data.</param>
-	protected void SubmitButton_Click(object sender, EventArgs e)
+	protected void SubmitTaxiButton_Click(object sender, EventArgs e)
 	{
 		LotusDataContext db = new LotusDataContext(Data.ConnectionManager());
 		int dataId = (from d in db.form_datas select d.form_data_id).Max() + 1;
@@ -405,17 +413,15 @@ public partial class modules_service : BaseUserControl
 		SubmitPanel.Visible = false;
 		ThankYouPanel.Visible = true;
 		if (ModuleData != "taxi")
+		{
+			Session["Service"] = ModuleData;
 			SendMail();
+		}
 		else
 		{
 			string query = EncodingDecoding.EncodeMd5(dataId.ToString());
-			Response.Redirect("chat.aspx?ChatID=" + query);
-			//string value = string.Format("window.open('chat.aspx?bookingID={0}',null,'height=300, width=430,status= no, resizable= no, scrollbars=no, toolbar=no, location=no, menubar=no ');", query);
-			//StringBuilder sb = new StringBuilder();
-			//sb.Append("<script>");
-			//sb.Append(value);
-			//sb.Append("</script>");
-			//Page.RegisterStartupScript("onclick", sb.ToString());
+			Session["ChatID"] = query;
+			Session["Service"] = ModuleData;
 		}
 	}
 
@@ -443,5 +449,88 @@ public partial class modules_service : BaseUserControl
 	protected void SaveSettingsButton_Click(object sender, EventArgs e)
 	{
 		Data.SaveSettings(PageID, HeaderTextBox.Text, FooterTextBox.Text, ThankYouTextBox.Text);
+	}
+
+	/// <summary>
+	/// Handles the Click event of the SubmitButton control.
+	/// </summary>
+	/// <param name="sender">The source of the event.</param>
+	/// <param name="e">The <see cref="System.EventArgs"/> instance containing the event data.</param>
+	protected void SubmitButton_Click(object sender, EventArgs e)
+	{
+		LotusDataContext db = new LotusDataContext(Data.ConnectionManager());
+		int dataId = (from d in db.form_datas select d.form_data_id).Max() + 1;
+		string user = Page.User.Identity.Name;
+		List<form_field_definition> listControls = Data.GetControls(PageID);
+		foreach (form_field_definition control in listControls)
+		{
+			string sValue = null;
+			bool? bValue = null;
+			DateTime? dValue = null;
+			string ctrlId = control.form_field_name.Replace(" ", "");
+			switch (control.input_type)
+			{
+				case "txtBox":
+				case "txtArea":
+				sValue = ((TextBox)this.FindControl(ctrlId)).Text;
+				break;
+
+				case "ddList":
+				sValue = ((DropDownList)this.FindControl(ctrlId)).SelectedValue;
+				break;
+
+				case "chkBox":
+				bValue = ((CheckBox)this.FindControl(ctrlId)).Checked;
+				break;
+
+				case "chkBoxList":
+				CheckBoxList chkList = (CheckBoxList)this.FindControl(ctrlId);
+				foreach (ListItem item in chkList.Items)
+				{
+					if (item.Selected)
+						sValue += item.Text + ", ";
+				}
+				break;
+
+				case "radioBtnList":
+				sValue = ((RadioButtonList)this.FindControl(ctrlId)).SelectedValue;
+				break;
+
+				case "datePicker":
+				int day = int.Parse(((DropDownList)this.FindControl("days")).SelectedValue);
+				int month = int.Parse(((DropDownList)this.FindControl("months")).SelectedValue);
+				int year = int.Parse(((DropDownList)this.FindControl("years")).SelectedValue);
+				dValue = new DateTime(year, month, day);
+				break;
+
+				case "timePicker":
+				sValue = ((DropDownList)this.FindControl("hours")).SelectedValue + ":" + ((DropDownList)this.FindControl("minutes")).SelectedValue;
+				break;
+
+				case "addressCtrl":
+				string city = ((DropDownList)this.FindControl("city" + control.default_value)).SelectedValue;
+				string region = ((DropDownList)this.FindControl("region" + control.default_value)).SelectedValue;
+				string address = ((TextBox)this.FindControl("address1" + control.default_value)).Text;
+				sValue = address + ", " + region + ", " + city;
+				break;
+
+			}
+			Data.InsertData(dataId, control.form_field_definition_id, PageID, control.input_type, sValue, bValue, dValue);
+		}
+		Data.InsertBooking(dataId, PageID, Page.User.Identity.Name);
+		LogedinPanel.Visible = true;
+		SubmitPanel.Visible = false;
+		ThankYouPanel.Visible = true;
+		if (ModuleData != "taxi")
+		{
+			Session["Service"] = ModuleData;
+			SendMail();
+		}
+		else
+		{
+			string query = EncodingDecoding.EncodeMd5(dataId.ToString());
+			Session["ChatID"] = query;
+			Session["Service"] = ModuleData;
+		}
 	}
 }

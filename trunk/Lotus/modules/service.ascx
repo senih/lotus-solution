@@ -1,4 +1,5 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" CodeFile="service.ascx.cs" Inherits="modules_service" %>
+
 <asp:ScriptManager ID="ScriptManager1" runat="server">
 </asp:ScriptManager>
 <asp:Panel ID="AnonymousPanel" runat="server" Visible="false">
@@ -418,8 +419,10 @@
         </tr>
         <tr>
         <td align="right">
-            <asp:Button ID="SubmitButton" runat="server" Text="Submit" 
-                onclick="SubmitButton_Click" style="width: 61px" />
+            <asp:Button ID="SubmitButton" runat="server" Text="Submit booking" 
+                onclick="SubmitButton_Click" />
+            <asp:LinkButton ID="SubmitTaxiButton" runat="server" Visible="false"
+                onclick="SubmitTaxiButton_Click">Submit booking</asp:LinkButton>
         </td>
         </tr>
         </table>

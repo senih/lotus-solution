@@ -9,6 +9,7 @@
  
 <asp:ScriptManager ID="ScriptManager1" runat="server">
 </asp:ScriptManager>
+<asp:Panel ID="ChatPanel" runat="server">
 <asp:UpdatePanel ID="UpdatePanel1" runat="server">
     <ContentTemplate>
         <table>
@@ -51,3 +52,7 @@
 </table>
 <asp:Timer ID="Timer1" runat="server" Interval="2000">
 </asp:Timer>
+</asp:Panel>
+<asp:Panel ID="ThankYouPanel" runat="server" Visible="false">
+    Thanks for using our services!!!
+</asp:Panel>
