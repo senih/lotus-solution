@@ -22,7 +22,8 @@ public partial class modules_chat : BaseUserControl
 		{
 			EndChatButton.Attributes.Add("onclick", "window.close();");
 			SendButton.Attributes.Add("reset", "document.getElementById('MessageTextBox').focus();");
-			TimeLabel.Text = DateTime.Now.Hour.ToString() + ":" + DateTime.Now.Minute.ToString() + ":" + DateTime.Now.Second.ToString();
+			DateTime localTime = DateTime.Now.ToUniversalTime().AddHours(1);
+			TimeLabel.Text = localTime.Hour.ToString() + ":" + localTime.Minute.ToString() + ":" + localTime.Second.ToString();
 			if (Application[chatId] == null)
 			{
 				List<string> list = new List<string>();

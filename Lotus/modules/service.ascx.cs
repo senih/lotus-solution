@@ -22,6 +22,15 @@ public partial class modules_service : BaseUserControl
 	protected void Page_Init(object sender, EventArgs e)
 	{
 		RenderFormControls();
+		if (IsPostBack)
+		{
+			Page.Validate();
+			if (Page.IsValid)
+			{
+				string value = "window.open('chat.aspx',null,'height=530, width=530, left=200, top=150, status= no, resizable= no, scrollbars=no, toolbar=no, location=no, menubar=no ');";
+				SubmitTaxiButton.OnClientClick = value;
+			}
+		}
 	}
 	
 	/// <summary>
@@ -58,8 +67,18 @@ public partial class modules_service : BaseUserControl
 			SubmitButton.Visible = false;
 			SubmitTaxiButton.Visible = true;
 		}
-		string value = "window.open('chat.aspx',null,'height=530, width=530, left=200, top=150, status= no, resizable= no, scrollbars=no, toolbar=no, location=no, menubar=no ');";
-		SubmitTaxiButton.OnClientClick = value;
+		//string value = "window.open('chat.aspx',null,'height=530, width=530, left=200, top=150, status= no, resizable= no, scrollbars=no, toolbar=no, location=no, menubar=no ');";
+		//SubmitTaxiButton.OnClientClick = value;
+
+		//if (IsPostBack && ModuleData == "taxi")
+		//{
+		//    Page.Validate();
+		//    if (Page.IsValid)
+		//    {
+		//        string value = "window.open('chat.aspx',null,'height=530, width=530, left=200, top=150, status= no, resizable= no, scrollbars=no, toolbar=no, location=no, menubar=no ');";
+		//        SubmitTaxiButton.OnClientClick = value;
+		//    }
+		//}
     }
 
 	/// <summary>
@@ -244,6 +263,16 @@ public partial class modules_service : BaseUserControl
 	{
 		ControlOptions.Visible = false;
 		ValuesPanel.Visible = true;
+		//if (FormControlsGridView.SelectedRow.Cells[2].Text == "addressCtrl")
+		//{
+		//    XmlFileUpload.Visible = true;
+		//    ValueTextBox.Visible = false;
+		//}
+		//else
+		//{
+		//    XmlFileUpload.Visible = false;
+		//    ValueTextBox.Visible = true;
+		//}
 		LinqDataSource2.Where = "form_field_definition_id=" + FormControlsGridView.SelectedDataKey.Value.ToString();
 	}
 
@@ -268,6 +297,15 @@ public partial class modules_service : BaseUserControl
 		LotusDataContext db = new LotusDataContext(Data.ConnectionManager());
 		form_field_value controlValue = new form_field_value();
 		controlValue.form_field_definition_id = int.Parse(FormControlsGridView.SelectedDataKey.Value.ToString());
+		//if (FormControlsGridView.SelectedRow.Cells[2].Text == "addressCtrl")
+		//{
+		//    if (XmlFileUpload.HasFile)
+		//    {
+		//        XmlFileUpload.SaveAs(Server.MapPath("~/App_Data/") + XmlFileUpload.FileName);
+		//        controlValue.display_value = XmlFileUpload.FileName;
+		//    }
+		//}
+		//else
 		controlValue.display_value = ValueTextBox.Text;
 		controlValue.is_default = DefaultValueCheckBox.Checked;
 		db.form_field_values.InsertOnSubmit(controlValue);

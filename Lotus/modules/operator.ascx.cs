@@ -14,7 +14,8 @@ public partial class modules_operator : BaseUserControl
 	string bookingId;
 	protected void Page_Load(object sender, EventArgs e)
 	{
-		TimeLabel.Text = DateTime.Now.ToString();
+		DateTime localTime = DateTime.Now.ToUniversalTime().AddHours(1);
+		TimeLabel.Text = localTime.Hour.ToString() + ":" + localTime.Minute.ToString() + ":" + localTime.Second.ToString();
 		LotusDataContext db = new LotusDataContext(Data.ConnectionManager());
 		var source = (from b in db.bookings
 					  join p in db.pages on b.page_id equals p.page_id
