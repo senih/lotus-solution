@@ -270,6 +270,7 @@
                                 <td>&nbsp;:&nbsp;</td>
                                 <td>
                                     <asp:TextBox ID="ValueTextBox" runat="server"></asp:TextBox>
+                                    <asp:FileUpload ID="XmlFileUpload" runat="server" Visible="False" />
                                 </td>
                                 <td>                            
                                     <asp:RequiredFieldValidator ID="RequiredFieldValidator3" runat="server" 
@@ -284,6 +285,7 @@
                                 <td>
                                     <asp:CheckBox ID="DefaultValueCheckBox" runat="server" />
                                 </td>
+                                <td></td>
                             </tr>
                             <tr>
                                 <td></td>
@@ -293,6 +295,7 @@
                                     <asp:Button ID="BackButton" runat="server" Text="Back" 
                                         onclick="BackButton_Click" CausesValidation="False" />
                                 </td>
+                                <td></td>
                             </tr>
                         </table>
                     </asp:Panel>
@@ -431,3 +434,5 @@
 </asp:Panel>
 </ContentTemplate>
 </asp:UpdatePanel>
+
+                                

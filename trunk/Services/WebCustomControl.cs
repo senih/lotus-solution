@@ -351,24 +351,6 @@ namespace Services
 
 				break;
 
-				//case "addressFromCtrl":
-				//UserControl addressFrom = new UserControl();
-				//addressFrom.ID = id;
-				//Control ctrlFrom = addressFrom.LoadControl("~/modules/address_from.ascx");
-				//ctrlHolder.Controls.Add(new LiteralControl("<td>"));
-				//ctrlHolder.Controls.Add(ctrlFrom);
-				//ctrlHolder.Controls.Add(new LiteralControl("</td>"));
-				//break;
-
-				//case "addressToCtrl":
-				//UserControl addressTo = new UserControl();
-				//addressTo.ID = id;
-				//Control ctrlTo = addressTo.LoadControl("~/modules/address_to.ascx");
-				//ctrlHolder.Controls.Add(new LiteralControl("<td>"));
-				//ctrlHolder.Controls.Add(ctrlTo);
-				//ctrlHolder.Controls.Add(new LiteralControl("</td>"));
-				//break;
-
 				case "header":
 				Label headerCtrl = new Label();
 				headerCtrl.ID = id;
