@@ -2,6 +2,8 @@
 
 <%@ Register assembly="EclipseWebSolutions.DatePicker" namespace="EclipseWebSolutions.DatePicker" tagprefix="cc1" %>
 
+<%@ Register src="chat.ascx" tagname="chat" tagprefix="uc1" %>
+
 <asp:ScriptManager ID="ScriptManager1" runat="server">
 </asp:ScriptManager>
 <div id="operator_module">
@@ -187,7 +189,7 @@
                                 <td></td>
                                 <td>
                                     <asp:Button ID="ChatButton" runat="server" Text="Chat" Visible="false" 
-                                        Width="100px" />
+                                        Width="100px" onclick="ChatButton_Click" />
                                 </td>
                             </tr>
                             <tr>
@@ -219,12 +221,13 @@
         </asp:Panel>
     </ContentTemplate>
     <Triggers>
-        <asp:AsyncPostBackTrigger ControlID="Timer1" />
+        <asp:AsyncPostBackTrigger ControlID="Timer1" EventName="Tick" />
     </Triggers>
 </asp:UpdatePanel>
 <asp:Timer ID="Timer1" runat="server" Interval="30000">
 </asp:Timer>
 </div>
+
 
 
 

@@ -6,9 +6,11 @@
     }
  // -->
  </script>
- 
+
+
 <asp:ScriptManager ID="ScriptManager1" runat="server">
 </asp:ScriptManager>
+
 <asp:Panel ID="ChatPanel" runat="server">
 <asp:UpdatePanel ID="UpdatePanel1" runat="server">
     <ContentTemplate>
@@ -20,22 +22,21 @@
             <td></td>
         </tr>
             <tr>
-                <td colspan="2">
-                    <asp:TextBox ID="ChatTextBox" runat="server" Height="400px"
-                        TextMode="MultiLine" Width="500px"></asp:TextBox>
+                <td colspan="2" style="height:200px;" valign="top">
+                    <asp:PlaceHolder ID="ChatPlaceHolder" runat="server"></asp:PlaceHolder>
                 </td>
             </tr>
         </table>
     </ContentTemplate>
     <Triggers>
         <asp:AsyncPostBackTrigger ControlID="SendButton" EventName="Click" />
-        <asp:AsyncPostBackTrigger ControlID="Timer1" />
+        <asp:AsyncPostBackTrigger ControlID="ChatTimer" EventName="Tick" />
     </Triggers>
 </asp:UpdatePanel>
 <table>
     <tr>
         <td>
-            <asp:TextBox ID="MessageTextBox" runat="server" Width="400px" 
+            <asp:TextBox ID="MessageTextBox" runat="server" Width="300px" 
                 onFocus="doClear(this)"></asp:TextBox>
         </td>
         <td>
@@ -46,13 +47,11 @@
     <tr>
         <td></td>
         <td>
-            <asp:Button ID="EndChatButton" runat="server" Text="End Chat" Width="100px" />
+            <asp:Button ID="EndChatButton" runat="server" onclick="EndChatButton_Click" 
+                Text="End Chat" Width="100px" />
         </td>
     </tr>
 </table>
-<asp:Timer ID="Timer1" runat="server" Interval="2000">
+<asp:Timer ID="ChatTimer" runat="server" Interval="2000">
 </asp:Timer>
-</asp:Panel>
-<asp:Panel ID="ThankYouPanel" runat="server" Visible="false">
-    Thanks for using our services!!!
 </asp:Panel>

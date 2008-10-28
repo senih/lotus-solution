@@ -8,19 +8,12 @@ using System.Web.UI.WebControls;
 public partial class modules_chat : BaseUserControl
 {
 	protected string chatId;
+
 	protected void Page_Load(object sender, EventArgs e)
-	{
-		string service = "";
-		if (Page.User.Identity.IsAuthenticated && !Page.User.IsInRole("Operators Subscribers"))
+	{		
+		chatId = (string)Session["ChatID"];
+		if (Page.User.Identity.IsAuthenticated)
 		{
-			service = (string)Session["Service"];
-			chatId = (string)Session["ChatID"];
-		}
-		else
-			chatId = Request.QueryString["ChatID"];
-		if (Page.User.IsInRole("Operators Subscribers") || service == "taxi")
-		{
-			EndChatButton.Attributes.Add("onclick", "window.close();");
 			SendButton.Attributes.Add("reset", "document.getElementById('MessageTextBox').focus();");
 			DateTime localTime = DateTime.Now.ToUniversalTime().AddHours(1);
 			TimeLabel.Text = localTime.Hour.ToString() + ":" + localTime.Minute.ToString() + ":" + localTime.Second.ToString();
@@ -32,18 +25,19 @@ public partial class modules_chat : BaseUserControl
 			else
 			{
 				List<string> list = (List<string>)Application[chatId];
-				string msg = "";
-				foreach (string item in list)
+				int start = 0;
+				if (list.Count > 10)
+					start = list.Count - 10;
+
+				for (int i = start; i < list.Count; i++)
 				{
-					msg += item;
+					ChatPlaceHolder.Controls.Add(new LiteralControl("<div>" + list[i] + "</div>"));
 				}
-				ChatTextBox.Text = msg;
 			}
 		}
 		else
 		{
 			ChatPanel.Visible = false;
-			ThankYouPanel.Visible = true;
 		}
 	}
 
@@ -62,5 +56,18 @@ public partial class modules_chat : BaseUserControl
 		Application[chatId] = list;
 		MessageTextBox.Text = "";
 		MessageTextBox.Focus();
+	}
+
+	/// <summary>
+	/// Handles the Click event of the EndChatButton control.
+	/// </summary>
+	/// <param name="sender">The source of the event.</param>
+	/// <param name="e">The <see cref="System.EventArgs"/> instance containing the event data.</param>
+	protected void EndChatButton_Click(object sender, EventArgs e)
+	{
+		if (Page.User.IsInRole("Operators Subscribers"))
+			Response.Redirect("operator.aspx");
+		else
+			Response.Redirect("booking.aspx");
 	}
 }

@@ -10,8 +10,7 @@ using Services;
 using System.Data.SqlTypes;
 
 public partial class modules_operator : BaseUserControl
-{
-	string bookingId;
+{	
 	protected void Page_Load(object sender, EventArgs e)
 	{
 		DateTime localTime = DateTime.Now.ToUniversalTime().AddHours(1);
@@ -115,10 +114,10 @@ public partial class modules_operator : BaseUserControl
 		if (DetailsView.Rows[2].Cells[1].Text == "Taxi")
 		{
 			ChatButton.Visible = true;
-			bookingId = ResultsGridView.SelectedDataKey.Value.ToString();
-			string query = EncodingDecoding.EncodeMd5(bookingId);
-			string value = string.Format("window.open('chat.aspx?ChatID={0}',null,'height=530, width=530, left=200, top=150, status= no, resizable= no, scrollbars=no, toolbar=no, location=no, menubar=no ');", query);
-			ChatButton.Attributes.Add("onclick", value);
+			//bookingId = ResultsGridView.SelectedDataKey.Value.ToString();
+			//string query = EncodingDecoding.EncodeMd5(bookingId);
+			//string value = string.Format("window.open('chat.aspx?ChatID={0}',null,'height=400, width=430, left=200, top=150, status= no, resizable= no, scrollbars=no, toolbar=no, location=no, menubar=no ');", query);
+			//ChatButton.Attributes.Add("onclick", value);
 		}
 		else
 			ChatButton.Visible = false;
@@ -451,5 +450,11 @@ public partial class modules_operator : BaseUserControl
 					   }).Distinct();
 		ArchivesGridView.DataSource = source2.Skip(startIndex).Take(20);
 		ArchivesGridView.DataBind();
+	}
+	protected void ChatButton_Click(object sender, EventArgs e)
+	{
+		string query = EncodingDecoding.EncodeMd5(ResultsGridView.SelectedDataKey.Value.ToString());
+		Session["ChatID"] = query;
+		Response.Redirect("chat.aspx");
 	}
 }
