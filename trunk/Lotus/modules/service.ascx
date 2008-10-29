@@ -1,7 +1,5 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" CodeFile="service.ascx.cs" Inherits="modules_service" %>
 
-<%@ Register src="chat.ascx" tagname="chat" tagprefix="uc1" %>
-
 <asp:ScriptManager ID="ScriptManager1" runat="server">
 </asp:ScriptManager>
 <asp:Panel ID="AnonymousPanel" runat="server" Visible="false">
@@ -272,14 +270,9 @@
                                 <td>&nbsp;:&nbsp;</td>
                                 <td>
                                     <asp:TextBox ID="ValueTextBox" runat="server"></asp:TextBox>
-                                    &nbsp;</td>
-                                <caption>
-                                    <input ID="XmlFileUpload" runat="server" type="file" visible="false" />
-                                    <td>
-                                        <asp:RequiredFieldValidator ID="RequiredFieldValidator3" runat="server" 
-                                            ControlToValidate="ValueTextBox" ErrorMessage="*"></asp:RequiredFieldValidator>
-                                    </td>
-                                </caption>
+                                    <asp:RequiredFieldValidator ID="RequiredFieldValidator3" runat="server" 
+                                        ControlToValidate="ValueTextBox" ErrorMessage="*"></asp:RequiredFieldValidator>
+                                </td>
                             </tr>
                             <tr>
                                 <td>
@@ -398,9 +391,9 @@
 </asp:Panel>
 
 <asp:Panel ID="LogedinPanel" runat="server" Visible="false">
-    <asp:Panel ID="ThankYouPanel" runat="server" Visible="false">
-            <asp:Label ID="ThankYouLabel" runat="server" Text="Thank you for using our services. 
-            We recived your booking and soon our operartor will contact you."></asp:Label><br /><br />
+    <asp:Panel ID="ThankYouPanel" runat="server" Visible="false">    
+        <asp:Label ID="ThankYouLabel" runat="server" Text="Thank you for using our services. 
+        We recived your booking and soon our operartor will contact you."></asp:Label><br /><br />    
     </asp:Panel>
     <asp:Panel ID="SubmitPanel" runat="server">
     <div id="form">
@@ -426,7 +419,7 @@
         </tr>
         <tr>
         <td align="right">
-            <asp:Button ID="SubmitButton" runat="server" Text="Submit booking" 
+            <asp:Button ID="SubmitButton" runat="server" Text="Submit booking"
                 onclick="SubmitButton_Click" />
         </td>
         </tr>
@@ -436,6 +429,3 @@
 </asp:Panel>
 </ContentTemplate>
 </asp:UpdatePanel>
-
-
-                                

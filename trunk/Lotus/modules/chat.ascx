@@ -15,16 +15,21 @@
 <asp:UpdatePanel ID="UpdatePanel1" runat="server">
     <ContentTemplate>
         <table>
-        <tr>
-            <td>
-                <asp:Label ID="TimeLabel" runat="server"></asp:Label>
-            </td>
-            <td></td>
-        </tr>
             <tr>
-                <td colspan="2" style="height:200px;" valign="top">
+                <td>
+                    Time: <asp:Label ID="TimeLabel" runat="server"></asp:Label><hr />
+                </td>
+            </tr>
+            <tr>
+                <td></td>
+            </tr>
+            <tr>
+                <td style="height:200px; width:450px;" valign="top">
                     <asp:PlaceHolder ID="ChatPlaceHolder" runat="server"></asp:PlaceHolder>
                 </td>
+            </tr>
+            <tr>
+                <td><hr /></td>
             </tr>
         </table>
     </ContentTemplate>
@@ -36,12 +41,12 @@
 <table>
     <tr>
         <td>
-            <asp:TextBox ID="MessageTextBox" runat="server" Width="300px" 
-                onFocus="doClear(this)"></asp:TextBox>
+            <asp:TextBox ID="MessageTextBox" runat="server" Width="350px" 
+                onFocus="doClear(this)" TextMode="MultiLine"></asp:TextBox>
         </td>
         <td>
             <asp:Button ID="SendButton" runat="server" Text="Send" Width="100px" 
-                onclick="SendButton_Click"/>
+                onclick="SendButton_Click" Height="50px"/>
         </td>
     </tr>
     <tr>

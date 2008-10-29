@@ -12,7 +12,7 @@ public partial class modules_chat : BaseUserControl
 	protected void Page_Load(object sender, EventArgs e)
 	{		
 		chatId = (string)Session["ChatID"];
-		if (Page.User.Identity.IsAuthenticated)
+		if (Page.User.Identity.IsAuthenticated && chatId != null)
 		{
 			SendButton.Attributes.Add("reset", "document.getElementById('MessageTextBox').focus();");
 			DateTime localTime = DateTime.Now.ToUniversalTime().AddHours(1);
@@ -37,7 +37,7 @@ public partial class modules_chat : BaseUserControl
 		}
 		else
 		{
-			ChatPanel.Visible = false;
+			Response.Redirect("booking.aspx");
 		}
 	}
 
